@@ -27,6 +27,7 @@ minikube start --profile glasskube
 
 ## Related projects
 
+- Java client for Kubernetes [`fabric8io/kubernetes-client`](https://github.com/fabric8io/kubernetes-client)
 - Java Operator SDK [`java-operator-sdk/java-operator-sdk`](https://github.com/java-operator-sdk/java-operator-sdk)
 
 ## Supported by
