@@ -6,6 +6,8 @@
 
 See [the contributing guide](CONTRIBUTING.md) for detailed instructions.
 
+Also join our [`architecture discussion`](https://github.com/glasskube/operator/discussions/4) on GitHub.
+
 ## Getting started
 
 ### Requirements
