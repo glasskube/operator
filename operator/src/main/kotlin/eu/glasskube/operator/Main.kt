@@ -1,9 +1,20 @@
 package eu.glasskube.operator
 
-fun main(args: Array<String>) {
-    println("Hello World!")
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import eu.glasskube.operator.controller.WebPageReconciler
+import io.fabric8.kubernetes.client.KubernetesClientBuilder
+import io.javaoperatorsdk.operator.Operator
+import org.slf4j.LoggerFactory
 
-    // Try adding program arguments via Run/Debug configuration.
-    // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
-    println("Program arguments: ${args.joinToString()}")
+private val LOG = LoggerFactory.getLogger("main")
+
+fun main() {
+    LOG.info("Glasskube Operator is starting")
+
+    val client = KubernetesClientBuilder().build()
+    val operator = Operator(client) {
+        it.withObjectMapper(jacksonObjectMapper())
+    }
+    operator.register(WebPageReconciler())
+    operator.start()
 }
