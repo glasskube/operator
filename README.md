@@ -25,6 +25,13 @@ Minikube is the recommended way on starting a cluster for local development.
 minikube start --profile glasskube
 ```
 
+### Tasks
+
+```shell
+./gradlew installCrd
+./gradlew run
+```
+
 ## Related projects
 
 - Java client for Kubernetes [`fabric8io/kubernetes-client`](https://github.com/fabric8io/kubernetes-client)
