@@ -32,4 +32,8 @@ minikube start --profile glasskube
 
 ## Supported by
 
-- [Media Tech Lab](https://www.media-lab.de/en/programs/media-tech-lab)
+- Media Tech Lab [`media-tech-lab`](https://github.com/media-tech-lab)
+
+<a href="https://www.media-lab.de/en/programs/media-tech-lab">
+    <img src="https://raw.githubusercontent.com/media-tech-lab/.github/main/assets/mtl-powered-by.png" width="240" title="Media Tech Lab powered by logo">
+</a>
