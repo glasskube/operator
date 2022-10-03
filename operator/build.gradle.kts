@@ -13,14 +13,17 @@ version = "0.1-SNAPSHOT"
 val javaOperatorVersion: String by project
 val crdGeneratorVersion: String by project
 val slf4jVersion: String by project
-val jacksonVersion : String by project
+val logbackVersion: String by project
+val jacksonVersion: String by project
 
 dependencies {
     implementation("io.javaoperatorsdk", "operator-framework", javaOperatorVersion)
     kapt("io.javaoperatorsdk", "operator-framework", javaOperatorVersion)
     kapt("io.fabric8", "crd-generator-apt", crdGeneratorVersion)
 
-    implementation("org.slf4j", "slf4j-jdk14", slf4jVersion)
+    implementation("org.slf4j", "slf4j-api", slf4jVersion)
+    implementation("ch.qos.logback", "logback-core", logbackVersion)
+    implementation("ch.qos.logback", "logback-classic", logbackVersion)
     implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", jacksonVersion)
 
     testImplementation(kotlin("test"))
@@ -40,7 +43,7 @@ tasks.test {
     useJUnitPlatform()
 }
 
-jib  {
+jib {
     to {
         image = "glasskube-operator"
         tags = setOf(version as String)
