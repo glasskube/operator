@@ -13,7 +13,7 @@ private val LOG = LoggerFactory.getLogger(WebPageReconciler::class.java)
 @ControllerConfiguration
 class WebPageReconciler : Reconciler<WebPage> {
     override fun reconcile(resource: WebPage, context: Context<WebPage>): UpdateControl<WebPage> {
-        LOG.info("reconciling $resource")
+        LOG.info("reconciling ${resource.crdName} ${resource.apiVersion}")
         resource.status = WebPageStatus("Yum")
         return UpdateControl.patchStatus(resource)
     }

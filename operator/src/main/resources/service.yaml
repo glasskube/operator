@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: echo
+  namespace: default
+spec:
+  ports:
+    - port: 5678
+      name: http
+  selector:
+    app: echo

@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: echo
+  namespace: default
+spec:
+  rules:
+    - host: echo.minikube
+      http:
+        paths:
+          - backend:
+              service:
+                name: echo
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
