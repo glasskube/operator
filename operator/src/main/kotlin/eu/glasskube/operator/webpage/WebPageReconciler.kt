@@ -1,7 +1,5 @@
-package eu.glasskube.operator.controller
+package eu.glasskube.operator.webpage
 
-import eu.glasskube.operator.resource.WebPage
-import eu.glasskube.operator.resource.WebPageStatus
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler

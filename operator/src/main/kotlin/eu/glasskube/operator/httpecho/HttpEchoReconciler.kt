@@ -1,6 +1,5 @@
-package eu.glasskube.operator.echo.controller
+package eu.glasskube.operator.httpecho
 
-import eu.glasskube.operator.echo.resource.*
 import io.fabric8.kubernetes.client.KubernetesClient
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration

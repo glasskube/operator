@@ -1,8 +1,8 @@
 package eu.glasskube.operator
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import eu.glasskube.operator.controller.WebPageReconciler
-import eu.glasskube.operator.echo.controller.HttpEchoReconciler
+import eu.glasskube.operator.httpecho.HttpEchoReconciler
+import eu.glasskube.operator.webpage.WebPageReconciler
 import io.fabric8.kubernetes.client.KubernetesClientBuilder
 import io.javaoperatorsdk.operator.Operator
 import org.slf4j.LoggerFactory

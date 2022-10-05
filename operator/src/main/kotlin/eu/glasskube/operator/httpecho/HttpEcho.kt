@@ -1,4 +1,4 @@
-package eu.glasskube.operator.echo.resource
+package eu.glasskube.operator.httpecho
 
 import eu.glasskube.kubernetes.api.model.*
 import eu.glasskube.kubernetes.api.model.apps.deployment
