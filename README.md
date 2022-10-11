@@ -32,6 +32,28 @@ minikube start --profile glasskube
 ./gradlew run
 ```
 
+## Custom Resources
+
+The operator currently supports following custom resources:
+
+### HttpEcho
+
+**HttpEcho.yaml**
+
+```yaml
+apiVersion: "glasskube.eu/v1alpha1"
+kind: HttpEcho
+metadata:
+  name: echo
+  namespace: default
+spec:
+  text: MTL Demo 🧊
+```
+
+[`http-echo`](https://github.com/hashicorp/http-echo) is a simple go web server that returns preconfigured text.
+The Glasskube operator will create a deployment, service and ingress based on the applied custom resource.
+The Webserver is reachable via [`http://echo.minikube`](http://echo.minikube).
+
 ## Related projects
 
 - Java client for Kubernetes [`fabric8io/kubernetes-client`](https://github.com/fabric8io/kubernetes-client)
