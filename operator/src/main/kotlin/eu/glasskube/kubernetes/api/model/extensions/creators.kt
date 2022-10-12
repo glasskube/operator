@@ -1,12 +1,21 @@
 package eu.glasskube.kubernetes.api.model.extensions
 
+import eu.glasskube.kubernetes.api.annotation.KubernetesDslMarker
 import io.fabric8.kubernetes.api.model.networking.v1.*
 
 
-inline fun ingress(block: Ingress.() -> Unit) = Ingress().apply(block)
-inline fun ingressSpec(block: IngressSpec.() -> Unit) = IngressSpec().apply(block)
-inline fun ingressRule(block: IngressRule.() -> Unit) = IngressRule().apply(block)
-fun ingressRuleValue(vararg paths: HTTPIngressPath) = HTTPIngressRuleValue(paths.asList())
+inline fun ingress(block: (@KubernetesDslMarker Ingress).() -> Unit) =
+    Ingress().apply(block)
+
+inline fun Ingress.spec(block: (@KubernetesDslMarker IngressSpec).() -> Unit) {
+    spec = IngressSpec().apply(block)
+}
+
+inline fun ingressRule(block: (@KubernetesDslMarker IngressRule).() -> Unit) =
+    IngressRule().apply(block)
+
+fun ingressRuleValue(vararg paths: HTTPIngressPath) =
+    HTTPIngressRuleValue(paths.asList())
 
 fun ingressPath(path: String, pathType: String? = null, backend: IngressBackend) =
     HTTPIngressPath(backend, path, pathType)
