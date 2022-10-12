@@ -1,5 +1,8 @@
 package eu.glasskube.operator.httpecho
 
+import eu.glasskube.operator.httpecho.dependent.HttpEchoDeployment
+import eu.glasskube.operator.httpecho.dependent.HttpEchoIngress
+import eu.glasskube.operator.httpecho.dependent.HttpEchoService
 import io.fabric8.kubernetes.client.KubernetesClient
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
