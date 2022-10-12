@@ -23,4 +23,10 @@ class HttpEchoReconciler(val kubernetesClient: KubernetesClient) : Reconciler<Ht
         resource.status = HttpEchoStatus("Echoing")
         return UpdateControl.patchStatus(resource)
     }
+
+    companion object {
+        const val LABEL = "glasskube.eu/HttpEcho"
+        const val APP_NAME = "http-echo"
+        const val SELECTOR = "app.kubernetes.io/managed-by=glasskube-operator,app=$APP_NAME"
+    }
 }
