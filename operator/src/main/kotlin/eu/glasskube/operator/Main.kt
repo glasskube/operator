@@ -11,7 +11,7 @@ import java.time.Duration
 private val LOG = LoggerFactory.getLogger("main")
 
 fun main() {
-    val startTime = System.nanoTime();
+    val startTime = System.nanoTime()
     println(
         """
    ____ _               _          _
@@ -28,6 +28,7 @@ fun main() {
     }
     operator.register(WebPageReconciler())
     operator.register(HttpEchoReconciler(client))
+    operator.installShutdownHook()
     operator.start()
     LOG.info("\uD83E\uDDCA Glasskube started in {} seconds", Duration.ofNanos(System.nanoTime() - startTime).seconds)
 }

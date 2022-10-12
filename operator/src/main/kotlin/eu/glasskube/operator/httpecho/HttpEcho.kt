@@ -4,6 +4,7 @@ import eu.glasskube.kubernetes.api.model.*
 import eu.glasskube.kubernetes.api.model.apps.deployment
 import eu.glasskube.kubernetes.api.model.apps.deploymentSpec
 import eu.glasskube.kubernetes.api.model.extensions.*
+import eu.glasskube.operator.resourceLabels
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.api.model.PodTemplateSpec
 import io.fabric8.kubernetes.api.model.Service
@@ -30,17 +31,26 @@ data class HttpEchoStatus(
 @Version("v1alpha1")
 class HttpEcho : CustomResource<HttpEchoSpec, HttpEchoStatus>(), Namespaced
 
-@KubernetesDependent
+val HttpEcho.identifyingLabel
+    get() = HttpEchoReconciler.LABEL to metadata.name
+
+val HttpEcho.resourceLabels
+    get() = resourceLabels(HttpEchoReconciler.APP_NAME, identifyingLabel)
+
+@KubernetesDependent(labelSelector = HttpEchoReconciler.SELECTOR)
 class HttpEchoDeployment : CRUDKubernetesDependentResource<Deployment, HttpEcho>(Deployment::class.java) {
     override fun desired(primary: HttpEcho, context: Context<HttpEcho>) = deployment {
         metadata = objectMeta {
             name = primary.metadata.name
             namespace = primary.metadata.namespace
+            labels = primary.resourceLabels
         }
         spec = deploymentSpec {
-            selector = labelSelector { matchLabels = mapOf("app" to "echo") }
+            selector = labelSelector { matchLabels = mapOf(primary.identifyingLabel) }
             template = PodTemplateSpec(
-                objectMeta { labels = mapOf("app" to "echo", "HttpEcho" to primary.metadata.name) },
+                objectMeta {
+                    labels = primary.resourceLabels
+                },
                 podSpec {
                     containers = listOf(
                         container {
@@ -56,26 +66,28 @@ class HttpEchoDeployment : CRUDKubernetesDependentResource<Deployment, HttpEcho>
     }
 }
 
-@KubernetesDependent
+@KubernetesDependent(labelSelector = HttpEchoReconciler.SELECTOR)
 class HttpEchoService : CRUDKubernetesDependentResource<Service, HttpEcho>(Service::class.java) {
     override fun desired(primary: HttpEcho, context: Context<HttpEcho>) = service {
         metadata = objectMeta {
             name = primary.metadata.name
             namespace = primary.metadata.namespace
+            labels = primary.resourceLabels
         }
         spec = serviceSpec {
-            selector = mapOf("HttpEcho" to primary.metadata.name)
+            selector = mapOf(HttpEchoReconciler.LABEL to primary.metadata.name)
             ports = listOf(servicePort { port = 5678; name = "http" })
         }
     }
 }
 
-@KubernetesDependent
+@KubernetesDependent(labelSelector = HttpEchoReconciler.SELECTOR)
 class HttpEchoIngress : CRUDKubernetesDependentResource<Ingress, HttpEcho>(Ingress::class.java) {
     override fun desired(primary: HttpEcho, context: Context<HttpEcho>): Ingress = ingress {
         metadata = objectMeta {
             name = primary.metadata.name
             namespace = primary.metadata.namespace
+            labels = primary.resourceLabels
         }
         spec = ingressSpec {
             rules = listOf(
