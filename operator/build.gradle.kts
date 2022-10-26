@@ -65,3 +65,14 @@ tasks.create("installCrd", Exec::class) {
         "build/tmp/kapt3/classes/main/META-INF/fabric8/*-v1.yml"
     )
 }
+
+tasks.create("loadImage", Exec::class) {
+    group = "kubernetes"
+    dependsOn("jibBuildTar")
+    commandLine(
+        "minikube",
+        "image",
+        "load",
+        "build/jib-image.tar"
+    )
+}
