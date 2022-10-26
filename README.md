@@ -21,16 +21,44 @@ Also join our [`architecture discussion`](https://github.com/glasskube/operator/
 
 Minikube is the recommended way on starting a cluster for local development.
 
+
 ```shell
-minikube start --profile glasskube
+minikube profile glasskube # (optional)
+minikube start
 ```
 
 ### Tasks
 
+#### Applying Custom Resource Definitions 
+
+This task uses your current `kubectl` context. 
+
 ```shell
 ./gradlew installCrd
+```
+
+#### Running the Operator 
+
+The operator is started locally and connects to your current `kubectl` context. 
+
+```shell
 ./gradlew run
 ```
+
+#### Deploying the operator
+
+When using Minikube for development, you can push a snapshot of the operator to the cluster:
+
+```shell
+./gradlew loadImage
+```
+
+To deploy the operator and related RBAC resources, you can use the resources in `deploy/`.
+
+```shell
+kubectl apply -k deploy/
+```
+**Note:** This will deploy the operator, but not any of the Custom Resource Definitions the operator acts upon.
 
 ## Custom Resources
 
