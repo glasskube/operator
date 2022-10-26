@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: glasskube-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: glasskube-operator
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: glasskube-operator
+    spec:
+      containers:
+        - name: glasskube-operator
+          image: glasskube-operator:0.1-SNAPSHOT
+          imagePullPolicy: IfNotPresent
+      serviceAccountName: glasskube-operator
+      securityContext:
+        runAsNonRoot: true
