@@ -1,7 +1,5 @@
 package eu.glasskube.operator.httpecho
 
-import eu.glasskube.kubernetes.api.model.*
-import eu.glasskube.kubernetes.api.model.extensions.*
 import eu.glasskube.operator.resourceLabels
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.client.CustomResource
