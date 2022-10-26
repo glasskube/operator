@@ -19,6 +19,8 @@ jobs:
           distribution: zulu
           cache: gradle
       - name: Java build
-        run: ./gradlew operator:assemble
+        run: ./gradlew assemble
       - name: Tests
-        run: ./gradlew operator:test
+        run: ./gradlew test
+      - name: Lint
+        run: ./gradlew --continue ktlintCheck
