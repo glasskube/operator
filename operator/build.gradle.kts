@@ -4,6 +4,7 @@ plugins {
     kotlin("jvm") version "1.7.10"
     kotlin("kapt") version "1.7.10"
     id("com.google.cloud.tools.jib") version "3.3.0"
+    id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
     application
 }
 
