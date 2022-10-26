@@ -49,6 +49,9 @@ jib {
         image = "glasskube-operator"
         tags = setOf(version as String)
     }
+    container {
+        user = "333"
+    }
 }
 
 application {
