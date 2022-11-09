@@ -2,6 +2,7 @@ package eu.glasskube.operator
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import eu.glasskube.operator.httpecho.HttpEchoReconciler
+import eu.glasskube.operator.matomo.MatomoReconciler
 import eu.glasskube.operator.webpage.WebPageReconciler
 import io.fabric8.kubernetes.client.KubernetesClientBuilder
 import io.javaoperatorsdk.operator.Operator
@@ -28,6 +29,7 @@ fun main() {
     }
     operator.register(WebPageReconciler())
     operator.register(HttpEchoReconciler(client))
+    operator.register(MatomoReconciler())
     operator.installShutdownHook()
     operator.start()
     LOG.info("\uD83E\uDDCA Glasskube started in {} seconds", Duration.ofNanos(System.nanoTime() - startTime).seconds)
