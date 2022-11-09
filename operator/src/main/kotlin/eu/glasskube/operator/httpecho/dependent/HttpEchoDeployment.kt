@@ -5,6 +5,7 @@ import eu.glasskube.kubernetes.api.model.apps.selector
 import eu.glasskube.kubernetes.api.model.apps.spec
 import eu.glasskube.kubernetes.api.model.apps.template
 import eu.glasskube.kubernetes.api.model.container
+import eu.glasskube.kubernetes.api.model.containerPort
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.operator.httpecho.HttpEcho
@@ -38,7 +39,7 @@ class HttpEchoDeployment : CRUDKubernetesDependentResource<Deployment, HttpEcho>
                             name = "echo"
                             image = "hashicorp/http-echo:0.2.3"
                             args = listOf("-text=\"${primary.spec.text}\"")
-                            ports = listOf(eu.glasskube.kubernetes.api.model.containerPort { containerPort = 80 })
+                            ports = listOf(containerPort { containerPort = 80 })
                         }
                     )
                 }
