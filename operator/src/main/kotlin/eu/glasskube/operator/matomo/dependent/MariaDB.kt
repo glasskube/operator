@@ -1,19 +1,19 @@
 package eu.glasskube.operator.matomo.dependent
 
-import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.operator.matomo.Matomo
 import eu.glasskube.operator.matomo.MatomoReconciler
 import eu.glasskube.operator.matomo.configMapName
 import eu.glasskube.operator.matomo.resourceLabels
-import io.fabric8.kubernetes.api.model.ConfigMap
+import io.fabric8.kubernetes.client.CustomResource
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = MatomoReconciler.SELECTOR)
-class MatomoConfigMap : CRUDKubernetesDependentResource<ConfigMap, Matomo>(ConfigMap::class.java) {
-    override fun desired(primary: Matomo, context: Context<Matomo>) = configMap {
+class MariaDB : CRUDKubernetesDependentResource<CustomResource, Matomo>(CustomResource::class.java) {
+
+    override fun desired(primary: Matomo, context: Context<Matomo>) = CustomResource {
         metadata {
             name = primary.configMapName
             namespace = primary.metadata.namespace
