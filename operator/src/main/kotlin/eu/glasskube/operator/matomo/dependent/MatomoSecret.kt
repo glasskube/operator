@@ -26,5 +26,10 @@ class MatomoSecret :
         }
     }
 
-    override fun replaceSpecOnActual(actual: Secret, desired: Secret, context: Context<*>) = actual
+    override fun replaceSpecOnActual(actual: Secret, desired: Secret, context: Context<*>) = actual.apply {
+        metadata.annotations.putAll(desired.metadata.annotations)
+        metadata.labels.putAll(desired.metadata.labels)
+        data.putAll(desired.data)
+        stringData.putAll(desired.stringData)
+    }
 }
