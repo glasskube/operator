@@ -39,3 +39,6 @@ val Matomo.configMapName
 
 val Matomo.secretName
     get() = genericResourceName
+
+val Matomo.mariaDBName
+    get() = "${genericResourceName}-mariadb"

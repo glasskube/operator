@@ -1,10 +1,6 @@
 package eu.glasskube.operator.matomo
 
-import eu.glasskube.operator.matomo.dependent.MatomoConfigMap
-import eu.glasskube.operator.matomo.dependent.MatomoDeployment
-import eu.glasskube.operator.matomo.dependent.MatomoIngress
-import eu.glasskube.operator.matomo.dependent.MatomoSecret
-import eu.glasskube.operator.matomo.dependent.MatomoService
+import eu.glasskube.operator.matomo.dependent.*
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler
@@ -17,7 +13,11 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(type = MatomoSecret::class),
         Dependent(type = MatomoConfigMap::class),
         Dependent(type = MatomoService::class),
-        Dependent(type = MatomoIngress::class)
+        Dependent(type = MatomoIngress::class),
+        Dependent(type = MatomoMariaDB::class),
+        Dependent(type = MatomoDatabaseMariaDB::class),
+        Dependent(type = MatomoUserMariaDB::class),
+        Dependent(type = MatomoGrantMariaDB::class),
     ]
 )
 class MatomoReconciler : Reconciler<Matomo> {
