@@ -22,7 +22,7 @@ class MatomoSecret :
             name = primary.secretName
             namespace = primary.metadata.namespace
             labels = primary.resourceLabels + SecretGenerator.LABEL
-            annotations = mapOf(SecretGenerator.generateKeys("MATOMO_DATABASE_PASSWORD"))
+            annotations = mapOf(SecretGenerator.generateKeys("MATOMO_DATABASE_PASSWORD", "ROOT_DATABASE_PASSWORD"))
         }
     }
 
