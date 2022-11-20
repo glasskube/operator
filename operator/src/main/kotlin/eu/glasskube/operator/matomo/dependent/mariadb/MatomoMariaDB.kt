@@ -1,8 +1,19 @@
 package eu.glasskube.operator.matomo.dependent.mariadb
 
 import eu.glasskube.kubernetes.api.model.metadata
-import eu.glasskube.operator.mariadb.*
-import eu.glasskube.operator.matomo.*
+import eu.glasskube.operator.mariadb.MariaDB
+import eu.glasskube.operator.mariadb.MariaDBImage
+import eu.glasskube.operator.mariadb.MariaDBPasswordSecretKeyRef
+import eu.glasskube.operator.mariadb.MariaDBResources
+import eu.glasskube.operator.mariadb.MariaDBResourcesRequest
+import eu.glasskube.operator.mariadb.MariaDBSpec
+import eu.glasskube.operator.mariadb.MariaDBVolumeClaimTemplate
+import eu.glasskube.operator.mariadb.mariaDB
+import eu.glasskube.operator.matomo.Matomo
+import eu.glasskube.operator.matomo.MatomoReconciler
+import eu.glasskube.operator.matomo.mariaDBHost
+import eu.glasskube.operator.matomo.resourceLabels
+import eu.glasskube.operator.matomo.secretName
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent

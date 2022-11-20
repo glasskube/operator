@@ -5,7 +5,12 @@ import eu.glasskube.operator.mariadb.DatabaseMariaDbRef
 import eu.glasskube.operator.mariadb.GrantMariaDB
 import eu.glasskube.operator.mariadb.GrantMariaDBSpec
 import eu.glasskube.operator.mariadb.grantMariaDB
-import eu.glasskube.operator.matomo.*
+import eu.glasskube.operator.matomo.Matomo
+import eu.glasskube.operator.matomo.MatomoReconciler
+import eu.glasskube.operator.matomo.databaseName
+import eu.glasskube.operator.matomo.databaseUser
+import eu.glasskube.operator.matomo.mariaDBHost
+import eu.glasskube.operator.matomo.resourceLabels
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
