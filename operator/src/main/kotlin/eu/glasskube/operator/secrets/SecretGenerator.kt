@@ -5,9 +5,9 @@ import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler
 import io.javaoperatorsdk.operator.api.reconciler.UpdateControl
+import java.util.*
 import org.apache.commons.lang3.RandomStringUtils
 import org.slf4j.LoggerFactory
-import java.util.*
 
 private val log = LoggerFactory.getLogger(SecretGenerator::class.java)
 

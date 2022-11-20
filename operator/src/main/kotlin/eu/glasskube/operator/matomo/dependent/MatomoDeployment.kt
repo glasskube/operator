@@ -11,7 +11,13 @@ import eu.glasskube.kubernetes.api.model.envFrom
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.secretRef
 import eu.glasskube.kubernetes.api.model.spec
-import eu.glasskube.operator.matomo.*
+import eu.glasskube.operator.matomo.Matomo
+import eu.glasskube.operator.matomo.MatomoReconciler
+import eu.glasskube.operator.matomo.configMapName
+import eu.glasskube.operator.matomo.deploymentName
+import eu.glasskube.operator.matomo.identifyingLabel
+import eu.glasskube.operator.matomo.resourceLabels
+import eu.glasskube.operator.matomo.secretName
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource

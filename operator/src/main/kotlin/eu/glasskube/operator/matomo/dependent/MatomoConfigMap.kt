@@ -2,7 +2,13 @@ package eu.glasskube.operator.matomo.dependent
 
 import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.metadata
-import eu.glasskube.operator.matomo.*
+import eu.glasskube.operator.matomo.Matomo
+import eu.glasskube.operator.matomo.MatomoReconciler
+import eu.glasskube.operator.matomo.configMapName
+import eu.glasskube.operator.matomo.databaseName
+import eu.glasskube.operator.matomo.databaseUser
+import eu.glasskube.operator.matomo.mariaDBHost
+import eu.glasskube.operator.matomo.resourceLabels
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource

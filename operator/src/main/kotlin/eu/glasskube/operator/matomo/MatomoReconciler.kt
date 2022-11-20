@@ -1,6 +1,10 @@
 package eu.glasskube.operator.matomo
 
-import eu.glasskube.operator.matomo.dependent.*
+import eu.glasskube.operator.matomo.dependent.MatomoConfigMap
+import eu.glasskube.operator.matomo.dependent.MatomoDeployment
+import eu.glasskube.operator.matomo.dependent.MatomoIngress
+import eu.glasskube.operator.matomo.dependent.MatomoSecret
+import eu.glasskube.operator.matomo.dependent.MatomoService
 import eu.glasskube.operator.matomo.dependent.mariadb.MatomoDatabaseMariaDB
 import eu.glasskube.operator.matomo.dependent.mariadb.MatomoGrantMariaDB
 import eu.glasskube.operator.matomo.dependent.mariadb.MatomoMariaDB
