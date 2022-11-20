@@ -1,10 +1,6 @@
 package eu.glasskube.operator.httpecho.dependent
 
-import eu.glasskube.kubernetes.api.model.extensions.ingress
-import eu.glasskube.kubernetes.api.model.extensions.ingressBackend
-import eu.glasskube.kubernetes.api.model.extensions.ingressPath
-import eu.glasskube.kubernetes.api.model.extensions.ingressRuleValue
-import eu.glasskube.kubernetes.api.model.extensions.spec
+import eu.glasskube.kubernetes.api.model.extensions.*
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.operator.httpecho.HttpEcho
 import eu.glasskube.operator.httpecho.HttpEchoReconciler

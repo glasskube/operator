@@ -1,16 +1,8 @@
 package eu.glasskube.operator.matomo.dependent
 
-import eu.glasskube.kubernetes.api.model.extensions.ingress
-import eu.glasskube.kubernetes.api.model.extensions.ingressBackend
-import eu.glasskube.kubernetes.api.model.extensions.ingressPath
-import eu.glasskube.kubernetes.api.model.extensions.ingressRuleValue
-import eu.glasskube.kubernetes.api.model.extensions.spec
+import eu.glasskube.kubernetes.api.model.extensions.*
 import eu.glasskube.kubernetes.api.model.metadata
-import eu.glasskube.operator.matomo.Matomo
-import eu.glasskube.operator.matomo.MatomoReconciler
-import eu.glasskube.operator.matomo.ingressName
-import eu.glasskube.operator.matomo.resourceLabels
-import eu.glasskube.operator.matomo.serviceName
+import eu.glasskube.operator.matomo.*
 import io.fabric8.kubernetes.api.model.networking.v1.Ingress
 import io.fabric8.kubernetes.api.model.networking.v1.IngressRule
 import io.javaoperatorsdk.operator.api.reconciler.Context

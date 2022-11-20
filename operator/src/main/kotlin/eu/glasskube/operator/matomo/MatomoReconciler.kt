@@ -1,6 +1,10 @@
 package eu.glasskube.operator.matomo
 
 import eu.glasskube.operator.matomo.dependent.*
+import eu.glasskube.operator.matomo.dependent.mariadb.MatomoDatabaseMariaDB
+import eu.glasskube.operator.matomo.dependent.mariadb.MatomoGrantMariaDB
+import eu.glasskube.operator.matomo.dependent.mariadb.MatomoMariaDB
+import eu.glasskube.operator.matomo.dependent.mariadb.MatomoUserMariaDB
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler

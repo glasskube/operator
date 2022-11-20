@@ -2,10 +2,7 @@ package eu.glasskube.operator.matomo.dependent
 
 import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.metadata
-import eu.glasskube.operator.matomo.Matomo
-import eu.glasskube.operator.matomo.MatomoReconciler
-import eu.glasskube.operator.matomo.configMapName
-import eu.glasskube.operator.matomo.resourceLabels
+import eu.glasskube.operator.matomo.*
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
@@ -20,9 +17,9 @@ class MatomoConfigMap : CRUDKubernetesDependentResource<ConfigMap, Matomo>(Confi
             labels = primary.resourceLabels
         }
         data = mapOf(
-            "MATOMO_DATABASE_HOST" to "mariadb.${primary.metadata.namespace}.svc.cluster.local",
-            "MATOMO_DATABASE_USERNAME" to "user",
-            "MATOMO_DATABASE_DBNAME" to "mariadb"
+            "MATOMO_DATABASE_HOST" to "${primary.mariaDBHost}.${primary.metadata.namespace}.svc.cluster.local",
+            "MATOMO_DATABASE_USERNAME" to primary.databaseUser,
+            "MATOMO_DATABASE_DBNAME" to primary.databaseName
         )
     }
 }
