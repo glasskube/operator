@@ -2,7 +2,6 @@ package eu.glasskube.operator.mariadb
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import eu.glasskube.kubernetes.api.annotation.KubernetesDslMarker
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.client.CustomResource
 import io.fabric8.kubernetes.model.annotation.Group
@@ -30,7 +29,7 @@ class DatabaseMariaDB(var spec: DatabaseMariaDBSpec? = null) :
     CustomResource<DatabaseMariaDBSpec, DatabaseMariaDBStatus>(), Namespaced
 
 
-inline fun databaseMariaDB(block: (@KubernetesDslMarker DatabaseMariaDB).() -> Unit) =
+inline fun databaseMariaDB(block: (@MariaDBDslMarker DatabaseMariaDB).() -> Unit) =
     DatabaseMariaDB().apply(block)
 
 
