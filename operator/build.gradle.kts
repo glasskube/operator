@@ -65,7 +65,7 @@ tasks.create("installCrd", Exec::class) {
         "kubectl",
         "apply",
         "-f",
-        "build/tmp/kapt3/classes/main/META-INF/fabric8/*-v1.yml"
+        "build/tmp/kapt3/classes/main/META-INF/fabric8/*glasskube.eu-v1.yml"
     )
 }
 
