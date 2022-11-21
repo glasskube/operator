@@ -2,17 +2,15 @@ package eu.glasskube.operator.mariadb
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import eu.glasskube.kubernetes.api.annotation.KubernetesDslMarker
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.client.CustomResource
 import io.fabric8.kubernetes.model.annotation.Group
 import io.fabric8.kubernetes.model.annotation.Version
-import kotlin.reflect.full.createInstance
 
 
 data class UserMariaDBSpec(
-    @JsonProperty("mariaDbRef") var mariaDbRef: DatabaseMariaDbRef,
-    @JsonProperty("passwordSecretKeyRef") var passwordSecretKeyRef: MariaDBPasswordSecretKeyRef,
+    @JsonProperty("mariaDbRef") var mariaDbRef: DatabaseMariaDbRef? = null,
+    @JsonProperty("passwordSecretKeyRef") var passwordSecretKeyRef: MariaDBPasswordSecretKeyRef? = null,
     @JsonProperty("maxUserConnections") var maxUserConnections: Int = 20
 )
 
@@ -25,9 +23,9 @@ class UserMariaDBStatus
 class UserMariaDB : CustomResource<UserMariaDBSpec, UserMariaDBStatus>(), Namespaced
 
 
-inline fun userMariaDB(block: (@KubernetesDslMarker UserMariaDB).() -> Unit) =
+inline fun userMariaDB(block: (@MariaDBDslMarker UserMariaDB).() -> Unit) =
     UserMariaDB().apply(block)
 
-inline fun UserMariaDB.spec(block: (@KubernetesDslMarker UserMariaDBSpec).() -> Unit) {
-    spec = UserMariaDBSpec::class.createInstance().apply(block)
+inline fun UserMariaDB.spec(block: (@MariaDBDslMarker UserMariaDBSpec).() -> Unit) {
+    spec = UserMariaDBSpec().apply(block)
 }
