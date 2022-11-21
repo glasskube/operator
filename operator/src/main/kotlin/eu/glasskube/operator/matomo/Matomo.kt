@@ -41,7 +41,7 @@ val Matomo.secretName
     get() = mariaDBHost
 
 val Matomo.mariaDBHost
-    get() = "${genericResourceName}-mariadb"
+    get() = "$genericResourceName-mariadb"
 
 val Matomo.databaseName
     get() = "matomo"

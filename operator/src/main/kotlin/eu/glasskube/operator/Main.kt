@@ -7,9 +7,9 @@ import eu.glasskube.operator.secrets.SecretGenerator
 import eu.glasskube.operator.webpage.WebPageReconciler
 import io.fabric8.kubernetes.client.KubernetesClientBuilder
 import io.javaoperatorsdk.operator.Operator
+import org.slf4j.LoggerFactory
 import java.security.SecureRandom
 import java.time.Duration
-import org.slf4j.LoggerFactory
 
 private val LOG = LoggerFactory.getLogger("main")
 
