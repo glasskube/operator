@@ -25,7 +25,7 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(type = MatomoMariaDB::class),
         Dependent(type = MatomoDatabaseMariaDB::class),
         Dependent(type = MatomoUserMariaDB::class),
-        Dependent(type = MatomoGrantMariaDB::class),
+        Dependent(type = MatomoGrantMariaDB::class)
     ]
 )
 class MatomoReconciler : Reconciler<Matomo> {

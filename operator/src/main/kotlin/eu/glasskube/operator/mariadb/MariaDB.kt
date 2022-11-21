@@ -7,16 +7,15 @@ import io.fabric8.kubernetes.client.CustomResource
 import io.fabric8.kubernetes.model.annotation.Group
 import io.fabric8.kubernetes.model.annotation.Version
 
-
 data class MariaDBPasswordSecretKeyRef(
     @JsonProperty("name") var name: String,
-    @JsonProperty("key") var key: String,
+    @JsonProperty("key") var key: String
 )
 
 data class MariaDBImage(
     @JsonProperty("repository") var repository: String,
     @JsonProperty("tag") var tag: String,
-    @JsonProperty("pullPolicy") var pullPolicy: String,
+    @JsonProperty("pullPolicy") var pullPolicy: String
 )
 
 data class MariaDBResourcesRequest(
@@ -47,7 +46,5 @@ class MariaDBStatus
 @Version("v1alpha1")
 class MariaDB : CustomResource<MariaDBSpec, MariaDBStatus>(), Namespaced
 
-
 inline fun mariaDB(block: (@MariaDBDslMarker MariaDB).() -> Unit) =
     MariaDB().apply(block)
-

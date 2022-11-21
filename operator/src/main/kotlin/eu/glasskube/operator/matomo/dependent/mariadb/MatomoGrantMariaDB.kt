@@ -27,7 +27,7 @@ class MatomoGrantMariaDB : CRUDKubernetesDependentResource<GrantMariaDB, Matomo>
         spec = GrantMariaDBSpec(
             mariaDbRef = DatabaseMariaDbRef(primary.mariaDBHost),
             database = primary.databaseName,
-            username = primary.databaseUser,
+            username = primary.databaseUser
         )
     }
 }
