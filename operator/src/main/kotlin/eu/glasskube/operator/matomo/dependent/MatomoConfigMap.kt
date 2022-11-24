@@ -13,6 +13,7 @@ import io.fabric8.kubernetes.api.model.ConfigMap
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
+import java.nio.charset.Charset
 
 @KubernetesDependent(labelSelector = MatomoReconciler.SELECTOR)
 class MatomoConfigMap : CRUDKubernetesDependentResource<ConfigMap, Matomo>(ConfigMap::class.java) {
@@ -23,9 +24,25 @@ class MatomoConfigMap : CRUDKubernetesDependentResource<ConfigMap, Matomo>(Confi
             labels = primary.resourceLabels
         }
         data = mapOf(
-            "MATOMO_DATABASE_HOST" to "${primary.mariaDBHost}.${primary.metadata.namespace}.svc.cluster.local",
+            "MATOMO_DATABASE_HOST" to host(primary),
             "MATOMO_DATABASE_USERNAME" to primary.databaseUser,
-            "MATOMO_DATABASE_DBNAME" to primary.databaseName
+            "MATOMO_DATABASE_DBNAME" to primary.databaseName,
+            "MATOMO_CONFIG_INI_PHP" to readFile("config.ini.php"),
+            "install.json" to replaceDatabaseValues(readFile("config.json"), primary)
         )
+    }
+
+    private fun replaceDatabaseValues(config: String, primary: Matomo): String {
+        return config.replace("%MATOMO_DATABASE_HOST%", host(primary))
+            .replace("%MATOMO_DATABASE_USERNAME%", primary.databaseUser)
+            .replace("%MATOMO_DATABASE_DBNAME%", primary.databaseName)
+    }
+
+    private fun host(primary: Matomo): String {
+        return "${primary.mariaDBHost}.${primary.metadata.namespace}.svc.cluster.local"
+    }
+
+    private fun readFile(fileName: String): String {
+        return this::class.java.getResource(fileName)?.readText(Charset.defaultCharset()) ?: "EMPTY"
     }
 }
