@@ -5,7 +5,6 @@ import eu.glasskube.kubernetes.api.model.apps.selector
 import eu.glasskube.kubernetes.api.model.apps.spec
 import eu.glasskube.kubernetes.api.model.apps.template
 import eu.glasskube.kubernetes.api.model.configMapRef
-import eu.glasskube.kubernetes.api.model.configMapVolumeSource
 import eu.glasskube.kubernetes.api.model.container
 import eu.glasskube.kubernetes.api.model.containerPort
 import eu.glasskube.kubernetes.api.model.envFrom
@@ -21,6 +20,7 @@ import eu.glasskube.operator.matomo.deploymentName
 import eu.glasskube.operator.matomo.identifyingLabel
 import eu.glasskube.operator.matomo.resourceLabels
 import eu.glasskube.operator.matomo.secretName
+import io.fabric8.kubernetes.api.model.ConfigMapVolumeSource
 import io.fabric8.kubernetes.api.model.KeyToPath
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
@@ -73,6 +73,8 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                                 "-c",
                                 "ls -la /tmp/matomo" +
                                     " && echo test" +
+                                    " && echo \$MATOMO_DATABASE_PASSWORD" +
+                                    " && sed -i \"s/%MATOMO_DATABASE_PASSWORD%/\$MATOMO_DATABASE_PASSWORD/g\" /tmp/matomo/install.json" +
                                     " && cat /tmp/matomo/install.json" +
                                     " && rsync -crlOt --no-owner --no-group --no-perms /usr/src/matomo/ /var/www/html/" +
                                     " && ./console plugin:activate ExtraTools && ./console matomo:install --install-file=/tmp/matomo/install.json --force --do-not-drop-db" +
@@ -104,12 +106,15 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                         },
                         volume {
                             name = matomoConfigurationVolumeName
-                            configMapVolumeSource {
-                                name = primary.configMapName
-                                items = listOf(
-                                    KeyToPath("install.json", null, "/tmp/matomo/install.json")
-                                )
-                            }
+                            configMap = ConfigMapVolumeSource(
+                                420,
+                                listOf(
+                                    KeyToPath("install.json", null, "install.json"),
+                                    KeyToPath("config.ini.php", null, "config.ini.php")
+                                ),
+                                primary.configMapName,
+                                false
+                            )
                         }
 
                     )
