@@ -74,8 +74,8 @@
     "url": "matomo.glasskube.eu"
   },
   "database": {
-    "username": "%MATOMO_DATABASE_HOST%",
-    "password": "%MATOMO_DATABASE_DBNAME%",
+    "username": "%MATOMO_DATABASE_USERNAME%",
+    "password": "%MATOMO_DATABASE_PASSWORD%",
     "host": "%MATOMO_DATABASE_HOST%",
     "dbname": "%MATOMO_DATABASE_DBNAME%",
     "tables_prefix": "matomo_"

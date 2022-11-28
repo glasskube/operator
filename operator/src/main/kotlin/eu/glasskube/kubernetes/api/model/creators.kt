@@ -78,5 +78,6 @@ inline fun volumeMount(block: (@KubernetesDslMarker VolumeMount).() -> Unit) =
 inline fun volume(block: (@KubernetesDslMarker Volume).() -> Unit) =
     Volume().apply(block)
 
-inline fun configMapVolumeSource(block: (@KubernetesDslMarker ConfigMapVolumeSource).() -> Unit) =
-    ConfigMapVolumeSource().apply(block)
+inline fun Volume.configMapVolumeSource(block: (@KubernetesDslMarker ConfigMapVolumeSource).() -> Unit) {
+    configMap = ConfigMapVolumeSource().apply(block)
+}
