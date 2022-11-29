@@ -31,6 +31,8 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Deployment::class.java) {
 
     private val matomoImage = "ghcr.io/glasskube/matomo-docker:4.12.3-apache.b"
+
+    //    private val matomoImage = "ghcr.io/glasskube/matomo-docker:4.11.0-apache"
     private val wwwDataVolumeName = "www-data"
     private val matomoConfigurationVolumeName = "matomo-configuration"
 
@@ -72,12 +74,13 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                                 "sh",
                                 "-c",
                                 "ls -la /tmp/matomo" +
-                                    " && echo test" +
-                                    " && echo \$MATOMO_DATABASE_PASSWORD" +
-                                    " && sed -i \"s/%MATOMO_DATABASE_PASSWORD%/\$MATOMO_DATABASE_PASSWORD/g\" /tmp/matomo/install.json" +
-                                    " && cat /tmp/matomo/install.json" +
+                                    " && mkdir /tmp/install" +
+                                    " && cp /tmp/matomo/install.json /tmp/install/install.json" +
+                                    " && sed -i \"s/%MATOMO_DATABASE_PASSWORD%/\$MATOMO_DATABASE_PASSWORD/g\" /tmp/install/install.json" +
+                                    " && cat /tmp/install/install.json" +
                                     " && rsync -crlOt --no-owner --no-group --no-perms /usr/src/matomo/ /var/www/html/" +
-                                    " && ./console plugin:activate ExtraTools && ./console matomo:install --install-file=/tmp/matomo/install.json --force --do-not-drop-db" +
+                                    " && ./console plugin:activate ExtraTools && ./console matomo:install --install-file=/tmp/install/install.json --force --do-not-drop-db" +
+                                    " && chown -R www-data:www-data /var/www/html" +
                                     " && echo done"
                             )
                         }
