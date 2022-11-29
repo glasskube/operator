@@ -35,6 +35,10 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
     //    private val matomoImage = "ghcr.io/glasskube/matomo-docker:4.11.0-apache"
     private val wwwDataVolumeName = "www-data"
     private val matomoConfigurationVolumeName = "matomo-configuration"
+    private val installJson = "install.json"
+    private val initSh = "init.sh"
+    private val htmlDir = "/var/www/html"
+    private val installDir = "/tmp/matomo"
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = deployment {
         metadata {
@@ -62,26 +66,17 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                             volumeMounts = listOf(
                                 volumeMount {
                                     name = wwwDataVolumeName
-                                    mountPath = "/var/www/html"
+                                    mountPath = htmlDir
                                 },
                                 volumeMount {
                                     name = matomoConfigurationVolumeName
-                                    mountPath = "/tmp/matomo"
+                                    mountPath = installDir
                                     readOnly = true
                                 }
                             )
                             command = listOf(
                                 "sh",
-                                "-c",
-                                "ls -la /tmp/matomo" +
-                                    " && mkdir /tmp/install" +
-                                    " && cp /tmp/matomo/install.json /tmp/install/install.json" +
-                                    " && sed -i \"s/%MATOMO_DATABASE_PASSWORD%/\$MATOMO_DATABASE_PASSWORD/g\" /tmp/install/install.json" +
-                                    " && cat /tmp/install/install.json" +
-                                    " && rsync -crlOt --no-owner --no-group --no-perms /usr/src/matomo/ /var/www/html/" +
-                                    " && ./console plugin:activate ExtraTools && ./console matomo:install --install-file=/tmp/install/install.json --force --do-not-drop-db" +
-                                    " && chown -R www-data:www-data /var/www/html" +
-                                    " && echo done"
+                                "$installDir/$initSh"
                             )
                         }
                     )
@@ -97,7 +92,7 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                             volumeMounts = listOf(
                                 volumeMount {
                                     name = wwwDataVolumeName
-                                    mountPath = "/var/www/html"
+                                    mountPath = htmlDir
                                 }
                             )
                         }
@@ -112,8 +107,8 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                             configMap = ConfigMapVolumeSource(
                                 420,
                                 listOf(
-                                    KeyToPath("install.json", null, "install.json"),
-                                    KeyToPath("config.ini.php", null, "config.ini.php")
+                                    KeyToPath(installJson, null, installJson),
+                                    KeyToPath(initSh, null, initSh)
                                 ),
                                 primary.configMapName,
                                 false

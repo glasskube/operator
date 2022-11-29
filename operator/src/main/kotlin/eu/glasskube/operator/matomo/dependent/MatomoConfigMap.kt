@@ -27,7 +27,7 @@ class MatomoConfigMap : CRUDKubernetesDependentResource<ConfigMap, Matomo>(Confi
             "MATOMO_DATABASE_HOST" to host(primary),
             "MATOMO_DATABASE_USERNAME" to primary.databaseUser,
             "MATOMO_DATABASE_DBNAME" to primary.databaseName,
-            "config.ini.php" to readFile("config.ini.php"),
+            "init.sh" to readFile("init.sh"),
             "install.json" to replaceDatabaseValues(readFile("config.json"), primary)
         )
     }
