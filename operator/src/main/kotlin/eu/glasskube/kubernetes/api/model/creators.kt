@@ -3,7 +3,6 @@ package eu.glasskube.kubernetes.api.model
 import eu.glasskube.kubernetes.api.annotation.KubernetesDslMarker
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.ConfigMapEnvSource
-import io.fabric8.kubernetes.api.model.ConfigMapVolumeSource
 import io.fabric8.kubernetes.api.model.Container
 import io.fabric8.kubernetes.api.model.ContainerPort
 import io.fabric8.kubernetes.api.model.EnvFromSource
@@ -72,12 +71,13 @@ inline fun secret(block: (@KubernetesDslMarker Secret).() -> Unit) =
 inline fun configMap(block: (@KubernetesDslMarker ConfigMap).() -> Unit) =
     ConfigMap().apply(block)
 
-inline fun volumeMount(block: (@KubernetesDslMarker VolumeMount).() -> Unit) =
-    VolumeMount().apply(block)
-
 inline fun volume(block: (@KubernetesDslMarker Volume).() -> Unit) =
     Volume().apply(block)
 
-inline fun Volume.configMapVolumeSource(block: (@KubernetesDslMarker ConfigMapVolumeSource).() -> Unit) {
-    configMap = ConfigMapVolumeSource().apply(block)
+inline fun Container.volumeMounts(block: (@KubernetesDslMarker MutableList<VolumeMount>).() -> Unit) {
+    volumeMounts = mutableListOf<VolumeMount>().apply(block)
+}
+
+fun MutableList<VolumeMount>.volumeMount(block: (@KubernetesDslMarker VolumeMount).() -> Unit) {
+    add(VolumeMount().apply(block))
 }
