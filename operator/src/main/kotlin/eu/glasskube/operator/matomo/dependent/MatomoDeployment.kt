@@ -13,6 +13,7 @@ import eu.glasskube.kubernetes.api.model.secretRef
 import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.kubernetes.api.model.volume
 import eu.glasskube.kubernetes.api.model.volumeMount
+import eu.glasskube.kubernetes.api.model.volumeMounts
 import eu.glasskube.operator.matomo.Matomo
 import eu.glasskube.operator.matomo.MatomoReconciler
 import eu.glasskube.operator.matomo.configMapName
@@ -63,17 +64,17 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                                 secretRef(primary.secretName)
                                 configMapRef(primary.configMapName)
                             }
-                            volumeMounts = listOf(
+                            volumeMounts {
                                 volumeMount {
                                     name = wwwDataVolumeName
                                     mountPath = htmlDir
-                                },
+                                }
                                 volumeMount {
                                     name = matomoConfigurationVolumeName
                                     mountPath = installDir
                                     readOnly = true
                                 }
-                            )
+                            }
                             command = listOf(
                                 "sh",
                                 "$installDir/$initSh"
@@ -89,12 +90,12 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                                 secretRef(primary.secretName)
                                 configMapRef(primary.configMapName)
                             }
-                            volumeMounts = listOf(
+                            volumeMounts {
                                 volumeMount {
                                     name = wwwDataVolumeName
                                     mountPath = htmlDir
                                 }
-                            )
+                            }
                         }
                     )
                     volumes = listOf(
@@ -114,7 +115,6 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                                 false
                             )
                         }
-
                     )
                 }
             }
