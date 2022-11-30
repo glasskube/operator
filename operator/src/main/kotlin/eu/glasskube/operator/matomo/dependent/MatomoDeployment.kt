@@ -31,15 +31,17 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 @KubernetesDependent(labelSelector = MatomoReconciler.SELECTOR)
 class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Deployment::class.java) {
 
-    private val matomoImage = "ghcr.io/glasskube/matomo-docker:4.12.3-apache.b"
+    private companion object {
+        private const val matomoImage = "ghcr.io/glasskube/matomo-docker:4.12.3-apache.b"
 
-    //    private val matomoImage = "ghcr.io/glasskube/matomo-docker:4.11.0-apache"
-    private val wwwDataVolumeName = "www-data"
-    private val matomoConfigurationVolumeName = "matomo-configuration"
-    private val installJson = "install.json"
-    private val initSh = "init.sh"
-    private val htmlDir = "/var/www/html"
-    private val installDir = "/tmp/matomo"
+        //    private const val matomoImage = "ghcr.io/glasskube/matomo-docker:4.11.0-apache"
+        private const val wwwDataVolumeName = "www-data"
+        private const val matomoConfigurationVolumeName = "matomo-configuration"
+        private const val installJson = "install.json"
+        private const val initSh = "init.sh"
+        private const val htmlDir = "/var/www/html"
+        private const val installDir = "/tmp/matomo"
+    }
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = deployment {
         metadata {
