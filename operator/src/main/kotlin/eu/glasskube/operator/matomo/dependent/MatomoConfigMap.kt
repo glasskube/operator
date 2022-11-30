@@ -43,6 +43,6 @@ class MatomoConfigMap : CRUDKubernetesDependentResource<ConfigMap, Matomo>(Confi
     }
 
     private fun readFile(fileName: String): String {
-        return this::class.java.getResource(fileName)?.readText(Charset.defaultCharset()) ?: "EMPTY"
+        return this::class.java.getResource(fileName)!!.readText(Charset.defaultCharset())
     }
 }
