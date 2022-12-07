@@ -9,7 +9,6 @@ plugins {
 }
 
 group = "eu.glasskube.operator"
-version = "0.1-SNAPSHOT"
 
 val javaOperatorVersion: String by project
 val crdGeneratorVersion: String by project
