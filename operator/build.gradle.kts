@@ -46,7 +46,7 @@ tasks.test {
 
 jib {
     to {
-        image = "glasskube-operator"
+        image = "glasskube/operator"
         tags = setOf(version as String)
     }
     container {
