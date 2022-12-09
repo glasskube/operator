@@ -44,10 +44,15 @@ tasks.test {
 }
 
 jib {
+    from {
+        image = "ghcr.io/graalvm/jdk:ol9-java17-22.3.0"
+    }
+
     to {
         image = "glasskube/operator"
         tags = setOf(version as String)
     }
+
     container {
         user = "333"
     }
