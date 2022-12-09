@@ -1,0 +1,56 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: glasskube-operator
+rules:
+  - apiGroups: [ glasskube.eu ]
+    resources: [ "*" ]
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+      - update
+  - apiGroups: [ apps ]
+    resources: [ deployments ]
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups: [ "" ]
+    resources:
+      - services
+      - secrets
+      - configmaps
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups: [ networking.k8s.io ]
+    resources: [ ingresses ]
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups: [ database.mmontes.io ]
+    resources: [ "*" ]
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
