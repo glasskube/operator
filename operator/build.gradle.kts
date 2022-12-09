@@ -30,12 +30,12 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "${JavaVersion.VERSION_11}"
+    kotlinOptions.jvmTarget = "${JavaVersion.VERSION_17}"
     kotlinOptions.javaParameters = true
 }
 
