@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: glasskube-operator
-          image: glasskube-operator:0.1-SNAPSHOT
+          image: glasskube-operator
           imagePullPolicy: IfNotPresent
       serviceAccountName: glasskube-operator
       securityContext:

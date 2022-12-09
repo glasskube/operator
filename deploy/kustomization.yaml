@@ -7,3 +7,7 @@ resources:
   - cluster-role-binding.yaml
   - service-account.yaml
   - deployment.yaml
+images:
+  - name: glasskube-operator
+    newName: glasskube/operator
+    newTag: 0.1.0
