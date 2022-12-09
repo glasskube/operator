@@ -57,14 +57,29 @@ application {
     mainClass.set("eu.glasskube.operator.MainKt")
 }
 
+tasks.create("clearCrd", Delete::class) {
+    delete = setOf("../deploy/crd")
+}
+
+tasks.create("copyCrd", Copy::class) {
+    dependsOn("kaptKotlin")
+    dependsOn("clearCrd")
+    from("build/tmp/kapt3/classes/main/META-INF/fabric8") {
+        include("*glasskube.eu-v1.yml")
+    }
+    into("../deploy/crd")
+}
+
+tasks.findByName("classes")!!.dependsOn("copyCrd")
+
 tasks.create("installCrd", Exec::class) {
     group = "kubernetes"
-    dependsOn("build")
+    dependsOn("copyCrd")
     commandLine(
         "kubectl",
         "apply",
         "-f",
-        "build/tmp/kapt3/classes/main/META-INF/fabric8/*glasskube.eu-v1.yml"
+        "../deploy/crd"
     )
 }
 
