@@ -8,7 +8,7 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 helm repo add mmontes https://charts.mmontes-dev.duckdns.org
 helm repo update
 
-kubectl apply -f "$GIT_ROOT/crd"
+kubectl apply -f "$GIT_ROOT/deploy/crd"
 
 if [ -z "$NAMESPACE" ]; then
   helm install cert-manager jetstack/cert-manager -n cert-manager --create-namespace --set installCRDs=true
