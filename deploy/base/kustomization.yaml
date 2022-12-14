@@ -3,7 +3,3 @@ kind: Kustomization
 resources:
   - service-account.yaml
   - deployment.yaml
-images:
-  - name: glasskube-operator
-    newName: glasskube/operator
-    newTag: 0.1.1-SNAPSHOT
