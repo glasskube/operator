@@ -55,7 +55,9 @@ This task uses your current `kubectl` context.
 
 #### Running the Operator
 
-The operator is started locally and connects to your current `kubectl` context.
+The operator is started locally and connects to your current `kubectl` context. As Glasskube might get installed in
+different namespaces, we need to fetch the current namespace form the Kubernetes API. For local development we can
+manually overwrite this with by setting the environment variable `NAMESPACE=glasskube-system`.
 
 ```shell
 ./gradlew run
