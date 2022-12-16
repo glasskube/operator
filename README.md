@@ -45,7 +45,7 @@ The operator is started locally and connects to your current `kubectl` context.
 ./gradlew run
 ```
 
-#### Deploying the operator
+#### Pushing an image to local minikube
 
 When using Minikube for development, you can push a snapshot of the operator to the cluster:
 
@@ -53,13 +53,25 @@ When using Minikube for development, you can push a snapshot of the operator to 
 ./gradlew loadImage
 ```
 
+### Deployment
+
 To deploy the operator and related RBAC resources, you can use the resources in `deploy/`.
+The easiest method of installation is the `deploy.sh` script.
+It will automatically install dependencies, CRDs and the Glasskube operator.
+You can choose to let the operator manage custom resources in the entire cluster or just a single namespace.
+**Note:** Installing CRDs still requires cluster-wide permissions.
+
+Run the script like this:
 
 ```shell
-kubectl apply -k deploy/
+# Cluster-wide deployment of version X.Y.Z of the Glasskube operator 
+deploy/deploy.sh -v X.Y.Z
+# Deployment restricted to the namespace glasskube-apps 
+deploy/deploy.sh -v X.Y.Z -n glasskube-apps
 ```
 
-**Note:** This will deploy the operator, but not any of the Custom Resource Definitions the operator acts upon.
+You can find the latest version on [GitHub](https://github.com/glasskube/operator/tags)
+or [Docker Hub](https://hub.docker.com/r/glasskube/operator/tags).
 
 ## Custom Resources
 
