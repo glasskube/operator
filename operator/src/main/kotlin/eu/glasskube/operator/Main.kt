@@ -15,10 +15,10 @@ import io.javaoperatorsdk.operator.RegisteredController
 import io.javaoperatorsdk.operator.api.config.ControllerConfigurationOverrider
 import io.javaoperatorsdk.operator.api.reconciler.Constants
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler
+import org.slf4j.LoggerFactory
 import java.security.SecureRandom
 import java.time.Duration
 import java.util.function.Consumer
-import org.slf4j.LoggerFactory
 
 private val LOG = LoggerFactory.getLogger("main")
 
@@ -36,8 +36,7 @@ fun main() {
 
     val client = KubernetesClientBuilder().build()
 
-    initializeConfigIfNeed(client);
-
+    initializeConfigIfNeed(client)
 
     val random = SecureRandom.getInstanceStrong()
     val operator = Operator(client) {
@@ -56,13 +55,15 @@ fun main() {
 fun initializeConfigIfNeed(client: KubernetesClient) {
     val configMap = client.configMaps().inNamespace(Environment.NAMESPACE).withName(Config.NAME)
     if (!configMap.isReady) {
-        client.resource(configMap {
-            metadata {
-                name = Config.NAME
-                namespace = Environment.NAMESPACE
-                labels = mapOf(Config.LABEL_SELECTOR to "")
+        client.resource(
+            configMap {
+                metadata {
+                    name = Config.NAME
+                    namespace = Environment.NAMESPACE
+                    labels = mapOf(Config.LABEL_SELECTOR to "")
+                }
             }
-        }).create()
+        ).create()
     }
 }
 

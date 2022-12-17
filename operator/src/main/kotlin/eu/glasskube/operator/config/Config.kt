@@ -5,10 +5,9 @@ import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler
 import io.javaoperatorsdk.operator.api.reconciler.UpdateControl
-import java.util.Random
 import org.apache.commons.lang3.RandomStringUtils
 import org.slf4j.LoggerFactory
-
+import java.util.Random
 
 private val log = LoggerFactory.getLogger(Config::class.java)
 
@@ -19,7 +18,7 @@ private val log = LoggerFactory.getLogger(Config::class.java)
 class Config : Reconciler<ConfigMap> {
 
     init {
-        log.info("config initializing");
+        log.info("config initializing")
     }
 
     override fun reconcile(resource: ConfigMap, context: Context<ConfigMap>): UpdateControl<ConfigMap> {
@@ -41,7 +40,6 @@ class Config : Reconciler<ConfigMap> {
         return UpdateControl.updateResource(resource)
     }
 
-
     private fun Random.nextString(count: Int) =
         RandomStringUtils.random(count, 0, 0, true, true, null, this)
 
@@ -50,6 +48,5 @@ class Config : Reconciler<ConfigMap> {
         const val LABEL_SELECTOR = "glasskube.eu/config"
         const val CONFIG_KEYS = "config.glasskube.eu/configKeys"
         fun generateKeys(vararg keys: String) = CONFIG_KEYS to keys.joinToString(",")
-
     }
 }
