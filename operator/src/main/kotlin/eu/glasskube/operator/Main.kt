@@ -45,7 +45,6 @@ fun main() {
     }
 
     operator.registerForNamespaceOrCluster(Config())
-//    operator.registerForNamespaceOrCluster(WebPageReconciler())
     operator.registerForNamespaceOrCluster(HttpEchoReconciler(client))
     operator.registerForNamespaceOrCluster(MatomoReconciler())
     operator.registerForNamespaceOrCluster(SecretGenerator(random))
