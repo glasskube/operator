@@ -1,6 +1,8 @@
 package eu.glasskube.operator.matomo.dependent.mariadb
 
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.operator.config.ConfigKey
+import eu.glasskube.operator.getConfig
 import eu.glasskube.operator.mariadb.MariaDB
 import eu.glasskube.operator.mariadb.MariaDBImage
 import eu.glasskube.operator.mariadb.MariaDBPasswordSecretKeyRef
@@ -32,7 +34,7 @@ class MatomoMariaDB : CRUDKubernetesDependentResource<MariaDB, Matomo>(MariaDB::
             image = MariaDBImage("mariadb", "10.7.4", "IfNotPresent"),
             volumeClaimTemplate = MariaDBVolumeClaimTemplate(
                 MariaDBResources(MariaDBResourcesRequest("1Gi")),
-                storageClassName = "gp3-encrypted"
+                storageClassName = getConfig(client, ConfigKey.databaseStorageClassName)
             )
         )
     }

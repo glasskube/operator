@@ -3,13 +3,17 @@ package eu.glasskube.operator
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.metadata
-import eu.glasskube.operator.config.Config
+import eu.glasskube.operator.config.CloudProvider
+import eu.glasskube.operator.config.ConfigGenerator
+import eu.glasskube.operator.config.ConfigKey
 import eu.glasskube.operator.httpecho.HttpEchoReconciler
 import eu.glasskube.operator.matomo.MatomoReconciler
 import eu.glasskube.operator.secrets.SecretGenerator
+import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.client.KubernetesClient
 import io.fabric8.kubernetes.client.KubernetesClientBuilder
+import io.fabric8.kubernetes.client.dsl.Resource
 import io.javaoperatorsdk.operator.Operator
 import io.javaoperatorsdk.operator.RegisteredController
 import io.javaoperatorsdk.operator.api.config.ControllerConfigurationOverrider
@@ -43,7 +47,7 @@ fun main() {
         it.withObjectMapper(jacksonObjectMapper())
     }
 
-    operator.registerForNamespaceOrCluster(Config())
+    operator.registerForNamespaceOrCluster(ConfigGenerator(client))
     operator.registerForNamespaceOrCluster(HttpEchoReconciler(client))
     operator.registerForNamespaceOrCluster(MatomoReconciler())
     operator.registerForNamespaceOrCluster(SecretGenerator(random))
@@ -53,14 +57,14 @@ fun main() {
 }
 
 fun initializeConfigIfNeed(client: KubernetesClient) {
-    val configMap = client.configMaps().inNamespace(Environment.NAMESPACE).withName(Config.NAME)
+    val configMap = getConfig(client)
     if (!configMap.isReady) {
         client.resource(
             configMap {
                 metadata {
-                    name = Config.NAME
+                    name = ConfigGenerator.NAME
                     namespace = Environment.NAMESPACE
-                    labels = mapOf(Config.LABEL_SELECTOR to "")
+                    labels = mapOf(ConfigGenerator.LABEL_SELECTOR to "")
                 }
             }
         ).create()
@@ -78,3 +82,15 @@ fun <T : HasMetadata> ControllerConfigurationOverrider<T>.settingNamespaceFromEn
             else -> settingNamespace(namespace)
         }
     }
+
+fun getConfig(client: KubernetesClient): Resource<ConfigMap> {
+    return client.configMaps().inNamespace(Environment.NAMESPACE).withName(ConfigGenerator.NAME)
+}
+
+fun getConfig(client: KubernetesClient, key: ConfigKey): String {
+    return getConfig(client).get().data[key.name]!!
+}
+
+fun getCloudProvider(client: KubernetesClient): CloudProvider {
+    return CloudProvider.valueOf(getConfig(client).get().data[ConfigKey.cloudProvider.name]!!)
+}
