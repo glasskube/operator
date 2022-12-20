@@ -33,7 +33,7 @@ class MatomoMariaDB : CRUDKubernetesDependentResource<MariaDB, Matomo>(MariaDB::
             rootPasswordSecretKeyRef = MariaDBPasswordSecretKeyRef(primary.secretName, "ROOT_DATABASE_PASSWORD"),
             image = MariaDBImage("mariadb", "10.7.4", "IfNotPresent"),
             volumeClaimTemplate = MariaDBVolumeClaimTemplate(
-                MariaDBResources(MariaDBResourcesRequest("1Gi")),
+                MariaDBResources(MariaDBResourcesRequest("100Mi")),
                 storageClassName = getConfig(client, ConfigKey.databaseStorageClassName)
             )
         )
