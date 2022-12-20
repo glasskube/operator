@@ -25,7 +25,7 @@ class MatomoIngress : CRUDKubernetesDependentResource<Ingress, Matomo>(Ingress::
     private fun configureIngressClassName(client: KubernetesClient): String? {
         return when (getCloudProvider(client)) {
             CloudProvider.aws -> "alb"
-            CloudProvider.minikube -> ""
+            CloudProvider.minikube -> "nginx"
         }
     }
 
