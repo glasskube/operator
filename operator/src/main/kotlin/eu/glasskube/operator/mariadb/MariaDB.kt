@@ -44,7 +44,11 @@ class MariaDBStatus
 
 @Group("database.mmontes.io")
 @Version("v1alpha1")
-class MariaDB : CustomResource<MariaDBSpec, MariaDBStatus>(), Namespaced
+class MariaDB : CustomResource<MariaDBSpec, MariaDBStatus>(), Namespaced {
+    override fun setSpec(spec: MariaDBSpec?) {
+        super.setSpec(spec)
+    }
+}
 
 inline fun mariaDB(block: (@MariaDBDslMarker MariaDB).() -> Unit) =
     MariaDB().apply(block)
