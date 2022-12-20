@@ -64,7 +64,7 @@ fi
 
 helm repo add jetstack https://charts.jetstack.io
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo add mmontes https://charts.mmontes-dev.duckdns.org
+helm repo add mmontes https://charts.mmontes.duckdns.org
 helm repo update
 
 kubectl apply -f "$GIT_ROOT/deploy/crd"
