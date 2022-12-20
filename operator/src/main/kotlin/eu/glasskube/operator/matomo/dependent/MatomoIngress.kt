@@ -41,7 +41,6 @@ class MatomoIngress : CRUDKubernetesDependentResource<Ingress, Matomo>(Ingress::
 
             CloudProvider.minikube -> emptyMap<String, String>()
         }
-
     }
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = ingress {
@@ -69,6 +68,5 @@ class MatomoIngress : CRUDKubernetesDependentResource<Ingress, Matomo>(Ingress::
                 )
             )
         }
-
     }
 }
