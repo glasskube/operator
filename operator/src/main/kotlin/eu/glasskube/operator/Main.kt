@@ -88,9 +88,19 @@ fun getConfig(client: KubernetesClient): Resource<ConfigMap> {
 }
 
 fun getConfig(client: KubernetesClient, key: ConfigKey): String {
-    return getConfig(client).get().data[key.name]!!
+    return getConfig(client).get().data.getValue(key.name)
 }
 
 fun getCloudProvider(client: KubernetesClient): CloudProvider {
-    return CloudProvider.valueOf(getConfig(client).get().data[ConfigKey.cloudProvider.name]!!)
+
+    fun detectCloudProvider(): CloudProvider {
+        if (client.nodes().withLabel("eks.amazonaws.com/nodegroup").list().items.isNotEmpty()) {
+            return CloudProvider.aws
+        }
+        return CloudProvider.minikube
+    }
+
+    return CloudProvider.valueOf(
+        getConfig(client).get().data[ConfigKey.cloudProvider.name] ?: detectCloudProvider().name
+    )
 }
