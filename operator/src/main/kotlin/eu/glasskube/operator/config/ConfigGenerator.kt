@@ -1,5 +1,6 @@
 package eu.glasskube.operator.config
 
+import eu.glasskube.operator.getCloudProvider
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.client.KubernetesClient
 import io.javaoperatorsdk.operator.api.reconciler.Context
@@ -34,24 +35,16 @@ class ConfigGenerator(val kubernetesClient: KubernetesClient) : Reconciler<Confi
 
     private fun createConfigFor(it: ConfigKey): String {
         return when (it) {
-            ConfigKey.cloudProvider -> detectCloudProvider()
+            ConfigKey.cloudProvider -> getCloudProvider(this.kubernetesClient).name
             ConfigKey.databaseStorageClassName -> detectDatabaseStorageClass()
         }
     }
 
     private fun detectDatabaseStorageClass(): String {
-        return "gp3-encrypted"
-//        return when (getCloudProvider(kubernetesClient)) {
-//            CloudProvider.aws -> "gp3-encrypted"
-//            CloudProvider.minikube -> "standard"
-//        }
-    }
-
-    private fun detectCloudProvider(): String {
-        if (kubernetesClient.nodes().withLabel("eks.amazonaws.com/nodegroup").list().items.isNotEmpty()) {
-            return CloudProvider.aws.name
+        return when (getCloudProvider(kubernetesClient)) {
+            CloudProvider.aws -> "gp3-encrypted"
+            CloudProvider.minikube -> "standard"
         }
-        return CloudProvider.minikube.name
     }
 
     companion object {
