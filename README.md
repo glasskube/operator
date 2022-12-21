@@ -1,5 +1,5 @@
-![GitHub Repo stars](https://img.shields.io/github/stars/glasskube/operator)
-![Docker Pulls](https://img.shields.io/docker/pulls/glasskube/operator)
+[![GitHub Repo stars](https://img.shields.io/github/stars/glasskube/operator)](https://github.com/glasskube/operator)
+[![Docker Pulls](https://img.shields.io/docker/pulls/glasskube/operator)](https://hub.docker.com/r/glasskube/operator)
 
 <br>
 <div align="center">
@@ -15,7 +15,11 @@
     <a href="https://glasskube.eu/"><strong>Explore our website »</strong></a>
     <br>
     <br>
-    <a href="https://www.linkedin.com/company/glasskube/">LinkedIn</a>
+    <a href="https://github.com/glasskube" target="_blank">GitHub</a>
+    .
+    <a href="https://hub.docker.com/u/glasskube" target="_blank">Docker Hub</a>
+    .
+    <a href="https://www.linkedin.com/company/glasskube/" target="_blank">LinkedIn</a>
   </p>
 </div>
 
