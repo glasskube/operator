@@ -1,13 +1,25 @@
-# Glasskube
+![GitHub Repo stars](https://img.shields.io/github/stars/glasskube/operator)
+![Docker Pulls](https://img.shields.io/docker/pulls/glasskube/operator)
 
-> The Glasskube Kubernetes Operator enables automatic installation and updates for popular open source software
-> solutions to help organisations reclaim their **digital sovereignty**.
+<br>
+<div align="center">
+  <a href="https://glasskube.eu/">
+    <img src="https://raw.githubusercontent.com/glasskube/.github/main/images/glasskube-logo.png" alt="Glasskube Logo" height="160">
+  </a>
 
-## How to Contribute
+<h3 align="center">Kubernetes Operator</h3>
 
-See [the contributing guide](CONTRIBUTING.md) for detailed instructions.
+  <p align="center">
+    Open Source Tools on autopilot
+    <br><br>
+    <a href="https://glasskube.eu/"><strong>Explore our website »</strong></a>
+    <br>
+    <br>
+    <a href="https://www.linkedin.com/company/glasskube/">LinkedIn</a>
+  </p>
+</div>
 
-Also join our [`architecture discussion`](https://github.com/glasskube/operator/discussions/4) on GitHub.
+<hr>
 
 ## Getting started
 
@@ -59,7 +71,9 @@ To deploy the operator and related RBAC resources, you can use the resources in 
 The easiest method of installation is the `deploy.sh` script.
 It will automatically install dependencies, CRDs and the Glasskube operator.
 You can choose to let the operator manage custom resources in the entire cluster or just a single namespace.
-**Note:** Installing CRDs still requires cluster-wide permissions.
+
+> **Note**
+> Installing CRDs still requires cluster-wide permissions.
 
 Run the script like this:
 
@@ -77,7 +91,7 @@ or [Docker Hub](https://hub.docker.com/r/glasskube/operator/tags).
 
 The operator currently supports following custom resources:
 
-### HttpEcho
+### HttpEcho Kubernetes Operator
 
 **HttpEcho.yaml**
 
@@ -120,6 +134,12 @@ After applying the custom resource Matomo will be reachable via an ingress at th
 
 - Java client for Kubernetes [`fabric8io/kubernetes-client`](https://github.com/fabric8io/kubernetes-client)
 - Java Operator SDK [`java-operator-sdk/java-operator-sdk`](https://github.com/java-operator-sdk/java-operator-sdk)
+
+## How to Contribute
+
+See [the contributing guide](CONTRIBUTING.md) for detailed instructions.
+
+Also join our [`architecture discussion`](https://github.com/glasskube/operator/discussions/4) on GitHub.
 
 ## Supported by
 
