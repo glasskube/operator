@@ -1,12 +1,23 @@
 package eu.glasskube.operator.postgres
 
-data class RecoveryTarget(
-    var backupID: String? = null,
-    var targetTLI: String? = null,
-    var targetXID: String? = null,
-    var targetName: String? = null,
-    var targetLSN: String? = null,
-    var targetTime: String? = null,
-    var targetImmediate: Boolean? = null,
-    var exclusive: Boolean? = null
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
+
+data class RecoveryTarget @JsonCreator constructor(
+    @JsonProperty("backupID")
+    val backupID: String? = null,
+    @JsonProperty("targetTLI")
+    val targetTLI: String? = null,
+    @JsonProperty("targetXID")
+    val targetXID: String? = null,
+    @JsonProperty("targetName")
+    val targetName: String? = null,
+    @JsonProperty("targetLSN")
+    val targetLSN: String? = null,
+    @JsonProperty("targetTime")
+    val targetTime: String? = null,
+    @JsonProperty("targetImmediate")
+    val targetImmediate: Boolean? = null,
+    @JsonProperty("exclusive")
+    val exclusive: Boolean? = null
 )

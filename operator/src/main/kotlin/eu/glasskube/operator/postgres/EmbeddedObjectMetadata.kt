@@ -1,6 +1,11 @@
 package eu.glasskube.operator.postgres
 
-data class EmbeddedObjectMetadata(
-    var labels: Map<String, String>? = null,
-    var annotations: Map<String, String>? = null
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
+
+data class EmbeddedObjectMetadata @JsonCreator constructor(
+    @JsonProperty("labels")
+    val labels: Map<String, String>? = null,
+    @JsonProperty("annotations")
+    val annotations: Map<String, String>? = null
 )

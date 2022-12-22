@@ -1,10 +1,13 @@
 package eu.glasskube.operator.postgres
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class BootstrapConfiguration(
-    var initdb: BootstrapInitDB? = null,
-    var recovery: BootstrapRecovery? = null,
+data class BootstrapConfiguration @JsonCreator constructor(
+    @JsonProperty("initdb")
+    val initdb: BootstrapInitDB? = null,
+    @JsonProperty("recovery")
+    val recovery: BootstrapRecovery? = null,
     @JsonProperty("pg_basebackup")
-    var pgBasebackup: BootstrapPgBaseBackup? = null
+    val pgBasebackup: BootstrapPgBaseBackup? = null
 )

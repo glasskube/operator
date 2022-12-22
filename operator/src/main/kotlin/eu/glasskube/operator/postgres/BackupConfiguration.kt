@@ -1,6 +1,11 @@
 package eu.glasskube.operator.postgres
 
-data class BackupConfiguration(
-    var barmanObjectStore: BarmanObjectStoreConfiguration? = null,
-    var retentionPolicy: String? = null
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
+
+data class BackupConfiguration @JsonCreator constructor(
+    @JsonProperty("barmanObjectStore")
+    val barmanObjectStore: BarmanObjectStoreConfiguration? = null,
+    @JsonProperty("retentionPolicy")
+    val retentionPolicy: String? = null
 )

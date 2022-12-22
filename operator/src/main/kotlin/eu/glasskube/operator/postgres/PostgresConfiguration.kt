@@ -1,14 +1,19 @@
 package eu.glasskube.operator.postgres
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 
 // TODO: Add properties once needed:
 //  - ldap
-data class PostgresConfiguration(
-    var parameters: Map<String, String>? = null,
+data class PostgresConfiguration @JsonCreator constructor(
+    @JsonProperty("parameters")
+    val parameters: Map<String, String>? = null,
     @JsonProperty("pg_hba")
-    var pgHba: List<String>? = null,
-    var syncReplicaElectionConstraint: SyncReplicaElectionConstraints? = null,
-    var promotionTimeout: Int? = null,
-    var sharedPreloadLibraries: List<String>? = null
+    val pgHba: List<String>? = null,
+    @JsonProperty("syncReplicaElectionConstraint")
+    val syncReplicaElectionConstraint: SyncReplicaElectionConstraints? = null,
+    @JsonProperty("promotionTimeout")
+    val promotionTimeout: Int? = null,
+    @JsonProperty("sharedPreloadLibraries")
+    val sharedPreloadLibraries: List<String>? = null
 )

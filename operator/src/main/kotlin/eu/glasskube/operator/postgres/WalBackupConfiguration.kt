@@ -1,7 +1,13 @@
 package eu.glasskube.operator.postgres
 
-data class WalBackupConfiguration(
-    var compression: CompressionType? = null,
-    var encryption: EncryptionType? = null,
-    var maxParallel: Int? = null
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
+
+data class WalBackupConfiguration @JsonCreator constructor(
+    @JsonProperty("compression")
+    val compression: CompressionType? = null,
+    @JsonProperty("encryption")
+    val encryption: EncryptionType? = null,
+    @JsonProperty("maxParallel")
+    val maxParallel: Int? = null
 )
