@@ -7,4 +7,8 @@ import io.fabric8.kubernetes.model.annotation.Version
 
 @Group("postgresql.cnpg.io")
 @Version("v1")
-class Cluster : CustomResource<ClusterSpec, ClusterStatus>(), Namespaced
+class Cluster : CustomResource<ClusterSpec, ClusterStatus>(), Namespaced {
+    override fun setSpec(spec: ClusterSpec?) {
+        super.setSpec(spec)
+    }
+}

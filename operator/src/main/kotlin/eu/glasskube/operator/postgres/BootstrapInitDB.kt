@@ -1,21 +1,35 @@
 package eu.glasskube.operator.postgres
 
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.fabric8.kubernetes.api.model.LocalObjectReference
 
 // TODO: Add properties once needed:
 //  - import
 //  - postInitApplicationSQLRefs
-data class BootstrapInitDB(
-    var database: String,
-    var owner: String,
-    var secret: LocalObjectReference? = null,
-    var options: List<String>? = null,
-    var dataChecksums: Boolean? = null,
-    var encoding: String? = null,
-    var localeCollate: String? = null,
-    var localeCType: String? = null,
-    var walSegmentSize: Int? = null,
-    var postInitSQL: List<String>? = null,
-    var postInitApplicationSQL: List<String>? = null,
-    var postInitTemplateSQL: List<String>? = null,
+data class BootstrapInitDB @JsonCreator constructor(
+    @JsonProperty("database")
+    val database: String,
+    @JsonProperty("owner")
+    val owner: String,
+    @JsonProperty("secret")
+    val secret: LocalObjectReference? = null,
+    @JsonProperty("options")
+    val options: List<String>? = null,
+    @JsonProperty("dataChecksums")
+    val dataChecksums: Boolean? = null,
+    @JsonProperty("encoding")
+    val encoding: String? = null,
+    @JsonProperty("localeCollate")
+    val localeCollate: String? = null,
+    @JsonProperty("localeCType")
+    val localeCType: String? = null,
+    @JsonProperty("walSegmentSize")
+    val walSegmentSize: Int? = null,
+    @JsonProperty("postInitSQL")
+    val postInitSQL: List<String>? = null,
+    @JsonProperty("postInitApplicationSQL")
+    val postInitApplicationSQL: List<String>? = null,
+    @JsonProperty("postInitTemplateSQL")
+    val postInitTemplateSQL: List<String>? = null,
 )
