@@ -83,16 +83,12 @@ fun <T : HasMetadata> ControllerConfigurationOverrider<T>.settingNamespaceFromEn
         }
     }
 
-fun getConfig(client: KubernetesClient): Resource<ConfigMap> {
-    return client.configMaps().inNamespace(Environment.NAMESPACE).withName(ConfigGenerator.NAME)
-}
+fun getConfig(client: KubernetesClient): Resource<ConfigMap> =
+    client.configMaps().inNamespace(Environment.NAMESPACE).withName(ConfigGenerator.NAME)
 
-fun getConfig(client: KubernetesClient, key: ConfigKey): String {
-    return getConfig(client).get().data.getValue(key.name)
-}
+fun getConfig(client: KubernetesClient, key: ConfigKey): String = getConfig(client).get().data.getValue(key.name)
 
 fun getCloudProvider(client: KubernetesClient): CloudProvider {
-
     fun detectCloudProvider(): CloudProvider {
         if (client.nodes().withLabel("eks.amazonaws.com/nodegroup").list().items.isNotEmpty()) {
             return CloudProvider.aws
