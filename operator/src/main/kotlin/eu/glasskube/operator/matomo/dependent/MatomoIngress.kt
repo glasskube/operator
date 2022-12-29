@@ -15,31 +15,30 @@ import eu.glasskube.operator.matomo.resourceLabels
 import eu.glasskube.operator.matomo.serviceName
 import io.fabric8.kubernetes.api.model.networking.v1.Ingress
 import io.fabric8.kubernetes.api.model.networking.v1.IngressRule
-import io.fabric8.kubernetes.client.KubernetesClient
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = MatomoReconciler.SELECTOR)
 class MatomoIngress : CRUDKubernetesDependentResource<Ingress, Matomo>(Ingress::class.java) {
-    private fun configureIngressClassName(client: KubernetesClient): String? {
+    private fun configureIngressClassName(): String {
         return when (getCloudProvider(client)) {
             CloudProvider.aws -> "alb"
             CloudProvider.minikube -> "nginx"
         }
     }
 
-    private fun configureAnnotations(client: KubernetesClient): Map<String, String>? {
+    private fun configureAnnotations(): Map<String, String> {
         return when (getCloudProvider(client)) {
             CloudProvider.aws -> mapOf(
-                Pair("alb.ingress.kubernetes.io/listen-ports", "[{\"HTTP\": 80}, {\"HTTPS\": 443}]"),
-                Pair("alb.ingress.kubernetes.io/scheme", "internet-facing"),
-                Pair("alb.ingress.kubernetes.io/target-type", "ip"),
-                Pair("alb.ingress.kubernetes.io/ssl-redirect", "443"),
-                Pair("alb.ingress.kubernetes.io/group.name", "glasskube")
+                "alb.ingress.kubernetes.io/listen-ports" to "[{\"HTTP\": 80}, {\"HTTPS\": 443}]",
+                "alb.ingress.kubernetes.io/scheme" to "internet-facing",
+                "alb.ingress.kubernetes.io/target-type" to "ip",
+                "alb.ingress.kubernetes.io/ssl-redirect" to "443",
+                "alb.ingress.kubernetes.io/group.name" to "glasskube"
             )
 
-            CloudProvider.minikube -> emptyMap<String, String>()
+            CloudProvider.minikube -> emptyMap()
         }
     }
 
@@ -48,10 +47,10 @@ class MatomoIngress : CRUDKubernetesDependentResource<Ingress, Matomo>(Ingress::
             name = primary.ingressName
             namespace = primary.metadata.namespace
             labels = primary.resourceLabels
-            annotations = configureAnnotations(client)
+            annotations = configureAnnotations()
         }
         spec {
-            ingressClassName = configureIngressClassName(client)
+            ingressClassName = configureIngressClassName()
             rules = listOf(
                 IngressRule(
                     primary.spec.host,
