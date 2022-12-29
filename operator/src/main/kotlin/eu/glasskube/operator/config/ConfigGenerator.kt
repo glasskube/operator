@@ -15,7 +15,7 @@ private val log = LoggerFactory.getLogger(ConfigGenerator::class.java)
     labelSelector = ConfigGenerator.LABEL_SELECTOR,
     generationAwareEventProcessing = false
 )
-class ConfigGenerator(val kubernetesClient: KubernetesClient) : Reconciler<ConfigMap> {
+class ConfigGenerator(private val kubernetesClient: KubernetesClient) : Reconciler<ConfigMap> {
 
     init {
         log.info("config initializing")
