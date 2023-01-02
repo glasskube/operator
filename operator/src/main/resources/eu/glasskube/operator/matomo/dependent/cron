@@ -1,0 +1,1 @@
+5 * * * * www-data /var/www/html/console core:archive --url=%HOST% > /dev/null
