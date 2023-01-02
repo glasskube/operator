@@ -39,6 +39,9 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
         private const val initSh = "init.sh"
         private const val htmlDir = "/var/www/html"
         private const val installDir = "/tmp/matomo"
+        private const val cronVolumeName = "cron"
+        private const val cronDir = "/etc/cron.d"
+        private const val archive = "glasskube-matomo-archive-cron"
     }
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = deployment {
@@ -95,6 +98,10 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                                     name = wwwDataVolumeName
                                     mountPath = htmlDir
                                 }
+                                volumeMount {
+                                    name = cronVolumeName
+                                    mountPath = cronDir
+                                }
                             }
                         }
                     )
@@ -110,6 +117,17 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                                 listOf(
                                     KeyToPath(installJson, null, installJson),
                                     KeyToPath(initSh, null, initSh)
+                                ),
+                                primary.configMapName,
+                                false
+                            )
+                        },
+                        volume {
+                            name = cronVolumeName
+                            configMap = ConfigMapVolumeSource(
+                                420,
+                                listOf(
+                                    KeyToPath(archive, null, archive)
                                 ),
                                 primary.configMapName,
                                 false

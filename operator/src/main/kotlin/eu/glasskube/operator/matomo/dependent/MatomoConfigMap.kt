@@ -28,21 +28,19 @@ class MatomoConfigMap : CRUDKubernetesDependentResource<ConfigMap, Matomo>(Confi
             "MATOMO_DATABASE_USERNAME" to primary.databaseUser,
             "MATOMO_DATABASE_DBNAME" to primary.databaseName,
             "init.sh" to readFile("init.sh"),
-            "install.json" to replaceDatabaseValues(readFile("config.json"), primary)
+            "install.json" to replaceDatabaseValues(readFile("config.json"), primary),
+            "glasskube-matomo-archive-cron" to replaceHost(readFile("cron"), primary)
         )
     }
 
-    private fun replaceDatabaseValues(config: String, primary: Matomo): String {
-        return config.replace("%MATOMO_DATABASE_HOST%", host(primary))
+    private fun replaceHost(cron: String, primary: Matomo) = cron.replace("%HOST%", primary.spec.host!!)
+
+    private fun replaceDatabaseValues(config: String, primary: Matomo) =
+        config.replace("%MATOMO_DATABASE_HOST%", host(primary))
             .replace("%MATOMO_DATABASE_USERNAME%", primary.databaseUser)
             .replace("%MATOMO_DATABASE_DBNAME%", primary.databaseName)
-    }
 
-    private fun host(primary: Matomo): String {
-        return "${primary.mariaDBHost}.${primary.metadata.namespace}.svc.cluster.local"
-    }
+    private fun host(primary: Matomo) = "${primary.mariaDBHost}.${primary.metadata.namespace}.svc.cluster.local"
 
-    private fun readFile(fileName: String): String {
-        return this::class.java.getResource(fileName)!!.readText(Charset.defaultCharset())
-    }
+    private fun readFile(fileName: String) = this::class.java.getResource(fileName)!!.readText(Charset.defaultCharset())
 }
