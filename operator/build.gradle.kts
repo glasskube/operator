@@ -15,6 +15,7 @@ val crdGeneratorVersion: String by project
 val slf4jVersion: String by project
 val logbackVersion: String by project
 val jacksonVersion: String by project
+val bouncyCastleVersion: String by project
 
 dependencies {
     implementation("io.javaoperatorsdk", "operator-framework", javaOperatorVersion)
@@ -25,6 +26,7 @@ dependencies {
     implementation("ch.qos.logback", "logback-core", logbackVersion)
     implementation("ch.qos.logback", "logback-classic", logbackVersion)
     implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", jacksonVersion)
+    implementation("org.bouncycastle", "bcpkix-jdk15to18", bouncyCastleVersion)
 
     testImplementation(kotlin("test"))
 }
