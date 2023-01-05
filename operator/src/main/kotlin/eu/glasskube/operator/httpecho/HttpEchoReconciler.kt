@@ -1,8 +1,6 @@
 package eu.glasskube.operator.httpecho
 
-import eu.glasskube.operator.httpecho.dependent.HttpEchoDeployment
-import eu.glasskube.operator.httpecho.dependent.HttpEchoIngress
-import eu.glasskube.operator.httpecho.dependent.HttpEchoService
+import eu.glasskube.operator.httpecho.dependent.*
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler
@@ -16,7 +14,10 @@ private val LOG = LoggerFactory.getLogger(HttpEchoReconciler::class.java)
     dependents = [
         Dependent(type = HttpEchoDeployment::class),
         Dependent(type = HttpEchoService::class),
-        Dependent(type = HttpEchoIngress::class)
+        Dependent(type = HttpEchoIngress::class),
+        Dependent(type = HttpEchoPostgres::class),
+        Dependent(type = HttpEchoPostgresSuperuserSecret::class),
+        Dependent(type = HttpEchoPostgresAppSecret::class)
     ]
 )
 class HttpEchoReconciler : Reconciler<HttpEcho> {
