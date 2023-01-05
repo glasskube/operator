@@ -24,7 +24,7 @@ class MatomoIngress : CRUDKubernetesDependentResource<Ingress, Matomo>(Ingress::
     private fun configureIngressClassName(): String {
         return when (getCloudProvider(client)) {
             CloudProvider.aws -> "alb"
-            CloudProvider.minikube -> "nginx"
+            else -> "nginx"
         }
     }
 
@@ -38,7 +38,7 @@ class MatomoIngress : CRUDKubernetesDependentResource<Ingress, Matomo>(Ingress::
                 "alb.ingress.kubernetes.io/group.name" to "glasskube"
             )
 
-            CloudProvider.minikube -> emptyMap()
+            else -> emptyMap()
         }
     }
 

@@ -48,7 +48,7 @@ fun main() {
     }
 
     operator.registerForNamespaceOrCluster(ConfigGenerator(client))
-    operator.registerForNamespaceOrCluster(HttpEchoReconciler(client))
+    operator.registerForNamespaceOrCluster(HttpEchoReconciler())
     operator.registerForNamespaceOrCluster(MatomoReconciler())
     operator.registerForNamespaceOrCluster(SecretGenerator(random))
     operator.installShutdownHook()
@@ -92,8 +92,10 @@ fun getCloudProvider(client: KubernetesClient): CloudProvider {
     fun detectCloudProvider(): CloudProvider {
         if (client.nodes().withLabel("eks.amazonaws.com/nodegroup").list().items.isNotEmpty()) {
             return CloudProvider.aws
+        } else if (client.nodes().withLabel("csi.hetzner.cloud/location").list().items.isNotEmpty()) {
+            return CloudProvider.hcloud
         }
-        return CloudProvider.minikube
+        return CloudProvider.generic
     }
 
     return CloudProvider.valueOf(

@@ -18,7 +18,7 @@ private val log = LoggerFactory.getLogger(ConfigGenerator::class.java)
 class ConfigGenerator(private val kubernetesClient: KubernetesClient) : Reconciler<ConfigMap> {
 
     init {
-        log.info("config initializing")
+        log.info("Glasskube settings are initializing")
     }
 
     override fun reconcile(resource: ConfigMap, context: Context<ConfigMap>): UpdateControl<ConfigMap> {
@@ -41,15 +41,22 @@ class ConfigGenerator(private val kubernetesClient: KubernetesClient) : Reconcil
     }
 
     private fun detectDatabaseStorageClass(): String {
-        return when (getCloudProvider(kubernetesClient)) {
-            CloudProvider.aws -> "gp3-encrypted"
-            CloudProvider.minikube -> "standard"
+        val storageClasses = kubernetesClient.storage().v1().storageClasses().list()
+        val storageClassNames = storageClasses.items.map { it.metadata.name }
+        val defaultStorageClass = storageClasses.items.find { p -> p.metadata.annotations.get("storageclass.kubernetes.io/is-default-class") == "true" }
+        val defaultStorageClassName = defaultStorageClass?.let { defaultStorageClass.metadata.name } ?: "standard"
+
+        val awsEncryptedStorageClass = "gp3-encrypted"
+        if (getCloudProvider(kubernetesClient) === CloudProvider.aws && storageClassNames.contains(awsEncryptedStorageClass)) {
+            return awsEncryptedStorageClass
         }
+
+        return defaultStorageClassName
     }
 
     companion object {
-        const val NAME = "glasskube-config"
-        const val LABEL_SELECTOR = "glasskube.eu/config"
+        const val NAME = "glasskube-settings"
+        const val LABEL_SELECTOR = "glasskube.eu/settings"
     }
 }
 
@@ -60,5 +67,9 @@ enum class ConfigKey {
 
 enum class CloudProvider {
     aws,
+    hcloud,
+    generic,
+
+    @Deprecated("please use `generic` instead")
     minikube
 }
