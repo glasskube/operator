@@ -41,9 +41,7 @@ class MatomoIngress : CRUDKubernetesDependentResource<Ingress, Matomo>(Ingress::
                 "alb.ingress.kubernetes.io/group.name" to "glasskube"
             )
 
-            CloudProvider.generic -> setClusterIssuerIfPresent()
-
-            else -> emptyMap()
+            else -> setClusterIssuerIfPresent()
         }
     }
 
