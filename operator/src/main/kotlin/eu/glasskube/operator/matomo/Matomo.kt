@@ -36,6 +36,9 @@ val Matomo.serviceName
 val Matomo.ingressName
     get() = genericResourceName
 
+val Matomo.ingressTlsCertName
+    get() = "$genericResourceName-cert"
+
 val Matomo.configMapName
     get() = genericResourceName
 

@@ -11,10 +11,13 @@ import eu.glasskube.operator.getCloudProvider
 import eu.glasskube.operator.matomo.Matomo
 import eu.glasskube.operator.matomo.MatomoReconciler
 import eu.glasskube.operator.matomo.ingressName
+import eu.glasskube.operator.matomo.ingressTlsCertName
 import eu.glasskube.operator.matomo.resourceLabels
 import eu.glasskube.operator.matomo.serviceName
 import io.fabric8.kubernetes.api.model.networking.v1.Ingress
 import io.fabric8.kubernetes.api.model.networking.v1.IngressRule
+import io.fabric8.kubernetes.api.model.networking.v1.IngressTLS
+import io.fabric8.kubernetes.client.dsl.base.ResourceDefinitionContext
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
@@ -38,8 +41,28 @@ class MatomoIngress : CRUDKubernetesDependentResource<Ingress, Matomo>(Ingress::
                 "alb.ingress.kubernetes.io/group.name" to "glasskube"
             )
 
+            CloudProvider.generic -> setClusterIssuerIfPresent()
+
             else -> emptyMap()
         }
+    }
+
+    private fun setClusterIssuerIfPresent(): Map<String, String> {
+        val clusterIssuerContext = ResourceDefinitionContext.Builder()
+            .withKind("ClusterIssuer")
+            .withGroup("cert-manager.io")
+            .withVersion("v1")
+            .build()
+
+        val items = client.genericKubernetesResources(clusterIssuerContext).list().items
+
+        if (items.isNotEmpty()) {
+            return mapOf(
+                "cert-manager.io/cluster-issuer" to items[0].metadata.name
+            )
+        }
+
+        return emptyMap()
     }
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = ingress {
@@ -65,6 +88,9 @@ class MatomoIngress : CRUDKubernetesDependentResource<Ingress, Matomo>(Ingress::
                         )
                     )
                 )
+            )
+            tls = listOf(
+                IngressTLS(listOf(primary.spec.host), primary.ingressTlsCertName)
             )
         }
     }
