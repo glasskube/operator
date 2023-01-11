@@ -1,6 +1,5 @@
 package eu.glasskube.operator
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.operator.config.CloudProvider
@@ -44,14 +43,13 @@ fun main() {
 
     val random = SecureRandom.getInstanceStrong()
     val operator = Operator(client) {
-        it.withObjectMapper(jacksonObjectMapper())
+        // it.withObjectMapper(jacksonObjectMapper())
     }
 
     operator.registerForNamespaceOrCluster(ConfigGenerator(client))
     operator.registerForNamespaceOrCluster(HttpEchoReconciler())
     operator.registerForNamespaceOrCluster(MatomoReconciler())
     operator.registerForNamespaceOrCluster(SecretGenerator(random))
-    operator.installShutdownHook()
     operator.start()
     LOG.info("\uD83E\uDDCA Glasskube started in {} seconds", Duration.ofNanos(System.nanoTime() - startTime).seconds)
 }
