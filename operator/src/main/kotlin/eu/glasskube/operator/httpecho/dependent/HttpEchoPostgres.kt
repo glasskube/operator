@@ -2,12 +2,17 @@ package eu.glasskube.operator.httpecho.dependent
 
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.secret
+import eu.glasskube.operator.api.reconciler.NamedResourceDiscriminator
 import eu.glasskube.operator.config.ConfigKey
 import eu.glasskube.operator.getConfig
 import eu.glasskube.operator.httpecho.HttpEcho
 import eu.glasskube.operator.httpecho.HttpEchoReconciler
 import eu.glasskube.operator.httpecho.resourceLabels
-import eu.glasskube.operator.postgres.*
+import eu.glasskube.operator.postgres.BootstrapConfiguration
+import eu.glasskube.operator.postgres.BootstrapInitDB
+import eu.glasskube.operator.postgres.Cluster
+import eu.glasskube.operator.postgres.ClusterSpec
+import eu.glasskube.operator.postgres.StorageConfiguration
 import eu.glasskube.operator.secrets.SecretGenerator
 import io.fabric8.kubernetes.api.model.LocalObjectReference
 import io.fabric8.kubernetes.api.model.Secret
@@ -51,15 +56,21 @@ class HttpEchoPostgres : CRUDKubernetesDependentResource<Cluster, HttpEcho>(Clus
     }
 }
 
-@KubernetesDependent(labelSelector = HttpEchoReconciler.SELECTOR + ",glasskube.eu/secret=superuser")
+@KubernetesDependent(
+    labelSelector = HttpEchoReconciler.SELECTOR,
+    resourceDiscriminator = HttpEchoPostgresSuperuserSecret.Discriminator::class
+)
 class HttpEchoPostgresSuperuserSecret :
     CRUDKubernetesDependentResource<Secret, HttpEcho>(Secret::class.java),
     ResourceUpdatePreProcessor<Secret> {
+
+    class Discriminator : NamedResourceDiscriminator<Secret, HttpEcho>({ dbSuperuserSecret })
+
     override fun desired(primary: HttpEcho, context: Context<HttpEcho>) = secret {
         metadata {
             name = primary.dbSuperuserSecret
             namespace = primary.metadata.namespace
-            labels = primary.resourceLabels + ("glasskube.eu/secret" to "superuser") + SecretGenerator.LABEL
+            labels = primary.resourceLabels + SecretGenerator.LABEL
             annotations = mapOf(SecretGenerator.generateKeys("password"))
         }
         type = "kubernetes.io/basic-auth"
@@ -76,15 +87,21 @@ class HttpEchoPostgresSuperuserSecret :
     }
 }
 
-@KubernetesDependent(labelSelector = HttpEchoReconciler.SELECTOR + ",glasskube.eu/secret=app")
+@KubernetesDependent(
+    labelSelector = HttpEchoReconciler.SELECTOR,
+    resourceDiscriminator = HttpEchoPostgresAppSecret.Discriminator::class
+)
 class HttpEchoPostgresAppSecret :
     CRUDKubernetesDependentResource<Secret, HttpEcho>(Secret::class.java),
     ResourceUpdatePreProcessor<Secret> {
+
+    class Discriminator : NamedResourceDiscriminator<Secret, HttpEcho>({ dbAppSecret })
+
     override fun desired(primary: HttpEcho, context: Context<HttpEcho>) = secret {
         metadata {
             name = primary.dbAppSecret
             namespace = primary.metadata.namespace
-            labels = primary.resourceLabels + ("glasskube.eu/secret" to "app") + SecretGenerator.LABEL
+            labels = primary.resourceLabels + SecretGenerator.LABEL
             annotations = mapOf(SecretGenerator.generateKeys("password"))
         }
         type = "kubernetes.io/basic-auth"
