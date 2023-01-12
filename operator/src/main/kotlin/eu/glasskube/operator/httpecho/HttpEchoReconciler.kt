@@ -8,9 +8,7 @@ import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler
 import io.javaoperatorsdk.operator.api.reconciler.UpdateControl
 import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
-import org.slf4j.LoggerFactory
-
-private val LOG = LoggerFactory.getLogger(HttpEchoReconciler::class.java)
+import io.quarkus.logging.Log
 
 @ControllerConfiguration(
     dependents = [
@@ -21,7 +19,7 @@ private val LOG = LoggerFactory.getLogger(HttpEchoReconciler::class.java)
 )
 class HttpEchoReconciler : Reconciler<HttpEcho> {
     override fun reconcile(resource: HttpEcho, context: Context<HttpEcho>): UpdateControl<HttpEcho> {
-        LOG.info("reconciling ${resource.crdName} ${resource.apiVersion}")
+        Log.info("reconciling ${resource.crdName} ${resource.apiVersion}")
         resource.status = HttpEchoStatus("Echoing")
         return UpdateControl.patchStatus(resource)
     }

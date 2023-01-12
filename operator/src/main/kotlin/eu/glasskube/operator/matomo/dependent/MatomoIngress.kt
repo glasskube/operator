@@ -6,8 +6,8 @@ import eu.glasskube.kubernetes.api.model.extensions.ingressPath
 import eu.glasskube.kubernetes.api.model.extensions.ingressRuleValue
 import eu.glasskube.kubernetes.api.model.extensions.spec
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.operator.OperatorConfiguration
 import eu.glasskube.operator.config.CloudProvider
-import eu.glasskube.operator.getCloudProvider
 import eu.glasskube.operator.matomo.Matomo
 import eu.glasskube.operator.matomo.MatomoReconciler
 import eu.glasskube.operator.matomo.ingressName
@@ -21,18 +21,23 @@ import io.fabric8.kubernetes.client.dsl.base.ResourceDefinitionContext
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
+import javax.inject.Inject
 
 @KubernetesDependent(labelSelector = MatomoReconciler.SELECTOR)
 class MatomoIngress : CRUDKubernetesDependentResource<Ingress, Matomo>(Ingress::class.java) {
+
+    @Inject
+    lateinit var config: OperatorConfiguration
+
     private fun configureIngressClassName(): String {
-        return when (getCloudProvider(client)) {
+        return when (config.cloudProvider) {
             CloudProvider.aws -> "alb"
             else -> "nginx"
         }
     }
 
     private fun configureAnnotations(): Map<String, String> {
-        return when (getCloudProvider(client)) {
+        return when (config.cloudProvider) {
             CloudProvider.aws -> mapOf(
                 "alb.ingress.kubernetes.io/listen-ports" to "[{\"HTTP\": 80}, {\"HTTPS\": 443}]",
                 "alb.ingress.kubernetes.io/scheme" to "internet-facing",

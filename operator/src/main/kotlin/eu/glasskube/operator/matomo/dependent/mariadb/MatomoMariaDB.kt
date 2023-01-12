@@ -1,8 +1,7 @@
 package eu.glasskube.operator.matomo.dependent.mariadb
 
 import eu.glasskube.kubernetes.api.model.metadata
-import eu.glasskube.operator.config.ConfigKey
-import eu.glasskube.operator.getConfig
+import eu.glasskube.operator.OperatorConfiguration
 import eu.glasskube.operator.mariadb.MariaDB
 import eu.glasskube.operator.mariadb.MariaDBImage
 import eu.glasskube.operator.mariadb.MariaDBPasswordSecretKeyRef
@@ -19,9 +18,13 @@ import eu.glasskube.operator.matomo.secretName
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
+import javax.inject.Inject
 
 @KubernetesDependent(labelSelector = MatomoReconciler.SELECTOR)
 class MatomoMariaDB : CRUDKubernetesDependentResource<MariaDB, Matomo>(MariaDB::class.java) {
+
+    @Inject
+    lateinit var config: OperatorConfiguration
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = mariaDB {
         metadata {
@@ -34,7 +37,7 @@ class MatomoMariaDB : CRUDKubernetesDependentResource<MariaDB, Matomo>(MariaDB::
             image = MariaDBImage("mariadb", "10.7.4", "IfNotPresent"),
             volumeClaimTemplate = MariaDBVolumeClaimTemplate(
                 MariaDBResources(MariaDBResourcesRequest("10Gi")),
-                storageClassName = getConfig(client, ConfigKey.databaseStorageClassName)
+                storageClassName = config.databaseStorageClassName
             )
         )
     }
