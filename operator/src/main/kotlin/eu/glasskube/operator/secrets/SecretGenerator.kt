@@ -5,11 +5,9 @@ import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler
 import io.javaoperatorsdk.operator.api.reconciler.UpdateControl
+import io.quarkus.logging.Log
 import org.apache.commons.lang3.RandomStringUtils
-import org.slf4j.LoggerFactory
 import java.util.Random
-
-private val log = LoggerFactory.getLogger(SecretGenerator::class.java)
 
 @ControllerConfiguration(
     labelSelector = SecretGenerator.LABEL_SELECTOR,
@@ -17,19 +15,19 @@ private val log = LoggerFactory.getLogger(SecretGenerator::class.java)
 )
 class SecretGenerator(private val random: Random) : Reconciler<Secret> {
     override fun reconcile(resource: Secret, context: Context<Secret>): UpdateControl<Secret> {
-        log.info("Reconciling ${resource.kind} ${resource.metadata.name}@${resource.metadata.namespace}")
+        Log.info("Reconciling ${resource.kind} ${resource.metadata.name}@${resource.metadata.namespace}")
         val generateKeys = resource.metadata.annotations[GENERATE_KEYS]?.split(',')?.toSet().orEmpty()
         val generatedKeys = resource.metadata.annotations[GENERATED_KEYS]?.split(',')?.toSet().orEmpty()
 
-        log.info("Desired keys: $generateKeys")
-        log.info("Existing keys: $generatedKeys")
+        Log.info("Desired keys: $generateKeys")
+        Log.info("Existing keys: $generatedKeys")
 
         if (generateKeys == generatedKeys) {
-            log.info("No update required")
+            Log.info("No update required")
             return UpdateControl.noUpdate()
         }
 
-        log.info("Update required")
+        Log.info("Update required")
 
         (generateKeys - generatedKeys).forEach { resource.stringData[it] = random.nextString(32) }
         (generatedKeys - generateKeys).forEach { resource.data.remove(it) }

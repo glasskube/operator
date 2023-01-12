@@ -19,7 +19,7 @@ spec:
           image: glasskube/operator
           imagePullPolicy: IfNotPresent
           env:
-            - name: NAMESPACE
+            - name: KUBERNETES_NAMESPACE
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
