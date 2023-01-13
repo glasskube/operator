@@ -3,16 +3,26 @@ package eu.glasskube.kubernetes.api.model
 import eu.glasskube.kubernetes.api.annotation.KubernetesDslMarker
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.ConfigMapEnvSource
+import io.fabric8.kubernetes.api.model.ConfigMapKeySelector
+import io.fabric8.kubernetes.api.model.ConfigMapVolumeSource
 import io.fabric8.kubernetes.api.model.Container
 import io.fabric8.kubernetes.api.model.ContainerPort
 import io.fabric8.kubernetes.api.model.EnvFromSource
+import io.fabric8.kubernetes.api.model.EnvVar
+import io.fabric8.kubernetes.api.model.EnvVarSource
 import io.fabric8.kubernetes.api.model.HasMetadata
+import io.fabric8.kubernetes.api.model.KeyToPath
 import io.fabric8.kubernetes.api.model.LabelSelector
+import io.fabric8.kubernetes.api.model.ObjectFieldSelector
 import io.fabric8.kubernetes.api.model.ObjectMeta
+import io.fabric8.kubernetes.api.model.PersistentVolumeClaim
+import io.fabric8.kubernetes.api.model.PersistentVolumeClaimSpec
 import io.fabric8.kubernetes.api.model.PodSpec
 import io.fabric8.kubernetes.api.model.PodTemplateSpec
+import io.fabric8.kubernetes.api.model.ResourceRequirements
 import io.fabric8.kubernetes.api.model.Secret
 import io.fabric8.kubernetes.api.model.SecretEnvSource
+import io.fabric8.kubernetes.api.model.SecretKeySelector
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.ServicePort
 import io.fabric8.kubernetes.api.model.ServiceSpec
@@ -39,6 +49,30 @@ inline fun PodTemplateSpec.spec(block: (@KubernetesDslMarker PodSpec).() -> Unit
 
 inline fun container(block: (@KubernetesDslMarker Container).() -> Unit) =
     Container().apply(block)
+
+inline fun Container.env(block: (@KubernetesDslMarker MutableList<EnvVar>).() -> Unit) {
+    env = mutableListOf<EnvVar>().apply(block)
+}
+
+fun MutableList<EnvVar>.envVar(name: String, value: String) {
+    add(EnvVar(name, value, null))
+}
+
+inline fun MutableList<EnvVar>.envVar(name: String, block: (@KubernetesDslMarker EnvVarSource).() -> Unit) {
+    add(EnvVar(name,null, EnvVarSource().apply(block)))
+}
+
+fun EnvVarSource.secretKeyRef(name: String, key: String, optional: Boolean? = null) {
+    secretKeyRef = SecretKeySelector(key, name, optional)
+}
+
+fun EnvVarSource.configMapRef(name: String, key: String, optional: Boolean? = null) {
+    configMapKeyRef = ConfigMapKeySelector(key, name, optional)
+}
+
+fun EnvVarSource.fieldRef(fieldPath: String, apiVersion: String? = null) {
+    fieldRef = ObjectFieldSelector(apiVersion, fieldPath)
+}
 
 inline fun containerPort(block: (@KubernetesDslMarker ContainerPort).() -> Unit) =
     ContainerPort().apply(block)
@@ -74,10 +108,36 @@ inline fun configMap(block: (@KubernetesDslMarker ConfigMap).() -> Unit) =
 inline fun volume(block: (@KubernetesDslMarker Volume).() -> Unit) =
     Volume().apply(block)
 
+inline fun Volume.configMap(name: String, block: (@KubernetesDslMarker ConfigMapVolumeSource).() -> Unit) {
+    configMap = ConfigMapVolumeSource().apply {
+        this.name = name
+        block.invoke(this)
+    }
+}
+
+inline fun ConfigMapVolumeSource.items(block: (@KubernetesDslMarker MutableList<KeyToPath>).() -> Unit) {
+    items = mutableListOf<KeyToPath>().apply(block)
+}
+
+fun MutableList<KeyToPath>.item(key: String, path: String, mode: Int? = null) {
+    add(KeyToPath(key, mode, path))
+}
+
 inline fun Container.volumeMounts(block: (@KubernetesDslMarker MutableList<VolumeMount>).() -> Unit) {
     volumeMounts = mutableListOf<VolumeMount>().apply(block)
 }
 
 fun MutableList<VolumeMount>.volumeMount(block: (@KubernetesDslMarker VolumeMount).() -> Unit) {
     add(VolumeMount().apply(block))
+}
+
+inline fun persistentVolumeClaim(block: (@KubernetesDslMarker PersistentVolumeClaim).() -> Unit) =
+    PersistentVolumeClaim().apply(block)
+
+inline fun PersistentVolumeClaim.spec(block: (@KubernetesDslMarker PersistentVolumeClaimSpec).() -> Unit) {
+    spec = PersistentVolumeClaimSpec().apply(block)
+}
+
+inline fun PersistentVolumeClaimSpec.resources(block: (@KubernetesDslMarker ResourceRequirements).() -> Unit) {
+    resources = ResourceRequirements().apply(block)
 }
