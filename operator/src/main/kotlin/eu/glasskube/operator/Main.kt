@@ -8,6 +8,7 @@ import eu.glasskube.operator.config.ConfigGenerator
 import eu.glasskube.operator.config.ConfigKey
 import eu.glasskube.operator.httpecho.HttpEchoReconciler
 import eu.glasskube.operator.matomo.MatomoReconciler
+import eu.glasskube.operator.odoo.OdooReconciler
 import eu.glasskube.operator.secrets.SecretGenerator
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.HasMetadata
@@ -48,9 +49,10 @@ fun main() {
     }
 
     operator.registerForNamespaceOrCluster(ConfigGenerator(client))
+    operator.registerForNamespaceOrCluster(SecretGenerator(random))
     operator.registerForNamespaceOrCluster(HttpEchoReconciler())
     operator.registerForNamespaceOrCluster(MatomoReconciler())
-    operator.registerForNamespaceOrCluster(SecretGenerator(random))
+    operator.registerForNamespaceOrCluster(OdooReconciler())
     operator.installShutdownHook()
     operator.start()
     LOG.info("\uD83E\uDDCA Glasskube started in {} seconds", Duration.ofNanos(System.nanoTime() - startTime).seconds)
