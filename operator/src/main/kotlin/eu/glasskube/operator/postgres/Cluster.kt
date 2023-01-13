@@ -12,3 +12,5 @@ class Cluster : CustomResource<ClusterSpec, ClusterStatus>(), Namespaced {
         super.setSpec(spec)
     }
 }
+
+inline fun postgresCluster(block: (Cluster).() -> Unit) = Cluster().apply(block)
