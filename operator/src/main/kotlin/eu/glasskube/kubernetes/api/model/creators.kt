@@ -17,6 +17,7 @@ import io.fabric8.kubernetes.api.model.ObjectFieldSelector
 import io.fabric8.kubernetes.api.model.ObjectMeta
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaim
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaimSpec
+import io.fabric8.kubernetes.api.model.PersistentVolumeClaimVolumeSource
 import io.fabric8.kubernetes.api.model.PodSpec
 import io.fabric8.kubernetes.api.model.PodTemplateSpec
 import io.fabric8.kubernetes.api.model.ResourceRequirements
@@ -59,7 +60,7 @@ fun MutableList<EnvVar>.envVar(name: String, value: String) {
 }
 
 inline fun MutableList<EnvVar>.envVar(name: String, block: (@KubernetesDslMarker EnvVarSource).() -> Unit) {
-    add(EnvVar(name,null, EnvVarSource().apply(block)))
+    add(EnvVar(name, null, EnvVarSource().apply(block)))
 }
 
 fun EnvVarSource.secretKeyRef(name: String, key: String, optional: Boolean? = null) {
@@ -105,14 +106,15 @@ inline fun secret(block: (@KubernetesDslMarker Secret).() -> Unit) =
 inline fun configMap(block: (@KubernetesDslMarker ConfigMap).() -> Unit) =
     ConfigMap().apply(block)
 
-inline fun volume(block: (@KubernetesDslMarker Volume).() -> Unit) =
-    Volume().apply(block)
+inline fun volume(name: String, block: (@KubernetesDslMarker Volume).() -> Unit = {}) =
+    Volume().apply { this.name = name }.apply(block)
 
-inline fun Volume.configMap(name: String, block: (@KubernetesDslMarker ConfigMapVolumeSource).() -> Unit) {
-    configMap = ConfigMapVolumeSource().apply {
-        this.name = name
-        block.invoke(this)
-    }
+inline fun Volume.configMap(name: String, block: (@KubernetesDslMarker ConfigMapVolumeSource).() -> Unit = {}) {
+    configMap = ConfigMapVolumeSource().apply { this.name = name }.apply(block)
+}
+
+fun Volume.persistentVolumeClaim(name: String, readonly: Boolean? = null) {
+    persistentVolumeClaim = PersistentVolumeClaimVolumeSource(name, readonly)
 }
 
 inline fun ConfigMapVolumeSource.items(block: (@KubernetesDslMarker MutableList<KeyToPath>).() -> Unit) {
