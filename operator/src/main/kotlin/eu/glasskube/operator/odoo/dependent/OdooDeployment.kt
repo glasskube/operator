@@ -9,9 +9,8 @@ import eu.glasskube.kubernetes.api.model.container
 import eu.glasskube.kubernetes.api.model.containerPort
 import eu.glasskube.kubernetes.api.model.env
 import eu.glasskube.kubernetes.api.model.envVar
-import eu.glasskube.kubernetes.api.model.item
-import eu.glasskube.kubernetes.api.model.items
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.persistentVolumeClaim
 import eu.glasskube.kubernetes.api.model.secretKeyRef
 import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.kubernetes.api.model.volume
@@ -26,7 +25,6 @@ import eu.glasskube.operator.odoo.deploymentName
 import eu.glasskube.operator.odoo.identifyingLabel
 import eu.glasskube.operator.odoo.resourceLabels
 import eu.glasskube.operator.odoo.volumeName
-import io.fabric8.kubernetes.api.model.PersistentVolumeClaimVolumeSource
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
@@ -88,17 +86,11 @@ class OdooDeployment : CRUDKubernetesDependentResource<Deployment, Odoo>(Deploym
                         }
                     )
                     volumes = listOf(
-                        volume {
-                            name = Odoo.volumeName
-                            persistentVolumeClaim = PersistentVolumeClaimVolumeSource(primary.volumeName, false)
+                        volume(Odoo.volumeName) {
+                            persistentVolumeClaim(primary.volumeName)
                         },
-                        volume {
-                            name = Odoo.configMapName
-                            configMap(primary.configMapName) {
-                                items {
-                                    item(Odoo.configFile, Odoo.configFile)
-                                }
-                            }
+                        volume(Odoo.configMapName) {
+                            configMap(primary.configMapName)
                         }
                     )
                 }

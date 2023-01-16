@@ -4,10 +4,13 @@ import eu.glasskube.kubernetes.api.model.apps.deployment
 import eu.glasskube.kubernetes.api.model.apps.selector
 import eu.glasskube.kubernetes.api.model.apps.spec
 import eu.glasskube.kubernetes.api.model.apps.template
+import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.configMapRef
 import eu.glasskube.kubernetes.api.model.container
 import eu.glasskube.kubernetes.api.model.containerPort
 import eu.glasskube.kubernetes.api.model.envFrom
+import eu.glasskube.kubernetes.api.model.item
+import eu.glasskube.kubernetes.api.model.items
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.secretRef
 import eu.glasskube.kubernetes.api.model.spec
@@ -21,8 +24,6 @@ import eu.glasskube.operator.matomo.deploymentName
 import eu.glasskube.operator.matomo.identifyingLabel
 import eu.glasskube.operator.matomo.resourceLabels
 import eu.glasskube.operator.matomo.secretName
-import io.fabric8.kubernetes.api.model.ConfigMapVolumeSource
-import io.fabric8.kubernetes.api.model.KeyToPath
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
@@ -106,32 +107,23 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                         }
                     )
                     volumes = listOf(
-                        volume {
-                            name = wwwDataVolumeName
-                            emptyDir
+                        volume(wwwDataVolumeName),
+                        volume(matomoConfigurationVolumeName) {
+                            configMap(primary.configMapName) {
+                                defaultMode = 420
+                                items {
+                                    item(installJson, installJson)
+                                    item(initSh, initSh)
+                                }
+                            }
                         },
-                        volume {
-                            name = matomoConfigurationVolumeName
-                            configMap = ConfigMapVolumeSource(
-                                420,
-                                listOf(
-                                    KeyToPath(installJson, null, installJson),
-                                    KeyToPath(initSh, null, initSh)
-                                ),
-                                primary.configMapName,
-                                false
-                            )
-                        },
-                        volume {
-                            name = cronVolumeName
-                            configMap = ConfigMapVolumeSource(
-                                420,
-                                listOf(
-                                    KeyToPath(archive, null, archive)
-                                ),
-                                primary.configMapName,
-                                false
-                            )
+                        volume(cronVolumeName) {
+                            configMap(primary.configMapName) {
+                                defaultMode = 420
+                                items {
+                                    item(archive, archive)
+                                }
+                            }
                         }
                     )
                 }
