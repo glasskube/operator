@@ -22,7 +22,7 @@ dependencies {
     implementation("io.quarkus:quarkus-arc")
     // implementation("io.quarkus:quarkus-resteasy-reactive")
     // implementation("io.quarkus:quarkus-resteasy-reactive-jackson")
-    // implementation("io.quarkus:quarkus-container-image-jib")
+    implementation("io.quarkus:quarkus-container-image-jib")
 
     implementation(enforcedPlatform("io.quarkiverse.operatorsdk:quarkus-operator-sdk-bom:$quarkusOperatorSdkVersion"))
     implementation("io.quarkiverse.operatorsdk:quarkus-operator-sdk")
@@ -53,23 +53,6 @@ allOpen {
     annotation("javax.enterprise.context.ApplicationScoped")
     annotation("io.quarkus.test.junit.QuarkusTest")
 }
-
-/*
-jib {
-    from {
-        image = "ghcr.io/graalvm/jdk:ol9-java17-22.3.0"
-    }
-
-    to {
-        image = "glasskube/operator"
-        tags = setOf(version as String)
-    }
-
-    container {
-        user = "333"
-    }
-}
-*/
 
 tasks.create("clearCrd", Delete::class) {
     delete = setOf("../deploy/crd")
