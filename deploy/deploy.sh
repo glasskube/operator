@@ -64,7 +64,7 @@ fi
 
 helm repo add jetstack https://charts.jetstack.io
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo add mmontes https://charts.mmontes.duckdns.org
+helm repo add mariadb-operator https://mmontes11.github.io/mariadb-operator
 helm repo update
 
 kubectl apply -f "$GIT_ROOT/deploy/crd"
@@ -73,7 +73,7 @@ if [ -z "$NAMESPACE" ]; then
   echo "Performing cluster-wide deployment of version $VERSION…"
   helm install cert-manager jetstack/cert-manager -n cert-manager --create-namespace --set installCRDs=true
   helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack -n kube-prometheus-stack --create-namespace
-  helm install mariadb-operator mmontes/mariadb-operator -n mariadb-system --create-namespace --set ha.enabled=false
+  helm install mariadb-operator mariadb-operator/mariadb-operator -n mariadb-system --create-namespace --set ha.enabled=false --version 0.6.1
   mk_temp_kustomization "cluster"
   kubectl apply -k "$TEMP_DIR"
 else
@@ -81,7 +81,7 @@ else
   kubectl create namespace "$NAMESPACE"
   helm install cert-manager jetstack/cert-manager -n "$NAMESPACE" --set installCRDs=true
   helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack -n "$NAMESPACE"
-  helm install mariadb-operator mmontes/mariadb-operator -n "$NAMESPACE" --set ha.enabled=false
+  helm install mariadb-operator mariadb-operator/mariadb-operator -n "$NAMESPACE" --set ha.enabled=false --version 0.6.1
   mk_temp_kustomization "namespace"
   kubectl apply -k "$TEMP_DIR" -n "$NAMESPACE"
 fi
