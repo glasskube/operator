@@ -20,6 +20,9 @@ import io.javaoperatorsdk.operator.RegisteredController
 import io.javaoperatorsdk.operator.api.config.ControllerConfigurationOverrider
 import io.javaoperatorsdk.operator.api.reconciler.Constants
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler
+import io.minio.MinioClient
+import io.minio.admin.MinioAdminClient
+import io.minio.credentials.Credentials
 import org.slf4j.LoggerFactory
 import java.security.SecureRandom
 import java.time.Duration
@@ -39,20 +42,22 @@ fun main() {
         """
     )
 
-    val client = KubernetesClientBuilder().build()
+    val kubernetesClient = KubernetesClientBuilder().build()
+    val minioClient = getMinioClient(kubernetesClient)
+    val minioAdminClient = getMinioAdminClient(kubernetesClient)
 
-    initializeConfigIfNeed(client)
+    initializeConfigIfNeed(kubernetesClient)
 
     val random = SecureRandom.getInstanceStrong()
-    val operator = Operator(client) {
+    val operator = Operator(kubernetesClient) {
         it.withObjectMapper(jacksonObjectMapper())
     }
 
-    operator.registerForNamespaceOrCluster(ConfigGenerator(client))
+    operator.registerForNamespaceOrCluster(ConfigGenerator(kubernetesClient))
     operator.registerForNamespaceOrCluster(SecretGenerator(random))
     operator.registerForNamespaceOrCluster(HttpEchoReconciler())
     operator.registerForNamespaceOrCluster(MatomoReconciler())
-    operator.registerForNamespaceOrCluster(OdooReconciler())
+    operator.registerForNamespaceOrCluster(OdooReconciler(minioClient, minioAdminClient))
     operator.installShutdownHook()
     operator.start()
     LOG.info("\uD83E\uDDCA Glasskube started in {} seconds", Duration.ofNanos(System.nanoTime() - startTime).seconds)
@@ -104,3 +109,27 @@ fun getCloudProvider(client: KubernetesClient): CloudProvider {
         getConfig(client).get().data[ConfigKey.cloudProvider.name] ?: detectCloudProvider().name
     )
 }
+
+private fun KubernetesClient.getMinioCredentials(): Credentials =
+    secrets().inNamespace(Environment.NAMESPACE).withName(Environment.MINIO_SECRET_NAME).get()
+        ?.let {
+            Credentials(
+                it.data.getValue("rootUser").decodeBase64(),
+                it.data.getValue("rootPassword").decodeBase64(),
+                null,
+                null
+            )
+        }
+        ?: throw IllegalStateException("Secret ${Environment.MINIO_SECRET_NAME} does not exist")
+
+private fun getMinioClient(kubernetesClient: KubernetesClient): MinioClient =
+    MinioClient.builder()
+        .endpoint("http://${Environment.MINIO_HOST_NAME}:9000")
+        .credentialsProvider { kubernetesClient.getMinioCredentials() }
+        .build()
+
+private fun getMinioAdminClient(kubernetesClient: KubernetesClient): MinioAdminClient =
+    MinioAdminClient.builder()
+        .endpoint("http://${Environment.MINIO_HOST_NAME}:9000")
+        .credentialsProvider { kubernetesClient.getMinioCredentials() }
+        .build()
