@@ -38,6 +38,7 @@ function install_helm_charts {
   NS_PROMETHEUS="kube-prometheus-stack"
   NS_MARIADB="mariadb-system"
   NS_CNPG="cnpg-system"
+  NS_MINIO="glasskube-system"
   NS_OVERRIDE=$1
 
   if [ -n "$NS_OVERRIDE" ]; then
@@ -45,6 +46,7 @@ function install_helm_charts {
     NS_PROMETHEUS="$NS_OVERRIDE"
     NS_MARIADB="$NS_OVERRIDE"
     NS_CNPG="$NS_OVERRIDE"
+    NS_MINIO="$NS_OVERRIDE"
   fi
 
   helm upgrade --install cert-manager jetstack/cert-manager \
@@ -58,6 +60,9 @@ function install_helm_charts {
     --set ha.enabled=false
   helm upgrade --install cnpg cnpg/cloudnative-pg \
     --namespace "$NS_CNPG" --create-namespace
+  helm upgrade --install glasskube-minio minio/minio \
+    --namespace "$NS_MINIO" --create-namespace \
+    --set replicas=1 --set persistence.size=20Gi --set mode=standalone
 }
 
 function mk_temp_kustomization {
@@ -106,6 +111,7 @@ helm repo add jetstack https://charts.jetstack.io
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo add mariadb-operator https://mmontes11.github.io/mariadb-operator
 helm repo add cnpg https://cloudnative-pg.github.io/charts
+helm repo add minio https://charts.min.io/
 helm repo update
 
 kubectl apply -f "$GIT_ROOT/deploy/crd"
