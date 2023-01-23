@@ -17,6 +17,8 @@ import io.javaoperatorsdk.operator.api.reconciler.EventSourceInitializer
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler
 import io.javaoperatorsdk.operator.api.reconciler.UpdateControl
 import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
+import io.minio.MinioClient
+import io.minio.admin.MinioAdminClient
 
 @ControllerConfiguration(
     dependents = [
@@ -36,7 +38,11 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         )
     ]
 )
-class OdooReconciler : Reconciler<Odoo>, EventSourceInitializer<Odoo> {
+class OdooReconciler(
+    private val minioClient: MinioClient,
+    private val minioAdminClient: MinioAdminClient
+) : Reconciler<Odoo>, EventSourceInitializer<Odoo> {
+
     override fun reconcile(resource: Odoo, context: Context<Odoo>): UpdateControl<Odoo> =
         when (resource.status) {
             null -> UpdateControl.patchStatus(resource.apply { status = OdooStatus() })
