@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-function help() {
+function help {
   HELP_NOTE=$1
   EXIT_CODE=0
 
@@ -13,9 +13,10 @@ function help() {
   echo "Usage: $SCRIPT [options]
 
 Options:
-  -v VERSION (required)
+  -v VERSION
     Check https://hub.docker.com/r/glasskube/operator/tags for available versions.
-  -n NAMESPACE (optional)
+    If no version is provided, only dependencies are installed.
+  -n NAMESPACE
     Specifies the namespace where all operators will be installed. If NAMESPACE is
     missing or empty, a cluster-wide installation will be performed.
   -h
@@ -23,7 +24,43 @@ Options:
   exit "$EXIT_CODE"
 }
 
-function mk_temp_kustomization() {
+function confirm {
+  read -p "$1 (y/N) " -r
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+function install_helm_charts {
+  NS_CERT_MANAGER="cert-manager"
+  NS_PROMETHEUS="kube-prometheus-stack"
+  NS_MARIADB="mariadb-system"
+  NS_CNPG="cnpg-system"
+  NS_OVERRIDE=$1
+
+  if [ -n "$NS_OVERRIDE" ]; then
+    NS_CERT_MANAGER="$NS_OVERRIDE"
+    NS_PROMETHEUS="$NS_OVERRIDE"
+    NS_MARIADB="$NS_OVERRIDE"
+    NS_CNPG="$NS_OVERRIDE"
+  fi
+
+  helm upgrade --install cert-manager jetstack/cert-manager \
+    --namespace "$NS_CERT_MANAGER" --create-namespace \
+    --set installCRDs=true
+  helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
+    --namespace "$NS_PROMETHEUS" --create-namespace
+  helm upgrade --install mariadb-operator mariadb-operator/mariadb-operator \
+    --namespace "$NS_MARIADB" --create-namespace \
+    --version 0.6.1 \
+    --set ha.enabled=false
+  helm upgrade --install cnpg cnpg/cloudnative-pg \
+    --namespace "$NS_CNPG" --create-namespace
+}
+
+function mk_temp_kustomization {
   mkdir -p "$TEMP_DIR"
   echo "
 apiVersion: kustomize.config.k8s.io/v1beta1
@@ -59,7 +96,10 @@ while getopts ":hv:n:" option; do
 done
 
 if [ -z "$VERSION" ]; then
-  help "Error: VERSION is missing."
+  echo "Warning: VERSION is missing."
+  if ! confirm "Install helm charts without operator?"; then
+    help "Error: Nothing was installed."
+  fi
 fi
 
 helm repo add jetstack https://charts.jetstack.io
@@ -72,21 +112,18 @@ kubectl apply -f "$GIT_ROOT/deploy/crd"
 
 if [ -z "$NAMESPACE" ]; then
   echo "Performing cluster-wide deployment of version $VERSION…"
-  helm install cert-manager jetstack/cert-manager -n cert-manager --create-namespace --set installCRDs=true
-  helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack -n kube-prometheus-stack --create-namespace
-  helm install mariadb-operator mariadb-operator/mariadb-operator -n mariadb-system --create-namespace --set ha.enabled=false --version 0.6.1
-  helm install cnpg cnpg/cloudnative-pg --namespace cnpg-system --create-namespace
-  mk_temp_kustomization "cluster"
-  kubectl apply -k "$TEMP_DIR"
+  install_helm_charts ""
+  if [ -n "$VERSION" ]; then
+    mk_temp_kustomization "cluster"
+    kubectl apply -k "$TEMP_DIR"
+  fi
 else
   echo "Performing single-namespace deployment of version $VERSION in $NAMESPACE…"
-  kubectl create namespace "$NAMESPACE"
-  helm install cert-manager jetstack/cert-manager -n "$NAMESPACE" --set installCRDs=true
-  helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack -n "$NAMESPACE"
-  helm install mariadb-operator mariadb-operator/mariadb-operator -n "$NAMESPACE" --set ha.enabled=false --version 0.6.1
-  helm install cnpg cnpg/cloudnative-pg --namespace "$NAMESPACE"
-  mk_temp_kustomization "namespace"
-  kubectl apply -k "$TEMP_DIR" -n "$NAMESPACE"
+  install_helm_charts "$NAMESPACE"
+  if [ -n "$VERSION" ]; then
+    mk_temp_kustomization "namespace"
+    kubectl apply -k "$TEMP_DIR" -n "$NAMESPACE"
+  fi
 fi
 
 echo "Cleaning up…"
