@@ -57,7 +57,7 @@ rules:
       - get
       - list
       - watch
-  - apiGroups: [ database.mmontes.io ]
+  - apiGroups: [ mariadb.mmontes.io ]
     resources: [ "*" ]
     verbs:
       - create
