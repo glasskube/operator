@@ -7,8 +7,8 @@ import io.fabric8.kubernetes.client.CustomResource
 import io.fabric8.kubernetes.model.annotation.Group
 import io.fabric8.kubernetes.model.annotation.Version
 
-data class GrantMariaDBSpec(
-    @JsonProperty("mariaDbRef") var mariaDbRef: DatabaseMariaDbRef? = null,
+data class GrantSpec(
+    @JsonProperty("mariaDbRef") var mariaDbRef: DatabasebRef? = null,
     @JsonProperty("privileges") var privileges: Collection<String> = listOf("ALL"),
     @JsonProperty("database") var database: String = "",
     @JsonProperty("table") var table: String = "*",
@@ -17,12 +17,12 @@ data class GrantMariaDBSpec(
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class GrantMariaDBStatus
+class GrantStatus
 
-@Group("database.mmontes.io")
+@Group("mariadb.mmontes.io")
 @Version("v1alpha1")
-class GrantMariaDB(var spec: GrantMariaDBSpec? = null) :
-    CustomResource<GrantMariaDBSpec, GrantMariaDBStatus>(), Namespaced
+class Grant(var spec: GrantSpec? = null) :
+    CustomResource<GrantSpec, GrantStatus>(), Namespaced
 
-inline fun grantMariaDB(block: (@MariaDBDslMarker GrantMariaDB).() -> Unit) =
-    GrantMariaDB().apply(block)
+inline fun grantMariaDB(block: (@MariaDBDslMarker Grant).() -> Unit) =
+    Grant().apply(block)

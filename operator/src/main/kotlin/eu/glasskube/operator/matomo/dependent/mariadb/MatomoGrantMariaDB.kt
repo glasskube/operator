@@ -1,9 +1,9 @@
 package eu.glasskube.operator.matomo.dependent.mariadb
 
 import eu.glasskube.kubernetes.api.model.metadata
-import eu.glasskube.operator.mariadb.DatabaseMariaDbRef
-import eu.glasskube.operator.mariadb.GrantMariaDB
-import eu.glasskube.operator.mariadb.GrantMariaDBSpec
+import eu.glasskube.operator.mariadb.DatabasebRef
+import eu.glasskube.operator.mariadb.Grant
+import eu.glasskube.operator.mariadb.GrantSpec
 import eu.glasskube.operator.mariadb.grantMariaDB
 import eu.glasskube.operator.matomo.Matomo
 import eu.glasskube.operator.matomo.MatomoReconciler
@@ -16,7 +16,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernete
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = MatomoReconciler.SELECTOR)
-class MatomoGrantMariaDB : CRUDKubernetesDependentResource<GrantMariaDB, Matomo>(GrantMariaDB::class.java) {
+class MatomoGrantMariaDB : CRUDKubernetesDependentResource<Grant, Matomo>(Grant::class.java) {
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = grantMariaDB {
         metadata {
@@ -24,10 +24,6 @@ class MatomoGrantMariaDB : CRUDKubernetesDependentResource<GrantMariaDB, Matomo>
             namespace = primary.metadata.namespace
             labels = primary.resourceLabels
         }
-        spec = GrantMariaDBSpec(
-            mariaDbRef = DatabaseMariaDbRef(primary.mariaDBHost),
-            database = primary.databaseName,
-            username = primary.databaseUser
-        )
+        spec = GrantSpec(mariaDbRef = DatabasebRef(primary.mariaDBHost), database = primary.databaseName, username = primary.databaseUser)
     }
 }
