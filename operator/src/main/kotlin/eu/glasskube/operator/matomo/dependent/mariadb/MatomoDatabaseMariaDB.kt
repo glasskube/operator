@@ -1,9 +1,9 @@
 package eu.glasskube.operator.matomo.dependent.mariadb
 
 import eu.glasskube.kubernetes.api.model.metadata
-import eu.glasskube.operator.mariadb.DatabaseMariaDB
-import eu.glasskube.operator.mariadb.DatabaseMariaDBSpec
-import eu.glasskube.operator.mariadb.DatabaseMariaDbRef
+import eu.glasskube.operator.mariadb.Database
+import eu.glasskube.operator.mariadb.DatabaseSpec
+import eu.glasskube.operator.mariadb.DatabasebRef
 import eu.glasskube.operator.mariadb.databaseMariaDB
 import eu.glasskube.operator.matomo.Matomo
 import eu.glasskube.operator.matomo.MatomoReconciler
@@ -15,7 +15,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernete
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = MatomoReconciler.SELECTOR)
-class MatomoDatabaseMariaDB : CRUDKubernetesDependentResource<DatabaseMariaDB, Matomo>(DatabaseMariaDB::class.java) {
+class MatomoDatabaseMariaDB : CRUDKubernetesDependentResource<Database, Matomo>(Database::class.java) {
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = databaseMariaDB {
         metadata {
@@ -23,8 +23,8 @@ class MatomoDatabaseMariaDB : CRUDKubernetesDependentResource<DatabaseMariaDB, M
             namespace = primary.metadata.namespace
             labels = primary.resourceLabels
         }
-        spec = DatabaseMariaDBSpec(
-            mariaDbRef = DatabaseMariaDbRef(primary.mariaDBHost)
+        spec = DatabaseSpec(
+            mariaDbRef = DatabasebRef(primary.mariaDBHost)
         )
     }
 }

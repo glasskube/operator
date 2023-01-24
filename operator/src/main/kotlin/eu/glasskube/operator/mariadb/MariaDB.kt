@@ -42,7 +42,7 @@ data class MariaDBSpec(
 @JsonIgnoreProperties(ignoreUnknown = true)
 class MariaDBStatus
 
-@Group("database.mmontes.io")
+@Group("mariadb.mmontes.io")
 @Version("v1alpha1")
 class MariaDB : CustomResource<MariaDBSpec, MariaDBStatus>(), Namespaced {
     override fun setSpec(spec: MariaDBSpec?) {

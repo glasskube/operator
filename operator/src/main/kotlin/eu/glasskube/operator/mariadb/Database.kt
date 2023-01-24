@@ -8,23 +8,23 @@ import io.fabric8.kubernetes.model.annotation.Group
 import io.fabric8.kubernetes.model.annotation.Version
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class DatabaseMariaDbRef(
+data class DatabasebRef(
     @JsonProperty("name") var name: String
 )
 
-data class DatabaseMariaDBSpec(
-    @JsonProperty("mariaDbRef") var mariaDbRef: DatabaseMariaDbRef? = null,
+data class DatabaseSpec(
+    @JsonProperty("mariaDbRef") var mariaDbRef: DatabasebRef? = null,
     @JsonProperty("characterSet") var characterSet: String = "utf8",
     @JsonProperty("collate") var collate: String = "utf8_general_ci"
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class DatabaseMariaDBStatus
+class DatabaseStatus
 
-@Group("database.mmontes.io")
+@Group("mariadb.mmontes.io")
 @Version("v1alpha1")
-class DatabaseMariaDB(var spec: DatabaseMariaDBSpec? = null) :
-    CustomResource<DatabaseMariaDBSpec, DatabaseMariaDBStatus>(), Namespaced
+class Database(var spec: DatabaseSpec? = null) :
+    CustomResource<DatabaseSpec, DatabaseStatus>(), Namespaced
 
-inline fun databaseMariaDB(block: (@MariaDBDslMarker DatabaseMariaDB).() -> Unit) =
-    DatabaseMariaDB().apply(block)
+inline fun databaseMariaDB(block: (@MariaDBDslMarker Database).() -> Unit) =
+    Database().apply(block)
