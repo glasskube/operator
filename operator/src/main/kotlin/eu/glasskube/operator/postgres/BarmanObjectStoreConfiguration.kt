@@ -10,7 +10,7 @@ data class BarmanObjectStoreConfiguration @JsonCreator constructor(
     @JsonProperty("endpointURL")
     val endpointURL: String? = null,
     @JsonProperty("endpointCA")
-    val endpointCA: SecretKeySelector,
+    val endpointCA: SecretKeySelector? = null,
     @JsonProperty("serverName")
     val serverName: String? = null,
     @JsonProperty("wal")
@@ -20,5 +20,7 @@ data class BarmanObjectStoreConfiguration @JsonCreator constructor(
     @JsonProperty("tags")
     val tags: Map<String, String>? = null,
     @JsonProperty("historyTags")
-    val historyTags: Map<String, String>? = null
+    val historyTags: Map<String, String>? = null,
+    @JsonProperty("s3Credentials")
+    val s3Credentials: S3Credentials? = null
 )

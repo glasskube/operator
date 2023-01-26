@@ -21,6 +21,9 @@ spec:
                 type: string
             type: object
           status:
+            properties:
+              ready:
+                type: boolean
             type: object
         type: object
     served: true
