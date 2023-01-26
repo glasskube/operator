@@ -14,12 +14,18 @@ data class OdooSpec @JsonCreator constructor(
     val host: String
 )
 
-class OdooStatus
+class OdooStatus @JsonCreator constructor(
+    @JsonProperty("ready")
+    val ready: Boolean = false
+)
 
 @Group("glasskube.eu")
 @Version("v1alpha1")
 @Plural("odoos")
 class Odoo : CustomResource<OdooSpec, OdooStatus>(), Namespaced {
+
+    override fun initStatus() = OdooStatus()
+
     companion object {
         const val volumeName = "web-data"
         const val volumePath = "/var/lib/odoo"
@@ -66,3 +72,29 @@ val Odoo.ingressName
 
 val Odoo.ingressTlsCertName
     get() = "$genericResourceName-cert"
+
+val Odoo.dbBackupSecretName
+    get() = "$genericResourceName-backup"
+
+val Odoo.dbBackupUsername
+    get() = dbBackupSecretName
+val Odoo.bucketName
+    get() = "$genericResourceName-${metadata.namespace}-backup"
+
+val Odoo.bucketPolicy
+    get() = """
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "s3:*"
+                    ],
+                    "Resource": [
+                        "arn:aws:s3:::$bucketName/*"
+                    ]
+                }
+            ]
+        }
+    """.trimIndent()
