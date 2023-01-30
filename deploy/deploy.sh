@@ -62,7 +62,8 @@ function install_helm_charts {
     --namespace "$NS_CNPG" --create-namespace
   helm upgrade --install glasskube-minio minio/minio \
     --namespace "$NS_MINIO" --create-namespace \
-    --set replicas=1 --set persistence.size=20Gi --set mode=standalone
+    --set replicas=1 --set persistence.size=20Gi --set mode=standalone --set DeploymentUpdate.type=Recreate \
+    --set resources.requests.memory=256Mi
 }
 
 function mk_temp_kustomization {
