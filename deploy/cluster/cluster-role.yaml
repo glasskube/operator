@@ -26,6 +26,7 @@ rules:
       - services
       - secrets
       - configmaps
+      - persistentvolumeclaims
     verbs:
       - create
       - delete
@@ -57,7 +58,7 @@ rules:
       - get
       - list
       - watch
-  - apiGroups: [ mariadb.mmontes.io ]
+  - apiGroups: [ mariadb.mmontes.io, postgresql.cnpg.io ]
     resources: [ "*" ]
     verbs:
       - create
