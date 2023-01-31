@@ -136,6 +136,28 @@ in `MySQL` database. The Glasskube Operator will automatically perform Upgrades 
 Make sure you also have the [`mariadb-operator`](https://github.com/mmontes11/mariadb-operator) installed.
 After applying the custom resource Matomo will be reachable via an ingress at the configured host.
 
+### Odoo Kubernetes Operator
+
+<img width="300px" src="https://raw.githubusercontent.com/odoo/documentation/16.0/static/img/odoo_logo.png" alt="Odoo logo"></img>
+
+**Odoo.yaml**
+
+```yaml
+apiVersion: "glasskube.eu/v1alpha1"
+kind: Odoo
+metadata:
+  name: odoo
+  namespace: odoo
+spec:
+  host: odoo.minikube
+```
+
+[`Odoo`](https://github.com/odoo/odoo) is an Open-Source suite of web based business apps written in `Python` and stores
+data in a `PostgreSQL` database. The Glasskube Operator will automatically perform Upgrades and manages the database.
+Make sure you also have the [`cnpg-operator`](https://github.com/cloudnative-pg/cloudnative-pg) installed.
+After applying the custom resource Odoo will be reachable via an ingress at the configured host.
+Daily database backups are stored in an integrated S3 compatible MinIO bucket inside the glasskube-system namespace.
+
 ## Related projects
 
 - Java client for Kubernetes [`fabric8io/kubernetes-client`](https://github.com/fabric8io/kubernetes-client)
