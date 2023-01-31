@@ -50,7 +50,7 @@ class OdooDeployment : CRUDKubernetesDependentResource<Deployment, Odoo>(Deploym
                     containers = listOf(
                         container {
                             name = "odoo"
-                            image = "odoo@sha256:dfd805931eb12ce775349d0a29d5aface6e7a75b79505259d7eb0c856681dc6f"
+                            image = "glasskube/odoo:16.0.20230109"
                             imagePullPolicy = "IfNotPresent"
                             env {
                                 envVar("HOST", "${primary.dbName}-rw")
@@ -69,7 +69,7 @@ class OdooDeployment : CRUDKubernetesDependentResource<Deployment, Odoo>(Deploym
                                     readOnly = true
                                 }
                             }
-                            command = listOf("/entrypoint.sh", "--proxy-mode")
+                            command = listOf("/glasskube/run.sh", "--proxy-mode")
                         }
                     )
                     initContainers = listOf(
