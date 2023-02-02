@@ -17,6 +17,7 @@ import eu.glasskube.operator.postgres.BootstrapConfiguration
 import eu.glasskube.operator.postgres.BootstrapInitDB
 import eu.glasskube.operator.postgres.Cluster
 import eu.glasskube.operator.postgres.ClusterSpec
+import eu.glasskube.operator.postgres.MonitoringConfiguration
 import eu.glasskube.operator.postgres.S3Credentials
 import eu.glasskube.operator.postgres.StorageConfiguration
 import eu.glasskube.operator.postgres.postgresCluster
@@ -58,6 +59,9 @@ class OdooPostgresCluster : CRUDKubernetesDependentResource<Cluster, Odoo>(Clust
                     )
                 ),
                 retentionPolicy = "30d"
+            ),
+            monitoring = MonitoringConfiguration(
+                enablePodMonitor = true
             )
         )
     }
