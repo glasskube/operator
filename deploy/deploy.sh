@@ -69,6 +69,7 @@ function install_helm_charts {
   if [ -n "$GRAFANA_HOST" ]; then
     local PROMETHEUS_ARGS+=("--set" "grafana.ingress.enabled=true")
     local PROMETHEUS_ARGS+=("--set" "grafana.ingress.hosts={$GRAFANA_HOST}")
+    local PROMETHEUS_ARGS+=("--set" "grafana.persistence.enabled=true")
   fi
   if [ -n "$PROMETHEUS_SIZE" ]; then
     local PROMETHEUS_ARGS+=("--set" "prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.resources.requests.storage=$PROMETHEUS_SIZE")
