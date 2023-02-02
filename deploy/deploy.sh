@@ -19,6 +19,12 @@ Options:
   -n NAMESPACE
     Specifies the namespace where all operators will be installed. If NAMESPACE is
     missing or empty, a cluster-wide installation will be performed.
+  -g HOST_NAME
+    Specifies the host name that should be used for the Grafana ingress. If no host
+    name is provided, the Grafana ingress will not be enabled.
+  -p AMOUNT
+    Specifies the size of the prometheus storage claim(e.g. \"10Gi\"). If no value is
+    set, prometheus persistence will not be enabled.
   -h
     Show this help."
   exit "$EXIT_CODE"
@@ -52,14 +58,33 @@ function install_helm_charts {
   helm upgrade --install cert-manager jetstack/cert-manager \
     --namespace "$NS_CERT_MANAGER" --create-namespace \
     --set installCRDs=true
+
+  local PROMETHEUS_ARGS=(
+    "--set" "prometheus.prometheusSpec.retention=180d"
+    "--set" "prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false"
+    "--set" "prometheus.prometheusSpec.ruleSelectorNilUsesHelmValues=false"
+    "--set" "prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false"
+    "--set" "prometheus.prometheusSpec.probeSelectorNilUsesHelmValues=false"
+  )
+  if [ -n "$GRAFANA_HOST" ]; then
+    local PROMETHEUS_ARGS+=("--set" "grafana.ingress.enabled=true")
+    local PROMETHEUS_ARGS+=("--set" "grafana.ingress.hosts={$GRAFANA_HOST}")
+  fi
+  if [ -n "$PROMETHEUS_SIZE" ]; then
+    local PROMETHEUS_ARGS+=("--set" "prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.resources.requests.storage=$PROMETHEUS_SIZE")
+  fi
   helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
-    --namespace "$NS_PROMETHEUS" --create-namespace
+    --namespace "$NS_PROMETHEUS" --create-namespace \
+    "${PROMETHEUS_ARGS[@]}"
+
   helm upgrade --install mariadb-operator mariadb-operator/mariadb-operator \
     --namespace "$NS_MARIADB" --create-namespace \
     --version 0.6.1 \
     --set ha.enabled=false
+
   helm upgrade --install cnpg cnpg/cloudnative-pg \
     --namespace "$NS_CNPG" --create-namespace
+
   helm upgrade --install glasskube-minio minio/minio \
     --namespace "$NS_MINIO" --create-namespace \
     --set replicas=1 --set persistence.size=20Gi --set mode=standalone --set DeploymentUpdate.type=Recreate \
@@ -84,7 +109,7 @@ GIT_ROOT=$(git rev-parse --show-toplevel)
 DEPLOY_ROOT="$GIT_ROOT/deploy"
 TEMP_DIR="$DEPLOY_ROOT/temp"
 
-while getopts ":hv:n:" option; do
+while getopts ":hv:n:g:p:" option; do
   case $option in
   h)
     help ""
@@ -94,6 +119,12 @@ while getopts ":hv:n:" option; do
     ;;
   n)
     NAMESPACE="$OPTARG"
+    ;;
+  g)
+    GRAFANA_HOST="$OPTARG"
+    ;;
+  p)
+    PROMETHEUS_SIZE="$OPTARG"
     ;;
   \?)
     help "Error: Invalid option."
