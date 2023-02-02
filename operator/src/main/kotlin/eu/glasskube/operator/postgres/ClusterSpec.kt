@@ -11,7 +11,6 @@ import io.fabric8.kubernetes.api.model.LocalObjectReference
 //  - affinity
 //  - resources
 //  - nodeMaintenanceWindow
-//  - monitoring
 //  - externalClusters
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class ClusterSpec @JsonCreator constructor(
@@ -64,5 +63,7 @@ data class ClusterSpec @JsonCreator constructor(
     @JsonProperty("backup")
     val backup: BackupConfiguration? = null,
     @JsonProperty("logLevel")
-    val logLevel: LogLevel? = null
+    val logLevel: LogLevel? = null,
+    @JsonProperty("monitoring")
+    val monitoring: MonitoringConfiguration? = null
 )
