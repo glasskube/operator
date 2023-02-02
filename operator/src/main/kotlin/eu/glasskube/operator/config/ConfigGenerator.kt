@@ -26,24 +26,25 @@ class ConfigGenerator(private val kubernetesClient: KubernetesClient) : Reconcil
 
         enumValues<ConfigKey>().forEach {
             if (resource.data[it.name].isNullOrBlank()) {
-                resource.data[it.name] = createConfigFor(it)
+                createConfigFor(it)?.let { value -> resource.data[it.name] = value }
             }
         }
 
         return UpdateControl.updateResource(resource)
     }
 
-    private fun createConfigFor(it: ConfigKey): String {
+    private fun createConfigFor(it: ConfigKey): String? {
         return when (it) {
-            ConfigKey.cloudProvider -> getCloudProvider(this.kubernetesClient).name
+            ConfigKey.cloudProvider -> getCloudProvider(kubernetesClient).name
             ConfigKey.databaseStorageClassName -> detectDatabaseStorageClass()
+            ConfigKey.ingressClassName -> null
         }
     }
 
     private fun detectDatabaseStorageClass(): String {
         val storageClasses = kubernetesClient.storage().v1().storageClasses().list()
         val storageClassNames = storageClasses.items.map { it.metadata.name }
-        val defaultStorageClass = storageClasses.items.find { p -> p.metadata.annotations.get("storageclass.kubernetes.io/is-default-class") == "true" }
+        val defaultStorageClass = storageClasses.items.find { p -> p.metadata.annotations["storageclass.kubernetes.io/is-default-class"] == "true" }
         val defaultStorageClassName = defaultStorageClass?.let { defaultStorageClass.metadata.name } ?: "standard"
 
         val awsEncryptedStorageClass = "gp3-encrypted"
@@ -62,7 +63,8 @@ class ConfigGenerator(private val kubernetesClient: KubernetesClient) : Reconcil
 
 enum class ConfigKey {
     cloudProvider,
-    databaseStorageClassName
+    databaseStorageClassName,
+    ingressClassName
 }
 
 enum class CloudProvider {

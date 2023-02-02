@@ -2,6 +2,7 @@ package eu.glasskube.operator.generic.dependant
 
 import eu.glasskube.operator.config.CloudProvider
 import eu.glasskube.operator.getCloudProvider
+import eu.glasskube.operator.getIngressClassName
 import io.fabric8.kubernetes.api.model.GenericKubernetesResource
 import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.api.model.networking.v1.Ingress
@@ -9,10 +10,10 @@ import io.fabric8.kubernetes.client.dsl.base.ResourceDefinitionContext
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 
 abstract class DependentIngress<T : HasMetadata> : CRUDKubernetesDependentResource<Ingress, T>(Ingress::class.java) {
-    protected val defaultIngressClassName: String
+    protected val defaultIngressClassName: String?
         get() = when (getCloudProvider(client)) {
             CloudProvider.aws -> "alb"
-            else -> "nginx"
+            else -> client.getIngressClassName()
         }
 
     protected val defaultAnnotations: Map<String, String>
