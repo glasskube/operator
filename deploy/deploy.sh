@@ -76,6 +76,9 @@ function install_helm_charts {
   helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
     --namespace "$NS_PROMETHEUS" --create-namespace \
     "${PROMETHEUS_ARGS[@]}"
+  kubectl apply \
+    -n "$NS_PROMETHEUS" \
+    -f https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/91f3af3ecf92aa415a4498f62e2a8d01156d70ee/docs/src/samples/monitoring/grafana-configmap.yaml
 
   helm upgrade --install mariadb-operator mariadb-operator/mariadb-operator \
     --namespace "$NS_MARIADB" --create-namespace \
