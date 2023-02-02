@@ -3,6 +3,8 @@ package eu.glasskube.operator
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.client.getDefaultIngressClass
+import eu.glasskube.kubernetes.client.ingressClasses
 import eu.glasskube.operator.config.CloudProvider
 import eu.glasskube.operator.config.ConfigGenerator
 import eu.glasskube.operator.config.ConfigKey
@@ -94,6 +96,21 @@ fun getConfig(client: KubernetesClient): Resource<ConfigMap> =
     client.configMaps().inNamespace(Environment.NAMESPACE).withName(ConfigGenerator.NAME)
 
 fun getConfig(client: KubernetesClient, key: ConfigKey): String = getConfig(client).get().data.getValue(key.name)
+
+/**
+ * The Ingress Class name is determined by evaluating the following and picking
+ * the first available value:
+ * 1. If the Ingress Class name is specified in the operator configuration, it is used
+ * 2. If there is exactly one default Ingress Class, its name is used
+ * 3. If there is exactly one Ingress Class, its name is used
+ * 4. Otherwise, null is used, but it will likely fail!
+ *
+ * @return the Ingress Class Name to be used for Ingress objects.
+ */
+fun KubernetesClient.getIngressClassName(): String? =
+    runCatching { getConfig(this, ConfigKey.ingressClassName) }.getOrNull()
+        ?: getDefaultIngressClass()?.metadata?.name
+        ?: ingressClasses().list().items.singleOrNull()?.metadata?.name
 
 fun getCloudProvider(client: KubernetesClient): CloudProvider {
     fun detectCloudProvider(): CloudProvider {
