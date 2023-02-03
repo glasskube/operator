@@ -84,7 +84,8 @@ function install_helm_charts {
   helm upgrade --install mariadb-operator mariadb-operator/mariadb-operator \
     --namespace "$NS_MARIADB" --create-namespace \
     --version 0.6.1 \
-    --set ha.enabled=false
+    --set ha.enabled=false \
+    --set metrics.enabled=true --set metrics.serviceMonitor.enabled=false --set webhook.serviceMonitor.enabled=false
 
   helm upgrade --install cnpg cnpg/cloudnative-pg \
     --namespace "$NS_CNPG" --create-namespace
