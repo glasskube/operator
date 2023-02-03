@@ -3,13 +3,14 @@ package eu.glasskube.operator.mariadb
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.fabric8.kubernetes.api.model.Namespaced
+import io.fabric8.kubernetes.api.model.SecretKeySelector
 import io.fabric8.kubernetes.client.CustomResource
 import io.fabric8.kubernetes.model.annotation.Group
 import io.fabric8.kubernetes.model.annotation.Version
 
 data class UserMariaDBSpec(
     @JsonProperty("mariaDbRef") var mariaDbRef: DatabasebRef? = null,
-    @JsonProperty("passwordSecretKeyRef") var passwordSecretKeyRef: MariaDBPasswordSecretKeyRef? = null,
+    @JsonProperty("passwordSecretKeyRef") var passwordSecretKeyRef: SecretKeySelector? = null,
     @JsonProperty("maxUserConnections") var maxUserConnections: Int = 20
 )
 
