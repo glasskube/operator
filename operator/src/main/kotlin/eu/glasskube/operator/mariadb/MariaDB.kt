@@ -1,29 +1,37 @@
 package eu.glasskube.operator.mariadb
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.fabric8.kubernetes.api.model.Namespaced
+import io.fabric8.kubernetes.api.model.SecretKeySelector
 import io.fabric8.kubernetes.client.CustomResource
 import io.fabric8.kubernetes.model.annotation.Group
 import io.fabric8.kubernetes.model.annotation.Version
 
-data class MariaDBPasswordSecretKeyRef(
-    @JsonProperty("name") var name: String,
-    @JsonProperty("key") var key: String
-)
-
 data class MariaDBImage(
-    @JsonProperty("repository") var repository: String,
-    @JsonProperty("tag") var tag: String,
-    @JsonProperty("pullPolicy") var pullPolicy: String
+    @JsonProperty("repository")
+    var repository: String,
+    @JsonProperty("tag")
+    var tag: String,
+    @JsonProperty("pullPolicy")
+    var pullPolicy: String? = null
 )
 
-data class MariaDBResourcesRequest(
-    @JsonProperty("storage") var storage: String
+data class MariaDBResourcesRequest @JsonCreator constructor(
+    @JsonProperty("storage")
+    val storage: String? = null,
+    @JsonProperty("cpu")
+    val cpu: String? = null,
+    @JsonProperty("memory")
+    val memory: String? = null
 )
 
-data class MariaDBResources(
-    @JsonProperty("requests") var requests: MariaDBResourcesRequest
+data class MariaDBResources @JsonCreator constructor(
+    @JsonProperty("requests")
+    val requests: MariaDBResourcesRequest? = null,
+    @JsonProperty("limits")
+    val limits: MariaDBResourcesRequest? = null,
 )
 
 data class MariaDBVolumeClaimTemplate(
@@ -33,10 +41,16 @@ data class MariaDBVolumeClaimTemplate(
 )
 
 data class MariaDBSpec(
-    @JsonProperty("rootPasswordSecretKeyRef") var rootPasswordSecretKeyRef: MariaDBPasswordSecretKeyRef,
-    @JsonProperty("image") var image: MariaDBImage,
-    @JsonProperty("port") var port: Int = 3306,
-    @JsonProperty("volumeClaimTemplate") var volumeClaimTemplate: MariaDBVolumeClaimTemplate
+    @JsonProperty("rootPasswordSecretKeyRef")
+    var rootPasswordSecretKeyRef: SecretKeySelector,
+    @JsonProperty("image")
+    var image: MariaDBImage,
+    @JsonProperty("port")
+    var port: Int = 3306,
+    @JsonProperty("volumeClaimTemplate")
+    var volumeClaimTemplate: MariaDBVolumeClaimTemplate,
+    @JsonProperty("metrics")
+    var metrics: Metrics? = null
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
