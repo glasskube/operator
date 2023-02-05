@@ -13,20 +13,24 @@ function help {
   echo "Usage: $SCRIPT [options]
 
 Options:
-  -v VERSION
-    Check https://hub.docker.com/r/glasskube/operator/tags for available versions.
-    If no version is provided, only dependencies are installed.
-  -n NAMESPACE
-    Specifies the namespace where all operators will be installed. If NAMESPACE is
-    missing or empty, a cluster-wide installation will be performed.
-  -g HOST_NAME
-    Specifies the host name that should be used for the Grafana ingress. If no host
-    name is provided, the Grafana ingress will not be enabled.
-  -p AMOUNT
-    Specifies the size of the prometheus storage claim(e.g. \"10Gi\"). If no value is
-    set, prometheus persistence will not be enabled.
+  -v  VERSION
+       Check https://hub.docker.com/r/glasskube/operator/tags for available versions.
+       If no version is provided, only dependencies are installed.
+  -n  NAMESPACE
+       Specifies the namespace where all operators will be installed. If NAMESPACE is
+       missing or empty, a cluster-wide installation will be performed.
+  -g  HOST_NAME
+       Specifies the host name that should be used for the Grafana ingress. If no host
+       name is provided, the Grafana ingress will not be enabled.
+  -p  AMOUNT
+       Specifies the size of the prometheus storage claim(e.g. \"10Gi\"). If no value is
+       set, prometheus persistence will not be enabled.
+  -i  INGRESS_CLASS
+       Specifies the ingress class name to be used
+  -c  CLUSTER_ISSUER
+       Specifies the ingress class name to be used
   -h
-    Show this help."
+       Show this help."
   exit "$EXIT_CODE"
 }
 
@@ -71,13 +75,21 @@ function install_helm_charts {
     local PROMETHEUS_ARGS+=("--set" "grafana.ingress.hosts={$GRAFANA_HOST}")
     local PROMETHEUS_ARGS+=("--set" "grafana.persistence.enabled=true")
     local PROMETHEUS_ARGS+=("--set" "grafana.persistence.size=10Gi")
+    if [ -n "$INGRESS_CLASS" ]; then
+      local PROMETHEUS_ARGS+=("--set" "grafana.ingress.ingressClassName=$INGRESS_CLASS")
+    fi
+    if [ -n "$CLUSTER_ISSUER" ]; then
+      local PROMETHEUS_ARGS+=("--set" "grafana.ingress.annotations.cert-manager\\.io\\/cluster-issuer=$CLUSTER_ISSUER")
+      local PROMETHEUS_ARGS+=("--set" "grafana.ingress.tls[0].secretName=grafana-tls")
+      local PROMETHEUS_ARGS+=("--set" "grafana.ingress.tls[0].hosts={$GRAFANA_HOST}")
+    fi
   fi
   if [ -n "$PROMETHEUS_SIZE" ]; then
     local PROMETHEUS_ARGS+=("--set" "prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.resources.requests.storage=$PROMETHEUS_SIZE")
   fi
   helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
     --namespace "$NS_PROMETHEUS" --create-namespace \
-    "${PROMETHEUS_ARGS[@]}"
+    "${PROMETHEUS_ARGS[@]}" | grep -C 5 grafana-tls
   kubectl apply \
     -n "$NS_PROMETHEUS" \
     -f https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/91f3af3ecf92aa415a4498f62e2a8d01156d70ee/docs/src/samples/monitoring/grafana-configmap.yaml
@@ -115,7 +127,7 @@ GIT_ROOT=$(git rev-parse --show-toplevel)
 DEPLOY_ROOT="$GIT_ROOT/deploy"
 TEMP_DIR="$DEPLOY_ROOT/temp"
 
-while getopts ":hv:n:g:p:" option; do
+while getopts ":hv:n:g:p:i:c:" option; do
   case $option in
   h)
     help ""
@@ -131,6 +143,12 @@ while getopts ":hv:n:g:p:" option; do
     ;;
   p)
     PROMETHEUS_SIZE="$OPTARG"
+    ;;
+  i)
+    INGRESS_CLASS="$OPTARG"
+    ;;
+  c)
+    CLUSTER_ISSUER="$OPTARG"
     ;;
   \?)
     help "Error: Invalid option."
