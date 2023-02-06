@@ -17,12 +17,17 @@ val logbackVersion: String by project
 val jacksonVersion: String by project
 val bouncyCastleVersion: String by project
 val minioVersion: String by project
+val micrometerVersion: String by project
+val prometheusHttpServerVersion: String by project
 
 dependencies {
     implementation("io.javaoperatorsdk", "operator-framework", javaOperatorVersion)
     kapt("io.javaoperatorsdk", "operator-framework", javaOperatorVersion)
     kapt("io.fabric8", "crd-generator-apt", crdGeneratorVersion)
 
+    implementation("io.javaoperatorsdk", "micrometer-support", javaOperatorVersion)
+    implementation("io.micrometer", "micrometer-registry-prometheus", micrometerVersion)
+    implementation("io.prometheus", "simpleclient_httpserver", prometheusHttpServerVersion)
     implementation("org.slf4j", "slf4j-api", slf4jVersion)
     implementation("ch.qos.logback", "logback-core", logbackVersion)
     implementation("ch.qos.logback", "logback-classic", logbackVersion)

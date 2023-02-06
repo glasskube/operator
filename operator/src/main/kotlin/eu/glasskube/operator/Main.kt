@@ -22,10 +22,15 @@ import io.javaoperatorsdk.operator.RegisteredController
 import io.javaoperatorsdk.operator.api.config.ControllerConfigurationOverrider
 import io.javaoperatorsdk.operator.api.reconciler.Constants
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler
+import io.javaoperatorsdk.operator.monitoring.micrometer.MicrometerMetrics
+import io.micrometer.prometheus.PrometheusConfig
+import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.minio.MinioClient
 import io.minio.admin.MinioAdminClient
 import io.minio.credentials.Credentials
+import io.prometheus.client.exporter.HTTPServer
 import org.slf4j.LoggerFactory
+import java.net.InetSocketAddress
 import java.security.SecureRandom
 import java.time.Duration
 import java.util.function.Consumer
@@ -47,11 +52,14 @@ fun main() {
     val kubernetesClient = KubernetesClientBuilder().build()
     val minioClient = getMinioClient(kubernetesClient)
     val minioAdminClient = getMinioAdminClient(kubernetesClient)
+    val metricsRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
+        .also { HTTPServer(InetSocketAddress(8080), it.prometheusRegistry, true) }
 
     initializeConfigIfNeed(kubernetesClient)
 
     val random = SecureRandom.getInstanceStrong()
     val operator = Operator(kubernetesClient) {
+        it.withMetrics(MicrometerMetrics(metricsRegistry))
         it.withObjectMapper(jacksonObjectMapper())
     }
 
