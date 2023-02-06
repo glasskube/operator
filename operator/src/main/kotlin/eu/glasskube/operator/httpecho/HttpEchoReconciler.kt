@@ -3,9 +3,6 @@ package eu.glasskube.operator.httpecho
 import eu.glasskube.operator.api.reconciler.informerEventSource
 import eu.glasskube.operator.httpecho.dependent.HttpEchoDeployment
 import eu.glasskube.operator.httpecho.dependent.HttpEchoIngress
-import eu.glasskube.operator.httpecho.dependent.HttpEchoPostgres
-import eu.glasskube.operator.httpecho.dependent.HttpEchoPostgresAppSecret
-import eu.glasskube.operator.httpecho.dependent.HttpEchoPostgresSuperuserSecret
 import eu.glasskube.operator.httpecho.dependent.HttpEchoService
 import io.fabric8.kubernetes.api.model.Secret
 import io.javaoperatorsdk.operator.api.reconciler.Context
@@ -23,16 +20,7 @@ private val LOG = LoggerFactory.getLogger(HttpEchoReconciler::class.java)
     dependents = [
         Dependent(type = HttpEchoDeployment::class),
         Dependent(type = HttpEchoService::class),
-        Dependent(type = HttpEchoIngress::class),
-        Dependent(type = HttpEchoPostgres::class),
-        Dependent(
-            type = HttpEchoPostgresSuperuserSecret::class,
-            useEventSourceWithName = HttpEchoReconciler.SECRETS_EVENT_SOURCE_NAME
-        ),
-        Dependent(
-            type = HttpEchoPostgresAppSecret::class,
-            useEventSourceWithName = HttpEchoReconciler.SECRETS_EVENT_SOURCE_NAME
-        )
+        Dependent(type = HttpEchoIngress::class)
     ]
 )
 class HttpEchoReconciler : Reconciler<HttpEcho>, EventSourceInitializer<HttpEcho> {
