@@ -78,6 +78,10 @@ class OdooReconciler(
 ) : Reconciler<Odoo>, EventSourceInitializer<Odoo>, Cleaner<Odoo> {
 
     override fun reconcile(resource: Odoo, context: Context<Odoo>): UpdateControl<Odoo> {
+        if (resource.status.demoEnabledOnInstall == !resource.spec.demoEnabled) {
+            throw IllegalStateException("demoEnabled can not be altered after first reconciliation")
+        }
+
         resource.createBucket()
         resource.createBucketPolicy()
 
@@ -88,11 +92,17 @@ class OdooReconciler(
             }
         }
 
-        return when (resource.status) {
-            null -> UpdateControl.patchStatus(resource.apply { status = OdooStatus() })
-            else -> UpdateControl.noUpdate()
-        }
+        return resource.newStatus()
+            .takeIf { it != resource.status }
+            ?.let {
+                resource.status = it
+                UpdateControl.updateStatus(resource)
+            }
+            ?: UpdateControl.noUpdate()
     }
+
+    private fun Odoo.newStatus() =
+        OdooStatus(demoEnabledOnInstall = spec.demoEnabled)
 
     private val Odoo.hasBucket: Boolean
         get() = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build())

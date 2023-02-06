@@ -69,7 +69,10 @@ class OdooDeployment : CRUDKubernetesDependentResource<Deployment, Odoo>(Deploym
                                     readOnly = true
                                 }
                             }
-                            command = listOf("/glasskube/run.sh", "--proxy-mode")
+                            command = mutableListOf("/glasskube/run.sh", "--proxy-mode")
+                            if (!primary.spec.demoEnabled) {
+                                command.addAll(listOf("--without-demo", "all"))
+                            }
                         }
                     )
                     initContainers = listOf(
