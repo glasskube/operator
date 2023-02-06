@@ -8,11 +8,13 @@ import io.fabric8.kubernetes.model.annotation.Plural
 import io.fabric8.kubernetes.model.annotation.Version
 
 data class OdooSpec(
-    val host: String
+    val host: String,
+    val demoEnabled: Boolean = true
 )
 
-class OdooStatus(
-    val ready: Boolean = false
+data class OdooStatus(
+    val ready: Boolean = false,
+    val demoEnabledOnInstall: Boolean? = null
 )
 
 @Group("glasskube.eu")

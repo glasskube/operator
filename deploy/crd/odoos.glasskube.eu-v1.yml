@@ -19,10 +19,14 @@ spec:
             properties:
               host:
                 type: string
+              demoEnabled:
+                type: boolean
             type: object
           status:
             properties:
               ready:
+                type: boolean
+              demoEnabledOnInstall:
                 type: boolean
             type: object
         type: object
