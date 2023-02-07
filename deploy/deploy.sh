@@ -28,7 +28,9 @@ Options:
   -i  INGRESS_CLASS
        Specifies the ingress class name to be used
   -c  CLUSTER_ISSUER
-       Specifies the ingress class name to be used
+       Specifies the cluster issuer to be used
+  -d  CLUSTER_DNS_NAME
+       Specifies the cluster name to resolve dns queries
   -h
        Show this help."
   exit "$EXIT_CODE"
@@ -89,16 +91,22 @@ function install_helm_charts {
   fi
   helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
     --namespace "$NS_PROMETHEUS" --create-namespace \
-    "${PROMETHEUS_ARGS[@]}" | grep -C 5 grafana-tls
+    "${PROMETHEUS_ARGS[@]}"
   kubectl apply \
     -n "$NS_PROMETHEUS" \
     -f https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/91f3af3ecf92aa415a4498f62e2a8d01156d70ee/docs/src/samples/monitoring/grafana-configmap.yaml
 
+  local MARIADB_ARGS=(
+    "--set" "ha.enabled=false" "--set" "metrics.enabled=true" "--set" "metrics.serviceMonitor.enabled=false" "--set" "webhook.serviceMonitor.enabled=false"
+  )
+  if [ -n "$CLUSTER_DNS_NAME" ]; then
+    local MARIADB_ARGS+=("--set" "clusterName=$CLUSTER_DNS_NAME")
+  fi
+
   helm upgrade --install mariadb-operator mariadb-operator/mariadb-operator \
     --namespace "$NS_MARIADB" --create-namespace \
     --version 0.6.1 \
-    --set ha.enabled=false \
-    --set metrics.enabled=true --set metrics.serviceMonitor.enabled=false --set webhook.serviceMonitor.enabled=false
+    "${MARIADB_ARGS[@]}"
 
   helm upgrade --install cnpg cnpg/cloudnative-pg \
     --namespace "$NS_CNPG" --create-namespace
@@ -127,7 +135,7 @@ GIT_ROOT=$(git rev-parse --show-toplevel)
 DEPLOY_ROOT="$GIT_ROOT/deploy"
 TEMP_DIR="$DEPLOY_ROOT/temp"
 
-while getopts ":hv:n:g:p:i:c:" option; do
+while getopts ":hv:n:g:p:i:c:d:" option; do
   case $option in
   h)
     help ""
@@ -149,6 +157,9 @@ while getopts ":hv:n:g:p:i:c:" option; do
     ;;
   c)
     CLUSTER_ISSUER="$OPTARG"
+    ;;
+  d)
+    CLUSTER_DNS_NAME="$OPTARG"
     ;;
   \?)
     help "Error: Invalid option."
