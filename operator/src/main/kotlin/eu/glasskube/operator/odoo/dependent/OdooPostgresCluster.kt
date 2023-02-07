@@ -51,7 +51,7 @@ class OdooPostgresCluster : CRUDKubernetesDependentResource<Cluster, Odoo>(Clust
             ),
             backup = BackupConfiguration(
                 BarmanObjectStoreConfiguration(
-                    endpointURL = "http://glasskube-minio.glasskube-system.svc.cluster.local:9000",
+                    endpointURL = "http://glasskube-minio.glasskube-system:9000",
                     destinationPath = "s3://${primary.bucketName}",
                     s3Credentials = S3Credentials(
                         accessKeyId = SecretKeySelector("username", primary.dbBackupSecretName, false),

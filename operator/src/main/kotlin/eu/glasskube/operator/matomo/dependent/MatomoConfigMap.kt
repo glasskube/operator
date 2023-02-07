@@ -40,7 +40,7 @@ class MatomoConfigMap : CRUDKubernetesDependentResource<ConfigMap, Matomo>(Confi
             .replace("%MATOMO_DATABASE_USERNAME%", primary.databaseUser)
             .replace("%MATOMO_DATABASE_DBNAME%", primary.databaseName)
 
-    private fun host(primary: Matomo) = "${primary.mariaDBHost}.${primary.metadata.namespace}.svc.cluster.local"
+    private fun host(primary: Matomo) = "${primary.mariaDBHost}.${primary.metadata.namespace}"
 
     private fun readFile(fileName: String) = this::class.java.getResource(fileName)!!.readText(Charset.defaultCharset())
 }
