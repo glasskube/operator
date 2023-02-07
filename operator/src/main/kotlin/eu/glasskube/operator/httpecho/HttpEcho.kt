@@ -8,12 +8,12 @@ import io.fabric8.kubernetes.model.annotation.Plural
 import io.fabric8.kubernetes.model.annotation.Version
 
 data class HttpEchoSpec(
-    var text: String? = null,
-    var host: String? = null
+    val text: String? = null,
+    val host: String? = null
 )
 
 data class HttpEchoStatus(
-    var result: String? = null
+    val result: String? = null
 )
 
 @Group("glasskube.eu")

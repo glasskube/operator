@@ -1,11 +1,6 @@
 package eu.glasskube.operator.postgres
 
-import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonProperty
-
-data class SyncReplicaElectionConstraints @JsonCreator constructor(
-    @JsonProperty("enabled")
+data class SyncReplicaElectionConstraints(
     val enabled: Boolean? = null,
-    @JsonProperty("nodeLabelsAntiAffinity")
     val nodeLabelsAntiAffinity: List<String>? = null
 )

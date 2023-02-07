@@ -8,7 +8,7 @@ import io.fabric8.kubernetes.model.annotation.Plural
 import io.fabric8.kubernetes.model.annotation.Version
 
 data class MatomoSpec(
-    var host: String? = null
+    val host: String? = null
 )
 
 class MatomoStatus
