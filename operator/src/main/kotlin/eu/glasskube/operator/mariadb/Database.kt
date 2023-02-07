@@ -1,7 +1,6 @@
 package eu.glasskube.operator.mariadb
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonProperty
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.client.CustomResource
 import io.fabric8.kubernetes.model.annotation.Group
@@ -9,13 +8,13 @@ import io.fabric8.kubernetes.model.annotation.Version
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class DatabasebRef(
-    @JsonProperty("name") var name: String
+    var name: String
 )
 
 data class DatabaseSpec(
-    @JsonProperty("mariaDbRef") var mariaDbRef: DatabasebRef? = null,
-    @JsonProperty("characterSet") var characterSet: String = "utf8",
-    @JsonProperty("collate") var collate: String = "utf8_general_ci"
+    var mariaDbRef: DatabasebRef? = null,
+    var characterSet: String = "utf8",
+    var collate: String = "utf8_general_ci"
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -1,6 +1,7 @@
 package eu.glasskube.operator
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinFeature
+import com.fasterxml.jackson.module.kotlin.kotlinModule
 import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.client.getDefaultIngressClass
@@ -17,6 +18,7 @@ import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.client.KubernetesClient
 import io.fabric8.kubernetes.client.KubernetesClientBuilder
 import io.fabric8.kubernetes.client.dsl.Resource
+import io.fabric8.kubernetes.client.utils.Serialization
 import io.javaoperatorsdk.operator.Operator
 import io.javaoperatorsdk.operator.RegisteredController
 import io.javaoperatorsdk.operator.api.config.ControllerConfigurationOverrider
@@ -52,7 +54,10 @@ fun main() {
 
     val random = SecureRandom.getInstanceStrong()
     val operator = Operator(kubernetesClient) {
-        it.withObjectMapper(jacksonObjectMapper())
+        it.withObjectMapper(
+            Serialization.jsonMapper()
+                .registerModule(kotlinModule { configure(KotlinFeature.NullIsSameAsDefault, true) })
+        )
     }
 
     operator.registerForNamespaceOrCluster(ConfigGenerator(kubernetesClient))

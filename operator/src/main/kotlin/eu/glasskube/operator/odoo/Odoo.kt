@@ -1,7 +1,5 @@
 package eu.glasskube.operator.odoo
 
-import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonProperty
 import eu.glasskube.operator.resourceLabels
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.client.CustomResource
@@ -9,13 +7,11 @@ import io.fabric8.kubernetes.model.annotation.Group
 import io.fabric8.kubernetes.model.annotation.Plural
 import io.fabric8.kubernetes.model.annotation.Version
 
-data class OdooSpec @JsonCreator constructor(
-    @JsonProperty("host")
+data class OdooSpec(
     val host: String
 )
 
-class OdooStatus @JsonCreator constructor(
-    @JsonProperty("ready")
+class OdooStatus(
     val ready: Boolean = false
 )
 
