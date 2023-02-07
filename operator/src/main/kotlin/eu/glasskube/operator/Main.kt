@@ -46,6 +46,8 @@ fun main() {
         """
     )
 
+    ReleaseInfo.getInstance().print()
+
     val kubernetesClient = KubernetesClientBuilder().build()
     val minioClient = getMinioClient(kubernetesClient)
     val minioAdminClient = getMinioAdminClient(kubernetesClient)

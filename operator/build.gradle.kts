@@ -5,6 +5,7 @@ plugins {
     kotlin("kapt") version "1.7.10"
     id("com.google.cloud.tools.jib") version "3.3.0"
     id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
+    id("com.gorylenko.gradle-git-properties") version "2.4.1"
     application
 }
 
@@ -65,6 +66,16 @@ jib {
 
 application {
     mainClass.set("eu.glasskube.operator.MainKt")
+}
+
+gitProperties {
+    keys = listOf(
+        "git.branch",
+        "git.build.version",
+        "git.commit.id.abbrev",
+        "git.commit.time"
+    )
+    dateFormat = "yyyy-MM-dd'T'HH:mmX"
 }
 
 tasks.create("clearCrd", Delete::class) {
