@@ -25,6 +25,10 @@
 
 <hr>
 
+## Screencast
+
+https://user-images.githubusercontent.com/3041752/217483828-2f0245bc-dbe8-4fc5-901f-e96131187c22.mp4
+
 ## Getting started
 
 ### Requirements
