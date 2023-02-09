@@ -29,72 +29,66 @@
 
 https://user-images.githubusercontent.com/3041752/217483828-2f0245bc-dbe8-4fc5-901f-e96131187c22.mp4
 
-## Getting started
-
-### Requirements
-
-- Docker [`moby/moby`](https://github.com/moby/moby)
-- Minikube [`kubernetes/minikube`](https://github.com/kubernetes/minikube)
-- Gradle [`gradle/gradle`](https://github.com/gradle/gradle)
-- Kotlin [`jetbrains/kotlin`](https://github.com/jetbrains/kotlin)
-
-### Local Kubernetes setup
-
-Minikube is the recommended way on starting a cluster for local development.
-
-```shell
-minikube profile glasskube # (optional)
-minikube start
-```
-
-### Tasks
-
-#### Applying Custom Resource Definitions
-
-This task uses your current `kubectl` context.
-
-```shell
-./gradlew installCrd
-```
-
-#### Running the Operator
-
-The operator is started locally and connects to your current `kubectl` context. As Glasskube might get installed in
-different namespaces, we need to fetch the current namespace form the Kubernetes API. For local development we can
-manually overwrite this with by setting the environment variable `NAMESPACE=glasskube-system`.
-
-```shell
-./gradlew run
-```
-
-#### Pushing an image to local minikube
-
-When using Minikube for development, you can push a snapshot of the operator to the cluster:
-
-```shell
-./gradlew loadImage
-```
-
-### Deployment
+### Getting started
 
 To deploy the operator and related RBAC resources, you can use the resources in `deploy/`.
 The easiest method of installation is the `deploy.sh` script.
-It will automatically install dependencies, CRDs and the Glasskube operator.
+It will automatically install dependencies, CRDs and the Glasskube operator into your current `kubectl` context.
 You can choose to let the operator manage custom resources in the entire cluster or just a single namespace.
+
+#### Dependencies
+
+The `deploy.sh` script will automatically install following dependencies:
+
+- cert-manager [`cert-manager/cert-manager`](https://github.com/cert-manager/cert-manager)
+- Prometheus, Grafana & Alert
+  Manager [`prometheus-community/kube-prometheus-stack`](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/README.md)
+- mariadb-operator [`mmontes11/mariadb-operator`](https://github.com/mmontes11/mariadb-operator)
+- CloudNativePG [`cloudnative-pg/cloudnative-pg`](https://github.com/cloudnative-pg/cloudnative-pg)
+- MinIO [`minio/minio`](https://github.com/minio/minio/tree/master/helm/minio)
 
 > **Note**
 > Installing CRDs still requires cluster-wide permissions.
+> Currently it is not possible to exclude certain dependencies.
 
-Run the script like this:
+
+All configuration parameters can be printed with the `-h` command.
+
+```txt
+$ ./deploy/deploy.sh  -h
+
+Usage: deploy.sh [options]
+
+Options:
+  -v  VERSION
+       Check https://hub.docker.com/r/glasskube/operator/tags for available versions.
+       If no version is provided, only dependencies are installed.
+  -n  NAMESPACE
+       Specifies the namespace where all operators will be installed. If NAMESPACE is
+       missing or empty, a cluster-wide installation will be performed.
+  -g  HOST_NAME
+       Specifies the host name that should be used for the Grafana ingress. If no host
+       name is provided, the Grafana ingress will not be enabled.
+  -p  AMOUNT
+       Specifies the size of the prometheus storage claim(e.g. "10Gi"). If no value is
+       set, prometheus persistence will not be enabled.
+  -i  INGRESS_CLASS
+       Specifies the ingress class name to be used
+  -c  CLUSTER_ISSUER
+       Specifies the cluster issuer to be used
+  -d  CLUSTER_DNS_NAME
+       Specifies the cluster name to resolve dns queries
+  -h
+       Show this help.
+````
+
+Run the script for example like this:
 
 ```shell
-# Cluster-wide deployment of version X.Y.Z of the Glasskube operator 
-deploy/deploy.sh -v X.Y.Z
-# Deployment restricted to the namespace glasskube-apps 
-deploy/deploy.sh -v X.Y.Z -n glasskube-apps
+deploy/deploy.sh -v $VERSION -g grafana.minikube -p 10Gi -i nginx
 ```
 
-You can find the latest version on [GitHub](https://github.com/glasskube/operator/tags)
+You can find the latest `$VERSION` on [GitHub](https://github.com/glasskube/operator/tags)
 or [Docker Hub](https://hub.docker.com/r/glasskube/operator/tags).
 
 ## Custom Resources

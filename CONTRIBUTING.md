@@ -3,6 +3,58 @@
 Welcome, and thank you for deciding to invest some of your time in contributing to the Glasskube project!
 The goal of this document is to define some guidelines to streamline our contribution workflow.
 
+## Getting started
+
+### Requirements
+
+- Docker [`moby/moby`](https://github.com/moby/moby)
+- Minikube [`kubernetes/minikube`](https://github.com/kubernetes/minikube)
+- Gradle [`gradle/gradle`](https://github.com/gradle/gradle)
+- Kotlin [`jetbrains/kotlin`](https://github.com/jetbrains/kotlin)
+
+### Local Kubernetes setup
+
+Minikube is the recommended way on starting a cluster for local development.
+
+```shell
+minikube profile glasskube # (optional)
+minikube start
+```
+
+### Tasks
+
+#### Applying Custom Resource Definitions
+
+This task uses your current `kubectl` context.
+
+```shell
+./gradlew installCrd
+```
+
+#### Liniting the project
+
+```shell
+./gradlew --continue ktlintCheck
+```
+
+#### Running the Operator
+
+The operator is started locally and connects to your current `kubectl` context. As Glasskube might get installed in
+different namespaces, we need to fetch the current namespace form the Kubernetes API. For local development we can
+manually overwrite this with by setting the environment variable `NAMESPACE=glasskube-system`.
+
+```shell
+./gradlew run
+```
+
+#### Pushing an image to local minikube
+
+When using Minikube for development, you can push a snapshot of the operator to the cluster:
+
+```shell
+./gradlew loadImage
+```
+
 ## Issues
 
 Take a look at our issues board if you want to learn about current tasks.
