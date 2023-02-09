@@ -111,10 +111,17 @@ function install_helm_charts {
   helm upgrade --install cnpg cnpg/cloudnative-pg \
     --namespace "$NS_CNPG" --create-namespace
 
+  local MINIO_ARGS=(
+    "--set" "replicas=1" "--set" "persistence.size=20Gi"
+    "--set" "mode=standalone" "--set" "DeploymentUpdate.type=Recreate"
+    "--set" "resources.requests.memory=256Mi"
+  )
+  if [ -n "$CLUSTER_DNS_NAME" ]; then
+    local MINIO_ARGS+=("--set" "clusterDomain=$CLUSTER_DNS_NAME")
+  fi
   helm upgrade --install glasskube-minio minio/minio \
     --namespace "$NS_MINIO" --create-namespace \
-    --set replicas=1 --set persistence.size=20Gi --set mode=standalone --set DeploymentUpdate.type=Recreate \
-    --set resources.requests.memory=256Mi
+    "${MINIO_ARGS[@]}"
 }
 
 function mk_temp_kustomization {
