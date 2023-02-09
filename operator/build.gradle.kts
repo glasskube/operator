@@ -1,12 +1,14 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 
 plugins {
     kotlin("jvm") version "1.7.10"
     kotlin("kapt") version "1.7.10"
-    id("com.google.cloud.tools.jib") version "3.3.0"
+    kotlin("plugin.spring") version "1.7.10"
     id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
     id("com.gorylenko.gradle-git-properties") version "2.4.1"
-    application
+    id("org.springframework.boot") version "3.0.2"
+    id("io.spring.dependency-management") version "1.1.0"
 }
 
 group = "eu.glasskube.operator"
@@ -20,6 +22,8 @@ val bouncyCastleVersion: String by project
 val minioVersion: String by project
 
 dependencies {
+    implementation("org.springframework.boot:spring-boot-starter")
+
     implementation("io.javaoperatorsdk", "operator-framework", javaOperatorVersion)
     implementation("org.slf4j", "slf4j-api", slf4jVersion)
     implementation("ch.qos.logback", "logback-core", logbackVersion)
@@ -31,7 +35,7 @@ dependencies {
 
     kapt("io.fabric8", "crd-generator-apt", crdGeneratorVersion)
 
-    testImplementation(kotlin("test"))
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 java {
@@ -40,31 +44,20 @@ java {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "${JavaVersion.VERSION_17}"
-    kotlinOptions.javaParameters = true
+    kotlinOptions {
+        jvmTarget = "${JavaVersion.VERSION_17}"
+        javaParameters = true
+        freeCompilerArgs = listOf("-Xjsr305=strict")
+    }
 }
 
 tasks.test {
     useJUnitPlatform()
 }
 
-jib {
-    from {
-        image = "ghcr.io/graalvm/jdk:ol9-java17-22.3.0"
-    }
-
-    to {
-        image = "glasskube/operator"
-        tags = setOf(version as String)
-    }
-
-    container {
-        user = "333"
-    }
-}
-
-application {
-    mainClass.set("eu.glasskube.operator.MainKt")
+tasks.named<BootBuildImage>("bootBuildImage") {
+    imageName.set("glasskube/operator")
+    tags.add("glasskube/operator:$version")
 }
 
 gitProperties {

@@ -1,30 +1,34 @@
 package eu.glasskube.operator
 
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.PropertySource
 import java.time.Instant
 import java.time.ZonedDateTime
-import java.util.ResourceBundle
 
-data class ReleaseInfo private constructor(
+@Configuration
+@PropertySource("classpath:git.properties")
+data class ReleaseInfo(
+    @Value("\${git.build.version}")
     val version: String,
+    @Value("\${git.branch}")
     val branch: String,
+    @Value("\${git.commit.id.abbrev}")
     val commitHash: String,
-    val commitDate: Instant
+    @Value("\${git.commit.time}")
+    private val commitDateString: String
 ) {
+
+    val commitDate: Instant =
+        ZonedDateTime.parse(commitDateString).toInstant()
+
     fun print() {
-        println("Version $version ($commitHash@$branch on $commitDate)")
+        log.info("Version $version ($commitHash@$branch on $commitDate)")
     }
 
     companion object {
-        private val lazyInstance by lazy {
-            val gitProperties = ResourceBundle.getBundle("git")
-            ReleaseInfo(
-                version = gitProperties.getString("git.build.version"),
-                branch = gitProperties.getString("git.branch"),
-                commitHash = gitProperties.getString("git.commit.id.abbrev"),
-                commitDate = ZonedDateTime.parse(gitProperties.getString("git.commit.time")).toInstant()
-            )
-        }
-
-        fun getInstance() = lazyInstance
+        private val log = LoggerFactory.getLogger(ReleaseInfo::class.java)
     }
+
 }
