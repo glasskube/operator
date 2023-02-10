@@ -21,9 +21,6 @@ val minioVersion: String by project
 
 dependencies {
     implementation("io.javaoperatorsdk", "operator-framework", javaOperatorVersion)
-    kapt("io.javaoperatorsdk", "operator-framework", javaOperatorVersion)
-    kapt("io.fabric8", "crd-generator-apt", crdGeneratorVersion)
-
     implementation("org.slf4j", "slf4j-api", slf4jVersion)
     implementation("ch.qos.logback", "logback-core", logbackVersion)
     implementation("ch.qos.logback", "logback-classic", logbackVersion)
@@ -31,6 +28,8 @@ dependencies {
     implementation("org.bouncycastle", "bcpkix-jdk15to18", bouncyCastleVersion)
     implementation("io.minio", "minio", minioVersion)
     implementation("io.minio", "minio-admin", minioVersion)
+
+    kapt("io.fabric8", "crd-generator-apt", crdGeneratorVersion)
 
     testImplementation(kotlin("test"))
 }
