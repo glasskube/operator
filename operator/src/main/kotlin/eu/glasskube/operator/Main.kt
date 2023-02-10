@@ -67,7 +67,6 @@ fun main() {
     operator.registerForNamespaceOrCluster(HttpEchoReconciler())
     operator.registerForNamespaceOrCluster(MatomoReconciler())
     operator.registerForNamespaceOrCluster(OdooReconciler(minioClient, minioAdminClient))
-    operator.installShutdownHook()
     operator.start()
     LOG.info("\uD83E\uDDCA Glasskube started in {} seconds", Duration.ofNanos(System.nanoTime() - startTime).seconds)
 }
