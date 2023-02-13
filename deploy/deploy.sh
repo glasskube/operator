@@ -61,10 +61,6 @@ function install_helm_charts {
     NS_MINIO="$NS_OVERRIDE"
   fi
 
-  helm upgrade --install cert-manager jetstack/cert-manager \
-    --namespace "$NS_CERT_MANAGER" --create-namespace \
-    --set installCRDs=true
-
   local PROMETHEUS_ARGS=(
     "--set" "prometheus.prometheusSpec.retention=180d"
     "--set" "prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false"
@@ -95,6 +91,11 @@ function install_helm_charts {
   kubectl apply \
     -n "$NS_PROMETHEUS" \
     -f https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/91f3af3ecf92aa415a4498f62e2a8d01156d70ee/docs/src/samples/monitoring/grafana-configmap.yaml
+
+  helm upgrade --install cert-manager jetstack/cert-manager \
+    --namespace "$NS_CERT_MANAGER" --create-namespace \
+    --set prometheus.enabled=true --set prometheus.servicemonitor.enabled=true \
+    --set installCRDs=true
 
   local MARIADB_ARGS=(
     "--set" "ha.enabled=false" "--set" "metrics.enabled=true" "--set" "metrics.serviceMonitor.enabled=false" "--set" "webhook.serviceMonitor.enabled=false"
