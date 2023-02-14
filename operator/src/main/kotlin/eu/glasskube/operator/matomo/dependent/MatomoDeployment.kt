@@ -33,7 +33,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Deployment::class.java) {
 
     private companion object {
-        private const val matomoImage = "ghcr.io/glasskube/matomo-docker:4.13.0-apache"
+        private const val matomoImage = "glasskube/matomo:4.13.3"
         private const val wwwDataVolumeName = "www-data"
         private const val matomoConfigurationVolumeName = "matomo-configuration"
         private const val installJson = "install.json"
