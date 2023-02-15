@@ -12,6 +12,7 @@ import eu.glasskube.kubernetes.api.model.envFrom
 import eu.glasskube.kubernetes.api.model.item
 import eu.glasskube.kubernetes.api.model.items
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.persistentVolumeClaim
 import eu.glasskube.kubernetes.api.model.secretRef
 import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.kubernetes.api.model.volume
@@ -22,6 +23,7 @@ import eu.glasskube.operator.matomo.MatomoReconciler
 import eu.glasskube.operator.matomo.configMapName
 import eu.glasskube.operator.matomo.deploymentName
 import eu.glasskube.operator.matomo.identifyingLabel
+import eu.glasskube.operator.matomo.persistentVolumeClaimName
 import eu.glasskube.operator.matomo.resourceLabels
 import eu.glasskube.operator.matomo.secretName
 import io.fabric8.kubernetes.api.model.apps.Deployment
@@ -107,7 +109,9 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                         }
                     )
                     volumes = listOf(
-                        volume(wwwDataVolumeName),
+                        volume(wwwDataVolumeName) {
+                            persistentVolumeClaim(primary.persistentVolumeClaimName)
+                        },
                         volume(matomoConfigurationVolumeName) {
                             configMap(primary.configMapName) {
                                 defaultMode = 420

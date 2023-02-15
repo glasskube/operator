@@ -42,6 +42,9 @@ val Matomo.ingressTlsCertName
 val Matomo.configMapName
     get() = genericResourceName
 
+val Matomo.persistentVolumeClaimName
+    get() = genericResourceName
+
 val Matomo.secretName
     get() = mariaDBHost
 

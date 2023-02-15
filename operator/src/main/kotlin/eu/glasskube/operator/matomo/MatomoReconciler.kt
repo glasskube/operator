@@ -3,6 +3,7 @@ package eu.glasskube.operator.matomo
 import eu.glasskube.operator.matomo.dependent.MatomoConfigMap
 import eu.glasskube.operator.matomo.dependent.MatomoDeployment
 import eu.glasskube.operator.matomo.dependent.MatomoIngress
+import eu.glasskube.operator.matomo.dependent.MatomoPluginsVolumeClaim
 import eu.glasskube.operator.matomo.dependent.MatomoSecret
 import eu.glasskube.operator.matomo.dependent.MatomoService
 import eu.glasskube.operator.matomo.dependent.mariadb.MatomoDatabaseMariaDB
@@ -25,7 +26,8 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(type = MatomoMariaDB::class),
         Dependent(type = MatomoDatabaseMariaDB::class),
         Dependent(type = MatomoUserMariaDB::class),
-        Dependent(type = MatomoGrantMariaDB::class)
+        Dependent(type = MatomoGrantMariaDB::class),
+        Dependent(type = MatomoPluginsVolumeClaim::class)
     ]
 )
 class MatomoReconciler : Reconciler<Matomo> {
