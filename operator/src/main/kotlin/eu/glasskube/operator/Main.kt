@@ -70,7 +70,7 @@ fun main() {
     operator.registerForNamespaceOrCluster(ConfigGenerator(kubernetesClient))
     operator.registerForNamespaceOrCluster(SecretGenerator(random))
     operator.registerForNamespaceOrCluster(HttpEchoReconciler())
-    operator.registerForNamespaceOrCluster(MatomoReconciler())
+    operator.registerForNamespaceOrCluster(MatomoReconciler(keycloakClient))
     operator.registerForNamespaceOrCluster(OdooReconciler(minioClient, minioAdminClient))
     operator.start()
     LOG.info("\uD83E\uDDCA Glasskube started in {} seconds", Duration.ofNanos(System.nanoTime() - startTime).seconds)
