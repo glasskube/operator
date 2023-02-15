@@ -27,10 +27,13 @@ import io.javaoperatorsdk.operator.api.reconciler.Reconciler
 import io.minio.MinioClient
 import io.minio.admin.MinioAdminClient
 import io.minio.credentials.Credentials
+import org.keycloak.admin.client.Keycloak
+import org.keycloak.representations.idm.RealmRepresentation
 import org.slf4j.LoggerFactory
 import java.security.SecureRandom
 import java.time.Duration
 import java.util.function.Consumer
+import javax.ws.rs.ClientErrorException
 
 private val LOG = LoggerFactory.getLogger("main")
 
@@ -51,8 +54,10 @@ fun main() {
     val kubernetesClient = KubernetesClientBuilder().build()
     val minioClient = getMinioClient(kubernetesClient)
     val minioAdminClient = getMinioAdminClient(kubernetesClient)
+    val keycloakClient = getKeycloakClient()
 
     initializeConfigIfNeed(kubernetesClient)
+    createRealmIfNeeded(keycloakClient)
 
     val random = SecureRandom.getInstanceStrong()
     val operator = Operator(kubernetesClient) {
@@ -83,6 +88,23 @@ fun initializeConfigIfNeed(client: KubernetesClient) {
                 }
             }
         ).create()
+    }
+}
+
+private fun createRealmIfNeeded(keycloak: Keycloak) {
+    try {
+        LOG.debug("creating keycloak realm")
+        keycloak.realms().create(
+            RealmRepresentation().apply {
+                realm = Environment.KEYCLOAK_REALM
+            }
+        )
+    } catch (e: RuntimeException) {
+        if (e is ClientErrorException && e.response.status == 409) {
+            LOG.info("realm already exists")
+        } else {
+            LOG.error("could not create realm", e)
+        }
     }
 }
 
@@ -156,3 +178,12 @@ private fun getMinioAdminClient(kubernetesClient: KubernetesClient): MinioAdminC
         .endpoint("http://${Environment.MINIO_HOST_NAME}:9000")
         .credentialsProvider { kubernetesClient.getMinioCredentials() }
         .build()
+
+private fun getKeycloakClient(): Keycloak =
+    Keycloak.getInstance(
+        Environment.KEYCLOAK_URL,
+        "master",
+        Environment.KEYCLOAK_USERNAME,
+        Environment.KEYCLOAK_PASSWORD,
+        "admin-cli"
+    )

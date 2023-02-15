@@ -29,6 +29,8 @@ dependencies {
     implementation("io.minio", "minio", minioVersion)
     implementation("io.minio", "minio-admin", minioVersion)
 
+    implementation("org.keycloak:keycloak-admin-client:20.0.3")
+
     kapt("io.fabric8", "crd-generator-apt", crdGeneratorVersion)
 
     testImplementation(kotlin("test"))
