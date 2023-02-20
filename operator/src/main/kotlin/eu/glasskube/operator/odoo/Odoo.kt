@@ -31,7 +31,6 @@ class Odoo : CustomResource<OdooSpec, OdooStatus>(), Namespaced {
         const val configFile = "odoo.conf"
         const val configPath = "/etc/odoo"
         const val dbName = "odoo"
-        const val dbUsername = "odoo"
     }
 }
 
@@ -57,10 +56,7 @@ val Odoo.dbName
     get() = "$genericResourceName-db"
 
 val Odoo.dbSecretName
-    get() = "$genericResourceName-db"
-
-val Odoo.dbSuperuserSecretName
-    get() = "$genericResourceName-db-superuser"
+    get() = "$dbName-app"
 
 val Odoo.serviceName
     get() = genericResourceName
