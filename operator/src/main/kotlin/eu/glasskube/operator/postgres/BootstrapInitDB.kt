@@ -7,7 +7,7 @@ import io.fabric8.kubernetes.api.model.LocalObjectReference
 //  - postInitApplicationSQLRefs
 data class BootstrapInitDB(
     val database: String,
-    val owner: String,
+    val owner: String? = null,
     val secret: LocalObjectReference? = null,
     val options: List<String>? = null,
     val dataChecksums: Boolean? = null,

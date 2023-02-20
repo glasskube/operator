@@ -4,8 +4,6 @@ import eu.glasskube.operator.api.reconciler.informerEventSource
 import eu.glasskube.operator.decodeBase64
 import eu.glasskube.operator.odoo.dependent.OdooConfigMap
 import eu.glasskube.operator.odoo.dependent.OdooDatabaseBackupSecret
-import eu.glasskube.operator.odoo.dependent.OdooDatabaseSecret
-import eu.glasskube.operator.odoo.dependent.OdooDatabaseSuperuserSecret
 import eu.glasskube.operator.odoo.dependent.OdooDeployment
 import eu.glasskube.operator.odoo.dependent.OdooIngress
 import eu.glasskube.operator.odoo.dependent.OdooPersistentVolumeClaim
@@ -53,17 +51,7 @@ import org.slf4j.LoggerFactory
         Dependent(
             name = "OdooPostgresCluster",
             type = OdooPostgresCluster::class,
-            dependsOn = ["OdooDatabaseSecret", "OdooDatabaseSuperuserSecret", "OdooDatabaseBackupSecret"]
-        ),
-        Dependent(
-            name = "OdooDatabaseSecret",
-            type = OdooDatabaseSecret::class,
-            useEventSourceWithName = OdooReconciler.SECRETS_EVENT_SOURCE_NAME
-        ),
-        Dependent(
-            name = "OdooDatabaseSuperuserSecret",
-            type = OdooDatabaseSuperuserSecret::class,
-            useEventSourceWithName = OdooReconciler.SECRETS_EVENT_SOURCE_NAME,
+            dependsOn = ["OdooDatabaseBackupSecret"]
         ),
         Dependent(
             name = "OdooDatabaseBackupSecret",
