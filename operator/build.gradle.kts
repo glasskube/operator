@@ -5,10 +5,9 @@ plugins {
     kotlin("jvm") version "1.7.10"
     kotlin("kapt") version "1.7.10"
     kotlin("plugin.spring") version "1.7.10"
-    id("com.google.cloud.tools.jib") version "3.3.0"
     id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
     id("com.gorylenko.gradle-git-properties") version "2.4.1"
-//    id("org.graalvm.buildtools.native") version "0.9.18"
+    id("org.graalvm.buildtools.native") version "0.9.18"
     id("org.springframework.boot") version "3.0.2"
     id("io.spring.dependency-management") version "1.1.0"
 }
@@ -34,6 +33,7 @@ dependencies {
     implementation("org.bouncycastle", "bcpkix-jdk15to18", bouncyCastleVersion)
     implementation("io.minio", "minio", minioVersion)
     implementation("io.minio", "minio-admin", minioVersion)
+    implementation("org.reflections", "reflections", "0.10.2")
 
     kapt("io.fabric8", "crd-generator-apt", crdGeneratorVersion)
 
@@ -62,21 +62,6 @@ tasks.named<BootBuildImage>("bootBuildImage") {
     tags.add("glasskube/operator:$version")
 }
 
-jib {
-    from {
-        image = "ghcr.io/graalvm/jdk:ol9-java17-22.3.0"
-    }
-
-    to {
-        image = "glasskube/operator"
-        tags = setOf(version as String)
-    }
-
-    container {
-        user = "333"
-    }
-}
-
 gitProperties {
     keys = listOf(
         "git.branch",
@@ -85,6 +70,14 @@ gitProperties {
         "git.commit.time"
     )
     dateFormat = "yyyy-MM-dd'T'HH:mmX"
+}
+
+graalvmNative {
+    binaries {
+        all {
+            buildArgs.add("--enable-https")
+        }
+    }
 }
 
 tasks.create("clearCrd", Delete::class) {
