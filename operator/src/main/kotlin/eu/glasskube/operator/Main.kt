@@ -1,5 +1,6 @@
 package eu.glasskube.operator
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.kotlinModule
 import eu.glasskube.kubernetes.api.model.configMap
@@ -58,6 +59,7 @@ fun main() {
     val operator = Operator(kubernetesClient) {
         it.withObjectMapper(
             Serialization.jsonMapper()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .registerModule(kotlinModule { configure(KotlinFeature.NullIsSameAsDefault, true) })
         )
     }
