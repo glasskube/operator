@@ -50,7 +50,7 @@ class OdooDeployment : CRUDKubernetesDependentResource<Deployment, Odoo>(Deploym
                     containers = listOf(
                         container {
                             name = "odoo"
-                            image = "glasskube/odoo:16.0.20230109"
+                            image = "glasskube/odoo:16.0.20230210"
                             imagePullPolicy = "IfNotPresent"
                             env {
                                 envVar("HOST", "${primary.dbName}-rw")
