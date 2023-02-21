@@ -1,11 +1,9 @@
-package eu.glasskube.operator
+package eu.glasskube.operator.boot
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.kotlinModule
-import eu.glasskube.kubernetes.api.model.configMap
-import eu.glasskube.kubernetes.api.model.metadata
-import eu.glasskube.operator.config.ConfigGenerator
+import eu.glasskube.operator.Environment
 import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.client.KubernetesClient
 import io.fabric8.kubernetes.client.KubernetesClientBuilder
@@ -31,36 +29,21 @@ class OperatorConfig {
 
     @Bean(destroyMethod = "close")
     fun kubernetesClient(): KubernetesClient =
-        KubernetesClientBuilder().build().also {
-            initializeConfigIfNeed(it)
-        }
+        KubernetesClientBuilder().build()
 
     @Bean(destroyMethod = "stop")
-    fun operator(kubernetesClient: KubernetesClient, objectMapper: ObjectMapper, reconcilers: List<Reconciler<*>>) =
-        Operator(kubernetesClient) { it.withObjectMapper(objectMapper) }
-            .apply {
-                reconcilers.forEach { registerForNamespaceOrCluster(it) }
-                start()
-            }
+    fun operator(
+        kubernetesClient: KubernetesClient,
+        operatorConfigurationService: InjectionAwareConfigurationService,
+        reconcilers: List<Reconciler<*>>
+    ) = Operator(kubernetesClient, operatorConfigurationService).apply {
+        reconcilers.forEach { registerForNamespaceOrCluster(it) }
+        start()
+    }
 
     @Bean
     fun random(): Random =
         SecureRandom.getInstanceStrong()
-
-    private fun initializeConfigIfNeed(client: KubernetesClient) {
-        val configMap = getConfig(client)
-        if (!configMap.isReady) {
-            client.resource(
-                configMap {
-                    metadata {
-                        name = ConfigGenerator.NAME
-                        namespace = Environment.NAMESPACE
-                        labels = mapOf(ConfigGenerator.LABEL_SELECTOR to "")
-                    }
-                }
-            ).create()
-        }
-    }
 
     private fun <T : HasMetadata> Operator.registerForNamespaceOrCluster(reconciler: Reconciler<T>): RegisteredController<T> =
         register(reconciler, Consumer { it.settingNamespaceFromEnv() })
@@ -73,5 +56,4 @@ class OperatorConfig {
                 else -> settingNamespace(namespace)
             }
         }
-
 }

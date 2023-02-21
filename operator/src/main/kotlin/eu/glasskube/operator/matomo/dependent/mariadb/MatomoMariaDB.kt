@@ -2,7 +2,7 @@ package eu.glasskube.operator.matomo.dependent.mariadb
 
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.operator.config.ConfigKey
-import eu.glasskube.operator.getConfig
+import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.mariadb.Exporter
 import eu.glasskube.operator.mariadb.MariaDB
 import eu.glasskube.operator.mariadb.MariaDBImage
@@ -24,7 +24,8 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernete
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = MatomoReconciler.SELECTOR)
-class MatomoMariaDB : CRUDKubernetesDependentResource<MariaDB, Matomo>(MariaDB::class.java) {
+class MatomoMariaDB(private val configService: ConfigService) :
+    CRUDKubernetesDependentResource<MariaDB, Matomo>(MariaDB::class.java) {
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = mariaDB {
         metadata {
@@ -37,7 +38,7 @@ class MatomoMariaDB : CRUDKubernetesDependentResource<MariaDB, Matomo>(MariaDB::
             image = MariaDBImage("mariadb", "10.7.4", "IfNotPresent"),
             volumeClaimTemplate = MariaDBVolumeClaimTemplate(
                 resources = MariaDBResources(MariaDBResourcesRequest("10Gi")),
-                storageClassName = getConfig(client, ConfigKey.databaseStorageClassName)
+                storageClassName = configService.getValue(ConfigKey.databaseStorageClassName)
             ),
             metrics = Metrics(
                 exporter = Exporter(

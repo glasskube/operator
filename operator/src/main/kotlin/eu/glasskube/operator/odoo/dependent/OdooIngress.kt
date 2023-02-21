@@ -6,6 +6,7 @@ import eu.glasskube.kubernetes.api.model.extensions.ingressPath
 import eu.glasskube.kubernetes.api.model.extensions.ingressRuleValue
 import eu.glasskube.kubernetes.api.model.extensions.spec
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.generic.dependant.DependentIngress
 import eu.glasskube.operator.odoo.Odoo
 import eu.glasskube.operator.odoo.OdooReconciler
@@ -19,7 +20,7 @@ import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = OdooReconciler.SELECTOR)
-class OdooIngress : DependentIngress<Odoo>() {
+class OdooIngress(configService: ConfigService) : DependentIngress<Odoo>(configService) {
     override fun desired(primary: Odoo, context: Context<Odoo>) = ingress {
         metadata {
             name = primary.ingressName

@@ -6,6 +6,7 @@ import eu.glasskube.kubernetes.api.model.extensions.ingressPath
 import eu.glasskube.kubernetes.api.model.extensions.ingressRuleValue
 import eu.glasskube.kubernetes.api.model.extensions.spec
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.generic.dependant.DependentIngress
 import eu.glasskube.operator.matomo.Matomo
 import eu.glasskube.operator.matomo.MatomoReconciler
@@ -19,7 +20,7 @@ import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = MatomoReconciler.SELECTOR)
-class MatomoIngress : DependentIngress<Matomo>() {
+class MatomoIngress(configService: ConfigService) : DependentIngress<Matomo>(configService) {
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = ingress {
         metadata {

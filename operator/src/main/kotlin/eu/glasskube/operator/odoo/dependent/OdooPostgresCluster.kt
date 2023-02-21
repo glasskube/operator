@@ -2,7 +2,7 @@ package eu.glasskube.operator.odoo.dependent
 
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.operator.config.ConfigKey
-import eu.glasskube.operator.getConfig
+import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.odoo.Odoo
 import eu.glasskube.operator.odoo.OdooReconciler
 import eu.glasskube.operator.odoo.bucketName
@@ -25,7 +25,8 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernete
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = OdooReconciler.SELECTOR)
-class OdooPostgresCluster : CRUDKubernetesDependentResource<PostgresCluster, Odoo>(PostgresCluster::class.java) {
+class OdooPostgresCluster(private val configService: ConfigService) :
+    CRUDKubernetesDependentResource<PostgresCluster, Odoo>(PostgresCluster::class.java) {
     override fun desired(primary: Odoo, context: Context<Odoo>) = postgresCluster {
         metadata {
             name = primary.dbName
@@ -39,7 +40,7 @@ class OdooPostgresCluster : CRUDKubernetesDependentResource<PostgresCluster, Odo
                 initdb = BootstrapInitDB(database = Odoo.dbName)
             ),
             storage = StorageConfiguration(
-                storageClass = getConfig(client, ConfigKey.databaseStorageClassName),
+                storageClass = configService[ConfigKey.databaseStorageClassName],
                 size = "10Gi"
             ),
             backup = BackupConfiguration(
