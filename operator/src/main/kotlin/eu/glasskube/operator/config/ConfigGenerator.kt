@@ -1,6 +1,5 @@
 package eu.glasskube.operator.config
 
-import eu.glasskube.operator.getCloudProvider
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.client.KubernetesClient
 import io.javaoperatorsdk.operator.api.reconciler.Context
@@ -15,7 +14,7 @@ private val log = LoggerFactory.getLogger(ConfigGenerator::class.java)
     labelSelector = ConfigGenerator.LABEL_SELECTOR,
     generationAwareEventProcessing = false
 )
-class ConfigGenerator(private val kubernetesClient: KubernetesClient) : Reconciler<ConfigMap> {
+class ConfigGenerator(private val kubernetesClient: KubernetesClient, private val configService: ConfigService) : Reconciler<ConfigMap> {
 
     init {
         log.info("Glasskube settings are initializing")
@@ -35,7 +34,7 @@ class ConfigGenerator(private val kubernetesClient: KubernetesClient) : Reconcil
 
     private fun createConfigFor(it: ConfigKey): String? {
         return when (it) {
-            ConfigKey.cloudProvider -> getCloudProvider(kubernetesClient).name
+            ConfigKey.cloudProvider -> configService.cloudProvider.name
             ConfigKey.databaseStorageClassName -> detectDatabaseStorageClass()
             ConfigKey.ingressClassName -> null
         }
@@ -48,7 +47,7 @@ class ConfigGenerator(private val kubernetesClient: KubernetesClient) : Reconcil
         val defaultStorageClassName = defaultStorageClass?.let { defaultStorageClass.metadata.name } ?: "standard"
 
         val awsEncryptedStorageClass = "gp3-encrypted"
-        if (getCloudProvider(kubernetesClient) === CloudProvider.aws && storageClassNames.contains(awsEncryptedStorageClass)) {
+        if (configService.cloudProvider === CloudProvider.aws && storageClassNames.contains(awsEncryptedStorageClass)) {
             return awsEncryptedStorageClass
         }
 
