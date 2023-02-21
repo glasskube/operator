@@ -1,5 +1,7 @@
-package eu.glasskube.operator
+package eu.glasskube.operator.boot
 
+import eu.glasskube.operator.Environment
+import eu.glasskube.operator.decodeBase64
 import io.fabric8.kubernetes.client.KubernetesClient
 import io.minio.MinioClient
 import io.minio.admin.MinioAdminClient

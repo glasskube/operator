@@ -30,5 +30,4 @@ data class ReleaseInfo(
     companion object {
         private val log = LoggerFactory.getLogger(ReleaseInfo::class.java)
     }
-
 }
