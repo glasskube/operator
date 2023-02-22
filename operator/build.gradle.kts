@@ -98,11 +98,11 @@ tasks.create("installCrd", Exec::class) {
 
 tasks.create("loadImage", Exec::class) {
     group = "kubernetes"
-    dependsOn("jibBuildTar")
+    dependsOn("bootBuildImage")
     commandLine(
         "minikube",
         "image",
         "load",
-        "build/jib-image.tar"
+        "glasskube/operator:$version"
     )
 }
