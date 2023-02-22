@@ -20,4 +20,4 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build OCI Image
-        run: ./gradlew jib
+        run: ./gradlew bootBuildImage --publishImage true
