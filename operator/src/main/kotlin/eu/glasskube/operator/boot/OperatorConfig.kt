@@ -1,5 +1,6 @@
 package eu.glasskube.operator.boot
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.kotlinModule
@@ -25,6 +26,7 @@ class OperatorConfig {
     @Bean
     fun objectMapper(): ObjectMapper =
         Serialization.jsonMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             .registerModule(kotlinModule { enable(KotlinFeature.NullIsSameAsDefault) })
 
     @Bean(destroyMethod = "close")
