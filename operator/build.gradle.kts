@@ -58,6 +58,12 @@ tasks.test {
 tasks.named<BootBuildImage>("bootBuildImage") {
     imageName.set("glasskube/operator")
     tags.add("glasskube/operator:$version")
+    docker {
+        publishRegistry {
+            username.set(System.getenv("DOCKERHUB_USERNAME"))
+            password.set(System.getenv("DOCKERHUB_TOKEN"))
+        }
+    }
 }
 
 gitProperties {
