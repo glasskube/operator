@@ -14,10 +14,13 @@ import eu.glasskube.operator.postgres.BarmanObjectStoreConfiguration
 import eu.glasskube.operator.postgres.BootstrapConfiguration
 import eu.glasskube.operator.postgres.BootstrapInitDB
 import eu.glasskube.operator.postgres.ClusterSpec
+import eu.glasskube.operator.postgres.CompressionType
+import eu.glasskube.operator.postgres.DataBackupConfiguration
 import eu.glasskube.operator.postgres.MonitoringConfiguration
 import eu.glasskube.operator.postgres.PostgresCluster
 import eu.glasskube.operator.postgres.S3Credentials
 import eu.glasskube.operator.postgres.StorageConfiguration
+import eu.glasskube.operator.postgres.WalBackupConfiguration
 import eu.glasskube.operator.postgres.postgresCluster
 import io.fabric8.kubernetes.api.model.SecretKeySelector
 import io.javaoperatorsdk.operator.api.reconciler.Context
@@ -50,9 +53,15 @@ class OdooPostgresCluster(private val configService: ConfigService) :
                     s3Credentials = S3Credentials(
                         accessKeyId = SecretKeySelector("username", primary.dbBackupSecretName, false),
                         secretAccessKey = SecretKeySelector("password", primary.dbBackupSecretName, false)
+                    ),
+                    wal = WalBackupConfiguration(
+                        compression = CompressionType.GZIP
+                    ),
+                    data = DataBackupConfiguration(
+                        compression = CompressionType.GZIP
                     )
                 ),
-                retentionPolicy = "30d"
+                retentionPolicy = "15d"
             ),
             monitoring = MonitoringConfiguration(
                 enablePodMonitor = true
