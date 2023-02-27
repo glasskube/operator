@@ -18,3 +18,5 @@ fun resourceLabels(app: String, vararg additionalLabels: Pair<String, String>) =
 
 fun String.decodeBase64() = String(Base64.getDecoder().decode(this))
 fun String.encodeBase64() = Base64.getEncoder().encodeToString(this.encodeToByteArray())
+
+fun <T> T.addTo(list: MutableCollection<T>): Boolean = list.add(this)

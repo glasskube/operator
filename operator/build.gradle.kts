@@ -32,7 +32,7 @@ dependencies {
     implementation("org.bouncycastle", "bcpkix-jdk15to18", bouncyCastleVersion)
     implementation("io.minio", "minio", minioVersion)
     implementation("io.minio", "minio-admin", minioVersion)
-
+    implementation("io.fabric8", "generator-annotations", crdGeneratorVersion)
     kapt("io.fabric8", "crd-generator-apt", crdGeneratorVersion)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
