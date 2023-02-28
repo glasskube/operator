@@ -1,5 +1,6 @@
 package eu.glasskube.operator.matomo
 
+import eu.glasskube.kubernetes.client.patchOrUpdateStatus
 import eu.glasskube.operator.matomo.dependent.MatomoConfigMap
 import eu.glasskube.operator.matomo.dependent.MatomoDeployment
 import eu.glasskube.operator.matomo.dependent.MatomoIngress
@@ -30,8 +31,7 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
 )
 class MatomoReconciler : Reconciler<Matomo> {
     override fun reconcile(resource: Matomo, context: Context<Matomo>): UpdateControl<Matomo> {
-        resource.status = MatomoStatus()
-        return UpdateControl.patchStatus(resource)
+        return resource.patchOrUpdateStatus(MatomoStatus())
     }
 
     companion object {
