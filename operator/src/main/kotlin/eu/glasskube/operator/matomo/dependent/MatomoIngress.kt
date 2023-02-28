@@ -7,7 +7,7 @@ import eu.glasskube.kubernetes.api.model.extensions.ingressRuleValue
 import eu.glasskube.kubernetes.api.model.extensions.spec
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.operator.config.ConfigService
-import eu.glasskube.operator.generic.dependant.DependentIngress
+import eu.glasskube.operator.generic.dependent.DependentIngress
 import eu.glasskube.operator.matomo.Matomo
 import eu.glasskube.operator.matomo.MatomoReconciler
 import eu.glasskube.operator.matomo.ingressName

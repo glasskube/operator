@@ -1,4 +1,4 @@
-package eu.glasskube.operator.generic.dependant
+package eu.glasskube.operator.generic.dependent
 
 import eu.glasskube.operator.config.CloudProvider
 import eu.glasskube.operator.config.ConfigService
