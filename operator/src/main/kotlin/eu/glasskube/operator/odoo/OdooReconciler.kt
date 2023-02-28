@@ -1,6 +1,5 @@
 package eu.glasskube.operator.odoo
 
-import eu.glasskube.operator.api.reconciler.informerEventSource
 import eu.glasskube.operator.decodeBase64
 import eu.glasskube.operator.odoo.dependent.OdooConfigMap
 import eu.glasskube.operator.odoo.dependent.OdooDatabaseBackupSecret
@@ -15,8 +14,6 @@ import io.javaoperatorsdk.operator.api.reconciler.Cleaner
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.DeleteControl
-import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext
-import io.javaoperatorsdk.operator.api.reconciler.EventSourceInitializer
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler
 import io.javaoperatorsdk.operator.api.reconciler.UpdateControl
 import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
@@ -55,15 +52,14 @@ import org.slf4j.LoggerFactory
         ),
         Dependent(
             name = "OdooDatabaseBackupSecret",
-            type = OdooDatabaseBackupSecret::class,
-            useEventSourceWithName = OdooReconciler.SECRETS_EVENT_SOURCE_NAME
+            type = OdooDatabaseBackupSecret::class
         )
     ]
 )
 class OdooReconciler(
     private val minioClient: MinioClient,
     private val minioAdminClient: MinioAdminClient
-) : Reconciler<Odoo>, EventSourceInitializer<Odoo>, Cleaner<Odoo> {
+) : Reconciler<Odoo>, Cleaner<Odoo> {
 
     override fun reconcile(resource: Odoo, context: Context<Odoo>): UpdateControl<Odoo> {
         if (resource.status.demoEnabledOnInstall == !resource.spec.demoEnabled) {
@@ -73,7 +69,7 @@ class OdooReconciler(
         resource.createBucket()
         resource.createBucketPolicy()
 
-        context.getSecondaryResource(Secret::class.java, OdooDatabaseBackupSecret.Discriminator()).ifPresent {
+        context.getSecondaryResource(Secret::class.java).ifPresent {
             val password = it.data["password"]?.decodeBase64()
             if (password != null) {
                 resource.createBucketUser(password)
@@ -156,15 +152,10 @@ class OdooReconciler(
         return DeleteControl.defaultDelete()
     }
 
-    override fun prepareEventSources(context: EventSourceContext<Odoo>) = with(context) {
-        mutableMapOf(SECRETS_EVENT_SOURCE_NAME to informerEventSource<Secret>())
-    }
-
     companion object {
         const val LABEL = "glasskube.eu/Odoo"
         const val APP_NAME = "odoo"
         const val SELECTOR = "app.kubernetes.io/managed-by=glasskube-operator,app=$APP_NAME"
-        const val SECRETS_EVENT_SOURCE_NAME = "OdooSecretEventSource"
 
         private val LOG = LoggerFactory.getLogger(OdooReconciler::class.java)
     }
