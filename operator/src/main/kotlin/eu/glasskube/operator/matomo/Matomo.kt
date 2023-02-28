@@ -11,7 +11,10 @@ data class MatomoSpec(
     val host: String? = null
 )
 
-class MatomoStatus
+class MatomoStatus {
+    override fun equals(other: Any?) = this === other || javaClass == other?.javaClass
+    override fun hashCode() = javaClass.hashCode()
+}
 
 @Group("glasskube.eu")
 @Version("v1alpha1")

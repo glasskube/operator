@@ -1,5 +1,6 @@
 package eu.glasskube.operator.odoo
 
+import eu.glasskube.kubernetes.client.patchOrUpdateStatus
 import eu.glasskube.operator.decodeBase64
 import eu.glasskube.operator.odoo.dependent.OdooConfigMap
 import eu.glasskube.operator.odoo.dependent.OdooDatabaseBackupSecret
@@ -76,13 +77,7 @@ class OdooReconciler(
             }
         }
 
-        return resource.newStatus()
-            .takeIf { it != resource.status }
-            ?.let {
-                resource.status = it
-                UpdateControl.updateStatus(resource)
-            }
-            ?: UpdateControl.noUpdate()
+        return resource.patchOrUpdateStatus(resource.newStatus())
     }
 
     private fun Odoo.newStatus() =
