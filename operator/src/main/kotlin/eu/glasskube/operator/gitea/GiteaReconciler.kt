@@ -13,6 +13,7 @@ import eu.glasskube.operator.gitea.dependent.GiteaRedisDeployment
 import eu.glasskube.operator.gitea.dependent.GiteaRedisService
 import eu.glasskube.operator.gitea.dependent.GiteaSSHService
 import eu.glasskube.operator.gitea.dependent.GiteaSecret
+import eu.glasskube.operator.gitea.dependent.GiteaServiceMonitor
 import eu.glasskube.operator.gitea.dependent.GiteaVolume
 import eu.glasskube.operator.postgres.PostgresCluster
 import io.fabric8.kubernetes.api.model.ConfigMap
@@ -56,7 +57,7 @@ import org.slf4j.LoggerFactory
         Dependent(
             type = GiteaDeployment::class,
             name = "GiteaDeployment",
-            dependsOn = ["GiteaVolume", "GiteaConfigMap", "GiteaIniConfigMap", "GiteaRedisService", "GiteaPostgresCluster"],
+            dependsOn = ["GiteaPostgresCluster", "GiteaVolume", "GiteaSecret", "GiteaConfigMap", "GiteaIniConfigMap", "GiteaRedisService"],
             useEventSourceWithName = GiteaReconciler.DEPLOYMENT_EVENT_SOURCE
         ),
         Dependent(
@@ -74,6 +75,11 @@ import org.slf4j.LoggerFactory
         Dependent(
             type = GiteaIngress::class,
             name = "GiteaIngress",
+            dependsOn = ["GiteaHttpService"]
+        ),
+        Dependent(
+            type = GiteaServiceMonitor::class,
+            name = "GiteaServiceMonitor",
             dependsOn = ["GiteaHttpService"]
         )
     ]
