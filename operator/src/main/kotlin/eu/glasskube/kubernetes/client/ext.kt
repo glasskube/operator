@@ -28,3 +28,10 @@ fun <S, T : CustomResource<*, S>> T.patchOrUpdateStatus(desiredStatus: S): Updat
         desiredStatus -> UpdateControl.noUpdate()
         else -> UpdateControl.patchStatus(apply { status = desiredStatus })
     }
+
+fun <S, T : CustomResource<*, S>> T.patchOrUpdateResourceAndStatus(desiredStatus: S): UpdateControl<T> =
+    when (status) {
+        null -> UpdateControl.updateResourceAndStatus(apply { status = desiredStatus })
+        desiredStatus -> UpdateControl.updateResource(this)
+        else -> UpdateControl.patchResourceAndStatus(apply { status = desiredStatus })
+    }
