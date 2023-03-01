@@ -176,13 +176,13 @@ class GiteaDeployment : CRUDKubernetesDependentResource<Deployment, Gitea>(Deplo
                                     args = listOf(
                                         "-c",
                                         """
-                                            gitea admin user create --admin
-                                                --username ${'$'}GITEA_ADMIN_USER
-                                                --password ${'$'}GITEA_ADMIN_PASSWORD
-                                                --email ${'$'}GITEA_ADMIN_EMAIL
+                                            gitea admin user create --admin \
+                                                --username ${'$'}GITEA_ADMIN_USER \
+                                                --password ${'$'}GITEA_ADMIN_PASSWORD \
+                                                --email ${'$'}GITEA_ADMIN_EMAIL \
                                                 --must-change-password=false \
-                                              || gitea admin user change-password
-                                                --username ${'$'}GITEA_ADMIN_USER
+                                              || gitea admin user change-password \
+                                                --username ${'$'}GITEA_ADMIN_USER \
                                                 --password ${'$'}GITEA_ADMIN_PASSWORD
                                         """.trimIndent()
                                     )

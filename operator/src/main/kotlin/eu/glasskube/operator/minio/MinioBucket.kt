@@ -40,3 +40,4 @@ val MinioBucket.policy get() = spec.policyOverride ?: defaultPolicy
 private val MinioBucket.defaultBucketName get() = "${metadata.name}-${metadata.namespace}"
 val MinioBucket.bucketName get() = spec.bucketNameOverride ?: defaultBucketName
 val MinioBucket.policyName get() = bucketName
+val MinioBucket.secretName get() = spec.userSecret?.name ?: genericResourceName
