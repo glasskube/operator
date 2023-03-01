@@ -1,8 +1,10 @@
 package eu.glasskube.operator.gitea.dependent
 
+import eu.glasskube.kubernetes.api.model.apps.ROLLING_UPDATE
 import eu.glasskube.kubernetes.api.model.apps.deployment
 import eu.glasskube.kubernetes.api.model.apps.selector
 import eu.glasskube.kubernetes.api.model.apps.spec
+import eu.glasskube.kubernetes.api.model.apps.strategy
 import eu.glasskube.kubernetes.api.model.apps.template
 import eu.glasskube.kubernetes.api.model.configMapRef
 import eu.glasskube.kubernetes.api.model.container
@@ -10,6 +12,7 @@ import eu.glasskube.kubernetes.api.model.containerPort
 import eu.glasskube.kubernetes.api.model.env
 import eu.glasskube.kubernetes.api.model.envFrom
 import eu.glasskube.kubernetes.api.model.envVar
+import eu.glasskube.kubernetes.api.model.intOrString
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.persistentVolumeClaim
 import eu.glasskube.kubernetes.api.model.secretKeyRef
@@ -56,7 +59,11 @@ class GiteaDeployment : CRUDKubernetesDependentResource<Deployment, Gitea>(Deplo
             labels = primary.resourceLabels
         }
         spec {
-            replicas = 1
+            replicas = primary.spec.replicas
+            strategy(ROLLING_UPDATE) {
+                maxSurge = 1.intOrString()
+                maxUnavailable = 0.intOrString()
+            }
             selector {
                 matchLabels = primary.resourceLabelSelector
             }
