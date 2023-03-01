@@ -2,6 +2,7 @@ package eu.glasskube.operator.gitea.dependent
 
 import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.gitea.Gitea
 import eu.glasskube.operator.gitea.GiteaReconciler
 import eu.glasskube.operator.gitea.dbClusterName
@@ -14,6 +15,7 @@ import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 import io.javaoperatorsdk.operator.processing.event.ResourceID
+import org.slf4j.LoggerFactory
 
 @KubernetesDependent(
     labelSelector = GiteaReconciler.SELECTOR,
@@ -47,5 +49,17 @@ class GiteaIniConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitea>(Conf
             "GITEA__metrics__ENABLED" to "true",
             "GITEA__webhook__ALLOWED_HOST_LIST" to "*"
         )
+    }
+
+    override fun onUpdated(primary: Gitea, updated: ConfigMap, actual: ConfigMap, context: Context<Gitea>) {
+        super.onUpdated(primary, updated, actual, context)
+        context.getSecondaryResource(GiteaDeployment.Discriminator()).ifPresent {
+            log.info("Restarting deployment after config ini change")
+            kubernetesClient.apps().deployments().resource(it).rolling().restart()
+        }
+    }
+
+    companion object {
+        private val log = LoggerFactory.getLogger(GiteaIniConfigMap::class.java)
     }
 }
