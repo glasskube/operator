@@ -21,7 +21,7 @@ data class MariaDBResourcesRequest(
 
 data class MariaDBResources(
     val requests: MariaDBResourcesRequest? = null,
-    val limits: MariaDBResourcesRequest? = null,
+    val limits: MariaDBResourcesRequest? = null
 )
 
 data class MariaDBVolumeClaimTemplate(

@@ -14,3 +14,4 @@ trim_trailing_whitespace = false
 
 [*.{kt,kts}]
 indent_size = 4
+ktlint_disabled_rules = enum-entry-name-case

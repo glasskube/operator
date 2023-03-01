@@ -17,5 +17,5 @@ data class BootstrapInitDB(
     val walSegmentSize: Int? = null,
     val postInitSQL: List<String>? = null,
     val postInitApplicationSQL: List<String>? = null,
-    val postInitTemplateSQL: List<String>? = null,
+    val postInitTemplateSQL: List<String>? = null
 )
