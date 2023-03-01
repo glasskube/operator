@@ -3,11 +3,14 @@ package eu.glasskube.operator.gitea
 import eu.glasskube.kubernetes.client.patchOrUpdateStatus
 import eu.glasskube.operator.Labels
 import eu.glasskube.operator.api.reconciler.informerEventSource
+import eu.glasskube.operator.api.reconciler.secondaryResource
 import eu.glasskube.operator.gitea.dependent.GiteaConfigMap
 import eu.glasskube.operator.gitea.dependent.GiteaDeployment
 import eu.glasskube.operator.gitea.dependent.GiteaHttpService
 import eu.glasskube.operator.gitea.dependent.GiteaIngress
 import eu.glasskube.operator.gitea.dependent.GiteaIniConfigMap
+import eu.glasskube.operator.gitea.dependent.GiteaMinioBucket
+import eu.glasskube.operator.gitea.dependent.GiteaPostgresBackup
 import eu.glasskube.operator.gitea.dependent.GiteaPostgresCluster
 import eu.glasskube.operator.gitea.dependent.GiteaRedisDeployment
 import eu.glasskube.operator.gitea.dependent.GiteaRedisService
@@ -30,9 +33,19 @@ import org.slf4j.LoggerFactory
 
 @ControllerConfiguration(
     dependents = [
-        Dependent(type = GiteaPostgresCluster::class, name = "GiteaPostgresCluster"),
         Dependent(type = GiteaVolume::class, name = "GiteaVolume"),
         Dependent(type = GiteaSecret::class, name = "GiteaSecret"),
+        Dependent(type = GiteaMinioBucket::class, name = "GiteaMinioBucket"),
+        Dependent(
+            type = GiteaPostgresCluster::class,
+            name = "GiteaPostgresCluster",
+            dependsOn = ["GiteaMinioBucket"]
+        ),
+        Dependent(
+            type = GiteaPostgresBackup::class,
+            name = "GiteaPostgresBackup",
+            dependsOn = ["GiteaPostgresCluster"]
+        ),
         Dependent(
             type = GiteaConfigMap::class,
             name = "GiteaConfigMap",
@@ -89,20 +102,19 @@ class GiteaReconciler : Reconciler<Gitea>, EventSourceInitializer<Gitea> {
     override fun reconcile(resource: Gitea, context: Context<Gitea>): UpdateControl<Gitea> {
         log.info("Reconciling ${resource.metadata.name}@${resource.metadata.namespace}")
 
-        val readyReplicas =
-            context.getSecondaryResource(Deployment::class.java, GiteaDeployment.Discriminator())
-                .map { it.status?.readyReplicas }
-                .orElse(0)!!
-        val redisReady = context.getSecondaryResource(Deployment::class.java, GiteaRedisDeployment.Discriminator())
-            .map { it.status?.readyReplicas }
-            .map { it!! > 0 }
-            .orElse(false)
-        val postgresReady = context.getSecondaryResource(PostgresCluster::class.java)
-            .map { it.status?.instances }
-            .map { it!! > 0 }
-            .orElse(false)
+        return with(context) {
+            val deployment: Deployment? by secondaryResource(GiteaDeployment.Discriminator())
+            val redisDeployment: Deployment? by secondaryResource(GiteaRedisDeployment.Discriminator())
+            val postgresCluster: PostgresCluster? by secondaryResource()
 
-        return resource.patchOrUpdateStatus(GiteaStatus(readyReplicas, redisReady, postgresReady))
+            resource.patchOrUpdateStatus(
+                GiteaStatus(
+                    readyReplicas = deployment?.status?.readyReplicas ?: 0,
+                    redisReady = redisDeployment?.status?.readyReplicas?.let { it > 0 } ?: false,
+                    postgresReady = postgresCluster?.status?.instances?.let { it > 0 } ?: false
+                )
+            )
+        }
     }
 
     override fun prepareEventSources(context: EventSourceContext<Gitea>) = with(context) {

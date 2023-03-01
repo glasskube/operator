@@ -1,6 +1,7 @@
 package eu.glasskube.operator
 
 import java.util.Base64
+import java.util.Optional
 
 @Deprecated(
     "Use Labels.resourceLabels instead to opt in to Kubernetes Recommended Labels.",
@@ -20,3 +21,5 @@ fun String.decodeBase64() = String(Base64.getDecoder().decode(this))
 fun String.encodeBase64() = Base64.getEncoder().encodeToString(this.encodeToByteArray())
 
 fun <T> T.addTo(list: MutableCollection<T>): Boolean = list.add(this)
+
+fun <T> Optional<T>.orNull() = orElse(null)
