@@ -18,7 +18,7 @@ object Labels {
     ) = mutableMapOf(
         MANAGED_BY to "glasskube-operator",
         NAME to name,
-        INSTANCE to instance,
+        INSTANCE to instance
     ).also { labels ->
         if (version != null) labels += VERSION to version
         if (component != null) labels += COMPONENT to component
@@ -31,7 +31,7 @@ object Labels {
         partOf: String? = null
     ) = mutableMapOf(
         NAME to name,
-        INSTANCE to instance,
+        INSTANCE to instance
     ).also {
         if (partOf != null) it += PART_OF to partOf
     }.toMap()

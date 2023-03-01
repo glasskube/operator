@@ -7,5 +7,5 @@ data class ScheduledBackupSpec(
     val backupOwnerReference: BackupOwnerReference? = null,
     val cluster: LocalObjectReference,
     val suspend: Boolean? = null,
-    val immediate: Boolean? = null,
+    val immediate: Boolean? = null
 )

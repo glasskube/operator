@@ -32,7 +32,7 @@ class GiteaServiceMonitor : CRUDKubernetesDependentResource<ServiceMonitor, Gite
                     path = "/metrics",
                     interval = "10s",
                     bearerTokenSecret = SecretKeySelector("GITEA__metrics__TOKEN", primary.secretName, false)
-                ),
+                )
             ),
             selector = labelSelector {
                 matchLabels = primary.resourceLabelSelector
