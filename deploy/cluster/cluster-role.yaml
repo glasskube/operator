@@ -11,11 +11,14 @@ rules:
       - watch
       - patch
       - update
+  - apiGroups: [ glasskube.eu ]
+    resources: [ miniobuckets ]
+    verbs:
+      - create
   - apiGroups: [ apps ]
     resources: [ deployments ]
     verbs:
       - create
-      - delete
       - get
       - list
       - patch
@@ -29,7 +32,6 @@ rules:
       - persistentvolumeclaims
     verbs:
       - create
-      - delete
       - get
       - list
       - patch
@@ -46,7 +48,6 @@ rules:
     resources: [ ingresses ]
     verbs:
       - create
-      - delete
       - get
       - list
       - patch
@@ -67,7 +68,6 @@ rules:
     resources: [ "*" ]
     verbs:
       - create
-      - delete
       - get
       - list
       - patch
@@ -78,4 +78,13 @@ rules:
     verbs:
       - get
       - list
+      - watch
+  - apiGroups: [ monitoring.coreos.com ]
+    resources: [ servicemonitors ]
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
       - watch
