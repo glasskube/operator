@@ -114,7 +114,11 @@ inline fun Volume.configMap(name: String, block: (@KubernetesDslMarker ConfigMap
 }
 
 fun Volume.persistentVolumeClaim(name: String, readonly: Boolean? = null) {
-    persistentVolumeClaim = PersistentVolumeClaimVolumeSource(name, readonly)
+    persistentVolumeClaim = PersistentVolumeClaimVolumeSource(
+        name,
+        // readonly == false would be removed by k8s, so we don't add it
+        readonly.takeIf { it == true }
+    )
 }
 
 inline fun ConfigMapVolumeSource.items(block: (@KubernetesDslMarker MutableList<KeyToPath>).() -> Unit) {
