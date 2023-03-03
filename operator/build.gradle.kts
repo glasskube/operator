@@ -55,9 +55,18 @@ tasks.test {
     useJUnitPlatform()
 }
 
+// https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/
 tasks.named<BootBuildImage>("bootBuildImage") {
     imageName.set("glasskube/operator")
     tags.add("glasskube/operator:$version")
+    builder.set("paketobuildpacks/builder-jammy-base") // https://paketo.io/docs/reference/builders-reference/
+    runImage.set("paketobuildpacks/run-jammy-base")
+    environment.set(
+        environment.get() + mapOf(
+            "BP_JVM_VERSION" to "17",
+            "BP_SPRING_CLOUD_BINDINGS_DISABLED" to "true"
+        )
+    )
     docker {
         publishRegistry {
             username.set(System.getenv("DOCKERHUB_USERNAME"))
