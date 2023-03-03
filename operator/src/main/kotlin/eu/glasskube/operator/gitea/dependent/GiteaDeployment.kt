@@ -213,7 +213,7 @@ class GiteaDeployment : CRUDKubernetesDependentResource<Deployment, Gitea>(Deplo
                     }
                     volumes = listOf(
                         volume("data") {
-                            persistentVolumeClaim(primary.genericResourceName, false)
+                            persistentVolumeClaim(primary.genericResourceName)
                         }
                     )
                 }
