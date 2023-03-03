@@ -23,6 +23,7 @@ import eu.glasskube.kubernetes.api.model.volumeMount
 import eu.glasskube.kubernetes.api.model.volumeMounts
 import eu.glasskube.operator.addTo
 import eu.glasskube.operator.gitea.Gitea
+import eu.glasskube.operator.gitea.GiteaReconciler
 import eu.glasskube.operator.gitea.configMapName
 import eu.glasskube.operator.gitea.dbClusterName
 import eu.glasskube.operator.gitea.deploymentName
@@ -31,7 +32,6 @@ import eu.glasskube.operator.gitea.iniConfigMapName
 import eu.glasskube.operator.gitea.resourceLabelSelector
 import eu.glasskube.operator.gitea.resourceLabels
 import eu.glasskube.operator.gitea.secretName
-import eu.glasskube.operator.odoo.OdooReconciler
 import io.fabric8.kubernetes.api.model.HTTPGetAction
 import io.fabric8.kubernetes.api.model.IntOrString
 import io.fabric8.kubernetes.api.model.Probe
@@ -46,7 +46,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 import io.javaoperatorsdk.operator.processing.event.ResourceID
 
 @KubernetesDependent(
-    labelSelector = OdooReconciler.SELECTOR,
+    labelSelector = GiteaReconciler.SELECTOR,
     resourceDiscriminator = GiteaDeployment.Discriminator::class
 )
 class GiteaDeployment : CRUDKubernetesDependentResource<Deployment, Gitea>(Deployment::class.java) {
