@@ -13,7 +13,9 @@ import eu.glasskube.operator.gitea.Gitea
 import eu.glasskube.operator.gitea.GiteaReconciler
 import eu.glasskube.operator.gitea.genericResourceName
 import eu.glasskube.operator.gitea.httpServiceName
+import eu.glasskube.operator.gitea.ingressTlsCertName
 import eu.glasskube.operator.gitea.resourceLabels
+import io.fabric8.kubernetes.api.model.networking.v1.IngressTLS
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
@@ -39,6 +41,9 @@ class GiteaIngress(configService: ConfigService) : DependentIngress<Gitea>(confi
                         )
                     )
                 }
+            )
+            tls = listOf(
+                IngressTLS(listOf(primary.spec.host), primary.ingressTlsCertName)
             )
         }
     }
