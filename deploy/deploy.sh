@@ -183,7 +183,7 @@ fi
 
 helm repo add jetstack https://charts.jetstack.io
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo add mariadb-operator https://mmontes11.github.io/mariadb-operator
+helm repo add mariadb-operator https://mariadb-operator.github.io/mariadb-operator
 helm repo add cnpg https://cloudnative-pg.github.io/charts
 helm repo add minio https://charts.min.io/
 helm repo update
