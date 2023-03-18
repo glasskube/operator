@@ -43,7 +43,7 @@ The `deploy.sh` script will automatically install following dependencies:
 - cert-manager [`cert-manager/cert-manager`](https://github.com/cert-manager/cert-manager)
 - Prometheus, Grafana & Alert
   Manager [`prometheus-community/kube-prometheus-stack`](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/README.md)
-- mariadb-operator [`mmontes11/mariadb-operator`](https://github.com/mmontes11/mariadb-operator)
+- mariadb-operator [`mariadb-operator/mariadb-operator`](https://github.com/mariadb-operator/mariadb-operator)
 - CloudNativePG [`cloudnative-pg/cloudnative-pg`](https://github.com/cloudnative-pg/cloudnative-pg)
 - MinIO [`minio/minio`](https://github.com/minio/minio/tree/master/helm/minio)
 
@@ -131,7 +131,7 @@ spec:
 
 [`Matomo`](https://github.com/matomo-org/matomo) is an Open-Source Web Analytics Tool written in `PHP` and stores data
 in `MySQL` database. The Glasskube Operator will automatically perform Upgrades and manages the database.
-Make sure you also have the [`mariadb-operator`](https://github.com/mmontes11/mariadb-operator) installed.
+Make sure you also have the [`mariadb-operator`](https://github.com/mariadb-operator/mariadb-operator) installed.
 After applying the custom resource Matomo will be reachable via an ingress at the configured host.
 
 ### Odoo Kubernetes Operator
