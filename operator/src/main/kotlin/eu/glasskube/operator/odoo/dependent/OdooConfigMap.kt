@@ -13,7 +13,6 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 
 @KubernetesDependent(labelSelector = OdooReconciler.SELECTOR)
 class OdooConfigMap : CRUDKubernetesDependentResource<ConfigMap, Odoo>(ConfigMap::class.java) {
-
     override fun desired(primary: Odoo, context: Context<Odoo>) = configMap {
         metadata {
             name = primary.configMapName
@@ -27,6 +26,7 @@ class OdooConfigMap : CRUDKubernetesDependentResource<ConfigMap, Odoo>(ConfigMap
                 data_dir = ${Odoo.volumePath}
                 proxy_mode = True
                 gevent_port = 8072
+                list_db = False
             """.trimIndent()
         )
     }
