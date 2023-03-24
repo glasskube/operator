@@ -8,7 +8,7 @@ import java.util.Optional
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-class LazyContextDelegate<R, P : HasMetadata>(
+class LazyContextDelegate<out R, out P : HasMetadata>(
     private val context: Context<P>,
     private val valueSupplier: Context<P>.() -> R
 ) : ReadOnlyProperty<Any?, R> {
@@ -16,20 +16,20 @@ class LazyContextDelegate<R, P : HasMetadata>(
     override fun getValue(thisRef: Any?, property: KProperty<*>) = value
 }
 
-inline fun <reified R, P : HasMetadata> Context<P>.getSecondaryResource(): Optional<R> =
+inline fun <reified R> Context<*>.getSecondaryResource(): Optional<R> =
     getSecondaryResource(R::class.java)
 
 inline fun <reified R, P : HasMetadata> Context<P>.getSecondaryResource(discriminator: ResourceDiscriminator<R, P>): Optional<R> =
     getSecondaryResource(R::class.java, discriminator)
 
 inline fun <reified R, P : HasMetadata> Context<P>.secondaryResource(): ReadOnlyProperty<Any?, R?> =
-    LazyContextDelegate(this) { getSecondaryResource<R, P>().orNull() }
+    LazyContextDelegate(this) { getSecondaryResource<R>().orNull() }
 
 inline fun <reified R, P : HasMetadata> Context<P>.secondaryResource(discriminator: ResourceDiscriminator<R, P>): ReadOnlyProperty<Any?, R?> =
     LazyContextDelegate(this) { getSecondaryResource(discriminator).orNull() }
 
 inline fun <reified R : Any, P : HasMetadata> Context<P>.requireSecondaryResource(): ReadOnlyProperty<Any?, R> =
-    LazyContextDelegate(this) { getSecondaryResource<R, P>().orElseThrow() }
+    LazyContextDelegate(this) { getSecondaryResource<R>().orElseThrow() }
 
 inline fun <reified R : Any, P : HasMetadata> Context<P>.requireSecondaryResource(discriminator: ResourceDiscriminator<R, P>): ReadOnlyProperty<Any?, R> =
     LazyContextDelegate(this) { getSecondaryResource(discriminator).orElseThrow() }
