@@ -1,5 +1,7 @@
 package eu.glasskube.operator
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.util.Base64
 import java.util.Optional
 
@@ -23,3 +25,7 @@ fun String.encodeBase64() = Base64.getEncoder().encodeToString(this.encodeToByte
 fun <T> T.addTo(list: MutableCollection<T>): Boolean = list.add(this)
 
 fun <T> Optional<T>.orNull() = orElse(null)
+
+inline fun <reified T : Any> T.logger(): Logger = with(T::class) {
+    LoggerFactory.getLogger(if (isCompanion) java.enclosingClass else java)
+}

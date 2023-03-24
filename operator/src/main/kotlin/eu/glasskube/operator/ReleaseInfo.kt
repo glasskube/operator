@@ -1,6 +1,5 @@
 package eu.glasskube.operator
 
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.PropertySource
@@ -28,6 +27,6 @@ data class ReleaseInfo(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(ReleaseInfo::class.java)
+        private val log = logger()
     }
 }

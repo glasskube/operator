@@ -1,15 +1,13 @@
 package eu.glasskube.operator.secrets
 
+import eu.glasskube.operator.logger
 import io.fabric8.kubernetes.api.model.Secret
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler
 import io.javaoperatorsdk.operator.api.reconciler.UpdateControl
 import org.apache.commons.lang3.RandomStringUtils
-import org.slf4j.LoggerFactory
 import java.util.Random
-
-private val log = LoggerFactory.getLogger(SecretGenerator::class.java)
 
 @ControllerConfiguration(
     labelSelector = SecretGenerator.LABEL_SELECTOR,
@@ -43,6 +41,7 @@ class SecretGenerator(private val random: Random) : Reconciler<Secret> {
         RandomStringUtils.random(count, 0, 0, true, true, null, this)
 
     companion object {
+        private val log = logger()
         val LABEL = "glasskube.eu/generated" to "yes"
         const val LABEL_SELECTOR = "glasskube.eu/generated=yes"
         const val GENERATE_KEYS = "secrets.glasskube.eu/generateKeys"
