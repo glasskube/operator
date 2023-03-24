@@ -1,14 +1,12 @@
 package eu.glasskube.operator.config
 
+import eu.glasskube.operator.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.client.KubernetesClient
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler
 import io.javaoperatorsdk.operator.api.reconciler.UpdateControl
-import org.slf4j.LoggerFactory
-
-private val log = LoggerFactory.getLogger(ConfigGenerator::class.java)
 
 @ControllerConfiguration(
     labelSelector = ConfigGenerator.LABEL_SELECTOR,
@@ -55,6 +53,7 @@ class ConfigGenerator(private val kubernetesClient: KubernetesClient, private va
     }
 
     companion object {
+        private val log = logger()
         const val NAME = "glasskube-settings"
         const val LABEL_SELECTOR = "glasskube.eu/settings"
     }

@@ -18,6 +18,7 @@ import eu.glasskube.operator.gitea.dependent.GiteaSSHService
 import eu.glasskube.operator.gitea.dependent.GiteaSecret
 import eu.glasskube.operator.gitea.dependent.GiteaServiceMonitor
 import eu.glasskube.operator.gitea.dependent.GiteaVolume
+import eu.glasskube.operator.logger
 import eu.glasskube.operator.postgres.PostgresCluster
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.Service
@@ -29,7 +30,6 @@ import io.javaoperatorsdk.operator.api.reconciler.EventSourceInitializer
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler
 import io.javaoperatorsdk.operator.api.reconciler.UpdateControl
 import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
-import org.slf4j.LoggerFactory
 
 @ControllerConfiguration(
     dependents = [
@@ -135,6 +135,6 @@ class GiteaReconciler : Reconciler<Gitea>, EventSourceInitializer<Gitea> {
         internal const val SERVICE_EVENT_SOURCE = "GiteaServiceEventSource"
         internal const val DEPLOYMENT_EVENT_SOURCE = "GiteaDeploymentEventSource"
 
-        private val log = LoggerFactory.getLogger(GiteaReconciler::class.java)
+        private val log = logger()
     }
 }

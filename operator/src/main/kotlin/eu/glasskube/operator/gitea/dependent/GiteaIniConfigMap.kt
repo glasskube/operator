@@ -9,13 +9,13 @@ import eu.glasskube.operator.gitea.dbClusterName
 import eu.glasskube.operator.gitea.iniConfigMapName
 import eu.glasskube.operator.gitea.redisName
 import eu.glasskube.operator.gitea.resourceLabels
+import eu.glasskube.operator.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 import io.javaoperatorsdk.operator.processing.event.ResourceID
-import org.slf4j.LoggerFactory
 
 @KubernetesDependent(
     labelSelector = GiteaReconciler.SELECTOR,
@@ -60,6 +60,6 @@ class GiteaIniConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitea>(Conf
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(GiteaIniConfigMap::class.java)
+        private val log = logger()
     }
 }

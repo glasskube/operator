@@ -3,6 +3,7 @@ package eu.glasskube.operator.minio
 import eu.glasskube.kubernetes.client.patchOrUpdateStatus
 import eu.glasskube.operator.Labels
 import eu.glasskube.operator.decodeBase64
+import eu.glasskube.operator.logger
 import eu.glasskube.operator.minio.dependent.MinioBucketSecret
 import io.fabric8.kubernetes.api.model.Secret
 import io.fabric8.kubernetes.client.KubernetesClient
@@ -20,7 +21,6 @@ import io.minio.MinioClient
 import io.minio.RemoveBucketArgs
 import io.minio.admin.MinioAdminClient
 import io.minio.admin.UserInfo
-import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
 
 @ControllerConfiguration(
@@ -161,6 +161,6 @@ class MinioBucketReconciler(
         const val SELECTOR =
             "${Labels.MANAGED_BY_GLASSKUBE},${Labels.NAME}=${MinioBucket.APP_NAME}"
 
-        private val log = LoggerFactory.getLogger(MinioBucketReconciler::class.java)
+        private val log = logger()
     }
 }
