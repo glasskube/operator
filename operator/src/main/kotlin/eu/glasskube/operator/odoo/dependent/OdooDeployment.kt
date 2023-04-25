@@ -18,6 +18,7 @@ import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.kubernetes.api.model.volume
 import eu.glasskube.kubernetes.api.model.volumeMount
 import eu.glasskube.kubernetes.api.model.volumeMounts
+import eu.glasskube.operator.decodeBase64
 import eu.glasskube.operator.odoo.Odoo
 import eu.glasskube.operator.odoo.OdooReconciler
 import eu.glasskube.operator.odoo.configMapName
@@ -72,10 +73,8 @@ class OdooDeployment : CRUDKubernetesDependentResource<Deployment, Odoo>(Deploym
                                     readOnly = true
                                 }
                             }
-                            command = mutableListOf("/glasskube/run.sh", "--proxy-mode")
-                            if (!primary.spec.demoEnabled) {
-                                command.addAll(listOf("--without-demo", "all"))
-                            }
+                            command = listOf("/glasskube/run.sh")
+                            args = listOf("--proxy-mode") + primary.demoArgs.orEmpty() + primary.smtpArgs.orEmpty()
                         }
                     )
                     initContainers = listOf(
@@ -103,4 +102,24 @@ class OdooDeployment : CRUDKubernetesDependentResource<Deployment, Odoo>(Deploym
             }
         }
     }
+
+    private val Odoo.demoArgs: List<String>?
+        get() = spec.demoEnabled.takeIf { !it }?.let { listOf("--without-demo", "all") }
+
+    private val Odoo.smtpArgs: List<String>?
+        get() = spec.smtp?.run {
+            val authSecret = kubernetesClient.secrets()
+                .inNamespace(metadata.namespace)
+                .withName(authSecret.name)
+                .require()
+            listOf(
+                "--smtp", host,
+                "--smtp-port", port.toString(),
+                "--smtp-user", authSecret.data.getValue("username").decodeBase64(),
+                "--smtp-password", authSecret.data.getValue("password").decodeBase64(),
+                "--email-from", fromAddress
+            ) +
+                ssl.takeIf { it }?.let { listOf("--smtp-ssl") }.orEmpty() +
+                fromFilter?.let { listOf("--from-filter", it) }.orEmpty()
+        }
 }
