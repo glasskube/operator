@@ -64,6 +64,7 @@ class GiteaIniConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitea>(Conf
                     .withName(smtp.authSecret.name)
                     .require()
                 mapOf(
+                    "GITEA__service__ENABLE_NOTIFY_MAIL" to "true",
                     "GITEA__mailer__ENABLED" to "true",
                     "GITEA__mailer__FROM" to smtp.fromAddress,
                     "GITEA__mailer__MAILER_TYPE" to "smtp",
