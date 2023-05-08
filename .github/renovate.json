@@ -23,8 +23,7 @@
     {
       "groupName": "Kotlin",
       "matchPackagePrefixes": [
-        "org.jetbrains.kotlin.plugin",
-        "org.jetbrains.kotlin.jvm"
+        "org.jetbrains.kotlin"
       ]
     }
   ]
