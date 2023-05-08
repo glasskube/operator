@@ -3,7 +3,7 @@ import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 
 plugins {
     kotlin("jvm") version "1.8.10"
-    kotlin("kapt") version "1.8.10"
+    kotlin("kapt") version "1.8.21"
     kotlin("plugin.spring") version "1.8.10"
     id("org.jlleitschuh.gradle.ktlint") version "11.2.0"
     id("com.gorylenko.gradle-git-properties") version "2.4.1"
