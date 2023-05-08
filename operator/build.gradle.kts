@@ -57,8 +57,7 @@ tasks.test {
 
 // https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/
 tasks.named<BootBuildImage>("bootBuildImage") {
-    imageName.set("glasskube/operator")
-    tags.add("glasskube/operator:$version")
+    imageName.set(System.getenv("IMAGE_NAME"))
     builder.set("paketobuildpacks/builder-jammy-base") // https://paketo.io/docs/reference/builders-reference/
     runImage.set("paketobuildpacks/run-jammy-base")
     environment.set(
