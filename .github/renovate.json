@@ -3,7 +3,6 @@
   "extends": [
     "config:base",
     "helpers:pinGitHubActionDigests",
-    "group:",
     ":gitSignOff",
     "group:recommended",
     "group:monorepos"
