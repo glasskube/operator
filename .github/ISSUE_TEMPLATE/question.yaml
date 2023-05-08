@@ -1,0 +1,75 @@
+name: Question / Bug Report
+description: Create a report to help us improve
+title: "[Question]: <Question Title>"
+labels: ["type:question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for initiating this question! 🤗
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: "Please check the following before submitting this feature request"
+      options:
+        - label: I've searched for similar issues and couldn't find anything matching
+          required: true
+        - label: I've included steps to reproduce the behavior
+          required: true
+
+  - type: input
+    id: glasskube_version
+    attributes:
+      label: Glasskube Version
+      description: Which version of Glasskube are you using?
+      placeholder: "v0.0.1"
+
+  - type: input
+    id: kubernetes_version
+    attributes:
+      label: Kubernetes Version
+      description: Which version of Kubernetes are you using?
+      placeholder: "v1.26.0"
+
+  - type: input
+    id: host_os
+    attributes:
+      label: Host OS and its Version
+      description: Which OS are you using (Windows/MacOS/Linux - Distro and Version)?
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Tell us how to reproduce this question
+      placeholder: |
+        1. Run '...'
+        2. Type '...'
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      description: Tell us what should happen
+      placeholder: |
+        A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: Tell us what happens instead
+      placeholder: |
+        A clear and concise description of what actually happens.
+
+  - type: textarea
+    id: additional_information
+    attributes:
+      label: Additional Information
+      description: Add any other context about the problem here. If applicable, add drawings to help explain (after saving this issue).
