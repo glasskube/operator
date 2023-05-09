@@ -33,5 +33,5 @@ fun <S, T : CustomResource<*, S>> T.patchOrUpdateResourceAndStatus(desiredStatus
     when (status) {
         null -> UpdateControl.updateResourceAndStatus(apply { status = desiredStatus })
         desiredStatus -> UpdateControl.updateResource(this)
-        else -> UpdateControl.patchResourceAndStatus(apply { status = desiredStatus })
+        else -> UpdateControl.updateResourceAndPatchStatus(apply { status = desiredStatus })
     }
