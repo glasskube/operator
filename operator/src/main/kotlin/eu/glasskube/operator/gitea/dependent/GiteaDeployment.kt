@@ -145,10 +145,10 @@ class GiteaDeployment : CRUDKubernetesDependentResource<Deployment, Gitea>(Deplo
                             }
                             env {
                                 envVar("GITEA__database__USER") {
-                                    secretKeyRef("${primary.dbClusterName}-app", "username", false)
+                                    secretKeyRef("${primary.dbClusterName}-app", "username")
                                 }
                                 envVar("GITEA__database__PASSWD") {
-                                    secretKeyRef("${primary.dbClusterName}-app", "password", false)
+                                    secretKeyRef("${primary.dbClusterName}-app", "password")
                                 }
                             }
                             securityContext = SecurityContext().apply {

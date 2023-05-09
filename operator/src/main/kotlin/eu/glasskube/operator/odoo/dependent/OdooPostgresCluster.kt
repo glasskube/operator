@@ -1,6 +1,7 @@
 package eu.glasskube.operator.odoo.dependent
 
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.secretKeySelector
 import eu.glasskube.operator.config.ConfigKey
 import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.odoo.Odoo
@@ -22,7 +23,6 @@ import eu.glasskube.operator.postgres.S3Credentials
 import eu.glasskube.operator.postgres.StorageConfiguration
 import eu.glasskube.operator.postgres.WalBackupConfiguration
 import eu.glasskube.operator.postgres.postgresCluster
-import io.fabric8.kubernetes.api.model.SecretKeySelector
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
@@ -51,8 +51,8 @@ class OdooPostgresCluster(private val configService: ConfigService) :
                     endpointURL = "http://glasskube-minio.glasskube-system:9000",
                     destinationPath = "s3://${primary.bucketName}",
                     s3Credentials = S3Credentials(
-                        accessKeyId = SecretKeySelector("username", primary.dbBackupSecretName, false),
-                        secretAccessKey = SecretKeySelector("password", primary.dbBackupSecretName, false)
+                        accessKeyId = secretKeySelector(primary.dbBackupSecretName, "username"),
+                        secretAccessKey = secretKeySelector(primary.dbBackupSecretName, "password")
                     ),
                     wal = WalBackupConfiguration(
                         compression = CompressionType.GZIP

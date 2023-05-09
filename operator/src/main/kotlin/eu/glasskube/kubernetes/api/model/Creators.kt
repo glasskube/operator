@@ -66,12 +66,18 @@ inline fun MutableList<EnvVar>.envVar(name: String, block: (@KubernetesDslMarker
     add(EnvVar(name, null, EnvVarSource().apply(block)))
 }
 
-fun EnvVarSource.secretKeyRef(name: String, key: String, optional: Boolean? = null) {
-    secretKeyRef = SecretKeySelector(key, name, optional)
+fun secretKeySelector(name: String, key: String, optional: Boolean = false) =
+    SecretKeySelector(key, name, optional.takeIf { it })
+
+fun EnvVarSource.secretKeyRef(name: String, key: String, optional: Boolean = false) {
+    secretKeyRef = secretKeySelector(key = key, name = name, optional = optional)
 }
 
-fun EnvVarSource.configMapRef(name: String, key: String, optional: Boolean? = null) {
-    configMapKeyRef = ConfigMapKeySelector(key, name, optional)
+fun configMapKeySelector(name: String, key: String, optional: Boolean = false) =
+    ConfigMapKeySelector(key, name, optional.takeIf { it })
+
+fun EnvVarSource.configMapRef(name: String, key: String, optional: Boolean = false) {
+    configMapKeyRef = configMapKeySelector(key = key, name = name, optional = optional)
 }
 
 fun EnvVarSource.fieldRef(fieldPath: String, apiVersion: String? = null) {
@@ -146,7 +152,7 @@ fun Volume.persistentVolumeClaim(name: String, readonly: Boolean? = null) {
     persistentVolumeClaim = PersistentVolumeClaimVolumeSource(
         name,
         // readonly == false would be removed by k8s, so we don't add it
-        readonly.takeIf { it == true }
+        readonly?.takeIf { it }
     )
 }
 

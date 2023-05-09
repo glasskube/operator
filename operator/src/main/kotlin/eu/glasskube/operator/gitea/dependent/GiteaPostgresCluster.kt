@@ -1,6 +1,7 @@
 package eu.glasskube.operator.gitea.dependent
 
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.secretKeySelector
 import eu.glasskube.operator.api.reconciler.requireSecondaryResource
 import eu.glasskube.operator.gitea.Gitea
 import eu.glasskube.operator.gitea.GiteaReconciler
@@ -22,7 +23,6 @@ import eu.glasskube.operator.postgres.S3Credentials
 import eu.glasskube.operator.postgres.StorageConfiguration
 import eu.glasskube.operator.postgres.WalBackupConfiguration
 import eu.glasskube.operator.postgres.postgresCluster
-import io.fabric8.kubernetes.api.model.SecretKeySelector
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
@@ -53,8 +53,8 @@ class GiteaPostgresCluster : CRUDKubernetesDependentResource<PostgresCluster, Gi
                     endpointURL = "http://glasskube-minio.glasskube-system:9000",
                     destinationPath = "s3://${minioBucket.bucketName}",
                     s3Credentials = S3Credentials(
-                        accessKeyId = SecretKeySelector(MinioBucket.USERNAME_KEY, minioBucket.secretName, false),
-                        secretAccessKey = SecretKeySelector(MinioBucket.PASSWORD_KEY, minioBucket.secretName, false)
+                        accessKeyId = secretKeySelector(minioBucket.secretName, MinioBucket.USERNAME_KEY),
+                        secretAccessKey = secretKeySelector(minioBucket.secretName, MinioBucket.PASSWORD_KEY)
                     ),
                     wal = WalBackupConfiguration(compression = CompressionType.GZIP),
                     data = DataBackupConfiguration(compression = CompressionType.GZIP)
