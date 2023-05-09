@@ -2,6 +2,7 @@ package eu.glasskube.operator.gitea.dependent
 
 import eu.glasskube.kubernetes.api.model.labelSelector
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.secretKeySelector
 import eu.glasskube.operator.gitea.Gitea
 import eu.glasskube.operator.gitea.GiteaReconciler
 import eu.glasskube.operator.gitea.genericResourceName
@@ -12,7 +13,6 @@ import eu.glasskube.operator.prometheus.servicemonitor.EndpointSpec
 import eu.glasskube.operator.prometheus.servicemonitor.ServiceMonitor
 import eu.glasskube.operator.prometheus.servicemonitor.ServiceMonitorSpec
 import eu.glasskube.operator.prometheus.servicemonitor.serviceMonitor
-import io.fabric8.kubernetes.api.model.SecretKeySelector
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
@@ -31,7 +31,7 @@ class GiteaServiceMonitor : CRUDKubernetesDependentResource<ServiceMonitor, Gite
                     port = "http",
                     path = "/metrics",
                     interval = "10s",
-                    bearerTokenSecret = SecretKeySelector("GITEA__metrics__TOKEN", primary.secretName, false)
+                    bearerTokenSecret = secretKeySelector(primary.secretName, "GITEA__metrics__TOKEN")
                 )
             ),
             selector = labelSelector {

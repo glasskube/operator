@@ -57,8 +57,8 @@ class OdooDeployment : CRUDKubernetesDependentResource<Deployment, Odoo>(Deploym
                             imagePullPolicy = "IfNotPresent"
                             env {
                                 envVar("HOST", "${primary.dbName}-rw")
-                                envVar("USER") { secretKeyRef(primary.dbSecretName, "username", false) }
-                                envVar("PASSWORD") { secretKeyRef(primary.dbSecretName, "password", false) }
+                                envVar("USER") { secretKeyRef(primary.dbSecretName, "username") }
+                                envVar("PASSWORD") { secretKeyRef(primary.dbSecretName, "password") }
                             }
                             ports = listOf(containerPort { containerPort = 8069 })
                             volumeMounts {
