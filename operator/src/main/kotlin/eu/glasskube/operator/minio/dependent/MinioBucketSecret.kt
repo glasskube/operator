@@ -8,6 +8,7 @@ import eu.glasskube.operator.minio.genericResourceName
 import eu.glasskube.operator.minio.resourceLabels
 import io.fabric8.kubernetes.api.model.Secret
 import io.javaoperatorsdk.operator.api.reconciler.Context
+import io.javaoperatorsdk.operator.api.reconciler.dependent.DependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 import io.javaoperatorsdk.operator.processing.dependent.workflow.Condition
 
@@ -22,7 +23,10 @@ class MinioBucketSecret : GeneratedSecret<MinioBucket>() {
     private val MinioBucket.defaultUsername get() = bucketName
 
     class ReconcilePrecondition : Condition<Secret, MinioBucket> {
-        override fun isMet(primary: MinioBucket, secondary: Secret?, context: Context<MinioBucket>?) =
-            primary.spec.userSecret == null
+        override fun isMet(
+            dependentResource: DependentResource<Secret, MinioBucket>,
+            primary: MinioBucket,
+            context: Context<MinioBucket>
+        ) = primary.spec.userSecret == null
     }
 }

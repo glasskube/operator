@@ -6,7 +6,10 @@ import eu.glasskube.kubernetes.api.model.apps.spec
 import eu.glasskube.kubernetes.api.model.apps.template
 import eu.glasskube.kubernetes.api.model.container
 import eu.glasskube.kubernetes.api.model.containerPort
+import eu.glasskube.kubernetes.api.model.limits
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.requests
+import eu.glasskube.kubernetes.api.model.resources
 import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.operator.gitea.Gitea
 import eu.glasskube.operator.gitea.GiteaReconciler
@@ -14,7 +17,6 @@ import eu.glasskube.operator.gitea.redisLabelSelector
 import eu.glasskube.operator.gitea.redisLabels
 import eu.glasskube.operator.gitea.redisName
 import io.fabric8.kubernetes.api.model.Quantity
-import io.fabric8.kubernetes.api.model.ResourceRequirements
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
@@ -48,10 +50,10 @@ class GiteaRedisDeployment : CRUDKubernetesDependentResource<Deployment, Gitea>(
                         container {
                             name = "redis"
                             image = "redis:${Gitea.REDIS_VERSION}-alpine"
-                            resources = ResourceRequirements(
-                                mapOf("memory" to Quantity("128", "Mi")),
-                                mapOf("memory" to Quantity("10", "Mi"))
-                            )
+                            resources {
+                                limits(memory = Quantity("128", "Mi"))
+                                requests(memory = Quantity("10", "Mi"))
+                            }
                             ports = listOf(
                                 containerPort { containerPort = 6379 }
                             )
