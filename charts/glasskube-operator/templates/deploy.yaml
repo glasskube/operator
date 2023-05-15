@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: glasskube-operator
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.glasskubeOperator.replicaCount}}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "glasskube-operator.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "glasskube-operator.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+      - env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: BPL_JVM_THREAD_COUNT
+          value: "16"
+        image: {{ .Values.glasskubeOperator.image.repository }}:{{ .Values.glasskubeOperator.image.tag | default .Chart.AppVersion }}
+        imagePullPolicy: IfNotPresent
+        name: glasskube-operator
+        {{- if .Values.glasskubeOperator.resources }}
+        resources:
+        {{- toYaml .Values.glasskubeOperator.resources | nindent 10 }}
+        {{- end }}
+        securityContext:
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities: {}
+
+      serviceAccountName: {{ template "glasskube-operator.fullname" . }}

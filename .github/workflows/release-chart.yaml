@@ -1,0 +1,26 @@
+name: release
+
+on: workflow_dispatch
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  release-charts:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+      - name: Publish Helm chart
+        uses: stefanprodan/helm-gh-pages@master
+        with:
+          token: ${{ secrets.GLASSKUBE_BOT_SECRET }}
+          charts_dir: charts
+          charts_url: https://charts.glasskube.eu
+          owner: glasskube
+          repository: charts
+          branch: main
+          commit_username: glasskube-bot
+          commit_email: bot@noreply.glasskube.eu

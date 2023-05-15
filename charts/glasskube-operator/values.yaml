@@ -1,0 +1,42 @@
+# Default values for glasskube-operator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+
+glasskubeOperator:
+  image:
+    repository: glasskube/operator
+    tag: "" # defaults to Chart.appVersion if unspecified
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
+
+cert-manager:
+  installCRDs: true
+
+prometheus:
+  prometheus:
+    prometheusSpec:
+      retention: 180d
+      podMonitorSelectorNilUsesHelmValues: "false"
+      ruleSelectorNilUsesHelmValues: "false"
+      serviceMonitorSelectorNilUsesHelmValues: "false"
+      probeSelectorNilUsesHelmValues: "false"
+
+minio:
+  enabled: true
+  replicas: 1
+  mode: standalone
+  persistence:
+    size: 20Gi
+  DeploymentUpdate:
+    type: Recreate
+  resources:
+    requests:
+      memory: 256Mi
