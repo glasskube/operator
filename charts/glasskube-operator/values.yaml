@@ -5,7 +5,7 @@
 operator:
   image:
     repository: glasskube/operator
-    tag: "" # defaults to Chart.appVersion if unspecified
+    tag: ""  # defaults to Chart.appVersion if unspecified
   replicaCount: 1
   resources:
     limits:
