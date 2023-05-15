@@ -1,0 +1,18 @@
+dependencies:
+- name: cert-manager
+  repository: https://charts.jetstack.io
+  version: v1.11.1
+- name: kube-prometheus-stack
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 45.25.0
+- name: mariadb-operator
+  repository: https://mariadb-operator.github.io/mariadb-operator
+  version: 0.6.1
+- name: cloudnative-pg
+  repository: https://cloudnative-pg.io/charts/
+  version: 0.18.0
+- name: minio
+  repository: https://charts.min.io/
+  version: 5.0.7
+digest: sha256:45e9851a89e2005936dfb991d913c4c49eaa29218597744aa87b7f516c7fb7c3
+generated: "2023-05-15T09:10:39.547428+02:00"
