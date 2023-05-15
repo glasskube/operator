@@ -1,0 +1,7 @@
+apiVersion: kuttl.dev/v1
+kind: TestSuite
+testDirs:
+  - ./test
+timeout: 400
+skipDelete: true
+namespace: default

@@ -1,0 +1,27 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: matomo-matomo
+  labels:
+    app: matomo
+    app.kubernetes.io/managed-by: glasskube-operator
+    glasskube.eu/Matomo: matomo
+status:
+  availableReplicas: 1
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: matomo-matomo-mariadb
+status:
+  availableReplicas: 1
+  currentReplicas: 1
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1
+

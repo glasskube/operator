@@ -1,0 +1,62 @@
+name: Test Scenarios
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - 'main'
+
+env:
+  # renovate: datasource=github-tags depName=kudobuilder/kuttl
+  KUTTL_VERSION: "v0.15.0"
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  run-scenarios:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+
+      - uses: actions/setup-python@57ded4d7d5e986d7296eab16560982c6dd7c923b # v4
+        with:
+          python-version: '3.9'
+          check-latest: true
+
+      - name: Download KUTTL
+        run: |
+          curl -fL https://github.com/kudobuilder/kuttl/releases/download/${{ env.KUTTL_VERSION }}/kubectl-kuttl_${KUTTL_VERSION#v}_linux_x86_64 -o kubectl-kuttl
+          chmod +x kubectl-kuttl
+          mv kubectl-kuttl /usr/local/bin
+
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@e8788873172cb653a90ca2e819d79d65a66d4e76 # v2.4.0
+
+      - name: Cleanup Chart.lock for test
+        run: rm charts/glasskube-operator/Chart.lock
+
+      - name: Run chart-testing (lint)
+        run: ct lint --validate-maintainers=false --check-version-increment=false --chart-dirs charts --target-branch ${{ github.event.repository.default_branch }} --all
+
+      - name: Create kind cluster
+        uses: helm/kind-action@d8ccf8fb623ce1bb360ae2f45f323d9d5c5e9f00 # v1.5.0
+
+      - name: Cleanup Chart.lock for test
+        run: rm charts/glasskube-operator/Chart.lock
+
+      - name: Run chart-testing (install)
+        run: >
+          ct install --chart-dirs charts --skip-clean-up --target-branch ${{ github.event.repository.default_branch }} --all
+          --helm-extra-set-args '--set=cert-manager.enabled=true --set=mariadb-operator.enabled=true --set=cloudnative-pg.enabled=true --set=kube-prometheus-stack.enabled=true'
+
+      - name: Run Tests
+        working-directory: e2e
+        run: make test
