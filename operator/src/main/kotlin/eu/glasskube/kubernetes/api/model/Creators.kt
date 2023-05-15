@@ -20,7 +20,10 @@ import io.fabric8.kubernetes.api.model.PersistentVolumeClaimSpec
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaimVolumeSource
 import io.fabric8.kubernetes.api.model.PodSpec
 import io.fabric8.kubernetes.api.model.PodTemplateSpec
+import io.fabric8.kubernetes.api.model.Quantity
+import io.fabric8.kubernetes.api.model.ResourceClaim
 import io.fabric8.kubernetes.api.model.ResourceRequirements
+import io.fabric8.kubernetes.api.model.ResourceRequirementsBuilder
 import io.fabric8.kubernetes.api.model.Secret
 import io.fabric8.kubernetes.api.model.SecretEnvSource
 import io.fabric8.kubernetes.api.model.SecretKeySelector
@@ -87,6 +90,32 @@ inline fun Service.spec(block: (@KubernetesDslMarker ServiceSpec).() -> Unit) {
 
 inline fun servicePort(block: (@KubernetesDslMarker ServicePort).() -> Unit) =
     ServicePort().apply(block)
+
+inline fun Container.resources(block: (@KubernetesDslMarker ResourceRequirementsBuilder).() -> Unit) {
+    resources = ResourceRequirementsBuilder().apply(block).build()
+}
+
+fun ResourceRequirementsBuilder.requests(cpu: Quantity? = null, memory: Quantity? = null) {
+    if (cpu != null) {
+        addToRequests("cpu", cpu)
+    }
+    if (memory != null) {
+        addToRequests("memory", memory)
+    }
+}
+
+fun ResourceRequirementsBuilder.limits(cpu: Quantity? = null, memory: Quantity? = null) {
+    if (cpu != null) {
+        addToLimits("cpu", cpu)
+    }
+    if (memory != null) {
+        addToLimits("memory", memory)
+    }
+}
+
+fun ResourceRequirementsBuilder.claims(vararg claims: String) {
+    addAllToClaims(claims.map { ResourceClaim(it) })
+}
 
 inline fun Container.envFrom(block: (@KubernetesDslMarker MutableList<EnvFromSource>).() -> Unit) {
     envFrom = mutableListOf<EnvFromSource>().apply(block)

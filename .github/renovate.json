@@ -1,0 +1,30 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base",
+    "helpers:pinGitHubActionDigests",
+    ":gitSignOff",
+    "group:recommended",
+    "group:monorepos"
+  ],
+  "baseBranches": [
+    "main"
+  ],
+  "addLabels": ["dependencies"],
+  "packageRules": [
+    {
+      "matchManagers": ["gradle"],
+      "addLabels": ["gradle"]
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "addLabels": ["github_actions"]
+    },
+    {
+      "groupName": "Kotlin",
+      "matchPackagePrefixes": [
+        "org.jetbrains.kotlin"
+      ]
+    }
+  ]
+}
