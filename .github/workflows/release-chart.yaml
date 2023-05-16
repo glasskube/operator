@@ -16,7 +16,7 @@ jobs:
       - name: Publish Helm chart
         uses: stefanprodan/helm-gh-pages@master
         with:
-          token: ${{ secrets.BOT_SECRET }}
+          token: ${{ secrets.GLASSKUBE_BOT_SECRET }}
           charts_dir: charts
           charts_url: https://charts.glasskube.eu
           owner: glasskube
