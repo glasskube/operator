@@ -25,6 +25,10 @@ spec:
               fieldPath: metadata.namespace
         - name: BPL_JVM_THREAD_COUNT
           value: "16"
+        - name: MINIO_SECRET_NAME
+          value: {{ .Release.Name }}-minio
+        - name: MINIO_HOST_NAME
+          value: {{ .Release.Name }}-minio
         image: {{ .Values.glasskubeOperator.image.repository }}:{{ .Values.glasskubeOperator.image.tag | default .Chart.AppVersion }}
         imagePullPolicy: IfNotPresent
         name: glasskube-operator
