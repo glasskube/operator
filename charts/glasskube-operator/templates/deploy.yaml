@@ -3,7 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: glasskube-operator
-  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.glasskubeOperator.replicaCount}}
   selector:
