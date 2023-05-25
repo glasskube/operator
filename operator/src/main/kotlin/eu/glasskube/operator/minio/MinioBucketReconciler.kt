@@ -73,7 +73,7 @@ class MinioBucketReconciler(
 
     override fun cleanup(resource: MinioBucket, context: Context<MinioBucket>): DeleteControl {
         with(resource) {
-            when (val username = resource.status.username) {
+            when (val username = resource.status?.username) {
                 null -> log.warn("can not delete user because username is null")
                 else -> deleteBucketUser(username)
             }
