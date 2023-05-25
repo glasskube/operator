@@ -1,19 +1,24 @@
 package eu.glasskube.operator.config
 
+import com.fasterxml.jackson.core.type.TypeReference
 import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.client.getDefaultIngressClass
 import eu.glasskube.kubernetes.client.ingressClasses
 import eu.glasskube.operator.Environment
 import io.fabric8.kubernetes.api.model.ConfigMap
+import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.client.KubernetesClient
 import io.fabric8.kubernetes.client.dsl.Resource
+import io.fabric8.kubernetes.client.utils.Serialization
 import jakarta.annotation.PostConstruct
 import org.springframework.stereotype.Service
 
 @Service
-class ConfigService(private val kubernetesClient: KubernetesClient) {
-
+class ConfigService(
+    private val kubernetesClient: KubernetesClient,
+    private val labelSubstitutionService: LabelSubstitutionService
+) {
     val config: Resource<ConfigMap>
         get() = kubernetesClient.configMaps().inNamespace(Environment.NAMESPACE).withName(ConfigGenerator.NAME)
 
@@ -40,6 +45,18 @@ class ConfigService(private val kubernetesClient: KubernetesClient) {
         get() = this[ConfigKey.cloudProvider]?.let { CloudProvider.valueOf(it) }
             ?: dynamicCloudProvider
 
+    fun getCommonLoadBalancerAnnotations(primary: HasMetadata): Map<String, String> =
+        labelSubstitutionService.substituteVariables(
+            this[ConfigKey.commonLoadBalancerAnnotations]?.parseAsMap().orEmpty(),
+            primary
+        )
+
+    fun getCommonIngressAnnotations(primary: HasMetadata): Map<String, String> =
+        labelSubstitutionService.substituteVariables(
+            this[ConfigKey.commonIngressAnnotations]?.parseAsMap().orEmpty(),
+            primary
+        )
+
     private val dynamicCloudProvider
         get() = when {
             kubernetesClient.nodes().withLabel("eks.amazonaws.com/nodegroup").list().items.isNotEmpty() ->
@@ -51,6 +68,9 @@ class ConfigService(private val kubernetesClient: KubernetesClient) {
             else ->
                 CloudProvider.generic
         }
+
+    private fun String.parseAsMap(): Map<String, String> =
+        Serialization.unmarshal(byteInputStream(), object : TypeReference<Map<String, String>>() {})
 
     @PostConstruct
     private fun initializeConfigIfNeed() {

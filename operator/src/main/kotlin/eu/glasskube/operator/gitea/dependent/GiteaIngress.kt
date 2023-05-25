@@ -26,7 +26,7 @@ class GiteaIngress(configService: ConfigService) : DependentIngress<Gitea>(confi
             name = primary.genericResourceName
             namespace = primary.metadata.namespace
             labels = primary.resourceLabels
-            annotations = defaultAnnotations + ("nginx.ingress.kubernetes.io/proxy-body-size" to "256m")
+            annotations = getDefaultAnnotations(primary) + ("nginx.ingress.kubernetes.io/proxy-body-size" to "256m")
         }
         spec {
             ingressClassName = defaultIngressClassName

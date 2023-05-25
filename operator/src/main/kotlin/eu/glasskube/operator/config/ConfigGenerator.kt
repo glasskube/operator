@@ -12,7 +12,8 @@ import io.javaoperatorsdk.operator.api.reconciler.UpdateControl
     labelSelector = ConfigGenerator.LABEL_SELECTOR,
     generationAwareEventProcessing = false
 )
-class ConfigGenerator(private val kubernetesClient: KubernetesClient, private val configService: ConfigService) : Reconciler<ConfigMap> {
+class ConfigGenerator(private val kubernetesClient: KubernetesClient, private val configService: ConfigService) :
+    Reconciler<ConfigMap> {
 
     init {
         log.info("Glasskube settings are initializing")
@@ -34,6 +35,8 @@ class ConfigGenerator(private val kubernetesClient: KubernetesClient, private va
         return when (it) {
             ConfigKey.cloudProvider -> configService.cloudProvider.name
             ConfigKey.databaseStorageClassName -> detectDatabaseStorageClass()
+            ConfigKey.commonIngressAnnotations,
+            ConfigKey.commonLoadBalancerAnnotations,
             ConfigKey.ingressClassName -> null
         }
     }
@@ -41,7 +44,8 @@ class ConfigGenerator(private val kubernetesClient: KubernetesClient, private va
     private fun detectDatabaseStorageClass(): String {
         val storageClasses = kubernetesClient.storage().v1().storageClasses().list()
         val storageClassNames = storageClasses.items.map { it.metadata.name }
-        val defaultStorageClass = storageClasses.items.find { p -> p.metadata.annotations["storageclass.kubernetes.io/is-default-class"] == "true" }
+        val defaultStorageClass =
+            storageClasses.items.find { p -> p.metadata.annotations["storageclass.kubernetes.io/is-default-class"] == "true" }
         val defaultStorageClassName = defaultStorageClass?.let { defaultStorageClass.metadata.name } ?: "standard"
 
         val awsEncryptedStorageClass = "gp3-encrypted"
@@ -61,6 +65,8 @@ class ConfigGenerator(private val kubernetesClient: KubernetesClient, private va
 
 enum class ConfigKey {
     cloudProvider,
+    commonIngressAnnotations,
+    commonLoadBalancerAnnotations,
     databaseStorageClassName,
     ingressClassName
 }

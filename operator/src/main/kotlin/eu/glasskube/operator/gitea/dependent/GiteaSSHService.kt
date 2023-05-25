@@ -4,6 +4,7 @@ import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.service
 import eu.glasskube.kubernetes.api.model.servicePort
 import eu.glasskube.kubernetes.api.model.spec
+import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.gitea.Gitea
 import eu.glasskube.operator.gitea.GiteaReconciler
 import eu.glasskube.operator.gitea.resourceLabelSelector
@@ -21,7 +22,8 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
     labelSelector = GiteaReconciler.SELECTOR,
     resourceDiscriminator = GiteaSSHService.Discriminator::class
 )
-class GiteaSSHService : CRUDKubernetesDependentResource<Service, Gitea>(Service::class.java) {
+class GiteaSSHService(private val configService: ConfigService) :
+    CRUDKubernetesDependentResource<Service, Gitea>(Service::class.java) {
     internal class Discriminator : ResourceIDMatcherDiscriminator<Service, Gitea>({ ResourceID(it.sshServiceName) })
 
     override fun desired(primary: Gitea, context: Context<Gitea>) = service {
@@ -29,6 +31,7 @@ class GiteaSSHService : CRUDKubernetesDependentResource<Service, Gitea>(Service:
             name = primary.sshServiceName
             namespace = primary.metadata.namespace
             labels = primary.resourceLabels
+            annotations = configService.getCommonLoadBalancerAnnotations(primary)
         }
         spec {
             type = "LoadBalancer"
