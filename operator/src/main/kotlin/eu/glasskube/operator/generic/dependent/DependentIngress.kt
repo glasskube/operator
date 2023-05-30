@@ -6,10 +6,9 @@ import io.fabric8.kubernetes.api.model.GenericKubernetesResource
 import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.api.model.networking.v1.Ingress
 import io.fabric8.kubernetes.client.dsl.base.ResourceDefinitionContext
-import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 
 abstract class DependentIngress<T : HasMetadata>(private val configService: ConfigService) :
-    CRUDKubernetesDependentResource<Ingress, T>(Ingress::class.java) {
+    UpdatableAnnotationsCRUDKubernetesDependentResource<Ingress, T>(Ingress::class.java) {
 
     protected val defaultIngressClassName: String?
         get() = when (configService.cloudProvider) {
