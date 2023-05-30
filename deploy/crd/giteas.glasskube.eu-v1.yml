@@ -19,6 +19,8 @@ spec:
             properties:
               host:
                 type: string
+              sshEnabled:
+                type: boolean
               sshHost:
                 type: string
               adminSecret:

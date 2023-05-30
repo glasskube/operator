@@ -83,7 +83,8 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
             type = GiteaSSHService::class,
             name = "GiteaSSHService",
             dependsOn = ["GiteaDeployment"],
-            useEventSourceWithName = GiteaReconciler.SERVICE_EVENT_SOURCE
+            useEventSourceWithName = GiteaReconciler.SERVICE_EVENT_SOURCE,
+            reconcilePrecondition = GiteaSSHService.ReconcileCondition::class
         ),
         Dependent(
             type = GiteaIngress::class,

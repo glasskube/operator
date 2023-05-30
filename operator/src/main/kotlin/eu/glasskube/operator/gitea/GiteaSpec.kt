@@ -8,6 +8,7 @@ import io.fabric8.kubernetes.api.model.LocalObjectReference
 data class GiteaSpec(
     @field:Required
     val host: String,
+    val sshEnabled: Boolean = true,
     val sshHost: String = host,
     @field:JsonPropertyDescription(value = "Secret containing data of the admin user to create on pod initialization. Expected keys are GITEA_ADMIN_USER, GITEA_ADMIN_EMAIL and GITEA_ADMIN_PASSWORD")
     val adminSecret: LocalObjectReference? = null,

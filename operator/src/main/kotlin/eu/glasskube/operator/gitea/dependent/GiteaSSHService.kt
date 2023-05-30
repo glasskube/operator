@@ -15,7 +15,9 @@ import io.fabric8.kubernetes.api.model.IntOrString
 import io.fabric8.kubernetes.api.model.Service
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
+import io.javaoperatorsdk.operator.api.reconciler.dependent.DependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
+import io.javaoperatorsdk.operator.processing.dependent.workflow.Condition
 import io.javaoperatorsdk.operator.processing.event.ResourceID
 
 @KubernetesDependent(
@@ -25,6 +27,14 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
 class GiteaSSHService(private val configService: ConfigService) :
     UpdatableAnnotationsCRUDKubernetesDependentResource<Service, Gitea>(Service::class.java) {
     internal class Discriminator : ResourceIDMatcherDiscriminator<Service, Gitea>({ ResourceID(it.sshServiceName) })
+
+    class ReconcileCondition : Condition<Service, Gitea> {
+        override fun isMet(
+            dependentResource: DependentResource<Service, Gitea>,
+            primary: Gitea,
+            context: Context<Gitea>
+        ) = primary.spec.sshEnabled
+    }
 
     override fun desired(primary: Gitea, context: Context<Gitea>) = service {
         metadata {
