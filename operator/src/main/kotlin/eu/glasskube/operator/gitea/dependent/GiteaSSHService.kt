@@ -5,6 +5,7 @@ import eu.glasskube.kubernetes.api.model.service
 import eu.glasskube.kubernetes.api.model.servicePort
 import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.operator.config.ConfigService
+import eu.glasskube.operator.generic.dependent.UpdatableAnnotationsCRUDKubernetesDependentResource
 import eu.glasskube.operator.gitea.Gitea
 import eu.glasskube.operator.gitea.GiteaReconciler
 import eu.glasskube.operator.gitea.resourceLabelSelector
@@ -14,7 +15,6 @@ import io.fabric8.kubernetes.api.model.IntOrString
 import io.fabric8.kubernetes.api.model.Service
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
-import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 import io.javaoperatorsdk.operator.processing.event.ResourceID
 
@@ -23,7 +23,7 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
     resourceDiscriminator = GiteaSSHService.Discriminator::class
 )
 class GiteaSSHService(private val configService: ConfigService) :
-    CRUDKubernetesDependentResource<Service, Gitea>(Service::class.java) {
+    UpdatableAnnotationsCRUDKubernetesDependentResource<Service, Gitea>(Service::class.java) {
     internal class Discriminator : ResourceIDMatcherDiscriminator<Service, Gitea>({ ResourceID(it.sshServiceName) })
 
     override fun desired(primary: Gitea, context: Context<Gitea>) = service {
