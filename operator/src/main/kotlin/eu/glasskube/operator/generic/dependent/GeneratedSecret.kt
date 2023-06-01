@@ -2,7 +2,7 @@ package eu.glasskube.operator.generic.dependent
 
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.secret
-import eu.glasskube.operator.secrets.SecretGenerator
+import eu.glasskube.operator.infra.secrets.SecretGenerator
 import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.api.model.Secret
 import io.javaoperatorsdk.operator.api.reconciler.Context
