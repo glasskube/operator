@@ -12,6 +12,7 @@ import eu.glasskube.operator.apps.gitea.resourceLabels
 import eu.glasskube.operator.decodeBase64
 import eu.glasskube.operator.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
+import io.fabric8.kubernetes.client.dsl.internal.apps.v1.RollingUpdater
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
@@ -82,7 +83,7 @@ class GiteaIniConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitea>(Conf
         super.onUpdated(primary, updated, actual, context)
         context.getSecondaryResource(GiteaDeployment.Discriminator()).ifPresent {
             log.info("Restarting deployment after config ini change")
-            kubernetesClient.apps().deployments().resource(it).rolling().restart()
+            RollingUpdater.restart(kubernetesClient.resource(it))
         }
     }
 
