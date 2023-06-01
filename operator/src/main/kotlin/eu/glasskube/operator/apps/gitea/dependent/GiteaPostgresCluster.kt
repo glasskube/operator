@@ -48,8 +48,7 @@ class GiteaPostgresCluster : CRUDKubernetesDependentResource<PostgresCluster, Gi
             storage = StorageConfiguration(size = "20Gi"),
             monitoring = MonitoringConfiguration(enablePodMonitor = true),
             backup = BackupConfiguration(
-                barmanObjectStore =
-                BarmanObjectStoreConfiguration(
+                barmanObjectStore = BarmanObjectStoreConfiguration(
                     endpointURL = "http://glasskube-minio.glasskube-system:9000",
                     destinationPath = "s3://${minioBucket.bucketName}",
                     s3Credentials = S3Credentials(
