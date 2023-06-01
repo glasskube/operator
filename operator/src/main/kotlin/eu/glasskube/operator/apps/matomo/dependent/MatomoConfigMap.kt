@@ -9,11 +9,11 @@ import eu.glasskube.operator.apps.matomo.databaseName
 import eu.glasskube.operator.apps.matomo.databaseUser
 import eu.glasskube.operator.apps.matomo.mariaDBHost
 import eu.glasskube.operator.apps.matomo.resourceLabels
+import eu.glasskube.operator.resourceAsString
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
-import java.nio.charset.Charset
 
 @KubernetesDependent(labelSelector = MatomoReconciler.SELECTOR)
 class MatomoConfigMap : CRUDKubernetesDependentResource<ConfigMap, Matomo>(ConfigMap::class.java) {
@@ -27,9 +27,9 @@ class MatomoConfigMap : CRUDKubernetesDependentResource<ConfigMap, Matomo>(Confi
             "MATOMO_DATABASE_HOST" to host(primary),
             "MATOMO_DATABASE_USERNAME" to primary.databaseUser,
             "MATOMO_DATABASE_DBNAME" to primary.databaseName,
-            "init.sh" to readFile("init.sh"),
-            "install.json" to replaceDatabaseValues(readFile("config.json"), primary),
-            "glasskube-matomo-archive-cron" to replaceHost(readFile("cron"), primary)
+            "init.sh" to resourceAsString("init.sh"),
+            "install.json" to replaceDatabaseValues(resourceAsString("config.json"), primary),
+            "glasskube-matomo-archive-cron" to replaceHost(resourceAsString("cron"), primary)
         )
     }
 
@@ -41,6 +41,4 @@ class MatomoConfigMap : CRUDKubernetesDependentResource<ConfigMap, Matomo>(Confi
             .replace("%MATOMO_DATABASE_DBNAME%", primary.databaseName)
 
     private fun host(primary: Matomo) = "${primary.mariaDBHost}.${primary.metadata.namespace}"
-
-    private fun readFile(fileName: String) = this::class.java.getResource(fileName)!!.readText(Charset.defaultCharset())
 }

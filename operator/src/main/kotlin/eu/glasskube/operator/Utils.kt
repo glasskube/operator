@@ -29,3 +29,5 @@ fun <T> Optional<T>.orNull() = orElse(null)
 inline fun <reified T : Any> T.logger(): Logger = with(T::class) {
     LoggerFactory.getLogger(if (isCompanion) java.enclosingClass else java)
 }
+
+inline fun <reified T : Any> T.resourceAsString(name: String) = T::class.java.getResource(name)!!.readText()
