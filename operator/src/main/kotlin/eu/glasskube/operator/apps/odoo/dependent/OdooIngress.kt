@@ -26,7 +26,7 @@ class OdooIngress(configService: ConfigService) : DependentIngress<Odoo>(configS
             name = primary.ingressName
             namespace = primary.metadata.namespace
             labels = primary.resourceLabels
-            annotations = getDefaultAnnotations(primary)
+            annotations = primary.defaultAnnotations
         }
         spec {
             ingressClassName = defaultIngressClassName
