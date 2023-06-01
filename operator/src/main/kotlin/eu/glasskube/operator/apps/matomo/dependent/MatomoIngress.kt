@@ -27,7 +27,7 @@ class MatomoIngress(configService: ConfigService) : DependentIngress<Matomo>(con
             name = primary.ingressName
             namespace = primary.metadata.namespace
             labels = primary.resourceLabels
-            annotations = getDefaultAnnotations(primary)
+            annotations = primary.defaultAnnotations
         }
         spec {
             ingressClassName = defaultIngressClassName

@@ -16,8 +16,8 @@ abstract class DependentIngress<T : HasMetadata>(private val configService: Conf
             else -> configService.ingressClassName
         }
 
-    protected fun getDefaultAnnotations(primary: T): Map<String, String> =
-        configService.getCommonIngressAnnotations(primary) +
+    protected val T.defaultAnnotations: Map<String, String>
+        get() = configService.getCommonIngressAnnotations(this) +
             when (configService.cloudProvider) {
                 CloudProvider.aws -> awsDefaultAnnotations
                 else -> certManagerDefaultAnnotations

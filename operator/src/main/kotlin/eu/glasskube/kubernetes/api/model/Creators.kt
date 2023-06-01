@@ -10,6 +10,9 @@ import io.fabric8.kubernetes.api.model.ContainerPort
 import io.fabric8.kubernetes.api.model.EnvFromSource
 import io.fabric8.kubernetes.api.model.EnvVar
 import io.fabric8.kubernetes.api.model.EnvVarSource
+import io.fabric8.kubernetes.api.model.ExecAction
+import io.fabric8.kubernetes.api.model.GRPCAction
+import io.fabric8.kubernetes.api.model.HTTPGetAction
 import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.api.model.KeyToPath
 import io.fabric8.kubernetes.api.model.LabelSelector
@@ -20,6 +23,7 @@ import io.fabric8.kubernetes.api.model.PersistentVolumeClaimSpec
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaimVolumeSource
 import io.fabric8.kubernetes.api.model.PodSpec
 import io.fabric8.kubernetes.api.model.PodTemplateSpec
+import io.fabric8.kubernetes.api.model.Probe
 import io.fabric8.kubernetes.api.model.Quantity
 import io.fabric8.kubernetes.api.model.ResourceClaim
 import io.fabric8.kubernetes.api.model.ResourceRequirements
@@ -30,6 +34,7 @@ import io.fabric8.kubernetes.api.model.SecretKeySelector
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.ServicePort
 import io.fabric8.kubernetes.api.model.ServiceSpec
+import io.fabric8.kubernetes.api.model.TCPSocketAction
 import io.fabric8.kubernetes.api.model.Volume
 import io.fabric8.kubernetes.api.model.VolumeMount
 
@@ -181,4 +186,32 @@ inline fun PersistentVolumeClaim.spec(block: (@KubernetesDslMarker PersistentVol
 
 inline fun PersistentVolumeClaimSpec.resources(block: (@KubernetesDslMarker ResourceRequirements).() -> Unit) {
     resources = ResourceRequirements().apply(block)
+}
+
+inline fun Container.readinessProbe(block: (@KubernetesDslMarker Probe).() -> Unit) {
+    readinessProbe = Probe().apply(block)
+}
+
+inline fun Container.livenessProbe(block: (@KubernetesDslMarker Probe).() -> Unit) {
+    livenessProbe = Probe().apply(block)
+}
+
+inline fun Container.startupProbe(block: (@KubernetesDslMarker Probe).() -> Unit) {
+    startupProbe = Probe().apply(block)
+}
+
+inline fun Probe.exec(block: (@KubernetesDslMarker ExecAction).() -> Unit) {
+    exec = ExecAction().apply(block)
+}
+
+inline fun Probe.httpGet(block: (@KubernetesDslMarker HTTPGetAction).() -> Unit) {
+    httpGet = HTTPGetAction().apply(block)
+}
+
+inline fun Probe.tcpSocket(block: (@KubernetesDslMarker TCPSocketAction).() -> Unit) {
+    tcpSocket = TCPSocketAction().apply(block)
+}
+
+inline fun Probe.grpc(block: (@KubernetesDslMarker GRPCAction).() -> Unit) {
+    grpc = GRPCAction().apply(block)
 }
