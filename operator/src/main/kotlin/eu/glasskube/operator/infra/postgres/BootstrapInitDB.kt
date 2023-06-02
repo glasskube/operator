@@ -1,10 +1,12 @@
 package eu.glasskube.operator.infra.postgres
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import io.fabric8.kubernetes.api.model.LocalObjectReference
 
 // TODO: Add properties once needed:
 //  - import
 //  - postInitApplicationSQLRefs
+@JsonInclude(JsonInclude.Include.NON_NULL)
 data class BootstrapInitDB(
     val database: String,
     val owner: String? = null,
