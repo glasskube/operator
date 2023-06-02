@@ -4,5 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class ClusterStatus(
-    val instances: Int
+    val instances: Int,
+    val readyInstances: Int
 )

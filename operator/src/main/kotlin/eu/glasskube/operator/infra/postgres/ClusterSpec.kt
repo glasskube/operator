@@ -1,6 +1,7 @@
 package eu.glasskube.operator.infra.postgres
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonInclude
 import io.fabric8.kubernetes.api.model.LocalObjectReference
 
 // TODO: Add properties once needed:
@@ -11,6 +12,7 @@ import io.fabric8.kubernetes.api.model.LocalObjectReference
 //  - nodeMaintenanceWindow
 //  - externalClusters
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 data class ClusterSpec(
     val instances: Int,
     val description: String? = null,
