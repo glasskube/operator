@@ -29,12 +29,7 @@ class GitlabConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitlab>(Confi
             namespace = primary.metadata.namespace
             labels = primary.resourceLabels
         }
-        data = listOfNotNull(
-            "GITLAB_HOST" to "http://${primary.spec.host}",
-            primary.spec.sshHost?.let { "GITLAB_SSH_HOST" to it },
-            "DB_HOST" to "${primary.databaseName}-rw",
-            "GITLAB_OMNIBUS_CONFIG" to gitlabOmnibusConfig
-        ).toMap()
+        data = primary.run { baseData + sshData + smtpData }
     }
 
     override fun onUpdated(primary: Gitlab, updated: ConfigMap, actual: ConfigMap, context: Context<Gitlab>) {
@@ -44,6 +39,29 @@ class GitlabConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitlab>(Confi
             RollingUpdater.restart(kubernetesClient.resource(it))
         }
     }
+
+    private val Gitlab.baseData: Map<String, String>
+        get() = mapOf(
+            "GITLAB_HOST" to "http://${spec.host}",
+            "DB_HOST" to "$databaseName-rw",
+            "GITLAB_OMNIBUS_CONFIG" to gitlabOmnibusConfig
+        )
+
+    private val Gitlab.sshData: Map<String, String>
+        get() = spec.sshHost?.let { mapOf("GITLAB_SSH_HOST" to it) }.orEmpty()
+
+    private val Gitlab.smtpData: Map<String, String>
+        get() = spec.smtp
+            ?.run {
+                mapOf(
+                    "SMTP_ENABLED" to true.toString(),
+                    "SMTP_HOST" to host,
+                    "SMTP_PORT" to port.toString(),
+                    "SMTP_TLS_ENABLED" to tlsEnabled.toString(),
+                    "SMTP_FROM_ADDRESS" to fromAddress
+                )
+            }
+            ?: mapOf("SMTP_ENABLED" to false.toString())
 
     companion object {
         @JvmStatic

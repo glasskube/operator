@@ -32,6 +32,27 @@ spec:
                   optional:
                     type: boolean
                 type: object
+              smtp:
+                nullable: true
+                properties:
+                  host:
+                    type: string
+                  port:
+                    type: integer
+                  fromAddress:
+                    type: string
+                  authSecret:
+                    properties:
+                      name:
+                        type: string
+                    type: object
+                  tlsEnabled:
+                    type: boolean
+                required:
+                - host
+                - fromAddress
+                - authSecret
+                type: object
             required:
             - host
             type: object

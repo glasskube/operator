@@ -76,6 +76,14 @@ class GitlabDeployment : CRUDKubernetesDependentResource<Deployment, Gitlab>(Dep
                                             secretKeyRef(selector.name, selector.key)
                                         }
                                 }
+                                primary.spec.smtp?.also {
+                                    envVar("SMTP_USERNAME") {
+                                        secretKeyRef(it.authSecret.name, "username")
+                                    }
+                                    envVar("SMTP_PASSWORD") {
+                                        secretKeyRef(it.authSecret.name, "password")
+                                    }
+                                }
                             }
                             volumeMounts {
                                 volumeMount {
