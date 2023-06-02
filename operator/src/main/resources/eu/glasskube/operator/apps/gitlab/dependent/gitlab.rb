@@ -44,16 +44,15 @@ sidekiq['listen_address'] = '0.0.0.0'
 
 gitlab_rails['incoming_email_enabled'] = false
 
-# TODO: SMTP
-# gitlab_rails['smtp_enable'] = true
-# gitlab_rails['smtp_address'] = "smtp.server"
-# gitlab_rails['smtp_port'] = 465
-# gitlab_rails['smtp_user_name'] = "smtp user"
-# gitlab_rails['smtp_password'] = "smtp password"
+gitlab_rails['smtp_enable'] = ENV['SMTP_ENABLED']
+gitlab_rails['smtp_address'] = ENV['SMTP_HOST']
+gitlab_rails['smtp_port'] = ENV['SMTP_PORT']
+gitlab_rails['smtp_user_name'] = ENV['SMTP_USERNAME']
+gitlab_rails['smtp_password'] = ENV['SMTP_PASSWORD']
 # gitlab_rails['smtp_domain'] = "example.com"
 # gitlab_rails['smtp_authentication'] = "login"
 # gitlab_rails['smtp_enable_starttls_auto'] = true
-# gitlab_rails['smtp_tls'] = false
+gitlab_rails['smtp_tls'] = ENV['SMTP_TLS_ENABLED']
 # gitlab_rails['smtp_pool'] = false
-# gitlab_rails['gitlab_email_from'] = 'example@example.com'
+gitlab_rails['gitlab_email_from'] = ENV['SMTP_FROM_ADDRESS']
 # gitlab_rails['gitlab_email_display_name'] = 'Example'
