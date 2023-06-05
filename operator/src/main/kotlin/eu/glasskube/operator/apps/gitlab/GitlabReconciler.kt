@@ -8,6 +8,7 @@ import eu.glasskube.operator.apps.gitlab.dependent.GitlabConfigMap
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabDeployment
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabIngress
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabMinioBucket
+import eu.glasskube.operator.apps.gitlab.dependent.GitlabPostgresBackup
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabPostgresCluster
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabSSHService
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabService
@@ -32,8 +33,12 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(
             type = GitlabPostgresCluster::class,
             name = "GitlabPostgresCluster",
-            dependsOn = ["GitlabMinioBucket"],
             readyPostcondition = GitlabPostgresCluster.ReadyPostCondition::class
+        ),
+        Dependent(
+            type = GitlabPostgresBackup::class,
+            name = "GitlabPostgresBackup",
+            dependsOn = ["GitlabMinioBucket"]
         ),
         Dependent(
             type = GitlabDeployment::class,
