@@ -33,12 +33,13 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(
             type = GitlabPostgresCluster::class,
             name = "GitlabPostgresCluster",
-            readyPostcondition = GitlabPostgresCluster.ReadyPostCondition::class
+            readyPostcondition = GitlabPostgresCluster.ReadyPostCondition::class,
+            dependsOn = ["GitlabMinioBucket"]
         ),
         Dependent(
             type = GitlabPostgresBackup::class,
             name = "GitlabPostgresBackup",
-            dependsOn = ["GitlabMinioBucket"]
+            dependsOn = ["GitlabPostgresCluster"]
         ),
         Dependent(
             type = GitlabDeployment::class,
