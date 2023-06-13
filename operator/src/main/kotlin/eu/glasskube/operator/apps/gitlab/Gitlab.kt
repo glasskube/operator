@@ -10,7 +10,7 @@ import io.fabric8.kubernetes.model.annotation.Version
 @Version("v1alpha1")
 class Gitlab : CustomResource<GitlabSpec, GitlabStatus>(), Namespaced {
     companion object {
-        const val APP_NAME = "gitea"
+        const val APP_NAME = "gitlab"
         const val APP_IMAGE = "gitlab/gitlab-ce"
         const val APP_VERSION = "16.0.2-ce.0"
     }
@@ -18,7 +18,7 @@ class Gitlab : CustomResource<GitlabSpec, GitlabStatus>(), Namespaced {
 
 val Gitlab.resourceLabels get() = Labels.resourceLabels(Gitlab.APP_NAME, metadata.name, Gitlab.APP_NAME, Gitlab.APP_VERSION)
 val Gitlab.resourceLabelSelector get() = Labels.resourceLabelSelector(Gitlab.APP_NAME, metadata.name, Gitlab.APP_NAME)
-val Gitlab.genericResourceName: String get() = metadata.name
+val Gitlab.genericResourceName: String get() = "${Gitlab.APP_NAME}-${metadata.name}"
 val Gitlab.configMapName get() = "$genericResourceName-config"
 val Gitlab.databaseName get() = "$genericResourceName-db"
 val Gitlab.volumeName get() = "$genericResourceName-data"
