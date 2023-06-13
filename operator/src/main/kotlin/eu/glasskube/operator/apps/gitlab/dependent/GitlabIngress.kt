@@ -10,10 +10,12 @@ import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.operator.apps.gitlab.Gitlab
 import eu.glasskube.operator.apps.gitlab.GitlabReconciler
 import eu.glasskube.operator.apps.gitlab.ingressName
+import eu.glasskube.operator.apps.gitlab.ingressTlsCertName
 import eu.glasskube.operator.apps.gitlab.resourceLabels
 import eu.glasskube.operator.apps.gitlab.serviceName
 import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.generic.dependent.DependentIngress
+import io.fabric8.kubernetes.api.model.networking.v1.IngressTLS
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
@@ -39,6 +41,9 @@ class GitlabIngress(configService: ConfigService) : DependentIngress<Gitlab>(con
                         )
                     )
                 }
+            )
+            tls = listOf(
+                IngressTLS(listOf(primary.spec.host), primary.ingressTlsCertName)
             )
         }
     }

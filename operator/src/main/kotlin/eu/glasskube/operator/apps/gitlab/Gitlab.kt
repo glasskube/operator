@@ -25,3 +25,4 @@ val Gitlab.volumeName get() = "$genericResourceName-data"
 val Gitlab.ingressName get() = genericResourceName
 val Gitlab.serviceName get() = genericResourceName
 val Gitlab.sshServiceName get() = "$genericResourceName-ssh"
+val Gitlab.ingressTlsCertName get() = "$genericResourceName-cert"
