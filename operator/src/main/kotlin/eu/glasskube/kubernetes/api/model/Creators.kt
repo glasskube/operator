@@ -7,6 +7,7 @@ import io.fabric8.kubernetes.api.model.ConfigMapKeySelector
 import io.fabric8.kubernetes.api.model.ConfigMapVolumeSource
 import io.fabric8.kubernetes.api.model.Container
 import io.fabric8.kubernetes.api.model.ContainerPort
+import io.fabric8.kubernetes.api.model.EmptyDirVolumeSource
 import io.fabric8.kubernetes.api.model.EnvFromSource
 import io.fabric8.kubernetes.api.model.EnvVar
 import io.fabric8.kubernetes.api.model.EnvVarSource
@@ -151,6 +152,10 @@ inline fun volume(name: String, block: (@KubernetesDslMarker Volume).() -> Unit 
 
 inline fun Volume.configMap(name: String, block: (@KubernetesDslMarker ConfigMapVolumeSource).() -> Unit = {}) {
     configMap = ConfigMapVolumeSource().apply { this.name = name }.apply(block)
+}
+
+fun Volume.emptyDir() {
+    emptyDir = EmptyDirVolumeSource()
 }
 
 fun Volume.persistentVolumeClaim(name: String, readonly: Boolean? = null) {

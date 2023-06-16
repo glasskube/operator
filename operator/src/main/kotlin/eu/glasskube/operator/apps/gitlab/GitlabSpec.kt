@@ -11,5 +11,6 @@ data class GitlabSpec(
     val sshEnabled: Boolean = true,
     val initialRootPasswordSecret: SecretKeySelector?,
     @field:Nullable
-    val smtp: GitlabSmtp?
+    val smtp: GitlabSmtp?,
+    val runners: List<GitlabRunnerSpecTemplate> = emptyList()
 )

@@ -10,10 +10,12 @@ import eu.glasskube.operator.apps.gitlab.dependent.GitlabIngress
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabMinioBucket
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabPostgresBackup
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabPostgresCluster
+import eu.glasskube.operator.apps.gitlab.dependent.GitlabRunners
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabSSHService
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabService
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabServiceMonitor
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabVolume
+import eu.glasskube.operator.apps.gitlab.runner.GitlabRunner
 import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.logger
 import io.fabric8.kubernetes.api.model.Service
@@ -66,6 +68,10 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
             type = GitlabIngress::class,
             name = "GitlabIngress",
             dependsOn = ["GitlabService"]
+        ),
+        Dependent(
+            type = GitlabRunners::class,
+            dependsOn = ["GitlabDeployment"]
         )
     ]
 )
@@ -75,7 +81,8 @@ class GitlabReconciler : Reconciler<Gitlab>, EventSourceInitializer<Gitlab> {
         resource.patchOrUpdateStatus(
             GitlabStatus(
                 getSecondaryResource<Deployment>().map { it.status?.readyReplicas ?: 0 }.orElse(0),
-                getSecondaryResource<PostgresCluster>().map { it.status?.readyInstances?.let { it > 0 } }.orElse(false)
+                getSecondaryResource<PostgresCluster>().map { it.status?.readyInstances?.let { it > 0 } }.orElse(false),
+                getSecondaryResources(GitlabRunner::class.java).associate { it.metadata.name to it.status }
             )
         )
     }

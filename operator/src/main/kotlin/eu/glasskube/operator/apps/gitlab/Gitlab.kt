@@ -1,8 +1,10 @@
 package eu.glasskube.operator.apps.gitlab
 
+import eu.glasskube.kubernetes.client.resources
 import eu.glasskube.operator.Labels
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.client.CustomResource
+import io.fabric8.kubernetes.client.KubernetesClient
 import io.fabric8.kubernetes.model.annotation.Group
 import io.fabric8.kubernetes.model.annotation.Version
 
@@ -26,3 +28,5 @@ val Gitlab.ingressName get() = genericResourceName
 val Gitlab.serviceName get() = genericResourceName
 val Gitlab.sshServiceName get() = "$genericResourceName-ssh"
 val Gitlab.ingressTlsCertName get() = "$genericResourceName-cert"
+
+fun KubernetesClient.gitlabs() = resources<Gitlab>()

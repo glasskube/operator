@@ -1,5 +1,6 @@
 package eu.glasskube.kubernetes.client
 
+import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.api.model.KubernetesResourceList
 import io.fabric8.kubernetes.api.model.networking.v1.IngressClass
 import io.fabric8.kubernetes.client.CustomResource
@@ -8,8 +9,10 @@ import io.fabric8.kubernetes.client.dsl.MixedOperation
 import io.fabric8.kubernetes.client.dsl.Resource
 import io.javaoperatorsdk.operator.api.reconciler.UpdateControl
 
-fun KubernetesClient.ingressClasses(): MixedOperation<IngressClass, KubernetesResourceList<IngressClass>, Resource<IngressClass>> =
-    resources(IngressClass::class.java)
+inline fun <reified T : HasMetadata> KubernetesClient.resources(): MixedOperation<T, KubernetesResourceList<T>, Resource<T>> =
+    resources(T::class.java)
+
+fun KubernetesClient.ingressClasses() = resources<IngressClass>()
 
 /**
  * The default Ingress Class is the Ingress Class annotated with

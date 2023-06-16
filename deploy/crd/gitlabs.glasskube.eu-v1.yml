@@ -53,6 +53,17 @@ spec:
                 - fromAddress
                 - authSecret
                 type: object
+              runners:
+                items:
+                  properties:
+                    token:
+                      type: string
+                    concurrency:
+                      type: integer
+                  required:
+                  - token
+                  type: object
+                type: array
             required:
             - host
             type: object
@@ -62,6 +73,13 @@ spec:
                 type: integer
               postgresReady:
                 type: boolean
+              runners:
+                additionalProperties:
+                  properties:
+                    ready:
+                      type: boolean
+                  type: object
+                type: object
             type: object
         type: object
     served: true
