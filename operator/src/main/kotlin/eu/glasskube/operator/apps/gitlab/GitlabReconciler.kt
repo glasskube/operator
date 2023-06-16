@@ -95,9 +95,9 @@ class GitlabReconciler : Reconciler<Gitlab>, EventSourceInitializer<Gitlab> {
 
     companion object {
         const val SELECTOR =
-            "${Labels.MANAGED_BY_GLASSKUBE}, ${Labels.PART_OF}=${Gitlab.APP_NAME},${Labels.NAME}=${Gitlab.APP_NAME}"
+            "${Labels.MANAGED_BY_GLASSKUBE},${Labels.PART_OF}=${Gitlab.APP_NAME},${Labels.NAME}=${Gitlab.APP_NAME}"
 
-        internal const val SERVICE_EVENT_SOURCE = "GiteaServiceEventSource"
+        internal const val SERVICE_EVENT_SOURCE = "GitlabServiceEventSource"
 
         @JvmStatic
         private val log = logger()
