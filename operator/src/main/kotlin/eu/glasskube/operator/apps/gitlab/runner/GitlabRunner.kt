@@ -11,7 +11,7 @@ import io.fabric8.kubernetes.model.annotation.Version
 @Version("v1alpha1")
 class GitlabRunner : CustomResource<GitlabRunnerSpec, GitlabRunnerStatus>(), Namespaced {
     companion object {
-        const val APP_NAME = "runner"
+        const val APP_NAME = "gitlab-runner"
         const val APP_IMAGE = "gitlab/gitlab-runner"
         const val APP_VERSION = "v16.0.2"
         const val DIND_NAME = "dind"
