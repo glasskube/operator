@@ -27,11 +27,18 @@ class MatomoConfigMap : CRUDKubernetesDependentResource<ConfigMap, Matomo>(Confi
             "MATOMO_DATABASE_HOST" to host(primary),
             "MATOMO_DATABASE_USERNAME" to primary.databaseUser,
             "MATOMO_DATABASE_DBNAME" to primary.databaseName,
-            "init.sh" to resourceAsString("init.sh"),
-            "install.json" to replaceDatabaseValues(resourceAsString("config.json"), primary),
-            "glasskube-matomo-archive-cron" to replaceHost(resourceAsString("cron"), primary)
+            "init.sh" to initScript,
+            "install.json" to primary.installJson,
+            "glasskube-matomo-archive-cron" to primary.cron
         )
     }
+
+    private val initScript
+        get() = resourceAsString("init.sh")
+    private val Matomo.installJson
+        get() = replaceDatabaseValues(this@MatomoConfigMap.resourceAsString("config.json"), this)
+    private val Matomo.cron
+        get() = replaceHost(this@MatomoConfigMap.resourceAsString("cron"), this)
 
     private fun replaceHost(cron: String, primary: Matomo) = cron.replace("%HOST%", primary.spec.host!!)
 
