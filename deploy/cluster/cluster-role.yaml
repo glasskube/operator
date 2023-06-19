@@ -12,6 +12,11 @@ rules:
       - patch
       - update
   - apiGroups: [ glasskube.eu ]
+    resources: [ gitlabrunners ]
+    verbs:
+      - create
+      - delete
+  - apiGroups: [ glasskube.eu ]
     resources: [ miniobuckets ]
     verbs:
       - create
