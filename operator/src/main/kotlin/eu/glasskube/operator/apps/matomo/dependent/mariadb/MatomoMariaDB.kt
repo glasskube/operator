@@ -58,7 +58,7 @@ class MatomoMariaDB(private val configService: ConfigService) :
             ),
             metrics = Metrics(
                 exporter = Exporter(
-                    image = MariaDBImage("prom/mysqld-exporter", "v0.14.0")
+                    image = MariaDBImage("prom/mysqld-exporter", "v0.14.0", "IfNotPresent")
                 ),
                 serviceMonitor = ServiceMonitor(
                     prometheusRelease = "kube-prometheus-stack"
