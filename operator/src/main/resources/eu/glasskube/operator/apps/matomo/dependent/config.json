@@ -1,8 +1,8 @@
 {
   "PluginsInstalled": [
+    "API",
     "Actions",
     "Annotations",
-    "API",
     "BulkTracking",
     "Contents",
     "CoreAdminHome",
@@ -18,6 +18,7 @@
     "DevicePlugins",
     "DevicesDetection",
     "Diagnostics",
+    "Ecommerce",
     "Events",
     "ExtraTools",
     "Feedback",
@@ -45,9 +46,9 @@
     "Referrers",
     "Resolution",
     "RssWidget",
+    "SEO",
     "ScheduledReports",
     "SegmentEditor",
-    "SEO",
     "SitesManager",
     "Tour",
     "Transitions",
@@ -58,28 +59,12 @@
     "UserLanguage",
     "UsersManager",
     "VisitFrequency",
+    "VisitTime",
     "VisitorInterest",
     "VisitsSummary",
-    "VisitTime",
     "WebsiteMeasurable",
     "Widgetize"
   ],
-  "User": {
-    "username": "matomo",
-    "pass": "matomo123",
-    "email": "matomo@glasskube.eu"
-  },
-  "Site": {
-    "name": "Glasskube Matomo Test Site",
-    "url": "matomo.glasskube.eu"
-  },
-  "database": {
-    "username": "%MATOMO_DATABASE_USERNAME%",
-    "password": "%MATOMO_DATABASE_PASSWORD%",
-    "host": "%MATOMO_DATABASE_HOST%",
-    "dbname": "%MATOMO_DATABASE_DBNAME%",
-    "tables_prefix": "matomo_"
-  },
   "Config": {
     "log": {
       "log_level": "ERROR"
