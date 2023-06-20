@@ -3,10 +3,10 @@ package eu.glasskube.operator.apps.matomo.dependent.mariadb
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.operator.apps.matomo.Matomo
 import eu.glasskube.operator.apps.matomo.MatomoReconciler
+import eu.glasskube.operator.apps.matomo.databaseSecretName
 import eu.glasskube.operator.apps.matomo.databaseUser
 import eu.glasskube.operator.apps.matomo.mariaDBHost
 import eu.glasskube.operator.apps.matomo.resourceLabels
-import eu.glasskube.operator.apps.matomo.secretName
 import eu.glasskube.operator.infra.mariadb.DatabasebRef
 import eu.glasskube.operator.infra.mariadb.User
 import eu.glasskube.operator.infra.mariadb.UserMariaDBSpec
@@ -26,7 +26,7 @@ class MatomoUserMariaDB : CRUDKubernetesDependentResource<User, Matomo>(User::cl
         }
         spec = UserMariaDBSpec(
             mariaDbRef = DatabasebRef(primary.mariaDBHost),
-            passwordSecretKeyRef = SecretKeySelector("MATOMO_DATABASE_PASSWORD", primary.secretName, null)
+            passwordSecretKeyRef = SecretKeySelector("MATOMO_DATABASE_PASSWORD", primary.databaseSecretName, null)
         )
     }
 }

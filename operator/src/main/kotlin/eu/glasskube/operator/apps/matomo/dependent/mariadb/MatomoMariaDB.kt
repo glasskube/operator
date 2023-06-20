@@ -3,9 +3,9 @@ package eu.glasskube.operator.apps.matomo.dependent.mariadb
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.operator.apps.matomo.Matomo
 import eu.glasskube.operator.apps.matomo.MatomoReconciler
+import eu.glasskube.operator.apps.matomo.databaseSecretName
 import eu.glasskube.operator.apps.matomo.mariaDBHost
 import eu.glasskube.operator.apps.matomo.resourceLabels
-import eu.glasskube.operator.apps.matomo.secretName
 import eu.glasskube.operator.config.ConfigKey
 import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.infra.mariadb.Exporter
@@ -50,7 +50,7 @@ class MatomoMariaDB(private val configService: ConfigService) :
             labels = primary.resourceLabels
         }
         spec = MariaDBSpec(
-            rootPasswordSecretKeyRef = SecretKeySelector("ROOT_DATABASE_PASSWORD", primary.secretName, null),
+            rootPasswordSecretKeyRef = SecretKeySelector("ROOT_DATABASE_PASSWORD", primary.databaseSecretName, null),
             image = MariaDBImage("mariadb", "10.7.4", "IfNotPresent"),
             volumeClaimTemplate = MariaDBVolumeClaimTemplate(
                 resources = MariaDBResources(MariaDBResourcesRequest("10Gi")),

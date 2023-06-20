@@ -108,7 +108,8 @@
       "time_before_week_archive_considered_outdated": 10800,
       "time_before_month_archive_considered_outdated": 32400,
       "time_before_year_archive_considered_outdated": 64800,
-      "time_before_range_archive_considered_outdated": 10800
+      "time_before_range_archive_considered_outdated": 10800,
+      "multi_server_environment": 0
     }
   }
 }
