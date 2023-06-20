@@ -22,8 +22,16 @@ class DatabaseStatus
 
 @Group("mariadb.mmontes.io")
 @Version("v1alpha1")
-class Database(var spec: DatabaseSpec? = null) :
-    CustomResource<DatabaseSpec, DatabaseStatus>(), Namespaced
+class Database : CustomResource<DatabaseSpec, DatabaseStatus>, Namespaced {
+    constructor() : super()
+    constructor(spec: DatabaseSpec) : super() {
+        setSpec(spec)
+    }
+
+    override fun setSpec(spec: DatabaseSpec?) {
+        super.setSpec(spec)
+    }
+}
 
 inline fun databaseMariaDB(block: (@MariaDBDslMarker Database).() -> Unit) =
     Database().apply(block)

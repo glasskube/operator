@@ -1,6 +1,7 @@
 package eu.glasskube.operator.infra.mariadb
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import io.fabric8.kubernetes.api.model.Condition
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.api.model.SecretKeySelector
 import io.fabric8.kubernetes.client.CustomResource
@@ -39,7 +40,9 @@ data class MariaDBSpec(
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class MariaDBStatus
+data class MariaDBStatus(
+    val conditions: List<Condition>
+)
 
 @Group("mariadb.mmontes.io")
 @Version("v1alpha1")
