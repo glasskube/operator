@@ -16,7 +16,6 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 
 @KubernetesDependent(labelSelector = MatomoReconciler.SELECTOR)
 class MatomoDatabaseMariaDB : CRUDKubernetesDependentResource<Database, Matomo>(Database::class.java) {
-
     override fun desired(primary: Matomo, context: Context<Matomo>) = databaseMariaDB {
         metadata {
             name = primary.databaseName

@@ -18,12 +18,16 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
 
 @ControllerConfiguration(
     dependents = [
-        Dependent(type = MatomoDeployment::class),
+        Dependent(type = MatomoDeployment::class, dependsOn = ["MatomoMariaDB"]),
         Dependent(type = MatomoSecret::class),
         Dependent(type = MatomoConfigMap::class),
         Dependent(type = MatomoService::class),
         Dependent(type = MatomoIngress::class),
-        Dependent(type = MatomoMariaDB::class),
+        Dependent(
+            type = MatomoMariaDB::class,
+            name = "MatomoMariaDB",
+            readyPostcondition = MatomoMariaDB.ReadyPostCondition::class
+        ),
         Dependent(type = MatomoDatabaseMariaDB::class),
         Dependent(type = MatomoUserMariaDB::class),
         Dependent(type = MatomoGrantMariaDB::class)
