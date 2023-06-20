@@ -32,6 +32,7 @@ import io.fabric8.kubernetes.api.model.ResourceRequirementsBuilder
 import io.fabric8.kubernetes.api.model.Secret
 import io.fabric8.kubernetes.api.model.SecretEnvSource
 import io.fabric8.kubernetes.api.model.SecretKeySelector
+import io.fabric8.kubernetes.api.model.SecretVolumeSource
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.ServicePort
 import io.fabric8.kubernetes.api.model.ServiceSpec
@@ -152,6 +153,10 @@ inline fun volume(name: String, block: (@KubernetesDslMarker Volume).() -> Unit 
 
 inline fun Volume.configMap(name: String, block: (@KubernetesDslMarker ConfigMapVolumeSource).() -> Unit = {}) {
     configMap = ConfigMapVolumeSource().apply { this.name = name }.apply(block)
+}
+
+inline fun Volume.secret(secretName: String, block: (@KubernetesDslMarker SecretVolumeSource).() -> Unit = {}) {
+    secret = SecretVolumeSource().apply { this.secretName = secretName }.apply(block)
 }
 
 fun Volume.emptyDir() {

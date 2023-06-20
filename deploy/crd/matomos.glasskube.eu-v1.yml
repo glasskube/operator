@@ -19,6 +19,27 @@ spec:
             properties:
               host:
                 type: string
+              smtp:
+                nullable: true
+                properties:
+                  host:
+                    type: string
+                  port:
+                    type: integer
+                  fromAddress:
+                    type: string
+                  authSecret:
+                    properties:
+                      name:
+                        type: string
+                    type: object
+                  tlsEnabled:
+                    type: boolean
+                required:
+                - host
+                - fromAddress
+                - authSecret
+                type: object
             type: object
           status:
             type: object

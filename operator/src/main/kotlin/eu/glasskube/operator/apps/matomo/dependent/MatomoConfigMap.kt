@@ -39,7 +39,6 @@ class MatomoConfigMap : CRUDKubernetesDependentResource<ConfigMap, Matomo>(Confi
             "MATOMO_INSTALL_FILE" to MatomoDeployment.installJsonPath,
             MatomoDeployment.initSh to initSh,
             MatomoDeployment.installSh to installSh,
-            MatomoDeployment.installJson to installJson,
             MatomoDeployment.archiveCron to primary.archiveCron
         )
     }
@@ -54,7 +53,6 @@ class MatomoConfigMap : CRUDKubernetesDependentResource<ConfigMap, Matomo>(Confi
 
     private val initSh get() = resourceAsString("init.sh")
     private val installSh get() = resourceAsString("install.sh")
-    private val installJson get() = this.resourceAsString("config.json")
     private val Matomo.archiveCron
         get() = replaceHost(this@MatomoConfigMap.resourceAsString("cron"), this)
 
