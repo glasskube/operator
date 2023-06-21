@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.kotlinModule
 import eu.glasskube.operator.Environment
+import eu.glasskube.operator.api.reconciler.HasRegistrationCondition
+import eu.glasskube.operator.logger
 import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.client.KubernetesClient
 import io.fabric8.kubernetes.client.KubernetesClientBuilder
@@ -39,7 +41,19 @@ class OperatorConfig {
         operatorConfigurationService: InjectionAwareConfigurationService,
         reconcilers: List<Reconciler<*>>
     ) = Operator(kubernetesClient, operatorConfigurationService).apply {
-        reconcilers.forEach { registerForNamespaceOrCluster(it) }
+        reconcilers.forEach {
+            if (it !is HasRegistrationCondition || it.isRegistrationEnabled) {
+                registerForNamespaceOrCluster(it)
+            } else {
+                log.warn(
+                    listOfNotNull(
+                        "Reconciler was not registered because it's registration condition is not met: ${it.javaClass.name}.",
+                        it.registrationConditionHint,
+                        "Resources managed by this controller will not be reconciled!"
+                    ).joinToString(" ")
+                )
+            }
+        }
         start()
     }
 
@@ -58,4 +72,9 @@ class OperatorConfig {
                 else -> settingNamespace(namespace)
             }
         }
+
+    companion object {
+        @JvmStatic
+        private val log = logger()
+    }
 }

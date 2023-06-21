@@ -1,6 +1,8 @@
 package eu.glasskube.operator.apps.matomo
 
 import eu.glasskube.kubernetes.client.patchOrUpdateStatus
+import eu.glasskube.kubernetes.client.resources
+import eu.glasskube.operator.api.reconciler.HasRegistrationCondition
 import eu.glasskube.operator.api.reconciler.informerEventSource
 import eu.glasskube.operator.apps.matomo.dependent.MatomoConfigMap
 import eu.glasskube.operator.apps.matomo.dependent.MatomoConfigSecret
@@ -14,6 +16,8 @@ import eu.glasskube.operator.apps.matomo.dependent.mariadb.MatomoGrantMariaDB
 import eu.glasskube.operator.apps.matomo.dependent.mariadb.MatomoMariaDB
 import eu.glasskube.operator.apps.matomo.dependent.mariadb.MatomoUserMariaDB
 import io.fabric8.kubernetes.api.model.Secret
+import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition
+import io.fabric8.kubernetes.client.KubernetesClient
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext
@@ -47,7 +51,17 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(type = MatomoGrantMariaDB::class)
     ]
 )
-class MatomoReconciler : Reconciler<Matomo>, EventSourceInitializer<Matomo> {
+class MatomoReconciler(private val kubernetesClient: KubernetesClient) :
+    Reconciler<Matomo>, EventSourceInitializer<Matomo>, HasRegistrationCondition {
+
+    override val isRegistrationEnabled
+        get() = kubernetesClient.resources<CustomResourceDefinition>()
+            .withName("mariadbs.mariadb.mmontes.io")
+            .isReady
+
+    override val registrationConditionHint =
+        "CRDs provided by the MariaDB Operator must be present on the cluster."
+
     override fun reconcile(resource: Matomo, context: Context<Matomo>): UpdateControl<Matomo> {
         return resource.patchOrUpdateStatus(MatomoStatus())
     }
