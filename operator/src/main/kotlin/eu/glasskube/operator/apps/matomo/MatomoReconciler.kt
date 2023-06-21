@@ -8,6 +8,7 @@ import eu.glasskube.operator.apps.matomo.dependent.MatomoDatabaseSecret
 import eu.glasskube.operator.apps.matomo.dependent.MatomoDeployment
 import eu.glasskube.operator.apps.matomo.dependent.MatomoIngress
 import eu.glasskube.operator.apps.matomo.dependent.MatomoService
+import eu.glasskube.operator.apps.matomo.dependent.MatomoVolume
 import eu.glasskube.operator.apps.matomo.dependent.mariadb.MatomoDatabaseMariaDB
 import eu.glasskube.operator.apps.matomo.dependent.mariadb.MatomoGrantMariaDB
 import eu.glasskube.operator.apps.matomo.dependent.mariadb.MatomoMariaDB
@@ -23,7 +24,8 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
 
 @ControllerConfiguration(
     dependents = [
-        Dependent(type = MatomoDeployment::class, dependsOn = ["MatomoMariaDB"]),
+        Dependent(type = MatomoVolume::class, name = "MatomoVolume"),
+        Dependent(type = MatomoDeployment::class, dependsOn = ["MatomoMariaDB", "MatomoVolume"]),
         Dependent(
             type = MatomoDatabaseSecret::class,
             useEventSourceWithName = MatomoReconciler.SECRET_EVENT_SOURCE

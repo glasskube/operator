@@ -35,5 +35,6 @@ val Matomo.configMapName get() = genericResourceName
 val Matomo.configSecretName get() = "$genericResourceName-config"
 val Matomo.databaseSecretName get() = mariaDBHost
 val Matomo.mariaDBHost get() = "$genericResourceName-mariadb"
+val Matomo.persistentVolumeClaimName get() = "$genericResourceName-misc"
 val Matomo.databaseName get() = "matomo"
 val Matomo.databaseUser get() = "matomo"
