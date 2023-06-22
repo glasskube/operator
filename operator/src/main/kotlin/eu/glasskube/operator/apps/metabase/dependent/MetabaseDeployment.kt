@@ -17,14 +17,17 @@ import eu.glasskube.kubernetes.api.model.livenessProbe
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.readinessProbe
 import eu.glasskube.kubernetes.api.model.secretKeyRef
+import eu.glasskube.kubernetes.api.model.secretRef
 import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.kubernetes.api.model.startupProbe
+import eu.glasskube.operator.apps.gitea.secretName
 import eu.glasskube.operator.apps.metabase.Metabase
 import eu.glasskube.operator.apps.metabase.MetabaseReconciler
 import eu.glasskube.operator.apps.metabase.configMapName
 import eu.glasskube.operator.apps.metabase.dbClusterName
 import eu.glasskube.operator.apps.metabase.resourceLabelSelector
 import eu.glasskube.operator.apps.metabase.resourceLabels
+import eu.glasskube.operator.apps.metabase.secretName
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
@@ -53,7 +56,8 @@ class MetabaseDeployment : CRUDKubernetesDependentResource<Deployment, Metabase>
                             name = Metabase.APP_NAME
                             image = "${Metabase.APP_NAME}/${Metabase.APP_NAME}:v${Metabase.APP_VERSION}"
                             envFrom {
-                                configMapRef(primary.configMapName)
+                                configMapRef(primary.configMapName, false)
+                                secretRef(primary.secretName, false)
                             }
                             env {
                                 envVar("MB_DB_USER") {
