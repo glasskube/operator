@@ -10,6 +10,7 @@ import eu.glasskube.operator.apps.metabase.dependent.MetabaseIngress
 import eu.glasskube.operator.apps.metabase.dependent.MetabaseMinioBucket
 import eu.glasskube.operator.apps.metabase.dependent.MetabasePostgresBackup
 import eu.glasskube.operator.apps.metabase.dependent.MetabasePostgresCluster
+import eu.glasskube.operator.apps.metabase.dependent.MetabaseSecret
 import eu.glasskube.operator.apps.metabase.dependent.MetabaseServiceMonitor
 import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.logger
@@ -21,6 +22,7 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
 
 @ControllerConfiguration(
     dependents = [
+        Dependent(type = MetabaseSecret::class, name = "MetabaseSecret"),
         Dependent(type = MetabaseMinioBucket::class, name = "MetabaseMinioBucket"),
         Dependent(
             type = MetabasePostgresCluster::class,
@@ -39,7 +41,7 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(
             type = MetabaseDeployment::class,
             name = "MetabaseDeployment",
-            dependsOn = ["MetabasePostgresCluster", "MetabaseConfigMap"]
+            dependsOn = ["MetabasePostgresCluster", "MetabaseConfigMap", "MetabaseSecret"]
         ),
         Dependent(
             type = MetabaseHttpService::class,
