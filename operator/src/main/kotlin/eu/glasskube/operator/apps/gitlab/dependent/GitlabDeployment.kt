@@ -61,6 +61,7 @@ class GitlabDeployment : CRUDKubernetesDependentResource<Deployment, Gitlab>(Dep
                         container {
                             name = Gitlab.APP_NAME
                             image = "${Gitlab.APP_IMAGE}:${Gitlab.APP_VERSION}"
+                            resources = primary.spec.resources
                             envFrom {
                                 configMapRef(primary.configMapName)
                             }

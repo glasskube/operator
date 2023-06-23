@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Required
 import io.fabric8.kubernetes.api.model.LocalObjectReference
+import io.fabric8.kubernetes.api.model.Quantity
+import io.fabric8.kubernetes.api.model.ResourceRequirements
 
 data class GiteaSpec(
     @field:Required
@@ -15,5 +17,10 @@ data class GiteaSpec(
     val registrationEnabled: Boolean = false,
     val replicas: Int = 1,
     @field:Nullable
-    val smtp: GiteaSmtp? = null
+    val smtp: GiteaSmtp? = null,
+    val resources: ResourceRequirements = ResourceRequirements(
+        null,
+        mapOf("memory" to Quantity("300", "Mi")),
+        mapOf("memory" to Quantity("200", "Mi"))
+    )
 )

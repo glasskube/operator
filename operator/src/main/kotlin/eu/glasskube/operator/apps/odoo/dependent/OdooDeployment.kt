@@ -55,6 +55,7 @@ class OdooDeployment : CRUDKubernetesDependentResource<Deployment, Odoo>(Deploym
                             name = "odoo"
                             image = "glasskube/odoo:16.0.20230317"
                             imagePullPolicy = "IfNotPresent"
+                            resources = primary.spec.resources
                             env {
                                 envVar("HOST", "${primary.dbName}-rw")
                                 envVar("USER") { secretKeyRef(primary.dbSecretName, "username") }

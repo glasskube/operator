@@ -146,6 +146,7 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                             name = "matomo"
                             image = matomoImage
                             ports = listOf(containerPort { containerPort = 80 })
+                            resources = primary.spec.resources
                             envFrom {
                                 secretRef(primary.databaseSecretName)
                                 configMapRef(primary.configMapName)
