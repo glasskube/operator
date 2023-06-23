@@ -12,14 +12,11 @@ import eu.glasskube.operator.apps.metabase.resourceLabels
 import io.fabric8.kubernetes.api.model.IntOrString
 import io.fabric8.kubernetes.api.model.Service
 import io.javaoperatorsdk.operator.api.reconciler.Context
-import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
-import io.javaoperatorsdk.operator.processing.event.ResourceID
 
 @KubernetesDependent(labelSelector = MetabaseReconciler.SELECTOR)
 class MetabaseHttpService : CRUDKubernetesDependentResource<Service, Metabase>(Service::class.java) {
-    internal class Discriminator : ResourceIDMatcherDiscriminator<Service, Metabase>({ ResourceID(it.httpServiceName) })
 
     override fun desired(primary: Metabase, context: Context<Metabase>) = service {
         metadata {

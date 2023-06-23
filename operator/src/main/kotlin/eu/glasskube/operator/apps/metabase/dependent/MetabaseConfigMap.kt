@@ -11,14 +11,11 @@ import eu.glasskube.operator.apps.metabase.genericResourceName
 import eu.glasskube.operator.apps.metabase.resourceLabels
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.javaoperatorsdk.operator.api.reconciler.Context
-import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
-import io.javaoperatorsdk.operator.processing.event.ResourceID
 
 @KubernetesDependent(labelSelector = MetabaseReconciler.SELECTOR)
 class MetabaseConfigMap : CRUDKubernetesDependentResource<ConfigMap, Metabase>(ConfigMap::class.java) {
-    internal class Discriminator : ResourceIDMatcherDiscriminator<ConfigMap, Metabase>({ ResourceID(it.configMapName) })
 
     override fun desired(primary: Metabase, context: Context<Metabase>) = configMap {
         metadata {
