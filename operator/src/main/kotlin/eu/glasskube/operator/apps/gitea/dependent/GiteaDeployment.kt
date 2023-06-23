@@ -13,11 +13,8 @@ import eu.glasskube.kubernetes.api.model.env
 import eu.glasskube.kubernetes.api.model.envFrom
 import eu.glasskube.kubernetes.api.model.envVar
 import eu.glasskube.kubernetes.api.model.intOrString
-import eu.glasskube.kubernetes.api.model.limits
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.persistentVolumeClaim
-import eu.glasskube.kubernetes.api.model.requests
-import eu.glasskube.kubernetes.api.model.resources
 import eu.glasskube.kubernetes.api.model.secretKeyRef
 import eu.glasskube.kubernetes.api.model.secretRef
 import eu.glasskube.kubernetes.api.model.spec
@@ -38,7 +35,6 @@ import eu.glasskube.operator.apps.gitea.secretName
 import io.fabric8.kubernetes.api.model.HTTPGetAction
 import io.fabric8.kubernetes.api.model.IntOrString
 import io.fabric8.kubernetes.api.model.Probe
-import io.fabric8.kubernetes.api.model.Quantity
 import io.fabric8.kubernetes.api.model.SecurityContext
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
@@ -78,10 +74,7 @@ class GiteaDeployment : CRUDKubernetesDependentResource<Deployment, Gitea>(Deplo
                         container {
                             name = "gitea"
                             image = IMAGE
-                            resources {
-                                limits(memory = Quantity("300", "Mi"))
-                                requests(memory = Quantity("200", "Mi"))
-                            }
+                            resources = primary.spec.resources
                             ports = listOf(
                                 containerPort {
                                     name = "http"

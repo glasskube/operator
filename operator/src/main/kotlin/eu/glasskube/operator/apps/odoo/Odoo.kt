@@ -2,6 +2,7 @@ package eu.glasskube.operator.apps.odoo
 
 import eu.glasskube.operator.resourceLabels
 import io.fabric8.kubernetes.api.model.Namespaced
+import io.fabric8.kubernetes.api.model.ResourceRequirements
 import io.fabric8.kubernetes.client.CustomResource
 import io.fabric8.kubernetes.model.annotation.Group
 import io.fabric8.kubernetes.model.annotation.Plural
@@ -9,7 +10,8 @@ import io.fabric8.kubernetes.model.annotation.Version
 
 data class OdooSpec(
     val host: String,
-    val demoEnabled: Boolean = true
+    val demoEnabled: Boolean = true,
+    val resources: ResourceRequirements = ResourceRequirements()
 )
 
 data class OdooStatus(

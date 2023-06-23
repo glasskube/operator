@@ -3,6 +3,7 @@ package eu.glasskube.operator.apps.matomo
 import eu.glasskube.operator.resourceLabels
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.kubernetes.api.model.Namespaced
+import io.fabric8.kubernetes.api.model.ResourceRequirements
 import io.fabric8.kubernetes.client.CustomResource
 import io.fabric8.kubernetes.model.annotation.Group
 import io.fabric8.kubernetes.model.annotation.Plural
@@ -11,7 +12,8 @@ import io.fabric8.kubernetes.model.annotation.Version
 data class MatomoSpec(
     val host: String? = null,
     @field:Nullable
-    val smtp: MatomoSmtp? = null
+    val smtp: MatomoSmtp? = null,
+    val resources: ResourceRequirements = ResourceRequirements()
 )
 
 class MatomoStatus {
