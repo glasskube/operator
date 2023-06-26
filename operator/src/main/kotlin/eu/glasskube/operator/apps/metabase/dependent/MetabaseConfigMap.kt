@@ -2,6 +2,7 @@ package eu.glasskube.operator.apps.metabase.dependent
 
 import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.apps.metabase.Metabase
 import eu.glasskube.operator.apps.metabase.MetabaseReconciler
 import eu.glasskube.operator.apps.metabase.MetabaseSmtp
@@ -9,7 +10,10 @@ import eu.glasskube.operator.apps.metabase.configMapName
 import eu.glasskube.operator.apps.metabase.dbClusterName
 import eu.glasskube.operator.apps.metabase.genericResourceName
 import eu.glasskube.operator.apps.metabase.resourceLabels
+import eu.glasskube.operator.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
+import io.fabric8.kubernetes.api.model.apps.Deployment
+import io.fabric8.kubernetes.client.dsl.internal.apps.v1.RollingUpdater
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
@@ -24,6 +28,14 @@ class MetabaseConfigMap : CRUDKubernetesDependentResource<ConfigMap, Metabase>(C
             labels = primary.resourceLabels
         }
         data = primary.run { baseData + smtpData }
+    }
+
+    override fun onUpdated(primary: Metabase, updated: ConfigMap, actual: ConfigMap, context: Context<Metabase>) {
+        super.onUpdated(primary, updated, actual, context)
+        context.getSecondaryResource<Deployment>().ifPresent {
+            log.info("Restarting deployment after config change")
+            RollingUpdater.restart(kubernetesClient.resource(it))
+        }
     }
 
     private val Metabase.baseData: Map<String, String>
@@ -54,4 +66,9 @@ class MetabaseConfigMap : CRUDKubernetesDependentResource<ConfigMap, Metabase>(C
         } else {
             "none"
         }
+
+    companion object {
+        @JvmStatic
+        private val log = logger()
+    }
 }
