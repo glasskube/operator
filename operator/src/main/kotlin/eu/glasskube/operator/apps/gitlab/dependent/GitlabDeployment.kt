@@ -27,6 +27,7 @@ import eu.glasskube.operator.apps.gitlab.Gitlab
 import eu.glasskube.operator.apps.gitlab.GitlabReconciler
 import eu.glasskube.operator.apps.gitlab.configMapName
 import eu.glasskube.operator.apps.gitlab.databaseName
+import eu.glasskube.operator.apps.gitlab.genericResourceName
 import eu.glasskube.operator.apps.gitlab.resourceLabelSelector
 import eu.glasskube.operator.apps.gitlab.resourceLabels
 import eu.glasskube.operator.apps.gitlab.volumeName
@@ -39,7 +40,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class GitlabDeployment : CRUDKubernetesDependentResource<Deployment, Gitlab>(Deployment::class.java) {
     override fun desired(primary: Gitlab, context: Context<Gitlab>) = deployment {
         metadata {
-            name = primary.metadata.name
+            name = primary.genericResourceName
             namespace = primary.metadata.namespace
             labels = primary.resourceLabels
         }
