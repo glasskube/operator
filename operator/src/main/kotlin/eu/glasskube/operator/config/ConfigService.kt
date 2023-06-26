@@ -10,7 +10,6 @@ import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.client.KubernetesClient
 import io.fabric8.kubernetes.client.dsl.Resource
-import io.fabric8.kubernetes.client.utils.Serialization
 import jakarta.annotation.PostConstruct
 import org.springframework.stereotype.Service
 
@@ -70,7 +69,10 @@ class ConfigService(
         }
 
     private fun String.parseAsMap(): Map<String, String> =
-        Serialization.unmarshal(byteInputStream(), object : TypeReference<Map<String, String>>() {})
+        kubernetesClient.kubernetesSerialization.unmarshal(
+            byteInputStream(),
+            object : TypeReference<Map<String, String>>() {}
+        )
 
     @PostConstruct
     private fun initializeConfigIfNeed() {

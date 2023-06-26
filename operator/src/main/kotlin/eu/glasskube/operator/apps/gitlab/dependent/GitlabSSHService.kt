@@ -10,11 +10,11 @@ import eu.glasskube.operator.apps.gitlab.resourceLabelSelector
 import eu.glasskube.operator.apps.gitlab.resourceLabels
 import eu.glasskube.operator.apps.gitlab.sshServiceName
 import eu.glasskube.operator.config.ConfigService
-import eu.glasskube.operator.generic.dependent.UpdatableAnnotationsCRUDKubernetesDependentResource
 import io.fabric8.kubernetes.api.model.Service
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
 import io.javaoperatorsdk.operator.api.reconciler.dependent.DependentResource
+import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 import io.javaoperatorsdk.operator.processing.dependent.workflow.Condition
 import io.javaoperatorsdk.operator.processing.event.ResourceID
@@ -24,7 +24,7 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
     resourceDiscriminator = GitlabSSHService.Discriminator::class
 )
 class GitlabSSHService(private val configService: ConfigService) :
-    UpdatableAnnotationsCRUDKubernetesDependentResource<Service, Gitlab>(Service::class.java) {
+    CRUDKubernetesDependentResource<Service, Gitlab>(Service::class.java) {
 
     internal class Discriminator : ResourceIDMatcherDiscriminator<Service, Gitlab>({ ResourceID(it.sshServiceName) })
 
