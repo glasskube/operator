@@ -9,7 +9,6 @@ import eu.glasskube.operator.apps.metabase.MetabaseReconciler
 import eu.glasskube.operator.apps.metabase.httpServiceName
 import eu.glasskube.operator.apps.metabase.resourceLabelSelector
 import eu.glasskube.operator.apps.metabase.resourceLabels
-import io.fabric8.kubernetes.api.model.IntOrString
 import io.fabric8.kubernetes.api.model.Service
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource

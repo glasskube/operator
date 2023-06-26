@@ -3,7 +3,6 @@ package eu.glasskube.operator.apps.metabase
 import eu.glasskube.kubernetes.client.patchOrUpdateStatus
 import eu.glasskube.operator.Labels
 import eu.glasskube.operator.api.reconciler.getSecondaryResource
-import eu.glasskube.operator.apps.gitlab.dependent.GitlabPostgresCluster
 import eu.glasskube.operator.apps.metabase.dependent.MetabaseConfigMap
 import eu.glasskube.operator.apps.metabase.dependent.MetabaseDeployment
 import eu.glasskube.operator.apps.metabase.dependent.MetabaseHttpService
