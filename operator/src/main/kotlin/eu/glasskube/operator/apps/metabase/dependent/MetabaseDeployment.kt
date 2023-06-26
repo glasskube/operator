@@ -43,6 +43,7 @@ class MetabaseDeployment : CRUDKubernetesDependentResource<Deployment, Metabase>
             labels = primary.resourceLabels
         }
         spec {
+            replicas = primary.spec.replicas
             strategy("Recreate")
             selector {
                 matchLabels = primary.resourceLabelSelector
@@ -86,6 +87,7 @@ class MetabaseDeployment : CRUDKubernetesDependentResource<Deployment, Metabase>
                                     name = "metabase-exp"
                                 }
                             )
+                            resources = primary.spec.resources
                             startupProbe {
                                 periodSeconds = 10
                                 successThreshold = 1
