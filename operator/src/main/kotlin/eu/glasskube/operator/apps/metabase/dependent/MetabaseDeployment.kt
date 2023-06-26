@@ -25,6 +25,7 @@ import eu.glasskube.operator.apps.metabase.Metabase
 import eu.glasskube.operator.apps.metabase.MetabaseReconciler
 import eu.glasskube.operator.apps.metabase.configMapName
 import eu.glasskube.operator.apps.metabase.dbClusterName
+import eu.glasskube.operator.apps.metabase.genericResourceName
 import eu.glasskube.operator.apps.metabase.resourceLabelSelector
 import eu.glasskube.operator.apps.metabase.resourceLabels
 import eu.glasskube.operator.apps.metabase.secretName
@@ -37,7 +38,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class MetabaseDeployment : CRUDKubernetesDependentResource<Deployment, Metabase>(Deployment::class.java) {
     override fun desired(primary: Metabase, context: Context<Metabase>) = deployment {
         metadata {
-            name = primary.metadata.name
+            name = primary.genericResourceName
             namespace = primary.metadata.namespace
             labels = primary.resourceLabels
         }

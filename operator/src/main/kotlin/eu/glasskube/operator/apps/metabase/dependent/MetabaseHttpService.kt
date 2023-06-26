@@ -31,13 +31,11 @@ class MetabaseHttpService : CRUDKubernetesDependentResource<Service, Metabase>(S
                 servicePort {
                     port = 3000
                     name = "http"
-                    targetPort = IntOrString(3000)
                 },
                 servicePort {
                     port = 9191
                     name = "metabase-exp"
                 }
-
             )
         }
     }
