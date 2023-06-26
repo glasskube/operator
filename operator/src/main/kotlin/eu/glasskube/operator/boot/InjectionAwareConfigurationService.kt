@@ -1,14 +1,14 @@
 package eu.glasskube.operator.boot
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import io.fabric8.kubernetes.client.KubernetesClient
 import io.javaoperatorsdk.operator.api.config.BaseConfigurationService
+import io.javaoperatorsdk.operator.api.config.Utils
 import org.springframework.stereotype.Component
 
 @Component
 class InjectionAwareConfigurationService(
     private val factory: InjectionAwareDependentResourceFactory,
-    private val mapper: ObjectMapper
-) : BaseConfigurationService() {
+    kubernetesClient: KubernetesClient
+) : BaseConfigurationService(Utils.VERSION, null, kubernetesClient) {
     override fun dependentResourceFactory() = factory
-    override fun getObjectMapper() = mapper
 }

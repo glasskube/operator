@@ -13,7 +13,6 @@ import eu.glasskube.operator.apps.metabase.resourceLabels
 import eu.glasskube.operator.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.apps.Deployment
-import io.fabric8.kubernetes.client.dsl.internal.apps.v1.RollingUpdater
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
@@ -34,7 +33,7 @@ class MetabaseConfigMap : CRUDKubernetesDependentResource<ConfigMap, Metabase>(C
         super.onUpdated(primary, updated, actual, context)
         context.getSecondaryResource<Deployment>().ifPresent {
             log.info("Restarting deployment after config change")
-            RollingUpdater.restart(kubernetesClient.resource(it))
+            kubernetesClient.apps().deployments().resource(it).rolling().restart()
         }
     }
 
