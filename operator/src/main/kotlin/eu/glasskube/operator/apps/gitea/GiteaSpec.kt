@@ -20,7 +20,7 @@ data class GiteaSpec(
     val smtp: GiteaSmtp? = null,
     val resources: ResourceRequirements = ResourceRequirements(
         null,
-        mapOf("memory" to Quantity("300", "Mi")),
+        mapOf("memory" to Quantity("400", "Mi")),
         mapOf("memory" to Quantity("200", "Mi"))
     )
 )

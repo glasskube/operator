@@ -23,6 +23,8 @@ import eu.glasskube.operator.infra.postgres.S3Credentials
 import eu.glasskube.operator.infra.postgres.StorageConfiguration
 import eu.glasskube.operator.infra.postgres.WalBackupConfiguration
 import eu.glasskube.operator.infra.postgres.postgresCluster
+import io.fabric8.kubernetes.api.model.Quantity
+import io.fabric8.kubernetes.api.model.ResourceRequirements
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.dependent.DependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
@@ -69,6 +71,11 @@ class GitlabPostgresCluster : CRUDKubernetesDependentResource<PostgresCluster, G
                     wal = WalBackupConfiguration(compression = CompressionType.GZIP),
                     data = DataBackupConfiguration(compression = CompressionType.GZIP)
                 )
+            ),
+            resources = ResourceRequirements(
+                null,
+                mapOf("memory" to Quantity("512", "Mi")),
+                mapOf("memory" to Quantity("256", "Mi"))
             )
         )
     }

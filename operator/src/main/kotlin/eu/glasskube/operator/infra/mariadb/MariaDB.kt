@@ -1,8 +1,10 @@
 package eu.glasskube.operator.infra.mariadb
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import io.fabric8.generator.annotation.Nullable
 import io.fabric8.kubernetes.api.model.Condition
 import io.fabric8.kubernetes.api.model.Namespaced
+import io.fabric8.kubernetes.api.model.ResourceRequirements
 import io.fabric8.kubernetes.api.model.SecretKeySelector
 import io.fabric8.kubernetes.client.CustomResource
 import io.fabric8.kubernetes.model.annotation.Group
@@ -36,6 +38,8 @@ data class MariaDBSpec(
     var image: MariaDBImage,
     var port: Int = 3306,
     var volumeClaimTemplate: MariaDBVolumeClaimTemplate,
+    @field:Nullable
+    var resources: ResourceRequirements?,
     var metrics: Metrics? = null
 )
 

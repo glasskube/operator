@@ -3,12 +3,12 @@ package eu.glasskube.operator.infra.postgres
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.fabric8.kubernetes.api.model.LocalObjectReference
+import io.fabric8.kubernetes.api.model.ResourceRequirements
 
 // TODO: Add properties once needed:
 //  - certificates
 //  - serviceAccountTemplate
 //  - affinity
-//  - resources
 //  - nodeMaintenanceWindow
 //  - externalClusters
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -39,5 +39,6 @@ data class ClusterSpec(
     val primaryUpdateMethod: PrimaryUpdateMethod? = null,
     val backup: BackupConfiguration? = null,
     val logLevel: LogLevel? = null,
-    val monitoring: MonitoringConfiguration? = null
+    val monitoring: MonitoringConfiguration? = null,
+    val resources: ResourceRequirements? = null
 )
