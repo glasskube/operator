@@ -3,6 +3,7 @@ package eu.glasskube.operator.apps.gitea.dependent
 import eu.glasskube.kubernetes.api.model.apps.deployment
 import eu.glasskube.kubernetes.api.model.apps.selector
 import eu.glasskube.kubernetes.api.model.apps.spec
+import eu.glasskube.kubernetes.api.model.apps.strategyRecreate
 import eu.glasskube.kubernetes.api.model.apps.template
 import eu.glasskube.kubernetes.api.model.container
 import eu.glasskube.kubernetes.api.model.containerPort
@@ -29,7 +30,8 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
     resourceDiscriminator = GiteaRedisDeployment.Discriminator::class
 )
 class GiteaRedisDeployment : CRUDKubernetesDependentResource<Deployment, Gitea>(Deployment::class.java) {
-    internal class Discriminator : ResourceIDMatcherDiscriminator<Deployment, Gitea>({ ResourceID(it.redisName, it.metadata.namespace) })
+    internal class Discriminator :
+        ResourceIDMatcherDiscriminator<Deployment, Gitea>({ ResourceID(it.redisName, it.metadata.namespace) })
 
     override fun desired(primary: Gitea, context: Context<Gitea>) = deployment {
         metadata {
@@ -41,6 +43,7 @@ class GiteaRedisDeployment : CRUDKubernetesDependentResource<Deployment, Gitea>(
             selector {
                 matchLabels = primary.redisLabelSelector
             }
+            strategyRecreate()
             template {
                 metadata {
                     labels = primary.redisLabels

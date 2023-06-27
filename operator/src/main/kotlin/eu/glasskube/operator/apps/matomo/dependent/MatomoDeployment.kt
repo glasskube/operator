@@ -3,6 +3,7 @@ package eu.glasskube.operator.apps.matomo.dependent
 import eu.glasskube.kubernetes.api.model.apps.deployment
 import eu.glasskube.kubernetes.api.model.apps.selector
 import eu.glasskube.kubernetes.api.model.apps.spec
+import eu.glasskube.kubernetes.api.model.apps.strategyRecreate
 import eu.glasskube.kubernetes.api.model.apps.template
 import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.configMapRef
@@ -67,6 +68,7 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
             selector {
                 matchLabels = mapOf(primary.identifyingLabel)
             }
+            strategyRecreate()
             template {
                 metadata {
                     labels = primary.resourceLabels

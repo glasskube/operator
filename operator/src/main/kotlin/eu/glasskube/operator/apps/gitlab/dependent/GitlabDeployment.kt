@@ -3,7 +3,7 @@ package eu.glasskube.operator.apps.gitlab.dependent
 import eu.glasskube.kubernetes.api.model.apps.deployment
 import eu.glasskube.kubernetes.api.model.apps.selector
 import eu.glasskube.kubernetes.api.model.apps.spec
-import eu.glasskube.kubernetes.api.model.apps.strategy
+import eu.glasskube.kubernetes.api.model.apps.strategyRecreate
 import eu.glasskube.kubernetes.api.model.apps.template
 import eu.glasskube.kubernetes.api.model.configMapRef
 import eu.glasskube.kubernetes.api.model.container
@@ -45,10 +45,10 @@ class GitlabDeployment : CRUDKubernetesDependentResource<Deployment, Gitlab>(Dep
             labels = primary.resourceLabels
         }
         spec {
-            strategy("Recreate")
             selector {
                 matchLabels = primary.resourceLabelSelector
             }
+            strategyRecreate()
             template {
                 metadata {
                     labels = primary.resourceLabels
