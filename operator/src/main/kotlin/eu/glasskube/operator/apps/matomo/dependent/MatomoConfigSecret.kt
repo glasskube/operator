@@ -1,5 +1,6 @@
 package eu.glasskube.operator.apps.matomo.dependent
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.secret
@@ -11,7 +12,6 @@ import eu.glasskube.operator.apps.matomo.resourceLabels
 import eu.glasskube.operator.decodeBase64
 import eu.glasskube.operator.encodeBase64
 import io.fabric8.kubernetes.api.model.Secret
-import io.fabric8.kubernetes.client.utils.Serialization
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
@@ -22,7 +22,8 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
     labelSelector = MatomoReconciler.SELECTOR,
     resourceDiscriminator = MatomoConfigSecret.Discriminator::class
 )
-class MatomoConfigSecret : CRUDKubernetesDependentResource<Secret, Matomo>(Secret::class.java) {
+class MatomoConfigSecret(private val objectMapper: ObjectMapper) :
+    CRUDKubernetesDependentResource<Secret, Matomo>(Secret::class.java) {
     class Discriminator : ResourceIDMatcherDiscriminator<Secret, Matomo>({ ResourceID(it.configSecretName) })
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = secret {
@@ -36,7 +37,7 @@ class MatomoConfigSecret : CRUDKubernetesDependentResource<Secret, Matomo>(Secre
     }
 
     private val Matomo.installJson
-        get() = with(Serialization.jsonMapper()) {
+        get() = with(objectMapper) {
             readValue<MatomoInstallConfig>(MatomoConfigMap::class.java.getResource("config.json")!!)
                 .apply {
                     val smtp = spec.smtp
