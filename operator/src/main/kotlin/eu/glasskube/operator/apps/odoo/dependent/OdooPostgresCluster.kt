@@ -23,6 +23,8 @@ import eu.glasskube.operator.infra.postgres.S3Credentials
 import eu.glasskube.operator.infra.postgres.StorageConfiguration
 import eu.glasskube.operator.infra.postgres.WalBackupConfiguration
 import eu.glasskube.operator.infra.postgres.postgresCluster
+import io.fabric8.kubernetes.api.model.Quantity
+import io.fabric8.kubernetes.api.model.ResourceRequirements
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
@@ -65,6 +67,11 @@ class OdooPostgresCluster(private val configService: ConfigService) :
             ),
             monitoring = MonitoringConfiguration(
                 enablePodMonitor = true
+            ),
+            resources = ResourceRequirements(
+                null,
+                mapOf("memory" to Quantity("512", "Mi")),
+                mapOf("memory" to Quantity("256", "Mi"))
             )
         )
     }

@@ -17,7 +17,7 @@ data class GitlabSpec(
     val runners: List<GitlabRunnerSpecTemplate> = emptyList(),
     val resources: ResourceRequirements = ResourceRequirements(
         null,
-        emptyMap(),
+        mapOf("memory" to Quantity("3", "Gi")),
         mapOf("cpu" to Quantity("200", "m"), "memory" to Quantity("2", "Gi"))
     )
 )

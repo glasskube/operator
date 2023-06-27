@@ -18,6 +18,8 @@ import eu.glasskube.operator.infra.mariadb.MariaDBVolumeClaimTemplate
 import eu.glasskube.operator.infra.mariadb.Metrics
 import eu.glasskube.operator.infra.mariadb.ServiceMonitor
 import eu.glasskube.operator.infra.mariadb.mariaDB
+import io.fabric8.kubernetes.api.model.Quantity
+import io.fabric8.kubernetes.api.model.ResourceRequirements
 import io.fabric8.kubernetes.api.model.SecretKeySelector
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.dependent.DependentResource
@@ -55,6 +57,11 @@ class MatomoMariaDB(private val configService: ConfigService) :
             volumeClaimTemplate = MariaDBVolumeClaimTemplate(
                 resources = MariaDBResources(MariaDBResourcesRequest("10Gi")),
                 storageClassName = configService.getValue(ConfigKey.databaseStorageClassName)
+            ),
+            resources = ResourceRequirements(
+                null,
+                mapOf("memory" to Quantity("512", "Mi")),
+                mapOf("memory" to Quantity("256", "Mi"))
             ),
             metrics = Metrics(
                 exporter = Exporter(
