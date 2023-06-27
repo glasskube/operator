@@ -3,7 +3,8 @@ package eu.glasskube.operator.apps.metabase.dependent
 import eu.glasskube.kubernetes.api.model.apps.deployment
 import eu.glasskube.kubernetes.api.model.apps.selector
 import eu.glasskube.kubernetes.api.model.apps.spec
-import eu.glasskube.kubernetes.api.model.apps.strategy
+import eu.glasskube.kubernetes.api.model.apps.strategyRecreate
+import eu.glasskube.kubernetes.api.model.apps.strategyRollingUpdate
 import eu.glasskube.kubernetes.api.model.apps.template
 import eu.glasskube.kubernetes.api.model.configMapRef
 import eu.glasskube.kubernetes.api.model.container
@@ -20,7 +21,6 @@ import eu.glasskube.kubernetes.api.model.secretKeyRef
 import eu.glasskube.kubernetes.api.model.secretRef
 import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.kubernetes.api.model.startupProbe
-import eu.glasskube.operator.apps.gitea.secretName
 import eu.glasskube.operator.apps.metabase.Metabase
 import eu.glasskube.operator.apps.metabase.MetabaseReconciler
 import eu.glasskube.operator.apps.metabase.configMapName
@@ -43,11 +43,11 @@ class MetabaseDeployment : CRUDKubernetesDependentResource<Deployment, Metabase>
             labels = primary.resourceLabels
         }
         spec {
-            replicas = primary.spec.replicas
-            strategy("Recreate")
             selector {
                 matchLabels = primary.resourceLabelSelector
             }
+            replicas = primary.spec.replicas
+            if (primary.spec.replicas > 1) strategyRollingUpdate() else strategyRecreate()
             template {
                 metadata {
                     labels = primary.resourceLabels
@@ -123,6 +123,7 @@ class MetabaseDeployment : CRUDKubernetesDependentResource<Deployment, Metabase>
             }
         }
     }
+
     companion object {
         private const val PROBE_PATH = "/api/health"
     }

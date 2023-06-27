@@ -2,6 +2,7 @@ package eu.glasskube.kubernetes.api.model.apps
 
 import eu.glasskube.kubernetes.api.annotation.KubernetesDslMarker
 import eu.glasskube.kubernetes.api.model.labelSelector
+import io.fabric8.kubernetes.api.model.IntOrString
 import io.fabric8.kubernetes.api.model.LabelSelector
 import io.fabric8.kubernetes.api.model.PodTemplateSpec
 import io.fabric8.kubernetes.api.model.apps.Deployment
@@ -24,16 +25,15 @@ inline fun DeploymentSpec.template(block: (@KubernetesDslMarker PodTemplateSpec)
     template = PodTemplateSpec().apply(block)
 }
 
-const val RECREATE = "Recreate"
-const val ROLLING_UPDATE = "RollingUpdate"
-
-fun DeploymentSpec.strategy(type: String) {
-    strategy = DeploymentStrategy(null, type)
+fun DeploymentSpec.strategyRecreate() {
+    strategy = DeploymentStrategy(null, "Recreate")
 }
 
-inline fun DeploymentSpec.strategy(
-    type: String,
-    block: (@KubernetesDslMarker RollingUpdateDeployment).() -> Unit
+fun DeploymentSpec.strategyRollingUpdate(
+    block: (@KubernetesDslMarker RollingUpdateDeployment).() -> Unit = {
+        maxSurge = IntOrString("25%")
+        maxUnavailable = IntOrString("25%")
+    }
 ) {
-    strategy = DeploymentStrategy(RollingUpdateDeployment().apply(block), type)
+    strategy = DeploymentStrategy(RollingUpdateDeployment().apply(block), "RollingUpdate")
 }
