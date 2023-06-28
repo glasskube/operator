@@ -11,10 +11,7 @@ import eu.glasskube.operator.apps.matomo.dependent.MatomoDeployment
 import eu.glasskube.operator.apps.matomo.dependent.MatomoIngress
 import eu.glasskube.operator.apps.matomo.dependent.MatomoService
 import eu.glasskube.operator.apps.matomo.dependent.MatomoVolume
-import eu.glasskube.operator.apps.matomo.dependent.mariadb.MatomoDatabaseMariaDB
-import eu.glasskube.operator.apps.matomo.dependent.mariadb.MatomoGrantMariaDB
 import eu.glasskube.operator.apps.matomo.dependent.mariadb.MatomoMariaDB
-import eu.glasskube.operator.apps.matomo.dependent.mariadb.MatomoUserMariaDB
 import io.fabric8.kubernetes.api.model.Secret
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition
 import io.fabric8.kubernetes.client.KubernetesClient
@@ -45,10 +42,7 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
             type = MatomoMariaDB::class,
             name = "MatomoMariaDB",
             readyPostcondition = MatomoMariaDB.ReadyPostCondition::class
-        ),
-        Dependent(type = MatomoDatabaseMariaDB::class),
-        Dependent(type = MatomoUserMariaDB::class),
-        Dependent(type = MatomoGrantMariaDB::class)
+        )
     ]
 )
 class MatomoReconciler(private val kubernetesClient: KubernetesClient) :

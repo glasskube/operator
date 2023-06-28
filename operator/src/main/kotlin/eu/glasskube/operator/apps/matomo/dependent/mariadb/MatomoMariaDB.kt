@@ -3,8 +3,10 @@ package eu.glasskube.operator.apps.matomo.dependent.mariadb
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.operator.apps.matomo.Matomo
 import eu.glasskube.operator.apps.matomo.MatomoReconciler
+import eu.glasskube.operator.apps.matomo.databaseName
 import eu.glasskube.operator.apps.matomo.databaseSecretName
-import eu.glasskube.operator.apps.matomo.mariaDBHost
+import eu.glasskube.operator.apps.matomo.databaseUser
+import eu.glasskube.operator.apps.matomo.genericMariaDBName
 import eu.glasskube.operator.apps.matomo.resourceLabels
 import eu.glasskube.operator.config.ConfigKey
 import eu.glasskube.operator.config.ConfigService
@@ -47,13 +49,16 @@ class MatomoMariaDB(private val configService: ConfigService) :
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = mariaDB {
         metadata {
-            name = primary.mariaDBHost
+            name = primary.genericMariaDBName
             namespace = primary.metadata.namespace
             labels = primary.resourceLabels
         }
         spec = MariaDBSpec(
             rootPasswordSecretKeyRef = SecretKeySelector("ROOT_DATABASE_PASSWORD", primary.databaseSecretName, null),
             image = MariaDBImage("mariadb", "10.7.4", "IfNotPresent"),
+            database = primary.databaseName,
+            username = primary.databaseUser,
+            passwordSecretKeyRef = SecretKeySelector("MATOMO_DATABASE_PASSWORD", primary.databaseSecretName, null),
             volumeClaimTemplate = MariaDBVolumeClaimTemplate(
                 resources = MariaDBResources(MariaDBResourcesRequest("10Gi")),
                 storageClassName = configService.getValue(ConfigKey.databaseStorageClassName)
