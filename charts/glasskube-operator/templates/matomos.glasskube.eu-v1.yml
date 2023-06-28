@@ -19,6 +19,51 @@ spec:
             properties:
               host:
                 type: string
+              smtp:
+                nullable: true
+                properties:
+                  host:
+                    type: string
+                  port:
+                    type: integer
+                  fromAddress:
+                    type: string
+                  authSecret:
+                    properties:
+                      name:
+                        type: string
+                    type: object
+                  tlsEnabled:
+                    type: boolean
+                required:
+                - host
+                - fromAddress
+                - authSecret
+                type: object
+              resources:
+                properties:
+                  claims:
+                    items:
+                      properties:
+                        name:
+                          type: string
+                      type: object
+                    type: array
+                  limits:
+                    additionalProperties:
+                      anyOf:
+                      - type: integer
+                      - type: string
+                      x-kubernetes-int-or-string: true
+                    type: object
+                  requests:
+                    additionalProperties:
+                      anyOf:
+                      - type: integer
+                      - type: string
+                      x-kubernetes-int-or-string: true
+                    type: object
+                type: object
             type: object
           status:
             type: object

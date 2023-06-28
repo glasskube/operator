@@ -2,13 +2,13 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: giteas.glasskube.eu
+  name: gitlabs.glasskube.eu
 spec:
   group: glasskube.eu
   names:
-    kind: Gitea
-    plural: giteas
-    singular: gitea
+    kind: Gitlab
+    plural: gitlabs
+    singular: gitlab
   scope: Namespaced
   versions:
   - name: v1alpha1
@@ -19,22 +19,19 @@ spec:
             properties:
               host:
                 type: string
-              sshEnabled:
-                type: boolean
               sshHost:
                 type: string
-              adminSecret:
-                description: "Secret containing data of the admin user to create on\
-                  \ pod initialization. Expected keys are GITEA_ADMIN_USER, GITEA_ADMIN_EMAIL\
-                  \ and GITEA_ADMIN_PASSWORD"
+              sshEnabled:
+                type: boolean
+              initialRootPasswordSecret:
                 properties:
+                  key:
+                    type: string
                   name:
                     type: string
+                  optional:
+                    type: boolean
                 type: object
-              registrationEnabled:
-                type: boolean
-              replicas:
-                type: integer
               smtp:
                 nullable: true
                 properties:
@@ -56,6 +53,17 @@ spec:
                 - fromAddress
                 - authSecret
                 type: object
+              runners:
+                items:
+                  properties:
+                    token:
+                      type: string
+                    concurrency:
+                      type: integer
+                  required:
+                  - token
+                  type: object
+                type: array
               resources:
                 properties:
                   claims:
@@ -87,10 +95,15 @@ spec:
             properties:
               readyReplicas:
                 type: integer
-              redisReady:
-                type: boolean
               postgresReady:
                 type: boolean
+              runners:
+                additionalProperties:
+                  properties:
+                    ready:
+                      type: boolean
+                  type: object
+                type: object
             type: object
         type: object
     served: true
