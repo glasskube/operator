@@ -36,9 +36,9 @@ data class MariaDBVolumeClaimTemplate(
 data class MariaDBSpec(
     var rootPasswordSecretKeyRef: SecretKeySelector,
     var image: MariaDBImage,
-    var database: String,
-    var username: String,
-    var passwordSecretKeyRef: SecretKeySelector,
+    var database: String?,
+    var username: String?,
+    var passwordSecretKeyRef: SecretKeySelector?,
     var port: Int = 3306,
     var volumeClaimTemplate: MariaDBVolumeClaimTemplate,
     @field:Nullable

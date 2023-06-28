@@ -9,9 +9,9 @@ import eu.glasskube.operator.apps.matomo.dependent.MatomoConfigSecret
 import eu.glasskube.operator.apps.matomo.dependent.MatomoDatabaseSecret
 import eu.glasskube.operator.apps.matomo.dependent.MatomoDeployment
 import eu.glasskube.operator.apps.matomo.dependent.MatomoIngress
+import eu.glasskube.operator.apps.matomo.dependent.MatomoMariaDB
 import eu.glasskube.operator.apps.matomo.dependent.MatomoService
 import eu.glasskube.operator.apps.matomo.dependent.MatomoVolume
-import eu.glasskube.operator.apps.matomo.dependent.mariadb.MatomoMariaDB
 import io.fabric8.kubernetes.api.model.Secret
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition
 import io.fabric8.kubernetes.client.KubernetesClient

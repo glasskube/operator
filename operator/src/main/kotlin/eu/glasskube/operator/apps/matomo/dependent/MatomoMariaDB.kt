@@ -1,4 +1,4 @@
-package eu.glasskube.operator.apps.matomo.dependent.mariadb
+package eu.glasskube.operator.apps.matomo.dependent
 
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.operator.apps.matomo.Matomo
