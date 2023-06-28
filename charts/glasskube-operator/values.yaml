@@ -18,8 +18,17 @@ glasskubeOperator:
       memory: 64Mi
 
 cert-manager:
+  enabled: false
   installCRDs: true
 
+cloudnative-pg:
+  enabled: false
+
+kube-prometheus-stack:
+  enabled: false
+
+mariadb-operator:
+  enabled: false
 prometheus:
   prometheus:
     prometheusSpec:
