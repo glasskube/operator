@@ -27,7 +27,7 @@ class MatomoConfigMap : CRUDKubernetesDependentResource<ConfigMap, Matomo>(Confi
             labels = primary.resourceLabels
         }
         data = mapOf(
-            "MATOMO_DATABASE_HOST" to primary.databaseHost,
+            "MATOMO_DATABASE_HOST" to primary.mariaDBHost,
             "MATOMO_DATABASE_USERNAME" to primary.databaseUser,
             "MATOMO_DATABASE_DBNAME" to primary.databaseName,
             "MATOMO_DATABASE_TABLES_PREFIX" to "matomo_",
@@ -56,8 +56,6 @@ class MatomoConfigMap : CRUDKubernetesDependentResource<ConfigMap, Matomo>(Confi
         get() = replaceHost(this@MatomoConfigMap.resourceAsString("cron"), this)
 
     private fun replaceHost(cron: String, primary: Matomo) = cron.replace("%HOST%", primary.spec.host!!)
-
-    private val Matomo.databaseHost get() = "$mariaDBHost.${metadata.namespace}"
 
     companion object {
         @JvmStatic
