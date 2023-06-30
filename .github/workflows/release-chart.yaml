@@ -1,4 +1,4 @@
-name: release
+name: Release Chart
 
 on: workflow_dispatch
 
@@ -20,7 +20,7 @@ jobs:
           charts_dir: charts
           charts_url: https://charts.glasskube.eu
           owner: glasskube
-          repository: charts
+          repository: charts.glasskube.eu
           branch: main
           commit_username: glasskube-bot
-          commit_email: bot@noreply.glasskube.eu
+          commit_email: githubbot@glasskube.eu
