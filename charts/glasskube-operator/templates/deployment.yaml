@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: glasskube-operator
 spec:
-  replicas: {{ .Values.glasskubeOperator.replicaCount}}
+  replicas: {{ .Values.operator.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "glasskube-operator.name" . }}
@@ -29,17 +29,16 @@ spec:
           value: {{ .Release.Name }}-minio
         - name: MINIO_HOST_NAME
           value: {{ .Release.Name }}-minio
-        image: {{ .Values.glasskubeOperator.image.repository }}:{{ .Values.glasskubeOperator.image.tag | default .Chart.AppVersion }}
+        image: {{ .Values.operator.image.repository }}:{{ .Values.operator.image.tag | default .Chart.AppVersion }}
         imagePullPolicy: IfNotPresent
         name: glasskube-operator
-        {{- if .Values.glasskubeOperator.resources }}
+        {{- if .Values.operator.resources }}
         resources:
-        {{- toYaml .Values.glasskubeOperator.resources | nindent 10 }}
+        {{- toYaml .Values.operator.resources | nindent 10 }}
         {{- end }}
         securityContext:
           runAsNonRoot: true
           readOnlyRootFilesystem: true
           allowPrivilegeEscalation: false
           capabilities: {}
-
       serviceAccountName: {{ template "glasskube-operator.fullname" . }}

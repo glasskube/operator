@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-glasskubeOperator:
+operator:
   image:
     repository: glasskube/operator
     tag: "" # defaults to Chart.appVersion if unspecified
