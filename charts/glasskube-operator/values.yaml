@@ -2,8 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
-
 glasskubeOperator:
   image:
     repository: glasskube/operator
@@ -26,20 +24,51 @@ cloudnative-pg:
 
 kube-prometheus-stack:
   enabled: false
+  prometheus:
+    prometheusSpec:
+      retention: 30d
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            resources:
+              requests:
+                storage: 10Gi
+      podMonitorSelectorNilUsesHelmValues: false
+      ruleSelectorNilUsesHelmValues: false
+      serviceMonitorSelectorNilUsesHelmValues: false
+      probeSelectorNilUsesHelmValues: false
+  grafana:
+    ingress:
+      enabled: true
+      # annotations:
+      #   cert-manager.io/cluster-issuer: issuer-name
+      # ingressClassName: nginx
+      # hosts:
+      #   - grafana.example.com
+      # tls:
+      #   - hosts:
+      #       - grafana.example.com
+      #     secretName: grafana-tls
+    persistence:
+      enabled: true
+      size: 10Gi
 
 mariadb-operator:
   enabled: false
-prometheus:
-  prometheus:
-    prometheusSpec:
-      retention: 180d
-      podMonitorSelectorNilUsesHelmValues: "false"
-      ruleSelectorNilUsesHelmValues: "false"
-      serviceMonitorSelectorNilUsesHelmValues: "false"
-      probeSelectorNilUsesHelmValues: "false"
+  # clusterName: cluster.local
+  ha:
+    enabled: false
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: false
+  webhook:
+    serviceMonitor:
+      enabled: false
 
 minio:
   enabled: true
+  # clusterDomain: cluster.local
   replicas: 1
   mode: standalone
   persistence:
