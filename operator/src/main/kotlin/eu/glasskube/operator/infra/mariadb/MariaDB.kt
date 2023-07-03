@@ -61,3 +61,5 @@ class MariaDB : CustomResource<MariaDBSpec, MariaDBStatus>(), Namespaced {
 
 inline fun mariaDB(block: (@MariaDBDslMarker MariaDB).() -> Unit) =
     MariaDB().apply(block)
+
+val MariaDB.isReady get() = status?.conditions?.firstOrNull()?.run { type == "Ready" && status == "True" } ?: false

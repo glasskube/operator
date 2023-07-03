@@ -22,6 +22,7 @@ import io.fabric8.kubernetes.api.model.ObjectMeta
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaim
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaimSpec
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaimVolumeSource
+import io.fabric8.kubernetes.api.model.PodSecurityContext
 import io.fabric8.kubernetes.api.model.PodSpec
 import io.fabric8.kubernetes.api.model.PodTemplateSpec
 import io.fabric8.kubernetes.api.model.Probe
@@ -33,6 +34,7 @@ import io.fabric8.kubernetes.api.model.Secret
 import io.fabric8.kubernetes.api.model.SecretEnvSource
 import io.fabric8.kubernetes.api.model.SecretKeySelector
 import io.fabric8.kubernetes.api.model.SecretVolumeSource
+import io.fabric8.kubernetes.api.model.SecurityContext
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.ServicePort
 import io.fabric8.kubernetes.api.model.ServiceSpec
@@ -58,12 +60,22 @@ inline fun PodTemplateSpec.spec(block: (@KubernetesDslMarker PodSpec).() -> Unit
     spec = PodSpec().apply(block)
 }
 
+inline fun PodSpec.securityContext(block: (@KubernetesDslMarker PodSecurityContext).() -> Unit) {
+    securityContext = PodSecurityContext().apply(block)
+}
+
 inline fun container(block: (@KubernetesDslMarker Container).() -> Unit) =
     Container().apply(block)
 
 inline fun Container.env(block: (@KubernetesDslMarker MutableList<EnvVar>).() -> Unit) {
     env = mutableListOf<EnvVar>().apply(block)
 }
+
+inline fun Container.securityContext(block: (@KubernetesDslMarker SecurityContext).() -> Unit) {
+    securityContext = SecurityContext().apply(block)
+}
+
+fun createEnv(block: (@KubernetesDslMarker MutableList<EnvVar>).() -> Unit) = mutableListOf<EnvVar>().apply(block)
 
 fun MutableList<EnvVar>.envVar(name: String, value: String) {
     add(EnvVar(name, value, null))
