@@ -1,10 +1,10 @@
 package eu.glasskube.operator.api.reconciler
 
-import eu.glasskube.operator.orNull
 import io.fabric8.kubernetes.api.model.HasMetadata
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ResourceDiscriminator
 import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -16,17 +16,17 @@ class LazyContextDelegate<out R, out P : HasMetadata>(
     override fun getValue(thisRef: Any?, property: KProperty<*>) = value
 }
 
-inline fun <reified R> Context<*>.getSecondaryResource(): Optional<R> =
+inline fun <reified R : Any> Context<*>.getSecondaryResource(): Optional<R> =
     getSecondaryResource(R::class.java)
 
-inline fun <reified R, P : HasMetadata> Context<P>.getSecondaryResource(discriminator: ResourceDiscriminator<R, P>): Optional<R> =
+inline fun <reified R : Any, P : HasMetadata> Context<P>.getSecondaryResource(discriminator: ResourceDiscriminator<R, P>): Optional<R> =
     getSecondaryResource(R::class.java, discriminator)
 
-inline fun <reified R, P : HasMetadata> Context<P>.secondaryResource(): ReadOnlyProperty<Any?, R?> =
-    LazyContextDelegate(this) { getSecondaryResource<R>().orNull() }
+inline fun <reified R : Any, P : HasMetadata> Context<P>.secondaryResource(): ReadOnlyProperty<Any?, R?> =
+    LazyContextDelegate(this) { getSecondaryResource<R>().getOrNull() }
 
-inline fun <reified R, P : HasMetadata> Context<P>.secondaryResource(discriminator: ResourceDiscriminator<R, P>): ReadOnlyProperty<Any?, R?> =
-    LazyContextDelegate(this) { getSecondaryResource(discriminator).orNull() }
+inline fun <reified R : Any, P : HasMetadata> Context<P>.secondaryResource(discriminator: ResourceDiscriminator<R, P>): ReadOnlyProperty<Any?, R?> =
+    LazyContextDelegate(this) { getSecondaryResource(discriminator).getOrNull() }
 
 inline fun <reified R : Any, P : HasMetadata> Context<P>.requireSecondaryResource(): ReadOnlyProperty<Any?, R> =
     LazyContextDelegate(this) { getSecondaryResource<R>().orElseThrow() }

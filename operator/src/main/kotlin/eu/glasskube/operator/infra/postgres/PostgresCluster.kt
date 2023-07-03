@@ -16,3 +16,5 @@ class PostgresCluster : CustomResource<ClusterSpec, ClusterStatus>(), Namespaced
 }
 
 inline fun postgresCluster(block: (PostgresCluster).() -> Unit) = PostgresCluster().apply(block)
+
+val PostgresCluster.isReady get() = status?.readyInstances?.let { it > 0 } ?: false

@@ -8,6 +8,7 @@ import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.api.model.Secret
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
+import kotlin.jvm.optionals.getOrDefault
 import kotlin.jvm.optionals.getOrNull
 
 abstract class GeneratedSecret<T : HasMetadata> : CRUDKubernetesDependentResource<Secret, T>(Secret::class.java) {
@@ -22,8 +23,7 @@ abstract class GeneratedSecret<T : HasMetadata> : CRUDKubernetesDependentResourc
         val existing = getSecondaryResource(primary, context)
         val existingAnnotations = existing
             .map { it.metadata.annotations.filterKeys { key -> key == SecretGenerator.GENERATED_KEYS } }
-            .getOrNull()
-            .orEmpty()
+            .getOrDefault(emptyMap())
         val existingData = existing.map { it.data }.getOrNull().orEmpty()
 
         metadata {

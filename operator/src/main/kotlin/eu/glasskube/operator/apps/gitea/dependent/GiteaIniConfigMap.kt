@@ -4,10 +4,10 @@ import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.apps.gitea.Gitea
+import eu.glasskube.operator.apps.gitea.Gitea.Redis.redisName
 import eu.glasskube.operator.apps.gitea.GiteaReconciler
 import eu.glasskube.operator.apps.gitea.dbClusterName
 import eu.glasskube.operator.apps.gitea.iniConfigMapName
-import eu.glasskube.operator.apps.gitea.redisName
 import eu.glasskube.operator.apps.gitea.resourceLabels
 import eu.glasskube.operator.decodeBase64
 import eu.glasskube.operator.logger

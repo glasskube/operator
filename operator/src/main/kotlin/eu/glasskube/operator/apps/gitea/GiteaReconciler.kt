@@ -130,7 +130,7 @@ class GiteaReconciler : Reconciler<Gitea>, EventSourceInitializer<Gitea> {
         const val SELECTOR =
             "${Labels.MANAGED_BY_GLASSKUBE},${Labels.PART_OF}=${Gitea.APP_NAME},${Labels.NAME}=${Gitea.APP_NAME}"
         const val REDIS_SELECTOR =
-            "${Labels.MANAGED_BY_GLASSKUBE},${Labels.PART_OF}=${Gitea.APP_NAME},${Labels.NAME}=${Gitea.REDIS_NAME}"
+            "${Labels.MANAGED_BY_GLASSKUBE},${Labels.PART_OF}=${Gitea.APP_NAME},${Labels.NAME}=${Gitea.Redis.NAME}"
 
         internal const val CONFIG_EVENT_SOURCE_NAME = "GiteaConfigMapEventSource"
         internal const val SERVICE_EVENT_SOURCE = "GiteaServiceEventSource"

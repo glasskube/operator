@@ -10,6 +10,7 @@ import eu.glasskube.operator.apps.matomo.genericMariaDBName
 import eu.glasskube.operator.apps.matomo.resourceLabels
 import eu.glasskube.operator.config.ConfigKey
 import eu.glasskube.operator.config.ConfigService
+import eu.glasskube.operator.generic.condition.MariaDBReadyCondition
 import eu.glasskube.operator.infra.mariadb.Exporter
 import eu.glasskube.operator.infra.mariadb.MariaDB
 import eu.glasskube.operator.infra.mariadb.MariaDBImage
@@ -24,28 +25,14 @@ import io.fabric8.kubernetes.api.model.Quantity
 import io.fabric8.kubernetes.api.model.ResourceRequirements
 import io.fabric8.kubernetes.api.model.SecretKeySelector
 import io.javaoperatorsdk.operator.api.reconciler.Context
-import io.javaoperatorsdk.operator.api.reconciler.dependent.DependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
-import io.javaoperatorsdk.operator.processing.dependent.workflow.Condition
-import kotlin.jvm.optionals.getOrNull
 
 @KubernetesDependent(labelSelector = MatomoReconciler.SELECTOR)
 class MatomoMariaDB(private val configService: ConfigService) :
     CRUDKubernetesDependentResource<MariaDB, Matomo>(MariaDB::class.java) {
 
-    class ReadyPostCondition : Condition<MariaDB, Matomo> {
-        override fun isMet(
-            dependentResource: DependentResource<MariaDB, Matomo>?,
-            primary: Matomo?,
-            context: Context<Matomo>?
-        ): Boolean =
-            dependentResource?.getSecondaryResource(primary, context)
-                ?.getOrNull()
-                ?.status?.conditions?.firstOrNull()
-                ?.run { type == "Ready" && status == "True" }
-                ?: false
-    }
+    class ReadyPostCondition : MariaDBReadyCondition<Matomo>()
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = mariaDB {
         metadata {

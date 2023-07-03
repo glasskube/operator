@@ -7,6 +7,7 @@ import eu.glasskube.operator.apps.metabase.Metabase
 import eu.glasskube.operator.apps.metabase.MetabaseReconciler
 import eu.glasskube.operator.apps.metabase.dbClusterName
 import eu.glasskube.operator.apps.metabase.resourceLabels
+import eu.glasskube.operator.generic.condition.PostgresReadyCondition
 import eu.glasskube.operator.infra.minio.MinioBucket
 import eu.glasskube.operator.infra.minio.bucketName
 import eu.glasskube.operator.infra.minio.secretName
@@ -26,23 +27,12 @@ import eu.glasskube.operator.infra.postgres.postgresCluster
 import io.fabric8.kubernetes.api.model.Quantity
 import io.fabric8.kubernetes.api.model.ResourceRequirements
 import io.javaoperatorsdk.operator.api.reconciler.Context
-import io.javaoperatorsdk.operator.api.reconciler.dependent.DependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
-import io.javaoperatorsdk.operator.processing.dependent.workflow.Condition
-import kotlin.jvm.optionals.getOrDefault
 
 @KubernetesDependent(labelSelector = MetabaseReconciler.SELECTOR)
 class MetabasePostgresCluster : CRUDKubernetesDependentResource<PostgresCluster, Metabase>(PostgresCluster::class.java) {
-    class ReadyPostCondition : Condition<PostgresCluster, Metabase> {
-        override fun isMet(
-            dependentResource: DependentResource<PostgresCluster, Metabase>,
-            primary: Metabase,
-            context: Context<Metabase>
-        ): Boolean = dependentResource.getSecondaryResource(primary, context)
-            .map { cluster -> cluster.status?.readyInstances?.let { it > 0 } }
-            .getOrDefault(false)
-    }
+    class ReadyPostCondition : PostgresReadyCondition<Metabase>()
 
     override fun desired(primary: Metabase, context: Context<Metabase>) = postgresCluster {
         val minioBucket: MinioBucket by context.requireSecondaryResource()

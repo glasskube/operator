@@ -1,12 +1,14 @@
-package eu.glasskube.operator.apps.gitlab.dependent
+package eu.glasskube.operator.apps.nextcloud.dependent
 
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.kubernetes.api.model.secretKeySelector
 import eu.glasskube.operator.api.reconciler.requireSecondaryResource
-import eu.glasskube.operator.apps.gitlab.Gitlab
-import eu.glasskube.operator.apps.gitlab.GitlabReconciler
-import eu.glasskube.operator.apps.gitlab.databaseName
-import eu.glasskube.operator.apps.gitlab.resourceLabels
+import eu.glasskube.operator.apps.nextcloud.Nextcloud
+import eu.glasskube.operator.apps.nextcloud.NextcloudReconciler
+import eu.glasskube.operator.apps.nextcloud.databaseClusterName
+import eu.glasskube.operator.apps.nextcloud.databaseName
+import eu.glasskube.operator.apps.nextcloud.resourceLabels
 import eu.glasskube.operator.generic.condition.PostgresReadyCondition
 import eu.glasskube.operator.infra.minio.MinioBucket
 import eu.glasskube.operator.infra.minio.bucketName
@@ -30,25 +32,31 @@ import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
-@KubernetesDependent(labelSelector = GitlabReconciler.SELECTOR)
-class GitlabPostgresCluster : CRUDKubernetesDependentResource<PostgresCluster, Gitlab>(PostgresCluster::class.java) {
-    class ReadyPostCondition : PostgresReadyCondition<Gitlab>()
+@KubernetesDependent(labelSelector = NextcloudReconciler.SELECTOR)
+class NextcloudPostgresCluster :
+    CRUDKubernetesDependentResource<PostgresCluster, Nextcloud>(PostgresCluster::class.java) {
 
-    override fun desired(primary: Gitlab, context: Context<Gitlab>) = postgresCluster {
+    class ReadyPostCondition : PostgresReadyCondition<Nextcloud>()
+
+    override fun desired(primary: Nextcloud, context: Context<Nextcloud>) = postgresCluster {
         val minioBucket: MinioBucket by context.requireSecondaryResource()
 
         metadata {
-            name = primary.databaseName
-            namespace = primary.metadata.namespace
+            name = primary.databaseClusterName
+            namespace = primary.namespace
             labels = primary.resourceLabels
         }
         spec = ClusterSpec(
-            enableSuperuserAccess = false,
             instances = 1,
+            enableSuperuserAccess = false,
             bootstrap = BootstrapConfiguration(
-                initdb = BootstrapInitDB(database = "gitlabhq_production", owner = "gitlab")
+                initdb = BootstrapInitDB(
+                    database = primary.databaseName
+                )
             ),
-            storage = StorageConfiguration(size = "20Gi"),
+            storage = StorageConfiguration(
+                size = "10Gi"
+            ),
             monitoring = MonitoringConfiguration(enablePodMonitor = true),
             backup = BackupConfiguration(
                 barmanObjectStore = BarmanObjectStoreConfiguration(
