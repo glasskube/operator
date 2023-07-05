@@ -1,6 +1,7 @@
 package eu.glasskube.operator.apps.gitea
 
 import eu.glasskube.operator.Labels
+import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import eu.glasskube.operator.generic.dependent.redis.RedisNameMapper
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.client.CustomResource
@@ -32,6 +33,12 @@ class Gitea : CustomResource<GiteaSpec, GiteaStatus>(), Namespaced {
         override fun getLabelSelector(primary: Gitea) =
             Labels.resourceLabelSelector(NAME, getName(primary), APP_NAME)
     }
+
+    object Postgres : PostgresNameMapper<Gitea>() {
+        override fun getName(primary: Gitea) = "${primary.genericResourceName}-db"
+        override fun getLabels(primary: Gitea) = primary.resourceLabels
+        override fun getDatabaseName(primary: Gitea) = "gitea"
+    }
 }
 
 val Gitea.resourceLabels
@@ -43,7 +50,6 @@ val Gitea.deploymentName get() = genericResourceName
 val Gitea.secretName get() = genericResourceName
 val Gitea.configMapName get() = genericResourceName
 val Gitea.iniConfigMapName get() = "$genericResourceName-ini"
-val Gitea.dbClusterName get() = "$genericResourceName-db"
 val Gitea.httpServiceName get() = "$genericResourceName-http"
 val Gitea.sshServiceName get() = "$genericResourceName-ssh"
 val Gitea.ingressTlsCertName get() = "$genericResourceName-cert"

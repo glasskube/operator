@@ -1,5 +1,6 @@
 package eu.glasskube.operator.apps.odoo
 
+import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import eu.glasskube.operator.resourceLabels
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.api.model.ResourceRequirements
@@ -29,7 +30,12 @@ class Odoo : CustomResource<OdooSpec, OdooStatus>(), Namespaced {
         const val configMapName = "config-data"
         const val configFile = "odoo.conf"
         const val configPath = "/etc/odoo"
-        const val dbName = "odoo"
+    }
+
+    object Postgres : PostgresNameMapper<Odoo>() {
+        override fun getName(primary: Odoo) = "${primary.genericResourceName}-db"
+        override fun getLabels(primary: Odoo) = primary.resourceLabels
+        override fun getDatabaseName(primary: Odoo) = "odoo"
     }
 }
 
@@ -50,12 +56,6 @@ val Odoo.volumeName
 
 val Odoo.configMapName
     get() = genericResourceName
-
-val Odoo.dbName
-    get() = "$genericResourceName-db"
-
-val Odoo.dbSecretName
-    get() = "$dbName-app"
 
 val Odoo.serviceName
     get() = genericResourceName

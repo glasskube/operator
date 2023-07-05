@@ -22,9 +22,9 @@ import eu.glasskube.kubernetes.api.model.secretRef
 import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.kubernetes.api.model.startupProbe
 import eu.glasskube.operator.apps.metabase.Metabase
+import eu.glasskube.operator.apps.metabase.Metabase.Postgres.postgresSecretName
 import eu.glasskube.operator.apps.metabase.MetabaseReconciler
 import eu.glasskube.operator.apps.metabase.configMapName
-import eu.glasskube.operator.apps.metabase.dbClusterName
 import eu.glasskube.operator.apps.metabase.genericResourceName
 import eu.glasskube.operator.apps.metabase.resourceLabelSelector
 import eu.glasskube.operator.apps.metabase.resourceLabels
@@ -63,10 +63,10 @@ class MetabaseDeployment : CRUDKubernetesDependentResource<Deployment, Metabase>
                             }
                             env {
                                 envVar("MB_DB_USER") {
-                                    secretKeyRef("${primary.dbClusterName}-app", "username")
+                                    secretKeyRef(primary.postgresSecretName, "username")
                                 }
                                 envVar("MB_DB_PASS") {
-                                    secretKeyRef("${primary.dbClusterName}-app", "password")
+                                    secretKeyRef(primary.postgresSecretName, "password")
                                 }
                                 primary.spec.smtp?.also {
                                     envVar("MB_EMAIL_SMTP_USERNAME") {

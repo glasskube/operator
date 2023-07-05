@@ -24,9 +24,9 @@ import eu.glasskube.kubernetes.api.model.volume
 import eu.glasskube.kubernetes.api.model.volumeMount
 import eu.glasskube.kubernetes.api.model.volumeMounts
 import eu.glasskube.operator.apps.gitlab.Gitlab
+import eu.glasskube.operator.apps.gitlab.Gitlab.Postgres.postgresSecretName
 import eu.glasskube.operator.apps.gitlab.GitlabReconciler
 import eu.glasskube.operator.apps.gitlab.configMapName
-import eu.glasskube.operator.apps.gitlab.databaseName
 import eu.glasskube.operator.apps.gitlab.genericResourceName
 import eu.glasskube.operator.apps.gitlab.resourceLabelSelector
 import eu.glasskube.operator.apps.gitlab.resourceLabels
@@ -67,7 +67,7 @@ class GitlabDeployment : CRUDKubernetesDependentResource<Deployment, Gitlab>(Dep
                             }
                             env {
                                 envVar("DB_PASSWORD") {
-                                    secretKeyRef("${primary.databaseName}-app", "password")
+                                    secretKeyRef(primary.postgresSecretName, "password")
                                 }
                                 when (val selector = primary.spec.initialRootPasswordSecret) {
                                     null ->

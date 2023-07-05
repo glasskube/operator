@@ -4,9 +4,9 @@ import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.apps.gitlab.Gitlab
+import eu.glasskube.operator.apps.gitlab.Gitlab.Postgres.postgresHostName
 import eu.glasskube.operator.apps.gitlab.GitlabReconciler
 import eu.glasskube.operator.apps.gitlab.configMapName
-import eu.glasskube.operator.apps.gitlab.databaseName
 import eu.glasskube.operator.apps.gitlab.resourceLabels
 import eu.glasskube.operator.logger
 import eu.glasskube.operator.resourceAsString
@@ -42,7 +42,7 @@ class GitlabConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitlab>(Confi
     private val Gitlab.baseData: Map<String, String>
         get() = mapOf(
             "GITLAB_HOST" to "http://${spec.host}",
-            "DB_HOST" to "$databaseName-rw",
+            "DB_HOST" to postgresHostName,
             "GITLAB_OMNIBUS_CONFIG" to gitlabOmnibusConfig
         )
 
