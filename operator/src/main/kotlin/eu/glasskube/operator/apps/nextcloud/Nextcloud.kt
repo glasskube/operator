@@ -4,7 +4,12 @@ import eu.glasskube.kubernetes.api.model.createEnv
 import eu.glasskube.kubernetes.api.model.envVar
 import eu.glasskube.kubernetes.api.model.secretKeyRef
 import eu.glasskube.operator.Labels
+import eu.glasskube.operator.apps.nextcloud.Nextcloud.Postgres.postgresClusterName
+import eu.glasskube.operator.apps.nextcloud.Nextcloud.Postgres.postgresDatabaseName
+import eu.glasskube.operator.apps.nextcloud.Nextcloud.Postgres.postgresHostName
+import eu.glasskube.operator.apps.nextcloud.Nextcloud.Postgres.postgresSecretName
 import eu.glasskube.operator.apps.nextcloud.Nextcloud.Redis.redisName
+import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import eu.glasskube.operator.generic.dependent.redis.RedisNameMapper
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.client.CustomResource
@@ -40,6 +45,12 @@ class Nextcloud : CustomResource<NextcloudSpec, NextcloudStatus>(), Namespaced {
         override fun getLabelSelector(primary: Nextcloud) =
             Labels.resourceLabelSelector(NAME, primary.metadata.name, APP_NAME)
     }
+
+    object Postgres : PostgresNameMapper<Nextcloud>() {
+        override fun getName(primary: Nextcloud) = "${primary.genericResourceName}-db"
+        override fun getLabels(primary: Nextcloud) = primary.resourceLabels
+        override fun getDatabaseName(primary: Nextcloud) = "nextcloud"
+    }
 }
 
 internal val Nextcloud.resourceLabels
@@ -61,22 +72,20 @@ internal val Nextcloud.cronName get() = "$genericResourceName-cron"
 internal val Nextcloud.volumeName get() = "$genericResourceName-data"
 internal val Nextcloud.configName get() = "$genericResourceName-config"
 internal val Nextcloud.tlsSecretName get() = "$genericResourceName-tls"
-internal val Nextcloud.databaseName get() = "nextcloud"
-internal val Nextcloud.databaseClusterName get() = "$genericResourceName-db"
-internal val Nextcloud.databaseBackupBucketName get() = "$databaseClusterName-backup"
+internal val Nextcloud.databaseBackupBucketName get() = "$postgresClusterName-backup"
 internal val Nextcloud.officeName get() = "$genericResourceName-${Nextcloud.OFFICE_NAME}"
 internal val Nextcloud.officeTlsSecretName get() = "$officeName-tls"
 
 internal val Nextcloud.defaultEnv
     get() = createEnv {
         envVar("REDIS_HOST", redisName)
-        envVar("POSTGRES_HOST", "$databaseClusterName-rw")
-        envVar("POSTGRES_DB", databaseName)
+        envVar("POSTGRES_HOST", postgresHostName)
+        envVar("POSTGRES_DB", postgresDatabaseName)
         envVar("NEXTCLOUD_TRUSTED_DOMAINS", spec.host)
     }
 
 internal val Nextcloud.databaseEnv
     get() = createEnv {
-        envVar("POSTGRES_USER") { secretKeyRef("$databaseClusterName-app", "username") }
-        envVar("POSTGRES_PASSWORD") { secretKeyRef("$databaseClusterName-app", "password") }
+        envVar("POSTGRES_USER") { secretKeyRef(postgresSecretName, "username") }
+        envVar("POSTGRES_PASSWORD") { secretKeyRef(postgresSecretName, "password") }
     }

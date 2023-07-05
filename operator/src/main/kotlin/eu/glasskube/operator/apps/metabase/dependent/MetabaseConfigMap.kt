@@ -4,10 +4,10 @@ import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.apps.metabase.Metabase
+import eu.glasskube.operator.apps.metabase.Metabase.Postgres.postgresHostName
 import eu.glasskube.operator.apps.metabase.MetabaseReconciler
 import eu.glasskube.operator.apps.metabase.MetabaseSmtp
 import eu.glasskube.operator.apps.metabase.configMapName
-import eu.glasskube.operator.apps.metabase.dbClusterName
 import eu.glasskube.operator.apps.metabase.genericResourceName
 import eu.glasskube.operator.apps.metabase.resourceLabels
 import eu.glasskube.operator.logger
@@ -40,7 +40,7 @@ class MetabaseConfigMap : CRUDKubernetesDependentResource<ConfigMap, Metabase>(C
     private val Metabase.baseData: Map<String, String>
         get() = mapOf(
             "MB_DB_TYPE" to "postgres",
-            "MB_DB_HOST" to "$dbClusterName-rw",
+            "MB_DB_HOST" to postgresHostName,
             "MB_DB_DBNAME" to "metabase",
             "MB_DB_PORT" to "5432",
             "MB_SITE_NAME" to "Metabase $genericResourceName",

@@ -4,9 +4,9 @@ import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.apps.gitea.Gitea
+import eu.glasskube.operator.apps.gitea.Gitea.Postgres.postgresHostName
 import eu.glasskube.operator.apps.gitea.Gitea.Redis.redisName
 import eu.glasskube.operator.apps.gitea.GiteaReconciler
-import eu.glasskube.operator.apps.gitea.dbClusterName
 import eu.glasskube.operator.apps.gitea.iniConfigMapName
 import eu.glasskube.operator.apps.gitea.resourceLabels
 import eu.glasskube.operator.decodeBase64
@@ -37,7 +37,7 @@ class GiteaIniConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitea>(Conf
     private val Gitea.baseConfig: Map<String, String>
         get() = mapOf(
             "GITEA__database__DB_TYPE" to "postgres",
-            "GITEA__database__HOST" to "$dbClusterName-rw:5432",
+            "GITEA__database__HOST" to "$postgresHostName:5432",
             "GITEA__database__NAME" to "gitea",
             "GITEA__server__ROOT_URL" to "https://${spec.host}/",
             "GITEA__server__DOMAIN" to spec.host,

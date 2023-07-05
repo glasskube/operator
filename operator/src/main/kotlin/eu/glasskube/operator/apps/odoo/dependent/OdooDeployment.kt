@@ -19,10 +19,10 @@ import eu.glasskube.kubernetes.api.model.volumeMount
 import eu.glasskube.kubernetes.api.model.volumeMounts
 import eu.glasskube.operator.apps.gitea.Gitea
 import eu.glasskube.operator.apps.odoo.Odoo
+import eu.glasskube.operator.apps.odoo.Odoo.Postgres.postgresHostName
+import eu.glasskube.operator.apps.odoo.Odoo.Postgres.postgresSecretName
 import eu.glasskube.operator.apps.odoo.OdooReconciler
 import eu.glasskube.operator.apps.odoo.configMapName
-import eu.glasskube.operator.apps.odoo.dbName
-import eu.glasskube.operator.apps.odoo.dbSecretName
 import eu.glasskube.operator.apps.odoo.deploymentName
 import eu.glasskube.operator.apps.odoo.identifyingLabel
 import eu.glasskube.operator.apps.odoo.resourceLabels
@@ -59,9 +59,9 @@ class OdooDeployment : CRUDKubernetesDependentResource<Deployment, Odoo>(Deploym
                             image = Odoo.APP_IMAGE
                             resources = primary.spec.resources
                             env {
-                                envVar("HOST", "${primary.dbName}-rw")
-                                envVar("USER") { secretKeyRef(primary.dbSecretName, "username") }
-                                envVar("PASSWORD") { secretKeyRef(primary.dbSecretName, "password") }
+                                envVar("HOST", primary.postgresHostName)
+                                envVar("USER") { secretKeyRef(primary.postgresSecretName, "username") }
+                                envVar("PASSWORD") { secretKeyRef(primary.postgresSecretName, "password") }
                             }
                             ports = listOf(containerPort { containerPort = 8069 })
                             volumeMounts {

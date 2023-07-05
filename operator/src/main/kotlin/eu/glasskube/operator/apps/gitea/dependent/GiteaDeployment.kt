@@ -22,9 +22,9 @@ import eu.glasskube.kubernetes.api.model.volumeMount
 import eu.glasskube.kubernetes.api.model.volumeMounts
 import eu.glasskube.operator.addTo
 import eu.glasskube.operator.apps.gitea.Gitea
+import eu.glasskube.operator.apps.gitea.Gitea.Postgres.postgresSecretName
 import eu.glasskube.operator.apps.gitea.GiteaReconciler
 import eu.glasskube.operator.apps.gitea.configMapName
-import eu.glasskube.operator.apps.gitea.dbClusterName
 import eu.glasskube.operator.apps.gitea.deploymentName
 import eu.glasskube.operator.apps.gitea.genericResourceName
 import eu.glasskube.operator.apps.gitea.iniConfigMapName
@@ -134,10 +134,10 @@ class GiteaDeployment : CRUDKubernetesDependentResource<Deployment, Gitea>(Deplo
                             }
                             env {
                                 envVar("GITEA__database__USER") {
-                                    secretKeyRef("${primary.dbClusterName}-app", "username")
+                                    secretKeyRef(primary.postgresSecretName, "username")
                                 }
                                 envVar("GITEA__database__PASSWD") {
-                                    secretKeyRef("${primary.dbClusterName}-app", "password")
+                                    secretKeyRef(primary.postgresSecretName, "password")
                                 }
                             }
                             securityContext = SecurityContext().apply {

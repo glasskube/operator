@@ -39,7 +39,8 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(
             type = GiteaPostgresCluster::class,
             name = "GiteaPostgresCluster",
-            dependsOn = ["GiteaMinioBucket"]
+            dependsOn = ["GiteaMinioBucket"],
+            readyPostcondition = GiteaPostgresCluster.ReadyPostCondition::class
         ),
         Dependent(
             type = GiteaPostgresBackup::class,
@@ -64,7 +65,6 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(
             type = GiteaRedisService::class,
             name = "GiteaRedisService",
-            dependsOn = ["GiteaRedisDeployment"],
             useEventSourceWithName = GiteaReconciler.SERVICE_EVENT_SOURCE
         ),
         Dependent(
@@ -76,20 +76,17 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(
             type = GiteaHttpService::class,
             name = "GiteaHttpService",
-            dependsOn = ["GiteaDeployment"],
             useEventSourceWithName = GiteaReconciler.SERVICE_EVENT_SOURCE
         ),
         Dependent(
             type = GiteaSSHService::class,
             name = "GiteaSSHService",
-            dependsOn = ["GiteaDeployment"],
             useEventSourceWithName = GiteaReconciler.SERVICE_EVENT_SOURCE,
             reconcilePrecondition = GiteaSSHService.ReconcileCondition::class
         ),
         Dependent(
             type = GiteaIngress::class,
-            name = "GiteaIngress",
-            dependsOn = ["GiteaHttpService"]
+            name = "GiteaIngress"
         ),
         Dependent(
             type = GiteaServiceMonitor::class,

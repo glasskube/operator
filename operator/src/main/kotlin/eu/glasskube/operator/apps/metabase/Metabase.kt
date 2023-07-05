@@ -1,6 +1,7 @@
 package eu.glasskube.operator.apps.metabase
 
 import eu.glasskube.operator.Labels
+import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.client.CustomResource
 import io.fabric8.kubernetes.model.annotation.Group
@@ -15,6 +16,12 @@ class Metabase : CustomResource<MetabaseSpec, MetabaseStatus>(), Namespaced {
         const val APP_NAME = "metabase"
         const val APP_VERSION = "0.46.5"
     }
+
+    object Postgres : PostgresNameMapper<Metabase>() {
+        override fun getName(primary: Metabase) = "${primary.genericResourceName}-db"
+        override fun getLabels(primary: Metabase) = primary.resourceLabels
+        override fun getDatabaseName(primary: Metabase) = "metabase"
+    }
 }
 
 val Metabase.resourceLabels
@@ -22,11 +29,8 @@ val Metabase.resourceLabels
 val Metabase.resourceLabelSelector
     get() = Labels.resourceLabelSelector(Metabase.APP_NAME, metadata.name, Metabase.APP_NAME)
 val Metabase.genericResourceName get() = "${Metabase.APP_NAME}-${metadata.name}"
-val Metabase.deploymentName get() = genericResourceName
 val Metabase.secretName get() = genericResourceName
 val Metabase.configMapName get() = genericResourceName
-val Metabase.iniConfigMapName get() = "$genericResourceName-ini"
-val Metabase.dbClusterName get() = "$genericResourceName-db"
 val Metabase.ingressName get() = genericResourceName
 val Metabase.httpServiceName get() = "$genericResourceName-http"
 val Metabase.ingressTlsCertName get() = "$genericResourceName-cert"
