@@ -93,7 +93,8 @@ class NextcloudDeployment : CRUDKubernetesDependentResource<Deployment, Nextclou
                             name = "nextcloud-update"
                             image = Nextcloud.APP_IMAGE
                             args = listOf("true")
-                            env = primary.defaultEnv + primary.databaseEnv + adminUserEnv + updateControlEnv
+                            env = primary.defaultEnv + primary.databaseEnv + adminUserEnv + primary.smtpEnv +
+                                primary.storageEnv + updateControlEnv
                             volumeMounts {
                                 volumeMount {
                                     name = DATA_VOLUME
@@ -174,7 +175,7 @@ class NextcloudDeployment : CRUDKubernetesDependentResource<Deployment, Nextclou
                             name = Nextcloud.APP_NAME
                             image = Nextcloud.APP_IMAGE
                             resources = primary.spec.resources
-                            env = primary.defaultEnv + primary.databaseEnv + primary.smtpEnv
+                            env = primary.defaultEnv + primary.databaseEnv + primary.smtpEnv + primary.storageEnv
                             volumeMounts {
                                 volumeMount {
                                     name = DATA_VOLUME
@@ -263,6 +264,23 @@ class NextcloudDeployment : CRUDKubernetesDependentResource<Deployment, Nextclou
             envVar("MAIL_DOMAIN", mailDomain)
             envVar("SMTP_NAME") { secretKeyRef(authSecret.name, "username") }
             envVar("SMTP_PASSWORD") { secretKeyRef(authSecret.name, "password") }
+        }
+
+    private val Nextcloud.storageEnv
+        get() = createEnv {
+            spec.storage?.s3?.apply {
+                envVar("OBJECTSTORE_S3_BUCKET", bucket)
+                envVar("OBJECTSTORE_S3_KEY") { secretKeyRef = accessKeySecret }
+                envVar("OBJECTSTORE_S3_SECRET") { secretKeyRef = secretKeySecret }
+                envVar("OBJECTSTORE_S3_SSL", useSsl.toString())
+                region?.let { envVar("OBJECTSTORE_S3_REGION", it) }
+                hostname?.let { envVar("OBJECTSTORE_S3_HOST", it) }
+                port?.let { envVar("OBJECTSTORE_S3_PORT", it.toString()) }
+                objectPrefix?.let { envVar("OBJECTSTORE_S3_OBJECT_PREFIX", objectPrefix) }
+                autoCreate?.let { envVar("OBJECTSTORE_S3_AUTOCREATE", it.toString()) }
+                usePathStyle?.let { envVar("OBJECTSTORE_S3_USEPATH_STYLE", it.toString()) }
+                legacyAuth?.let { envVar("OBJECTSTORE_S3_LEGACYAUTH", it.toString()) }
+            }
         }
 
     companion object {
