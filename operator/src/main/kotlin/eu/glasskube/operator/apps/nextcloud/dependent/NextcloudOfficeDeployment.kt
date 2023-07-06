@@ -58,7 +58,7 @@ class NextcloudOfficeDeployment : CRUDKubernetesDependentResource<Deployment, Ne
                             name = Nextcloud.OFFICE_NAME
                             image = Nextcloud.OFFICE_IMAGE
                             resources {
-                                limits(cpu = Quantity("1", ""), memory = Quantity("500", "Mi"))
+                                limits(memory = Quantity("500", "Mi"))
                             }
                             env {
                                 envVar("extra_params", "--o:ssl.enable=false --o:ssl.termination=true")

@@ -8,14 +8,16 @@ data class NextcloudSpec(
     val host: String,
     val defaultPhoneRegion: String?,
     val apps: NextcloudAppsSpec = NextcloudAppsSpec(),
-    val resources: ResourceRequirements = ResourceRequirements(
-        null,
-        mapOf(
-            "cpu" to Quantity("1", ""),
-            "memory" to Quantity("400", "Mi")
-        ),
-        mapOf("memory" to Quantity("100", "Mi"))
-    ),
+    val resources: ResourceRequirements = defaultResourceRequirements,
     @field:Nullable
-    val smtp: NextcloudSmtp?
-)
+    val smtp: NextcloudSmtpSpec?
+) {
+    companion object {
+        private val defaultResourceRequirements
+            get() = ResourceRequirements(
+                null,
+                mapOf("memory" to Quantity("400", "Mi")),
+                mapOf("memory" to Quantity("100", "Mi"))
+            )
+    }
+}
