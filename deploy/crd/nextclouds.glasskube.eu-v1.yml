@@ -75,6 +75,59 @@ spec:
                 - fromAddress
                 - authSecret
                 type: object
+              storage:
+                properties:
+                  s3:
+                    properties:
+                      bucket:
+                        type: string
+                      accessKeySecret:
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            type: string
+                          optional:
+                            type: boolean
+                        type: object
+                      secretKeySecret:
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            type: string
+                          optional:
+                            type: boolean
+                        type: object
+                      region:
+                        nullable: true
+                        type: string
+                      hostname:
+                        nullable: true
+                        type: string
+                      port:
+                        nullable: true
+                        type: integer
+                      objectPrefix:
+                        nullable: true
+                        type: string
+                      autoCreate:
+                        nullable: true
+                        type: boolean
+                      useSsl:
+                        type: boolean
+                      usePathStyle:
+                        nullable: true
+                        type: boolean
+                      legacyAuth:
+                        nullable: true
+                        type: boolean
+                    required:
+                    - bucket
+                    - accessKeySecret
+                    - secretKeySecret
+                    type: object
+                type: object
             type: object
           status:
             properties:

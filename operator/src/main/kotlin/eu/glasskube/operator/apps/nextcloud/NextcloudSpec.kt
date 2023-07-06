@@ -10,7 +10,8 @@ data class NextcloudSpec(
     val apps: NextcloudAppsSpec = NextcloudAppsSpec(),
     val resources: ResourceRequirements = defaultResourceRequirements,
     @field:Nullable
-    val smtp: NextcloudSmtpSpec?
+    val smtp: NextcloudSmtpSpec?,
+    val storage: NextcloudStorageSpec?
 ) {
     companion object {
         private val defaultResourceRequirements
