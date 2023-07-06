@@ -88,6 +88,10 @@ inline fun MutableList<EnvVar>.envVar(name: String, block: (@KubernetesDslMarker
     add(EnvVar(name, null, EnvVarSource().apply(block)))
 }
 
+fun MutableList<EnvVar>.envVars(vararg pairs: Pair<String, String>) {
+    addAll(pairs.map { EnvVar(it.first, it.second, null) })
+}
+
 fun secretKeySelector(name: String, key: String, optional: Boolean = false) =
     SecretKeySelector(key, name, optional.takeIf { it })
 
