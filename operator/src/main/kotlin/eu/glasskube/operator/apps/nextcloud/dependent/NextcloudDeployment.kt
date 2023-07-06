@@ -27,7 +27,7 @@ import eu.glasskube.kubernetes.api.model.volumeMount
 import eu.glasskube.kubernetes.api.model.volumeMounts
 import eu.glasskube.operator.apps.nextcloud.Nextcloud
 import eu.glasskube.operator.apps.nextcloud.NextcloudReconciler
-import eu.glasskube.operator.apps.nextcloud.NextcloudSmtp
+import eu.glasskube.operator.apps.nextcloud.NextcloudSmtpSpec
 import eu.glasskube.operator.apps.nextcloud.configName
 import eu.glasskube.operator.apps.nextcloud.databaseEnv
 import eu.glasskube.operator.apps.nextcloud.defaultEnv
@@ -252,7 +252,7 @@ class NextcloudDeployment : CRUDKubernetesDependentResource<Deployment, Nextclou
     private val Nextcloud.smtpEnv
         get() = spec.smtp?.smtpEnv.orEmpty()
 
-    private val NextcloudSmtp.smtpEnv
+    private val NextcloudSmtpSpec.smtpEnv
         get() = createEnv {
             val (mailFromAddress, mailDomain) = fromAddress.split("@", limit = 2)
 
