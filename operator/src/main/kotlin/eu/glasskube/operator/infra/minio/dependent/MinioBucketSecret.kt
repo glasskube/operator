@@ -27,6 +27,6 @@ class MinioBucketSecret : GeneratedSecret<MinioBucket>() {
             dependentResource: DependentResource<Secret, MinioBucket>,
             primary: MinioBucket,
             context: Context<MinioBucket>
-        ) = primary.spec.userSecret == null
+        ) = primary.spec?.userSecret == null
     }
 }
