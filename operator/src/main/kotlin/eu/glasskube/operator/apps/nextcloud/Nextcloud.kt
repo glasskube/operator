@@ -57,6 +57,7 @@ internal val Nextcloud.officeResourceLabels
 internal val Nextcloud.officeResourceLabelSelector
     get() = Labels.resourceLabelSelector(Nextcloud.OFFICE_NAME, metadata.name, Nextcloud.APP_NAME)
 internal val Nextcloud.genericResourceName get() = "${Nextcloud.APP_NAME}-${metadata.name}"
+internal val Nextcloud.cronName get() = "$genericResourceName-cron"
 internal val Nextcloud.volumeName get() = "$genericResourceName-data"
 internal val Nextcloud.configName get() = "$genericResourceName-config"
 internal val Nextcloud.tlsSecretName get() = "$genericResourceName-tls"
