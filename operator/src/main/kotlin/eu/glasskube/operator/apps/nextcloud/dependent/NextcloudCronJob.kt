@@ -15,9 +15,10 @@ import eu.glasskube.kubernetes.api.model.volumeMounts
 import eu.glasskube.operator.Affinities
 import eu.glasskube.operator.apps.nextcloud.Nextcloud
 import eu.glasskube.operator.apps.nextcloud.NextcloudReconciler
+import eu.glasskube.operator.apps.nextcloud.cronName
 import eu.glasskube.operator.apps.nextcloud.databaseEnv
 import eu.glasskube.operator.apps.nextcloud.defaultEnv
-import eu.glasskube.operator.apps.nextcloud.genericResourceName
+import eu.glasskube.operator.apps.nextcloud.resourceLabelSelector
 import eu.glasskube.operator.apps.nextcloud.resourceLabels
 import eu.glasskube.operator.apps.nextcloud.volumeName
 import io.fabric8.kubernetes.api.model.batch.v1.CronJob
@@ -29,7 +30,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class NextcloudCronJob : CRUDKubernetesDependentResource<CronJob, Nextcloud>(CronJob::class.java) {
     override fun desired(primary: Nextcloud, context: Context<Nextcloud>) = CronJob().apply {
         metadata {
-            name = primary.genericResourceName
+            name = primary.cronName
             namespace = primary.namespace
             labels = primary.resourceLabels
         }
@@ -47,7 +48,7 @@ class NextcloudCronJob : CRUDKubernetesDependentResource<CronJob, Nextcloud>(Cro
                             )
                             containers = listOf(
                                 container {
-                                    name = Nextcloud.APP_NAME + "-job"
+                                    name = Nextcloud.APP_NAME
                                     image = Nextcloud.APP_IMAGE
                                     command = listOf("php")
                                     args = listOf("cron.php")
@@ -63,7 +64,7 @@ class NextcloudCronJob : CRUDKubernetesDependentResource<CronJob, Nextcloud>(Cro
                                     }
                                 }
                             )
-                            affinity = Affinities.podAffinityFor(primary.resourceLabels)
+                            affinity = Affinities.podAffinityFor(primary.resourceLabelSelector)
                         }
                     }
                 }
