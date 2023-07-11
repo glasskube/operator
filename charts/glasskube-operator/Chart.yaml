@@ -23,7 +23,7 @@ dependencies:
   - name: kube-prometheus-stack
     condition: kube-prometheus-stack.enabled
     repository: https://prometheus-community.github.io/helm-charts
-    version: 45.31.1
+    version: 47.6.1
   - name: mariadb-operator
     condition: mariadb-operator.enabled
     version: 0.15.1
