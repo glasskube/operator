@@ -12,6 +12,7 @@ import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.kubernetes.api.model.volume
 import eu.glasskube.kubernetes.api.model.volumeMount
 import eu.glasskube.kubernetes.api.model.volumeMounts
+import eu.glasskube.operator.Affinities
 import eu.glasskube.operator.apps.nextcloud.Nextcloud
 import eu.glasskube.operator.apps.nextcloud.NextcloudReconciler
 import eu.glasskube.operator.apps.nextcloud.databaseEnv
@@ -46,7 +47,7 @@ class NextcloudCronJob : CRUDKubernetesDependentResource<CronJob, Nextcloud>(Cro
                             )
                             containers = listOf(
                                 container {
-                                    name = Nextcloud.APP_NAME
+                                    name = Nextcloud.APP_NAME + "-job"
                                     image = Nextcloud.APP_IMAGE
                                     command = listOf("php")
                                     args = listOf("cron.php")
@@ -62,6 +63,7 @@ class NextcloudCronJob : CRUDKubernetesDependentResource<CronJob, Nextcloud>(Cro
                                     }
                                 }
                             )
+                            affinity = Affinities.podAffinityFor(primary.resourceLabels)
                         }
                     }
                 }
