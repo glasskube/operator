@@ -1,30 +1,24 @@
 package eu.glasskube.operator
 
-import io.fabric8.kubernetes.api.model.Affinity
-import io.fabric8.kubernetes.api.model.LabelSelector
-import io.fabric8.kubernetes.api.model.PodAffinity
-import io.fabric8.kubernetes.api.model.PodAffinityTerm
+import eu.glasskube.kubernetes.api.model.affinity
+import eu.glasskube.kubernetes.api.model.labelSelector
+import eu.glasskube.kubernetes.api.model.podAffinity
+import eu.glasskube.kubernetes.api.model.podAffinityTerm
 
 object Affinities {
     private const val TOPOLOGY_KEY = "kubernetes.io/hostname"
 
     fun podAffinityFor(labels: Map<String, String>) =
-        Affinity(
-            null,
-            PodAffinity(
-                emptyList(),
-                listOf(
-                    PodAffinityTerm(
-                        LabelSelector(
-                            emptyList(),
-                            labels
-                        ),
-                        null,
-                        null,
-                        TOPOLOGY_KEY
-                    )
+        affinity {
+            podAffinity {
+                requiredDuringSchedulingIgnoredDuringExecution = listOf(
+                    podAffinityTerm {
+                        labelSelector {
+                            matchLabels = labels
+                        }
+                        topologyKey = TOPOLOGY_KEY
+                    }
                 )
-            ),
-            null
-        )
+            }
+        }
 }
