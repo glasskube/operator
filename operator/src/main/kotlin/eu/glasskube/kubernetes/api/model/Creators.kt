@@ -1,6 +1,7 @@
 package eu.glasskube.kubernetes.api.model
 
 import eu.glasskube.kubernetes.api.annotation.KubernetesDslMarker
+import io.fabric8.kubernetes.api.model.Affinity
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.ConfigMapEnvSource
 import io.fabric8.kubernetes.api.model.ConfigMapKeySelector
@@ -22,6 +23,8 @@ import io.fabric8.kubernetes.api.model.ObjectMeta
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaim
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaimSpec
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaimVolumeSource
+import io.fabric8.kubernetes.api.model.PodAffinity
+import io.fabric8.kubernetes.api.model.PodAffinityTerm
 import io.fabric8.kubernetes.api.model.PodSecurityContext
 import io.fabric8.kubernetes.api.model.PodSpec
 import io.fabric8.kubernetes.api.model.PodTemplateSpec
@@ -236,4 +239,19 @@ inline fun Probe.tcpSocket(block: (@KubernetesDslMarker TCPSocketAction).() -> U
 
 inline fun Probe.grpc(block: (@KubernetesDslMarker GRPCAction).() -> Unit) {
     grpc = GRPCAction().apply(block)
+}
+
+inline fun affinity(block: (@KubernetesDslMarker Affinity).() -> Unit): Affinity =
+    Affinity().apply(block)
+
+
+inline fun Affinity.podAffinity(block: (@KubernetesDslMarker PodAffinity).() -> Unit) {
+    podAffinity = PodAffinity().apply(block)
+}
+
+inline fun podAffinityTerm(block: (@KubernetesDslMarker PodAffinityTerm).() -> Unit): PodAffinityTerm =
+    PodAffinityTerm().apply(block)
+
+inline fun PodAffinityTerm.labelSelector(block: (@KubernetesDslMarker LabelSelector).() -> Unit) {
+    labelSelector = LabelSelector().apply(block)
 }
