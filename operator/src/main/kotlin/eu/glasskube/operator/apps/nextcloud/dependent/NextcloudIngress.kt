@@ -28,7 +28,9 @@ class NextcloudIngress(configService: ConfigService) : DependentIngress<Nextclou
             name = primary.genericResourceName
             namespace = primary.namespace
             labels = primary.resourceLabels
-            annotations = primary.defaultAnnotations
+            annotations = primary.defaultAnnotations + mapOf(
+                "nginx.ingress.kubernetes.io/proxy-body-size" to "10g"
+            )
         }
         spec {
             ingressClassName = defaultIngressClassName
