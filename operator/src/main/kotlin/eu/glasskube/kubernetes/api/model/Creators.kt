@@ -244,7 +244,6 @@ inline fun Probe.grpc(block: (@KubernetesDslMarker GRPCAction).() -> Unit) {
 inline fun affinity(block: (@KubernetesDslMarker Affinity).() -> Unit): Affinity =
     Affinity().apply(block)
 
-
 inline fun Affinity.podAffinity(block: (@KubernetesDslMarker PodAffinity).() -> Unit) {
     podAffinity = PodAffinity().apply(block)
 }
