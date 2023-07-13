@@ -23,7 +23,11 @@ data class OdooStatus(
 @Version("v1alpha1")
 @Plural("odoos")
 class Odoo : CustomResource<OdooSpec, OdooStatus>(), Namespaced {
-    companion object {
+    internal companion object {
+        const val APP_NAME = "odoo"
+        const val APP_VERSION = "16.0.20230710"
+        const val APP_IMAGE = "glasskube/$APP_NAME:$APP_VERSION"
+
         const val volumeName = "web-data"
         const val volumePath = "/var/lib/odoo"
         const val configMapName = "config-data"
