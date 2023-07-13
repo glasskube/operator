@@ -17,6 +17,7 @@ import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.kubernetes.api.model.volume
 import eu.glasskube.kubernetes.api.model.volumeMount
 import eu.glasskube.kubernetes.api.model.volumeMounts
+import eu.glasskube.operator.apps.gitea.Gitea
 import eu.glasskube.operator.apps.odoo.Odoo
 import eu.glasskube.operator.apps.odoo.OdooReconciler
 import eu.glasskube.operator.apps.odoo.configMapName
@@ -33,6 +34,9 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 
 @KubernetesDependent(labelSelector = OdooReconciler.SELECTOR)
 class OdooDeployment : CRUDKubernetesDependentResource<Deployment, Odoo>(Deployment::class.java) {
+    private companion object {
+        const val IMAGE = "gitea/gitea:${Gitea.APP_VERSION}"
+    }
     override fun desired(primary: Odoo, context: Context<Odoo>) = deployment {
         metadata {
             name = primary.deploymentName
@@ -51,9 +55,8 @@ class OdooDeployment : CRUDKubernetesDependentResource<Deployment, Odoo>(Deploym
                 spec {
                     containers = listOf(
                         container {
-                            name = "odoo"
-                            image = "glasskube/odoo:16.0.20230317"
-                            imagePullPolicy = "IfNotPresent"
+                            name = Odoo.APP_NAME
+                            image = Odoo.APP_IMAGE
                             resources = primary.spec.resources
                             env {
                                 envVar("HOST", "${primary.dbName}-rw")
