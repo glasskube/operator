@@ -8,7 +8,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "11.5.0"
     id("com.gorylenko.gradle-git-properties") version "2.4.1"
     id("org.springframework.boot") version "3.1.1"
-    id("io.spring.dependency-management") version "1.1.0"
+    id("io.spring.dependency-management") version "1.1.2"
 }
 
 group = "eu.glasskube.operator"
