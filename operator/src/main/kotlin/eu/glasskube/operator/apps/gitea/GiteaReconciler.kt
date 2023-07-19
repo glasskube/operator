@@ -19,7 +19,7 @@ import eu.glasskube.operator.apps.gitea.dependent.GiteaSecret
 import eu.glasskube.operator.apps.gitea.dependent.GiteaServiceMonitor
 import eu.glasskube.operator.apps.gitea.dependent.GiteaVolume
 import eu.glasskube.operator.infra.postgres.PostgresCluster
-import eu.glasskube.operator.logger
+import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.apps.Deployment

@@ -9,8 +9,8 @@ import eu.glasskube.operator.apps.gitea.Gitea.Redis.redisName
 import eu.glasskube.operator.apps.gitea.GiteaReconciler
 import eu.glasskube.operator.apps.gitea.iniConfigMapName
 import eu.glasskube.operator.apps.gitea.resourceLabels
-import eu.glasskube.operator.decodeBase64
-import eu.glasskube.operator.logger
+import eu.glasskube.utils.decodeBase64
+import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator

@@ -7,7 +7,7 @@ import eu.glasskube.operator.apps.gitlab.Gitlab
 import eu.glasskube.operator.apps.gitlab.runner.dependent.GitlabRunnerConfigMap
 import eu.glasskube.operator.apps.gitlab.runner.dependent.GitlabRunnerDeployment
 import eu.glasskube.operator.apps.gitlab.runner.dependent.GitlabRunnerSecret
-import eu.glasskube.operator.logger
+import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration

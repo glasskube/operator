@@ -19,7 +19,7 @@ import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipWorkerDeployment
 import eu.glasskube.operator.generic.condition.isReady
 import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.infra.postgres.isReady
-import eu.glasskube.operator.logger
+import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context

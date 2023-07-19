@@ -4,7 +4,7 @@ import eu.glasskube.operator.api.reconciler.informerEventSource
 import eu.glasskube.operator.apps.httpecho.dependent.HttpEchoDeployment
 import eu.glasskube.operator.apps.httpecho.dependent.HttpEchoIngress
 import eu.glasskube.operator.apps.httpecho.dependent.HttpEchoService
-import eu.glasskube.operator.logger
+import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.Secret
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration

@@ -1,0 +1,60 @@
+package eu.glasskube.operator.apps.vault
+
+import com.fasterxml.jackson.annotation.JsonPropertyDescription
+import io.fabric8.generator.annotation.Nullable
+import io.fabric8.generator.annotation.Required
+import io.fabric8.kubernetes.api.model.Quantity
+import io.fabric8.kubernetes.api.model.ResourceRequirements
+import io.fabric8.kubernetes.api.model.SecretKeySelector
+
+data class VaultSpec(
+    @field:Required
+    val host: String,
+    val replicas: Int = 3,
+    val ui: UiSpec = UiSpec(),
+    val resources: ResourceRequirements = defaultResourceRequirements,
+    val serviceRegistration: ServiceRegistrationSpec = ServiceRegistrationSpec(),
+    @field:Nullable
+    val autoUnseal: AutoUnsealSpec?,
+    @field:Nullable
+    val auditStorage: AuditStorageSpec = AuditStorageSpec()
+) {
+
+    data class UiSpec(
+        @field:Required
+        val enabled: Boolean = true
+    )
+
+    data class ServiceRegistrationSpec(
+        @field:Required
+        val enabled: Boolean = true
+    )
+
+    data class AutoUnsealSpec(
+        @field:Required
+        val address: String,
+        @field:Nullable
+        val tlsCaSecret: SecretKeySelector?,
+        @field:JsonPropertyDescription("Optional. Default is \"namespace.name\".")
+        val roleName: String?,
+        @field:JsonPropertyDescription("Optional. Default is \"transit\".")
+        val mountPath: String = "transit",
+        @field:JsonPropertyDescription("Optional. Default is \"namespace.name\".")
+        val keyName: String?
+    )
+
+    data class AuditStorageSpec(
+        @field:Required
+        val enabled: Boolean = false,
+        val size: Quantity = Quantity("1", "Gi")
+    )
+
+    companion object {
+        private val defaultResourceRequirements
+            get() = ResourceRequirements(
+                null,
+                mapOf("memory" to Quantity("100", "Mi")),
+                mapOf("memory" to Quantity("30", "Mi"))
+            )
+    }
+}

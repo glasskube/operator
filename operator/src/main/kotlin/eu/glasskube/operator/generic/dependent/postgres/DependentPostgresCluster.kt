@@ -30,6 +30,7 @@ abstract class DependentPostgresCluster<P : HasMetadata>(
     protected abstract val P.storageSize: String
     protected open val P.storageClass: String? get() = null
     protected open val P.databaseOwnerName: String? get() = null
+    protected open val P.initSql: String? get() = null
     protected open val P.databaseResources: ResourceRequirements
         get() = ResourceRequirements(
             null,
@@ -54,7 +55,8 @@ abstract class DependentPostgresCluster<P : HasMetadata>(
             bootstrap = BootstrapConfiguration(
                 initdb = BootstrapInitDB(
                     database = postgresNameMapper.getDatabaseName(primary),
-                    owner = primary.databaseOwnerName
+                    owner = primary.databaseOwnerName,
+                    postInitApplicationSQL = primary.initSql?.let { listOf(it) }
                 )
             ),
             storage = StorageConfiguration(storageClass = primary.storageClass, size = primary.storageSize),

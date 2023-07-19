@@ -7,7 +7,7 @@ import com.fasterxml.jackson.module.kotlin.jsonMapper
 import com.fasterxml.jackson.module.kotlin.kotlinModule
 import eu.glasskube.operator.Environment
 import eu.glasskube.operator.api.reconciler.HasRegistrationCondition
-import eu.glasskube.operator.logger
+import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.client.KubernetesClient
 import io.fabric8.kubernetes.client.KubernetesClientBuilder

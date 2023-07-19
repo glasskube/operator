@@ -10,7 +10,7 @@ import eu.glasskube.operator.apps.metabase.MetabaseSmtp
 import eu.glasskube.operator.apps.metabase.configMapName
 import eu.glasskube.operator.apps.metabase.genericResourceName
 import eu.glasskube.operator.apps.metabase.resourceLabels
-import eu.glasskube.operator.logger
+import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context

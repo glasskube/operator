@@ -8,8 +8,8 @@ import eu.glasskube.operator.apps.nextcloud.Nextcloud
 import eu.glasskube.operator.apps.nextcloud.NextcloudInstallConfig
 import eu.glasskube.operator.apps.nextcloud.configName
 import eu.glasskube.operator.apps.nextcloud.resourceLabels
-import eu.glasskube.operator.logger
-import eu.glasskube.operator.resourceAsString
+import eu.glasskube.utils.logger
+import eu.glasskube.utils.resourceAsString
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource

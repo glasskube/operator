@@ -20,7 +20,6 @@ import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.kubernetes.api.model.volume
 import eu.glasskube.kubernetes.api.model.volumeMount
 import eu.glasskube.kubernetes.api.model.volumeMounts
-import eu.glasskube.operator.addTo
 import eu.glasskube.operator.apps.gitea.Gitea
 import eu.glasskube.operator.apps.gitea.Gitea.Postgres.postgresSecretName
 import eu.glasskube.operator.apps.gitea.GiteaReconciler
@@ -31,6 +30,7 @@ import eu.glasskube.operator.apps.gitea.iniConfigMapName
 import eu.glasskube.operator.apps.gitea.resourceLabelSelector
 import eu.glasskube.operator.apps.gitea.resourceLabels
 import eu.glasskube.operator.apps.gitea.secretName
+import eu.glasskube.utils.addTo
 import io.fabric8.kubernetes.api.model.HTTPGetAction
 import io.fabric8.kubernetes.api.model.IntOrString
 import io.fabric8.kubernetes.api.model.Probe

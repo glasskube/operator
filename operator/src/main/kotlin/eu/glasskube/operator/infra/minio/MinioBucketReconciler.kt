@@ -2,9 +2,9 @@ package eu.glasskube.operator.infra.minio
 
 import eu.glasskube.kubernetes.client.patchOrUpdateStatus
 import eu.glasskube.operator.Labels
-import eu.glasskube.operator.decodeBase64
 import eu.glasskube.operator.infra.minio.dependent.MinioBucketSecret
-import eu.glasskube.operator.logger
+import eu.glasskube.utils.decodeBase64
+import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.Secret
 import io.fabric8.kubernetes.client.KubernetesClient
 import io.javaoperatorsdk.operator.api.reconciler.Cleaner

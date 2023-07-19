@@ -111,7 +111,7 @@ fun EnvVarSource.configMapRef(name: String, key: String, optional: Boolean = fal
     configMapKeyRef = configMapKeySelector(key = key, name = name, optional = optional)
 }
 
-fun EnvVarSource.fieldRef(fieldPath: String, apiVersion: String? = null) {
+fun EnvVarSource.fieldRef(fieldPath: String, apiVersion: String? = "v1") {
     fieldRef = ObjectFieldSelector(apiVersion, fieldPath)
 }
 

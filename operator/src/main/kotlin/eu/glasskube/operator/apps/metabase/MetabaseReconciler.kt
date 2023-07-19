@@ -13,7 +13,7 @@ import eu.glasskube.operator.apps.metabase.dependent.MetabasePostgresCluster
 import eu.glasskube.operator.apps.metabase.dependent.MetabaseSecret
 import eu.glasskube.operator.apps.metabase.dependent.MetabaseServiceMonitor
 import eu.glasskube.operator.infra.postgres.PostgresCluster
-import eu.glasskube.operator.logger
+import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
