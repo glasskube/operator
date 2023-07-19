@@ -8,8 +8,8 @@ import eu.glasskube.operator.apps.gitlab.Gitlab.Postgres.postgresHostName
 import eu.glasskube.operator.apps.gitlab.GitlabReconciler
 import eu.glasskube.operator.apps.gitlab.configMapName
 import eu.glasskube.operator.apps.gitlab.resourceLabels
-import eu.glasskube.operator.logger
-import eu.glasskube.operator.resourceAsString
+import eu.glasskube.utils.logger
+import eu.glasskube.utils.resourceAsString
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context

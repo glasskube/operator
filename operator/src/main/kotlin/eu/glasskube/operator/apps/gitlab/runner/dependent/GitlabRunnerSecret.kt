@@ -6,7 +6,7 @@ import eu.glasskube.operator.apps.gitlab.runner.GitlabRunner
 import eu.glasskube.operator.apps.gitlab.runner.GitlabRunnerReconciler
 import eu.glasskube.operator.apps.gitlab.runner.resourceLabels
 import eu.glasskube.operator.apps.gitlab.runner.secretName
-import eu.glasskube.operator.encodeBase64
+import eu.glasskube.utils.encodeBase64
 import io.fabric8.kubernetes.api.model.Secret
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource

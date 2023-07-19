@@ -9,8 +9,8 @@ import eu.glasskube.operator.apps.matomo.MatomoInstallConfig
 import eu.glasskube.operator.apps.matomo.MatomoReconciler
 import eu.glasskube.operator.apps.matomo.configSecretName
 import eu.glasskube.operator.apps.matomo.resourceLabels
-import eu.glasskube.operator.decodeBase64
-import eu.glasskube.operator.encodeBase64
+import eu.glasskube.utils.decodeBase64
+import eu.glasskube.utils.encodeBase64
 import io.fabric8.kubernetes.api.model.Secret
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator

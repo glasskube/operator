@@ -7,7 +7,7 @@ import eu.glasskube.operator.apps.odoo.Odoo
 import eu.glasskube.operator.apps.odoo.OdooReconciler
 import eu.glasskube.operator.apps.odoo.configMapName
 import eu.glasskube.operator.apps.odoo.resourceLabels
-import eu.glasskube.operator.logger
+import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context

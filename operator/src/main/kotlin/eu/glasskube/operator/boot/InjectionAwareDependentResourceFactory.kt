@@ -1,6 +1,6 @@
 package eu.glasskube.operator.boot
 
-import eu.glasskube.operator.logger
+import eu.glasskube.utils.logger
 import io.javaoperatorsdk.operator.api.config.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.config.dependent.DependentResourceConfigurationResolver
 import io.javaoperatorsdk.operator.api.config.dependent.DependentResourceSpec

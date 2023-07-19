@@ -1,5 +1,6 @@
 package eu.glasskube.operator
 
+import eu.glasskube.utils.logger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.PropertySource

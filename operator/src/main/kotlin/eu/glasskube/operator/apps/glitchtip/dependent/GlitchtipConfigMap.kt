@@ -9,7 +9,7 @@ import eu.glasskube.operator.apps.glitchtip.Glitchtip.Redis.redisName
 import eu.glasskube.operator.apps.glitchtip.GlitchtipReconciler
 import eu.glasskube.operator.apps.glitchtip.configMapName
 import eu.glasskube.operator.apps.glitchtip.resourceLabels
-import eu.glasskube.operator.logger
+import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context

@@ -1,6 +1,6 @@
 package eu.glasskube.operator.apps.httpecho
 
-import eu.glasskube.operator.resourceLabels
+import eu.glasskube.utils.resourceLabels
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.client.CustomResource
 import io.fabric8.kubernetes.model.annotation.Group

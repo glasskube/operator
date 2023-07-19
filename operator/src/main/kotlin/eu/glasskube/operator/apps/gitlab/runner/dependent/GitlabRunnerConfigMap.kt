@@ -10,7 +10,7 @@ import eu.glasskube.operator.apps.gitlab.runner.GitlabRunnerReconciler
 import eu.glasskube.operator.apps.gitlab.runner.configMapName
 import eu.glasskube.operator.apps.gitlab.runner.resourceLabels
 import eu.glasskube.operator.apps.gitlab.serviceName
-import eu.glasskube.operator.logger
+import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context

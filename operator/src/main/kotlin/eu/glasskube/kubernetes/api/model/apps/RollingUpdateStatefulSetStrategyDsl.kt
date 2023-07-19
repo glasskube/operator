@@ -1,0 +1,28 @@
+package eu.glasskube.kubernetes.api.model.apps
+
+import eu.glasskube.kubernetes.api.model.intOrString
+import io.fabric8.kubernetes.api.model.apps.RollingUpdateStatefulSetStrategy
+import io.fabric8.kubernetes.api.model.apps.RollingUpdateStatefulSetStrategyBuilder
+
+class RollingUpdateStatefulSetStrategyDsl private constructor() {
+    private val builder = RollingUpdateStatefulSetStrategyBuilder(true)
+
+    fun partition(partition: Int) {
+        builder.withPartition(partition)
+    }
+
+    fun maxUnavailable(maxUnavailable: Int) {
+        builder.withMaxUnavailable(maxUnavailable.intOrString())
+    }
+
+    fun maxUnavailable(maxUnavailable: String) {
+        builder.withMaxUnavailable(maxUnavailable.intOrString())
+    }
+
+    fun build(): RollingUpdateStatefulSetStrategy = builder.build()
+
+    companion object {
+        fun (RollingUpdateStatefulSetStrategyDsl.() -> Unit).build() =
+            RollingUpdateStatefulSetStrategyDsl().apply(this).build()
+    }
+}

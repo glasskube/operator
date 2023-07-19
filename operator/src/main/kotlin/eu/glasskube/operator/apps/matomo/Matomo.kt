@@ -1,6 +1,6 @@
 package eu.glasskube.operator.apps.matomo
 
-import eu.glasskube.operator.resourceLabels
+import eu.glasskube.utils.resourceLabels
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.api.model.Quantity

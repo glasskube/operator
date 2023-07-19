@@ -1,7 +1,7 @@
 package eu.glasskube.operator.apps.odoo
 
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
-import eu.glasskube.operator.resourceLabels
+import eu.glasskube.utils.resourceLabels
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.api.model.ResourceRequirements
 import io.fabric8.kubernetes.client.CustomResource
