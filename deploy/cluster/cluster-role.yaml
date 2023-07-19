@@ -98,3 +98,12 @@ rules:
     verbs:
       - get
       - list
+  - apiGroups: [ batch ]
+    resources: [ cronjobs ]
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
