@@ -2,6 +2,7 @@ package eu.glasskube.operator.apps.glitchtip
 
 import eu.glasskube.operator.Labels
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
+import eu.glasskube.operator.generic.dependent.redis.RedisNameMapper
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.client.CustomResource
 import io.fabric8.kubernetes.model.annotation.Group
@@ -14,7 +15,27 @@ import io.fabric8.kubernetes.model.annotation.Version
 class Glitchtip : CustomResource<GlitchtipSpec, GlitchtipStatus>(), Namespaced {
     companion object {
         const val APP_NAME = "glitchtip"
-        const val APP_VERSION = "0.46.5"
+        const val APP_VERSION = "3.3.0"
+        const val WORKER = "worker"
+        const val REDIS = "redis"
+        const val UPLOADS_DIR = "/code/uploads"
+        const val UPLOADS_VOLUME_NAME = "uploads"
+        const val APP_UID = 5000L
+    }
+
+    object Redis : RedisNameMapper<Glitchtip>() {
+        internal const val NAME = "redis"
+        private const val VERSION = "7.0"
+
+        override fun getName(primary: Glitchtip) = "${primary.genericResourceName}-$NAME"
+
+        override fun getVersion(primary: Glitchtip) = VERSION
+
+        override fun getLabels(primary: Glitchtip) =
+            Labels.resourceLabels(NAME, primary.metadata.name, Glitchtip.APP_NAME, VERSION, NAME)
+
+        override fun getLabelSelector(primary: Glitchtip) =
+            Labels.resourceLabelSelector(NAME, primary.metadata.name, Glitchtip.APP_NAME)
     }
 
     object Postgres : PostgresNameMapper<Glitchtip>() {
