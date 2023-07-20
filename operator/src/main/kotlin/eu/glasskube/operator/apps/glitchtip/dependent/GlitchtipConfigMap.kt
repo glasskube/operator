@@ -5,6 +5,7 @@ import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.apps.glitchtip.Glitchtip
 import eu.glasskube.operator.apps.glitchtip.Glitchtip.Postgres.postgresHostName
+import eu.glasskube.operator.apps.glitchtip.Glitchtip.Redis.redisName
 import eu.glasskube.operator.apps.glitchtip.GlitchtipReconciler
 import eu.glasskube.operator.apps.glitchtip.configMapName
 import eu.glasskube.operator.apps.glitchtip.resourceLabels
@@ -39,11 +40,12 @@ class GlitchtipConfigMap : CRUDKubernetesDependentResource<ConfigMap, Glitchtip>
         get() = mapOf(
             "CELERY_WORKER_AUTOSCALE" to "1,3",
             "CELERY_WORKER_MAX_TASKS_PER_CHILD" to "10000",
-            "ENABLE_SOCIAL_AUTH " to "false",
-            "MB_DB_HOST" to postgresHostName,
-            "MB_DB_DBNAME" to "glitchtip",
-            "MB_DB_PORT" to "5432",
-            "GLITCHTIP_DOMAIN" to "https://${spec.host}"
+            "GLITCHTIP_DOMAIN" to "https://${spec.host}",
+            "ENABLE_SOCIAL_AUTH" to "false",
+            "DATABASE_HOST" to postgresHostName,
+            "DATABASE_NAME" to "glitchtip",
+            "DATABASE_PORT" to "5432",
+            "REDIS_URL" to "redis://$redisName:6379/0?pool_size=100&idle_timeout=180s"
         )
 
     companion object {

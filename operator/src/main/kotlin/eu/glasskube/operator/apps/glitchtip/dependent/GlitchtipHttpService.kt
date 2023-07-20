@@ -11,11 +11,17 @@ import eu.glasskube.operator.apps.glitchtip.resourceLabelSelector
 import eu.glasskube.operator.apps.glitchtip.resourceLabels
 import io.fabric8.kubernetes.api.model.Service
 import io.javaoperatorsdk.operator.api.reconciler.Context
+import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
+import io.javaoperatorsdk.operator.processing.event.ResourceID
 
-@KubernetesDependent(labelSelector = GlitchtipReconciler.SELECTOR)
+@KubernetesDependent(
+    labelSelector = GlitchtipReconciler.SELECTOR,
+    resourceDiscriminator = GlitchtipHttpService.Discriminator::class
+)
 class GlitchtipHttpService : CRUDKubernetesDependentResource<Service, Glitchtip>(Service::class.java) {
+    internal class Discriminator : ResourceIDMatcherDiscriminator<Service, Glitchtip>({ ResourceID(it.httpServiceName) })
 
     override fun desired(primary: Glitchtip, context: Context<Glitchtip>) = service {
         metadata {
@@ -28,7 +34,7 @@ class GlitchtipHttpService : CRUDKubernetesDependentResource<Service, Glitchtip>
             selector = primary.resourceLabelSelector
             ports = listOf(
                 servicePort {
-                    port = 3000
+                    port = 8080
                     name = "http"
                 },
                 servicePort {

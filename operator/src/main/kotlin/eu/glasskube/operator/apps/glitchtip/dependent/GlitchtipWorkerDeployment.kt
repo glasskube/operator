@@ -8,26 +8,20 @@ import eu.glasskube.kubernetes.api.model.apps.strategyRollingUpdate
 import eu.glasskube.kubernetes.api.model.apps.template
 import eu.glasskube.kubernetes.api.model.configMapRef
 import eu.glasskube.kubernetes.api.model.container
-import eu.glasskube.kubernetes.api.model.containerPort
 import eu.glasskube.kubernetes.api.model.env
 import eu.glasskube.kubernetes.api.model.envFrom
 import eu.glasskube.kubernetes.api.model.envVar
-import eu.glasskube.kubernetes.api.model.httpGet
-import eu.glasskube.kubernetes.api.model.intOrString
-import eu.glasskube.kubernetes.api.model.livenessProbe
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.kubernetes.api.model.persistentVolumeClaim
-import eu.glasskube.kubernetes.api.model.readinessProbe
 import eu.glasskube.kubernetes.api.model.secretKeyRef
 import eu.glasskube.kubernetes.api.model.secretRef
 import eu.glasskube.kubernetes.api.model.securityContext
 import eu.glasskube.kubernetes.api.model.spec
-import eu.glasskube.kubernetes.api.model.startupProbe
 import eu.glasskube.kubernetes.api.model.volume
 import eu.glasskube.kubernetes.api.model.volumeMount
 import eu.glasskube.kubernetes.api.model.volumeMounts
-import eu.glasskube.operator.apps.gitea.Gitea
+import eu.glasskube.operator.apps.gitea.genericResourceName
 import eu.glasskube.operator.apps.glitchtip.Glitchtip
 import eu.glasskube.operator.apps.glitchtip.Glitchtip.Postgres.postgresSecretName
 import eu.glasskube.operator.apps.glitchtip.GlitchtipReconciler
@@ -45,9 +39,9 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
 
 @KubernetesDependent(
     labelSelector = GlitchtipReconciler.SELECTOR,
-    resourceDiscriminator = GlitchtipDeployment.Discriminator::class
+    resourceDiscriminator = GlitchtipWorkerDeployment.Discriminator::class
 )
-class GlitchtipDeployment : CRUDKubernetesDependentResource<Deployment, Glitchtip>(Deployment::class.java) {
+class GlitchtipWorkerDeployment : CRUDKubernetesDependentResource<Deployment, Glitchtip>(Deployment::class.java) {
 
     internal class Discriminator : ResourceIDMatcherDiscriminator<Deployment, Glitchtip>({
         ResourceID(it.genericResourceName, it.namespace)
@@ -85,53 +79,8 @@ class GlitchtipDeployment : CRUDKubernetesDependentResource<Deployment, Glitchti
                                 envVar("DATABASE_PASSWORD") {
                                     secretKeyRef(primary.postgresSecretName, "password")
                                 }
-                                primary.spec.smtp?.also {
-                                    envVar("SMTP_USERNAME") {
-                                        secretKeyRef(it.authSecret.name, "username")
-                                    }
-                                    envVar("SMTP_PASSWORD") {
-                                        secretKeyRef(it.authSecret.name, "password")
-                                    }
-                                }
-                                // TODO reference EMAIL_URL with referenced vars
-                                // https://glitchtip.com/documentation/install
                             }
-                            ports = listOf(
-                                containerPort {
-                                    containerPort = 8080
-                                    name = HTTP
-                                }
-                            )
-                            resources = primary.spec.resources
-                            startupProbe {
-                                periodSeconds = 10
-                                successThreshold = 1
-                                // If the container is still unresponsive after 10 minutes, it will be restarted
-                                failureThreshold = 60
-                                httpGet {
-                                    path = PROBE_PATH
-                                    port = HTTP.intOrString()
-                                }
-                            }
-                            livenessProbe {
-                                periodSeconds = 10
-                                successThreshold = 1
-                                // If the container becomes unresponsive for 1 minute, it will be restarted
-                                failureThreshold = 6
-                                httpGet {
-                                    path = PROBE_PATH
-                                    port = HTTP.intOrString()
-                                }
-                            }
-                            readinessProbe {
-                                periodSeconds = 10
-                                successThreshold = 1
-                                failureThreshold = 3
-                                httpGet {
-                                    path = PROBE_PATH
-                                    port = HTTP.intOrString()
-                                }
-                            }
+                            command = listOf("./bin/run-celery-with-beat.sh")
                             volumeMounts {
                                 volumeMount {
                                     name = Glitchtip.UPLOADS_VOLUME_NAME
@@ -142,36 +91,6 @@ class GlitchtipDeployment : CRUDKubernetesDependentResource<Deployment, Glitchti
 //                                capabilities { drop = listOf("ALL") }
                                 readOnlyRootFilesystem = true
                                 allowPrivilegeEscalation = false
-                            }
-                        }
-                    )
-                    initContainers = mutableListOf(
-                        container {
-                            name = "${Glitchtip.APP_NAME}-migrate"
-                            image = "${Glitchtip.APP_NAME}/${Glitchtip.APP_NAME}:v${Glitchtip.APP_VERSION}"
-                            command = listOf("./manage.py")
-                            args = listOf("migrate")
-                            envFrom {
-                                configMapRef(primary.configMapName, false)
-                                secretRef(primary.secretName, false)
-                            }
-                            env {
-                                envVar("DATABASE_USER") {
-                                    secretKeyRef(primary.postgresSecretName, "username")
-                                }
-                                envVar("DATABASE_PASSWORD") {
-                                    secretKeyRef(primary.postgresSecretName, "password")
-                                }
-                                primary.spec.smtp?.also {
-                                    envVar("SMTP_USERNAME") {
-                                        secretKeyRef(it.authSecret.name, "username")
-                                    }
-                                    envVar("SMTP_PASSWORD") {
-                                        secretKeyRef(it.authSecret.name, "password")
-                                    }
-                                }
-                                // TODO reference EMAIL_URL with referenced vars
-                                // https://glitchtip.com/documentation/install
                             }
                         }
                     )
@@ -189,6 +108,7 @@ class GlitchtipDeployment : CRUDKubernetesDependentResource<Deployment, Glitchti
                 }
             }
         }
+
     }
 
     companion object {
