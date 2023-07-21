@@ -50,6 +50,7 @@ val Glitchtip.resourceLabels
 val Glitchtip.resourceLabelSelector
     get() = Labels.resourceLabelSelector(Glitchtip.APP_NAME, metadata.name, Glitchtip.APP_NAME)
 val Glitchtip.genericResourceName get() = "${Glitchtip.APP_NAME}-${metadata.name}"
+val Glitchtip.workerName get() = "$genericResourceName-worker"
 val Glitchtip.secretName get() = genericResourceName
 val Glitchtip.configMapName get() = genericResourceName
 val Glitchtip.ingressName get() = genericResourceName

@@ -8,6 +8,7 @@ import eu.glasskube.kubernetes.api.model.apps.strategyRollingUpdate
 import eu.glasskube.kubernetes.api.model.apps.template
 import eu.glasskube.kubernetes.api.model.configMapRef
 import eu.glasskube.kubernetes.api.model.container
+import eu.glasskube.kubernetes.api.model.emptyDir
 import eu.glasskube.kubernetes.api.model.env
 import eu.glasskube.kubernetes.api.model.envFrom
 import eu.glasskube.kubernetes.api.model.envVar
@@ -21,6 +22,7 @@ import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.kubernetes.api.model.volume
 import eu.glasskube.kubernetes.api.model.volumeMount
 import eu.glasskube.kubernetes.api.model.volumeMounts
+import eu.glasskube.operator.Affinities
 import eu.glasskube.operator.apps.gitea.genericResourceName
 import eu.glasskube.operator.apps.glitchtip.Glitchtip
 import eu.glasskube.operator.apps.glitchtip.Glitchtip.Postgres.postgresSecretName
@@ -30,6 +32,8 @@ import eu.glasskube.operator.apps.glitchtip.genericResourceName
 import eu.glasskube.operator.apps.glitchtip.resourceLabelSelector
 import eu.glasskube.operator.apps.glitchtip.resourceLabels
 import eu.glasskube.operator.apps.glitchtip.secretName
+import eu.glasskube.operator.apps.glitchtip.workerName
+import eu.glasskube.operator.apps.nextcloud.resourceLabelSelector
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
@@ -44,12 +48,12 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
 class GlitchtipWorkerDeployment : CRUDKubernetesDependentResource<Deployment, Glitchtip>(Deployment::class.java) {
 
     internal class Discriminator : ResourceIDMatcherDiscriminator<Deployment, Glitchtip>({
-        ResourceID(it.genericResourceName, it.namespace)
+        ResourceID(it.workerName, it.namespace)
     })
 
     override fun desired(primary: Glitchtip, context: Context<Glitchtip>) = deployment {
         metadata {
-            name = primary.genericResourceName
+            name = primary.workerName
             namespace = primary.metadata.namespace
             labels = primary.resourceLabels
         }
@@ -79,12 +83,16 @@ class GlitchtipWorkerDeployment : CRUDKubernetesDependentResource<Deployment, Gl
                                 envVar("DATABASE_PASSWORD") {
                                     secretKeyRef(primary.postgresSecretName, "password")
                                 }
+                                envVar("SERVER_ROLE", "worker_with_beat")
                             }
-                            command = listOf("./bin/run-celery-with-beat.sh")
                             volumeMounts {
                                 volumeMount {
                                     name = Glitchtip.UPLOADS_VOLUME_NAME
                                     mountPath = Glitchtip.UPLOADS_DIR
+                                }
+                                volumeMount {
+                                    name = TMP_VOLUME
+                                    mountPath = TMP_DIR
                                 }
                             }
                             securityContext {
@@ -94,6 +102,7 @@ class GlitchtipWorkerDeployment : CRUDKubernetesDependentResource<Deployment, Gl
                             }
                         }
                     )
+                    affinity = Affinities.podAffinityFor(primary.resourceLabelSelector)
                     securityContext {
                         fsGroup = Glitchtip.APP_UID
                         runAsGroup = Glitchtip.APP_UID
@@ -101,6 +110,9 @@ class GlitchtipWorkerDeployment : CRUDKubernetesDependentResource<Deployment, Gl
                         runAsNonRoot = true
                     }
                     volumes = listOf(
+                        volume(TMP_VOLUME) {
+                            emptyDir()
+                        },
                         volume(Glitchtip.UPLOADS_VOLUME_NAME) {
                             persistentVolumeClaim(primary.genericResourceName)
                         }
@@ -108,11 +120,10 @@ class GlitchtipWorkerDeployment : CRUDKubernetesDependentResource<Deployment, Gl
                 }
             }
         }
-
     }
 
     companion object {
-        private const val PROBE_PATH = "/_health/"
-        private const val HTTP = "http"
+        private const val TMP_VOLUME = "tmp"
+        private const val TMP_DIR = "/tmp"
     }
 }

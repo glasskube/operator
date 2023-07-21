@@ -4,7 +4,6 @@ import eu.glasskube.kubernetes.client.patchOrUpdateStatus
 import eu.glasskube.operator.Labels
 import eu.glasskube.operator.api.reconciler.informerEventSource
 import eu.glasskube.operator.api.reconciler.secondaryResource
-import eu.glasskube.operator.apps.gitea.dependent.GiteaVolume
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipConfigMap
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipDeployment
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipHttpService
@@ -69,7 +68,7 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(
             type = GlitchtipWorkerDeployment::class,
             name = "GlitchtipWorkerDeployment",
-            dependsOn = ["GlitchtipDeployment"],
+            dependsOn = ["GlitchtipDeployment", "GlitchtipVolume"],
             useEventSourceWithName = GlitchtipReconciler.DEPLOYMENT_EVENT_SOURCE
         ),
         Dependent(
