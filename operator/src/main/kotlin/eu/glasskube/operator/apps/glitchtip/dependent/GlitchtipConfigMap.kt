@@ -41,11 +41,12 @@ class GlitchtipConfigMap : CRUDKubernetesDependentResource<ConfigMap, Glitchtip>
             "CELERY_WORKER_AUTOSCALE" to "1,3",
             "CELERY_WORKER_MAX_TASKS_PER_CHILD" to "10000",
             "GLITCHTIP_DOMAIN" to "https://${spec.host}",
+            "I_PAID_FOR_GLITCHTIP" to "true",
             "ENABLE_SOCIAL_AUTH" to "false",
             "DATABASE_HOST" to postgresHostName,
             "DATABASE_NAME" to "glitchtip",
             "DATABASE_PORT" to "5432",
-            "REDIS_URL" to "redis://$redisName:6379/0?pool_size=100&idle_timeout=180s"
+            "REDIS_URL" to "redis://$redisName:6379/0"
         )
 
     companion object {

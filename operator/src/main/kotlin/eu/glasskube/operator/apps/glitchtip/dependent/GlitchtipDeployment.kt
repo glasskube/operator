@@ -9,6 +9,7 @@ import eu.glasskube.kubernetes.api.model.apps.template
 import eu.glasskube.kubernetes.api.model.configMapRef
 import eu.glasskube.kubernetes.api.model.container
 import eu.glasskube.kubernetes.api.model.containerPort
+import eu.glasskube.kubernetes.api.model.emptyDir
 import eu.glasskube.kubernetes.api.model.env
 import eu.glasskube.kubernetes.api.model.envFrom
 import eu.glasskube.kubernetes.api.model.envVar
@@ -27,7 +28,7 @@ import eu.glasskube.kubernetes.api.model.startupProbe
 import eu.glasskube.kubernetes.api.model.volume
 import eu.glasskube.kubernetes.api.model.volumeMount
 import eu.glasskube.kubernetes.api.model.volumeMounts
-import eu.glasskube.operator.apps.gitea.Gitea
+import eu.glasskube.operator.Affinities
 import eu.glasskube.operator.apps.glitchtip.Glitchtip
 import eu.glasskube.operator.apps.glitchtip.Glitchtip.Postgres.postgresSecretName
 import eu.glasskube.operator.apps.glitchtip.GlitchtipReconciler
@@ -85,6 +86,7 @@ class GlitchtipDeployment : CRUDKubernetesDependentResource<Deployment, Glitchti
                                 envVar("DATABASE_PASSWORD") {
                                     secretKeyRef(primary.postgresSecretName, "password")
                                 }
+                                envVar("SERVER_ROLE", "web")
                                 primary.spec.smtp?.also {
                                     envVar("SMTP_USERNAME") {
                                         secretKeyRef(it.authSecret.name, "username")
@@ -92,9 +94,13 @@ class GlitchtipDeployment : CRUDKubernetesDependentResource<Deployment, Glitchti
                                     envVar("SMTP_PASSWORD") {
                                         secretKeyRef(it.authSecret.name, "password")
                                     }
+
+                                    envVar("EMAIL_URL", "smtp://\$(SMTP_USERNAME):\$(SMTP_PASSWORD)@${it.host}:${it.port}")
+                                    envVar("DEFAULT_FROM_EMAIL", it.fromAddress)
                                 }
-                                // TODO reference EMAIL_URL with referenced vars
-                                // https://glitchtip.com/documentation/install
+                                if (primary.spec.smtp == null) {
+                                    envVar("EMAIL_URL", "consolemail://")
+                                }
                             }
                             ports = listOf(
                                 containerPort {
@@ -137,6 +143,10 @@ class GlitchtipDeployment : CRUDKubernetesDependentResource<Deployment, Glitchti
                                     name = Glitchtip.UPLOADS_VOLUME_NAME
                                     mountPath = Glitchtip.UPLOADS_DIR
                                 }
+                                volumeMount {
+                                    name = TMP_VOLUME
+                                    mountPath = TMP_DIR
+                                }
                             }
                             securityContext {
 //                                capabilities { drop = listOf("ALL") }
@@ -170,11 +180,10 @@ class GlitchtipDeployment : CRUDKubernetesDependentResource<Deployment, Glitchti
                                         secretKeyRef(it.authSecret.name, "password")
                                     }
                                 }
-                                // TODO reference EMAIL_URL with referenced vars
-                                // https://glitchtip.com/documentation/install
                             }
                         }
                     )
+                    affinity = Affinities.podAffinityFor(primary.resourceLabelSelector)
                     securityContext {
                         fsGroup = Glitchtip.APP_UID
                         runAsGroup = Glitchtip.APP_UID
@@ -182,6 +191,9 @@ class GlitchtipDeployment : CRUDKubernetesDependentResource<Deployment, Glitchti
                         runAsNonRoot = true
                     }
                     volumes = listOf(
+                        volume(TMP_VOLUME) {
+                            emptyDir()
+                        },
                         volume(Glitchtip.UPLOADS_VOLUME_NAME) {
                             persistentVolumeClaim(primary.genericResourceName)
                         }
@@ -194,5 +206,7 @@ class GlitchtipDeployment : CRUDKubernetesDependentResource<Deployment, Glitchti
     companion object {
         private const val PROBE_PATH = "/_health/"
         private const val HTTP = "http"
+        private const val TMP_VOLUME = "tmp"
+        private const val TMP_DIR = "/tmp"
     }
 }
