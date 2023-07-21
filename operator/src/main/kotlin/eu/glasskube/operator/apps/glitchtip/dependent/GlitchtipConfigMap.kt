@@ -43,6 +43,8 @@ class GlitchtipConfigMap : CRUDKubernetesDependentResource<ConfigMap, Glitchtip>
             "GLITCHTIP_DOMAIN" to "https://${spec.host}",
             "I_PAID_FOR_GLITCHTIP" to "true",
             "ENABLE_SOCIAL_AUTH" to "false",
+            "ENABLE_USER_REGISTRATION" to spec.registrationEnabled.toString(),
+            "ENABLE_ORGANIZATION_CREATION" to spec.organizationCreationEnabled.toString(),
             "DATABASE_HOST" to postgresHostName,
             "DATABASE_NAME" to "glitchtip",
             "DATABASE_PORT" to "5432",

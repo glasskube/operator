@@ -21,6 +21,10 @@ spec:
                 type: string
               replicas:
                 type: integer
+              registrationEnabled:
+                type: boolean
+              organizationCreationEnabled:
+                type: boolean
               smtp:
                 nullable: true
                 properties:
