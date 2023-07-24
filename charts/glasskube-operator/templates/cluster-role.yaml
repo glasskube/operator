@@ -31,6 +31,7 @@ rules:
       - apps
     resources:
       - deployments
+      - statefulsets
     verbs:
       - create
       - get
@@ -45,6 +46,7 @@ rules:
       - secrets
       - configmaps
       - persistentvolumeclaims
+      - serviceaccounts
     verbs:
       - create
       - get
@@ -122,3 +124,23 @@ rules:
     verbs:
       - get
       - list
+  - apiGroups: [ batch ]
+    resources: [ cronjobs ]
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups: [ rbac.authorization.k8s.io ]
+    resources:
+      - roles
+      - rolebindings
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
