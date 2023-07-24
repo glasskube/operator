@@ -2,9 +2,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 
 plugins {
-    kotlin("jvm") version "1.8.22"
-    kotlin("kapt") version "1.8.22"
-    kotlin("plugin.spring") version "1.8.22"
+    kotlin("jvm") version "1.9.0"
+    kotlin("kapt") version "1.9.0"
+    kotlin("plugin.spring") version "1.9.0"
     id("org.jlleitschuh.gradle.ktlint") version "11.5.0"
     id("com.gorylenko.gradle-git-properties") version "2.4.1"
     id("org.springframework.boot") version "3.1.1"
