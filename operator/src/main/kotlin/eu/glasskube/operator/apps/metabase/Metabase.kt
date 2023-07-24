@@ -14,7 +14,7 @@ import io.fabric8.kubernetes.model.annotation.Version
 class Metabase : CustomResource<MetabaseSpec, MetabaseStatus>(), Namespaced {
     companion object {
         const val APP_NAME = "metabase"
-        const val APP_VERSION = "0.46.5"
+        const val APP_VERSION = "0.46.6.1"
     }
 
     object Postgres : PostgresNameMapper<Metabase>() {
