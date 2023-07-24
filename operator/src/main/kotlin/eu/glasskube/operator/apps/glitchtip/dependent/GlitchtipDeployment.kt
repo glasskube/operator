@@ -38,6 +38,7 @@ import eu.glasskube.operator.apps.glitchtip.genericResourceName
 import eu.glasskube.operator.apps.glitchtip.resourceLabelSelector
 import eu.glasskube.operator.apps.glitchtip.resourceLabels
 import eu.glasskube.operator.apps.glitchtip.secretName
+import eu.glasskube.operator.generic.condition.DeploymentReadyCondition
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
@@ -54,6 +55,8 @@ class GlitchtipDeployment : CRUDKubernetesDependentResource<Deployment, Glitchti
     internal class Discriminator : ResourceIDMatcherDiscriminator<Deployment, Glitchtip>({
         ResourceID(it.genericResourceName, it.namespace)
     })
+
+    class ReadyPostCondition : DeploymentReadyCondition<Glitchtip>()
 
     override fun desired(primary: Glitchtip, context: Context<Glitchtip>) = deployment {
         metadata {

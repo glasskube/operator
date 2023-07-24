@@ -2,8 +2,8 @@ package eu.glasskube.operator.apps.glitchtip
 
 import eu.glasskube.kubernetes.client.patchOrUpdateStatus
 import eu.glasskube.operator.Labels
+import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.api.reconciler.informerEventSource
-import eu.glasskube.operator.api.reconciler.secondaryResource
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipConfigMap
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipDeployment
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipHttpService
@@ -16,7 +16,9 @@ import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipRedisService
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipSecret
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipVolume
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipWorkerDeployment
+import eu.glasskube.operator.generic.condition.isReady
 import eu.glasskube.operator.infra.postgres.PostgresCluster
+import eu.glasskube.operator.infra.postgres.isReady
 import eu.glasskube.operator.logger
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.apps.Deployment
@@ -25,8 +27,8 @@ import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceInitializer
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler
-import io.javaoperatorsdk.operator.api.reconciler.UpdateControl
 import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
+import kotlin.jvm.optionals.getOrDefault
 
 @ControllerConfiguration(
     dependents = [
@@ -63,6 +65,7 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
             type = GlitchtipDeployment::class,
             name = "GlitchtipDeployment",
             dependsOn = ["GlitchtipPostgresCluster", "GlitchtipConfigMap", "GlitchtipSecret", "GlitchtipRedisService", "GlitchtipVolume"],
+            readyPostcondition = GlitchtipDeployment.ReadyPostCondition::class,
             useEventSourceWithName = GlitchtipReconciler.DEPLOYMENT_EVENT_SOURCE
         ),
         Dependent(
@@ -74,34 +77,27 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(
             type = GlitchtipHttpService::class,
             name = "GlitchtipHttpService",
-            dependsOn = ["GlitchtipDeployment"],
             useEventSourceWithName = GlitchtipReconciler.SERVICE_EVENT_SOURCE
         ),
         Dependent(
             type = GlitchtipIngress::class,
-            name = "GlitchtipIngress",
-            dependsOn = ["GlitchtipHttpService"]
+            name = "GlitchtipIngress"
         )
     ]
 )
 class GlitchtipReconciler : Reconciler<Glitchtip>, EventSourceInitializer<Glitchtip> {
-
-    override fun reconcile(resource: Glitchtip, context: Context<Glitchtip>): UpdateControl<Glitchtip> {
+    override fun reconcile(resource: Glitchtip, context: Context<Glitchtip>) = with(context) {
         log.info("Reconciling ${resource.metadata.name}@${resource.metadata.namespace}")
-
-        return with(context) {
-            val deployment: Deployment? by secondaryResource(GlitchtipDeployment.Discriminator())
-            val redisDeployment: Deployment? by secondaryResource(GlitchtipRedisDeployment.Discriminator())
-            val postgresCluster: PostgresCluster? by secondaryResource()
-
-            resource.patchOrUpdateStatus(
-                GlitchtipStatus(
-                    readyReplicas = deployment?.status?.readyReplicas ?: 0,
-                    redisReady = redisDeployment?.status?.readyReplicas?.let { it > 0 } ?: false,
-                    postgresReady = postgresCluster?.status?.instances?.let { it > 0 } ?: false
-                )
+        resource.patchOrUpdateStatus(
+            GlitchtipStatus(
+                readyReplicas = getSecondaryResource(GlitchtipDeployment.Discriminator())
+                    .map { it.status?.readyReplicas ?: 0 }.getOrDefault(0),
+                redisReady = getSecondaryResource(GlitchtipRedisDeployment.Discriminator())
+                    .map { it.isReady }.getOrDefault(false),
+                postgresReady = getSecondaryResource<PostgresCluster>()
+                    .map { it.isReady }.getOrDefault(false)
             )
-        }
+        )
     }
 
     override fun prepareEventSources(context: EventSourceContext<Glitchtip>) = with(context) {
