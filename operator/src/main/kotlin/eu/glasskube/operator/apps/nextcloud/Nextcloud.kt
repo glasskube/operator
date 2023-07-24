@@ -21,7 +21,7 @@ import io.fabric8.kubernetes.model.annotation.Version
 class Nextcloud : CustomResource<NextcloudSpec, NextcloudStatus>(), Namespaced {
     internal companion object {
         const val APP_NAME = "nextcloud"
-        const val APP_VERSION = "27.0.0"
+        const val APP_VERSION = "27.0.1"
         const val APP_IMAGE = "$APP_NAME:$APP_VERSION-fpm"
         const val NGINX_NAME = "nginx"
         const val NGINX_VERSION = "1.25.1"
