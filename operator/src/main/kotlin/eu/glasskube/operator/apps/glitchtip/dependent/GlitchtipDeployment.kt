@@ -6,6 +6,7 @@ import eu.glasskube.kubernetes.api.model.apps.spec
 import eu.glasskube.kubernetes.api.model.apps.strategyRecreate
 import eu.glasskube.kubernetes.api.model.apps.strategyRollingUpdate
 import eu.glasskube.kubernetes.api.model.apps.template
+import eu.glasskube.kubernetes.api.model.capabilities
 import eu.glasskube.kubernetes.api.model.configMapRef
 import eu.glasskube.kubernetes.api.model.container
 import eu.glasskube.kubernetes.api.model.containerPort
@@ -149,7 +150,7 @@ class GlitchtipDeployment : CRUDKubernetesDependentResource<Deployment, Glitchti
                                 }
                             }
                             securityContext {
-//                                capabilities { drop = listOf("ALL") }
+                                capabilities { drop = listOf("ALL") }
                                 readOnlyRootFilesystem = true
                                 allowPrivilegeEscalation = false
                             }

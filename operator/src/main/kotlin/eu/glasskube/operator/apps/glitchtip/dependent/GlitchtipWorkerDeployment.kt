@@ -6,6 +6,7 @@ import eu.glasskube.kubernetes.api.model.apps.spec
 import eu.glasskube.kubernetes.api.model.apps.strategyRecreate
 import eu.glasskube.kubernetes.api.model.apps.strategyRollingUpdate
 import eu.glasskube.kubernetes.api.model.apps.template
+import eu.glasskube.kubernetes.api.model.capabilities
 import eu.glasskube.kubernetes.api.model.configMapRef
 import eu.glasskube.kubernetes.api.model.container
 import eu.glasskube.kubernetes.api.model.emptyDir
@@ -23,7 +24,6 @@ import eu.glasskube.kubernetes.api.model.volume
 import eu.glasskube.kubernetes.api.model.volumeMount
 import eu.glasskube.kubernetes.api.model.volumeMounts
 import eu.glasskube.operator.Affinities
-import eu.glasskube.operator.apps.gitea.genericResourceName
 import eu.glasskube.operator.apps.glitchtip.Glitchtip
 import eu.glasskube.operator.apps.glitchtip.Glitchtip.Postgres.postgresSecretName
 import eu.glasskube.operator.apps.glitchtip.GlitchtipReconciler
@@ -33,7 +33,6 @@ import eu.glasskube.operator.apps.glitchtip.resourceLabelSelector
 import eu.glasskube.operator.apps.glitchtip.resourceLabels
 import eu.glasskube.operator.apps.glitchtip.secretName
 import eu.glasskube.operator.apps.glitchtip.workerName
-import eu.glasskube.operator.apps.nextcloud.resourceLabelSelector
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
@@ -96,7 +95,7 @@ class GlitchtipWorkerDeployment : CRUDKubernetesDependentResource<Deployment, Gl
                                 }
                             }
                             securityContext {
-//                                capabilities { drop = listOf("ALL") }
+                                capabilities { drop = listOf("ALL") }
                                 readOnlyRootFilesystem = true
                                 allowPrivilegeEscalation = false
                             }

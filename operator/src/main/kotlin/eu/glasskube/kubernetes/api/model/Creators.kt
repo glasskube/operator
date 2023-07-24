@@ -2,6 +2,7 @@ package eu.glasskube.kubernetes.api.model
 
 import eu.glasskube.kubernetes.api.annotation.KubernetesDslMarker
 import io.fabric8.kubernetes.api.model.Affinity
+import io.fabric8.kubernetes.api.model.Capabilities
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.ConfigMapEnvSource
 import io.fabric8.kubernetes.api.model.ConfigMapKeySelector
@@ -76,6 +77,10 @@ inline fun Container.env(block: (@KubernetesDslMarker MutableList<EnvVar>).() ->
 
 inline fun Container.securityContext(block: (@KubernetesDslMarker SecurityContext).() -> Unit) {
     securityContext = SecurityContext().apply(block)
+}
+
+inline fun SecurityContext.capabilities(block: (@KubernetesDslMarker Capabilities).() -> Unit) {
+    capabilities = Capabilities().apply(block)
 }
 
 fun createEnv(block: (@KubernetesDslMarker MutableList<EnvVar>).() -> Unit) = mutableListOf<EnvVar>().apply(block)
