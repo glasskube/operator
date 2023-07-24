@@ -16,8 +16,6 @@ class Glitchtip : CustomResource<GlitchtipSpec, GlitchtipStatus>(), Namespaced {
     companion object {
         const val APP_NAME = "glitchtip"
         const val APP_VERSION = "3.3.0"
-        const val WORKER = "worker"
-        const val REDIS = "redis"
         const val UPLOADS_DIR = "/code/uploads"
         const val UPLOADS_VOLUME_NAME = "uploads"
         const val APP_UID = 5000L

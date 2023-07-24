@@ -25,7 +25,7 @@ class GlitchtipConfigMap : CRUDKubernetesDependentResource<ConfigMap, Glitchtip>
             namespace = primary.metadata.namespace
             labels = primary.resourceLabels
         }
-        data = primary.run { baseData }
+        data = primary.baseData
     }
 
     override fun onUpdated(primary: Glitchtip, updated: ConfigMap, actual: ConfigMap, context: Context<Glitchtip>) {
