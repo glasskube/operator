@@ -15,7 +15,7 @@ import io.fabric8.kubernetes.model.annotation.Version
 class Gitea : CustomResource<GiteaSpec, GiteaStatus>(), Namespaced {
     companion object {
         const val APP_NAME = "gitea"
-        const val APP_VERSION = "1.20.0"
+        const val APP_VERSION = "1.20.1"
         const val WORK_DIR = "/data"
     }
 
