@@ -41,7 +41,7 @@ class GitlabConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitlab>(Confi
 
     private val Gitlab.baseData: Map<String, String>
         get() = mapOf(
-            "GITLAB_HOST" to "http://${spec.host}",
+            "GITLAB_HOST" to spec.host,
             "DB_HOST" to postgresHostName,
             "GITLAB_OMNIBUS_CONFIG" to (spec.omnibusConfigOverride ?: gitlabOmnibusConfig)
         )

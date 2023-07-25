@@ -41,6 +41,16 @@ class GitlabService : CRUDKubernetesDependentResource<Service, Gitlab>(Service::
                     port = 80
                     name = "http"
                 },
+                primary.spec.registry?.let {
+                    servicePort {
+                        port = 5000
+                        name = "registry"
+                    }
+                    servicePort {
+                        port = 5443
+                        name = "registry-ssl"
+                    }
+                },
                 servicePort {
                     port = 8082
                     name = "sidekiq-exp"

@@ -10,6 +10,7 @@ import eu.glasskube.operator.apps.gitlab.dependent.GitlabIngress
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabMinioBucket
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabPostgresBackup
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabPostgresCluster
+import eu.glasskube.operator.apps.gitlab.dependent.GitlabRegistryIngress
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabRunners
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabSSHService
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabService
@@ -20,6 +21,7 @@ import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.apps.Deployment
+import io.fabric8.kubernetes.api.model.networking.v1.Ingress
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext
@@ -67,6 +69,14 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(
             type = GitlabIngress::class,
             name = "GitlabIngress",
+            useEventSourceWithName = GitlabReconciler.INGRESS_EVENT_SOURCE,
+            dependsOn = ["GitlabService"]
+        ),
+        Dependent(
+            type = GitlabRegistryIngress::class,
+            name = "GitlabRegistryIngress",
+            reconcilePrecondition = GitlabRegistryIngress.ReconcilePrecondition::class,
+            useEventSourceWithName = GitlabReconciler.INGRESS_EVENT_SOURCE,
             dependsOn = ["GitlabService"]
         ),
         Dependent(
@@ -89,7 +99,8 @@ class GitlabReconciler : Reconciler<Gitlab>, EventSourceInitializer<Gitlab> {
 
     override fun prepareEventSources(context: EventSourceContext<Gitlab>) = with(context) {
         mutableMapOf(
-            SERVICE_EVENT_SOURCE to informerEventSource<Service>()
+            SERVICE_EVENT_SOURCE to informerEventSource<Service>(),
+            INGRESS_EVENT_SOURCE to informerEventSource<Ingress>()
         )
     }
 
@@ -98,6 +109,7 @@ class GitlabReconciler : Reconciler<Gitlab>, EventSourceInitializer<Gitlab> {
             "${Labels.MANAGED_BY_GLASSKUBE},${Labels.PART_OF}=${Gitlab.APP_NAME},${Labels.NAME}=${Gitlab.APP_NAME}"
 
         internal const val SERVICE_EVENT_SOURCE = "GitlabServiceEventSource"
+        internal const val INGRESS_EVENT_SOURCE = "GitlabIngressEventSource"
 
         @JvmStatic
         private val log = logger()
