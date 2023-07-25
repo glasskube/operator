@@ -9,8 +9,7 @@ import eu.glasskube.kubernetes.api.model.extensions.spec
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.operator.apps.gitlab.Gitlab
 import eu.glasskube.operator.apps.gitlab.GitlabReconciler
-import eu.glasskube.operator.apps.gitlab.ingressName
-import eu.glasskube.operator.apps.gitlab.ingressTlsCertName
+import eu.glasskube.operator.apps.gitlab.genericRegistryResourceName
 import eu.glasskube.operator.apps.gitlab.resourceLabels
 import eu.glasskube.operator.apps.gitlab.serviceName
 import eu.glasskube.operator.config.ConfigService
@@ -24,35 +23,37 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
 
 @KubernetesDependent(
     labelSelector = GitlabReconciler.SELECTOR,
-    resourceDiscriminator = GitlabIngress.Discriminator::class
+    resourceDiscriminator = GitlabRegistryIngress.Discriminator::class
 )
-class GitlabIngress(configService: ConfigService) : DependentIngress<Gitlab>(configService) {
+class GitlabRegistryIngress(configService: ConfigService) : DependentIngress<Gitlab>(configService) {
 
-    internal class Discriminator : ResourceIDMatcherDiscriminator<Ingress, Gitlab>({ ResourceID(it.ingressName) })
+    class ReconcilePrecondition : GitlabRegistryEnabledPrecondition<Ingress>()
+
+    internal class Discriminator : ResourceIDMatcherDiscriminator<Ingress, Gitlab>({ ResourceID(it.genericRegistryResourceName) })
 
     override fun desired(primary: Gitlab, context: Context<Gitlab>) = ingress {
         metadata {
-            name = primary.ingressName
+            name = primary.genericRegistryResourceName
             namespace = primary.metadata.namespace
             labels = primary.resourceLabels
-            annotations = primary.defaultAnnotations + ("nginx.ingress.kubernetes.io/proxy-body-size" to "256m")
+            annotations = primary.defaultAnnotations + ("nginx.ingress.kubernetes.io/proxy-body-size" to "256m") + ("nginx.ingress.kubernetes.io/ssl-passthrough" to "true")
         }
         spec {
             ingressClassName = defaultIngressClassName
             rules = listOf(
                 ingressRule {
-                    host = primary.spec.host
+                    host = "registry.gitlab.pmig.glasskube.eu"
                     http = ingressRuleValue(
                         ingressPath(
                             path = "/",
                             pathType = "Prefix",
-                            backend = ingressBackend(primary.serviceName, "http")
+                            backend = ingressBackend(primary.serviceName, "registry-ssl")
                         )
                     )
                 }
             )
             tls = listOf(
-                IngressTLS(listOf(primary.spec.host), primary.ingressTlsCertName)
+                IngressTLS(listOf("registry.gitlab.pmig.glasskube.eu"), primary.genericRegistryResourceName)
             )
         }
     }
