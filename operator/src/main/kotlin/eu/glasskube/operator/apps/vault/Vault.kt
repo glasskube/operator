@@ -1,5 +1,6 @@
 package eu.glasskube.operator.apps.vault
 
+import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.operator.Labels
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import io.fabric8.kubernetes.api.model.Namespaced
@@ -33,3 +34,4 @@ internal val Vault.serviceName get() = genericResourceName
 internal val Vault.headlessServiceName get() = "$genericResourceName-headless"
 internal val Vault.tlsSecretName get() = "$genericResourceName-tls"
 internal val Vault.databaseBackupBucketName get() = "$genericResourceName-backup"
+internal val Vault.clusterRoleBindingName get() = "$namespace:$genericResourceName-auth-delegator"

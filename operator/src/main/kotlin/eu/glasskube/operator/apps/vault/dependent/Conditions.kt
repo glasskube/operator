@@ -9,3 +9,11 @@ abstract class ServiceRegistrationEnabledCondition<T> : Condition<T, Vault> {
     override fun isMet(dependentResource: DependentResource<T, Vault>, primary: Vault, context: Context<Vault>) =
         primary.spec.serviceRegistration.enabled
 }
+
+abstract class AutoUnsealEnabledCondition<T> : Condition<T, Vault> {
+    override fun isMet(
+        dependentResource: DependentResource<T, Vault>,
+        primary: Vault,
+        context: Context<Vault>
+    ) = primary.spec.autoUnseal != null
+}

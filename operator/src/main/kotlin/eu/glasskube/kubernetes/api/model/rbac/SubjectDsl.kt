@@ -20,7 +20,7 @@ class SubjectDsl {
         builder.withName(name)
     }
 
-    fun namespace(namespace: String) {
+    fun namespace(namespace: String?) {
         builder.withNamespace(namespace)
     }
 
