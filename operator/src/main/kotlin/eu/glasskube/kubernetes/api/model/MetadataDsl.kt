@@ -24,6 +24,10 @@ class MetadataDsl private constructor() {
         builder.withAnnotations<String, String>(annotations)
     }
 
+    fun annotations(vararg annotations: Pair<String, String>) {
+        annotations(annotations.toMap())
+    }
+
     private fun build(): ObjectMeta = builder.build()
 
     companion object {

@@ -4,6 +4,7 @@ import eu.glasskube.kubernetes.client.patchOrUpdateStatus
 import eu.glasskube.operator.Labels
 import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.api.reconciler.informerEventSource
+import eu.glasskube.operator.apps.vault.dependent.VaultClusterRoleBinding
 import eu.glasskube.operator.apps.vault.dependent.VaultConfigMap
 import eu.glasskube.operator.apps.vault.dependent.VaultIngress
 import eu.glasskube.operator.apps.vault.dependent.VaultMinioBucket
@@ -19,12 +20,16 @@ import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.infra.postgres.isReady
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.apps.StatefulSet
+import io.fabric8.kubernetes.api.model.rbac.ClusterRoleBinding
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceInitializer
+import io.javaoperatorsdk.operator.api.reconciler.MaxReconciliationInterval
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler
 import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
+import io.javaoperatorsdk.operator.processing.event.source.informer.Mappers
+import java.util.concurrent.TimeUnit
 import kotlin.jvm.optionals.getOrDefault
 
 @ControllerConfiguration(
@@ -61,12 +66,20 @@ import kotlin.jvm.optionals.getOrDefault
             dependsOn = ["VaultRole", "VaultServiceAccount"]
         ),
         Dependent(
+            type = VaultClusterRoleBinding::class,
+            name = "VaultClusterRoleBinding",
+            reconcilePrecondition = VaultClusterRoleBinding.ReconcilePrecondition::class,
+            dependsOn = ["VaultServiceAccount"],
+            useEventSourceWithName = VaultReconciler.CLUSTER_ROLE_BINDING_EVENT_SOURCE
+        ),
+        Dependent(
             type = VaultStatefulSet::class,
             name = "VaultStatefulSet",
             dependsOn = ["VaultPostgresCluster", "VaultServiceAccount", "VaultServiceHeadless", "VaultConfigMap"]
         ),
         Dependent(type = VaultPostgresBackup::class, name = "VaultPostgresBackup", dependsOn = ["VaultPostgresCluster"])
-    ]
+    ],
+    maxReconciliationInterval = MaxReconciliationInterval(interval = 10, timeUnit = TimeUnit.SECONDS)
 )
 class VaultReconciler : Reconciler<Vault>, EventSourceInitializer<Vault> {
     override fun reconcile(resource: Vault, context: Context<Vault>) = with(context) {
@@ -79,12 +92,18 @@ class VaultReconciler : Reconciler<Vault>, EventSourceInitializer<Vault> {
     }
 
     override fun prepareEventSources(context: EventSourceContext<Vault>) = with(context) {
-        mutableMapOf(SERVICE_EVENT_SOURCE to informerEventSource<Service>())
+        mutableMapOf(
+            SERVICE_EVENT_SOURCE to informerEventSource<Service>(),
+            CLUSTER_ROLE_BINDING_EVENT_SOURCE to informerEventSource<ClusterRoleBinding> {
+                withSecondaryToPrimaryMapper(Mappers.fromDefaultAnnotations())
+            }
+        )
     }
 
     companion object {
         internal const val SELECTOR =
             "${Labels.MANAGED_BY_GLASSKUBE},${Labels.PART_OF}=${Vault.APP_NAME},${Labels.NAME}=${Vault.APP_NAME}"
         internal const val SERVICE_EVENT_SOURCE = "VaultServiceEventSource"
+        internal const val CLUSTER_ROLE_BINDING_EVENT_SOURCE = "VaultClusterRoleBindingEventSource"
     }
 }
