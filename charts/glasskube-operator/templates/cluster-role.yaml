@@ -137,6 +137,7 @@ rules:
     resources:
       - roles
       - rolebindings
+      - clusterrolebindings
     verbs:
       - create
       - get
