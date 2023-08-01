@@ -50,7 +50,9 @@ class NextcloudConfigMap : CRUDKubernetesDependentResource<ConfigMap, Nextcloud>
                         "10.0.0.0/8",
                         "172.16.0.0/12",
                         "192.168.0.0/16"
-                    )
+                    ),
+                    "log_type" to "errorlog",
+                    "log_level" to 2
                 ).toMap(),
                 listOfNotNull(
                     spec.apps.office?.let {
