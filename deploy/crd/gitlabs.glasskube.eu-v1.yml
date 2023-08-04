@@ -88,6 +88,8 @@ spec:
                       x-kubernetes-int-or-string: true
                     type: object
                 type: object
+              omnibusConfigOverride:
+                type: string
             required:
             - host
             type: object
