@@ -15,7 +15,7 @@ class Gitlab : CustomResource<GitlabSpec, GitlabStatus>(), Namespaced {
     companion object {
         const val APP_NAME = "gitlab"
         const val APP_IMAGE = "gitlab/gitlab-ce"
-        const val APP_VERSION = "16.1.2-ce.0"
+        const val APP_VERSION = "16.2.3-ce.0"
     }
 
     object Postgres : PostgresNameMapper<Gitlab>() {
