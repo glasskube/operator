@@ -19,5 +19,6 @@ data class GitlabSpec(
         null,
         mapOf("memory" to Quantity("3", "Gi")),
         mapOf("cpu" to Quantity("200", "m"), "memory" to Quantity("2", "Gi"))
-    )
+    ),
+    val omnibusConfigOverride: String?
 )
