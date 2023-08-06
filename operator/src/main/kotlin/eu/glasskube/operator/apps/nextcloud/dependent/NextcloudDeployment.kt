@@ -185,6 +185,11 @@ class NextcloudDeployment : CRUDKubernetesDependentResource<Deployment, Nextclou
                                     name = TMP_VOLUME
                                     mountPath = TMP_DIR
                                 }
+                                volumeMount {
+                                    name = CONFIG_VOLUME
+                                    mountPath = PHP_FPM_CONFIG_PATH
+                                    subPath = PHP_FPM_CONFIG_FILE_NAME
+                                }
                             }
                         },
                         container {
@@ -286,6 +291,7 @@ class NextcloudDeployment : CRUDKubernetesDependentResource<Deployment, Nextclou
     companion object {
         internal const val CONFIG_FILE_NAME = "config.json"
         internal const val NGINX_CONFIG_FILE_NAME = "nginx.conf"
+        internal const val PHP_FPM_CONFIG_FILE_NAME = "zzz-glasskube-php-fpm.conf"
         private const val TMP_VOLUME = "tmp"
         private const val TMP_DIR = "/var/www/tmp"
         private const val DATA_VOLUME = "data"
@@ -296,5 +302,7 @@ class NextcloudDeployment : CRUDKubernetesDependentResource<Deployment, Nextclou
         private const val CONFIG_FILE_PATH = "$CONFIG_DIR/$CONFIG_FILE_NAME"
         private const val NGINX_CONFIG_DIR = "/etc/nginx"
         private const val NGINX_CONFIG_PATH = "$NGINX_CONFIG_DIR/$NGINX_CONFIG_FILE_NAME"
+        private const val PHP_FPM_CONFIG_DIR = "/usr/local/etc/php-fpm.d/" // php-fpm config dir is different vom php.ini config dir
+        private const val PHP_FPM_CONFIG_PATH = "$PHP_FPM_CONFIG_DIR/$PHP_FPM_CONFIG_FILE_NAME"
     }
 }
