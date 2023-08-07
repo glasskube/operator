@@ -30,6 +30,7 @@ class VaultIngress(configService: ConfigService) : DependentIngress<Vault>(confi
             annotations = primary.defaultAnnotations + ("nginx.ingress.kubernetes.io/ssl-passthrough" to "true")
         }
         spec {
+            ingressClassName = defaultIngressClassName
             rules = listOf(
                 ingressRule {
                     host = primary.spec.host
