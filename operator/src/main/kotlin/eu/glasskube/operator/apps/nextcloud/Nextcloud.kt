@@ -27,7 +27,7 @@ class Nextcloud : CustomResource<NextcloudSpec, NextcloudStatus>(), Namespaced {
         const val NGINX_VERSION = "1.25.1"
         const val NGINX_IMAGE = "$NGINX_NAME:$NGINX_VERSION-alpine"
         const val OFFICE_NAME = "collabora"
-        const val OFFICE_VERSION = "23.05.1.2.1"
+        const val OFFICE_VERSION = "23.05.2.2.1"
         const val OFFICE_IMAGE = "$OFFICE_NAME/code:$OFFICE_VERSION"
     }
 
