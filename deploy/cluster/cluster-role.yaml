@@ -38,6 +38,7 @@ rules:
       - configmaps
       - persistentvolumeclaims
       - serviceaccounts
+      - pods
     verbs:
       - create
       - get
