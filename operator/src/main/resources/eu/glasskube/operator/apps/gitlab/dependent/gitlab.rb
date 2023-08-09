@@ -21,6 +21,7 @@ nginx['proxy_set_headers'] = {
     "X-Forwarded-Port" => "80",
     "Host" => ENV['GITLAB_HOST']
 }
+nginx['server_names_hash_bucket_size'] = 128
 
 gitlab_rails['env'] = {
   'MALLOC_CONF' => 'dirty_decay_ms:1000,muzzy_decay_ms:1000'
@@ -73,6 +74,7 @@ if (ENV['REGISTRY_ENABLED'] == 'true')
   registry_nginx['ssl_certificate'] = "/etc/gitlab/ssl/tls.crt"
   registry_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/tls.key"
   registry_nginx['real_ip_trusted_addresses'] = ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16']
+  registry_nginx['server_names_hash_bucket_size'] = 128
 
   if (ENV['REGISTRY_OBJECTSTORE_ENABLED'] == 'true')
     registry['storage'] = {
