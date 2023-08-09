@@ -89,7 +89,7 @@ class GitlabDeployment : CRUDKubernetesDependentResource<Deployment, Gitlab>(Dep
                                     name = VOLUME_NAME
                                     subPath = "logs"
                                 }
-                                primary.spec.registry.let { tlsVolumeMount() }
+                                primary.spec.registry?.let { tlsVolumeMount() }
                             }
                             ports = listOf(
                                 containerPort {
