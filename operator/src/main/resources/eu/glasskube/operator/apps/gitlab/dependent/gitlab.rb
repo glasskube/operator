@@ -7,14 +7,20 @@ gitlab_rails['db_password'] = ENV['DB_PASSWORD']
 
 gitlab_rails['initial_root_password'] = ENV['INITIAL_ROOT_PASSWORD']
 
-external_url "http://" + ENV['GITLAB_HOST']
+external_url "https://" + ENV['GITLAB_HOST']
 gitlab_rails['gitlab_ssh_host'] = ENV['GITLAB_SSH_HOST']
 
 puma['worker_processes'] = 0
 sidekiq['max_concurrency'] = 10
 nginx['worker_processes'] = 2
 nginx['listen_https'] = false
+nginx['listen_port'] = 80
 nginx['real_ip_trusted_addresses'] = ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16']
+nginx['proxy_set_headers'] = {
+    "X-Forwarded-Proto" => "http",
+    "X-Forwarded-Port" => "80",
+    "Host" => ENV['GITLAB_HOST']
+}
 
 gitlab_rails['env'] = {
   'MALLOC_CONF' => 'dirty_decay_ms:1000,muzzy_decay_ms:1000'
