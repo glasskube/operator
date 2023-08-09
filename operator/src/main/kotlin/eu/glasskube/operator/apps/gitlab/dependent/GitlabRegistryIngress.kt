@@ -42,7 +42,7 @@ class GitlabRegistryIngress(configService: ConfigService) : DependentIngress<Git
             ingressClassName = defaultIngressClassName
             rules = listOf(
                 ingressRule {
-                    host = "registry.gitlab.pmig.glasskube.eu"
+                    host = primary.spec.registry!!.host
                     http = ingressRuleValue(
                         ingressPath(
                             path = "/",
@@ -53,7 +53,7 @@ class GitlabRegistryIngress(configService: ConfigService) : DependentIngress<Git
                 }
             )
             tls = listOf(
-                IngressTLS(listOf("registry.gitlab.pmig.glasskube.eu"), primary.genericRegistryResourceName)
+                IngressTLS(listOf(primary.spec.registry!!.host), primary.genericRegistryResourceName)
             )
         }
     }
