@@ -112,6 +112,12 @@ class NextcloudDeployment : CRUDKubernetesDependentResource<Deployment, Nextclou
                                     php $OCC_PATH app:install richdocuments
                                     php $OCC_PATH app:install contacts
                                     php $OCC_PATH app:install calendar
+                                    php $OCC_PATH app:install user_oidc
+                                    php ./occ user_oidc:provider ${primary.spec.apps.oidc?.name} \
+                                        --clientid=${primary.spec.apps.oidc?.clientId} \
+                                        --clientsecret=${primary.spec.apps.oidc?.clientSecret} \
+                                        --discoveryuri=${primary.spec.apps.oidc?.discoveryEndpoint} \
+                                        --unique-uid=0
                                     true
                                 """.trimIndent()
                             )

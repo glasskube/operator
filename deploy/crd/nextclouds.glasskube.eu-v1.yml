@@ -29,6 +29,17 @@ spec:
                       host:
                         type: string
                     type: object
+                  oidc:
+                    properties:
+                      name:
+                        type: string
+                      clientId:
+                        type: string
+                      clientSecret:
+                        type: string
+                      discoveryEndpoint:
+                        type: string
+                    type: object
                 type: object
               resources:
                 properties:
