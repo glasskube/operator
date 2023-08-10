@@ -10,14 +10,18 @@ import eu.glasskube.kubernetes.api.model.container
 import eu.glasskube.kubernetes.api.model.containerPort
 import eu.glasskube.kubernetes.api.model.env
 import eu.glasskube.kubernetes.api.model.envVar
+import eu.glasskube.kubernetes.api.model.httpGet
+import eu.glasskube.kubernetes.api.model.intOrString
+import eu.glasskube.kubernetes.api.model.livenessProbe
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.persistentVolumeClaim
+import eu.glasskube.kubernetes.api.model.readinessProbe
 import eu.glasskube.kubernetes.api.model.secretKeyRef
 import eu.glasskube.kubernetes.api.model.spec
+import eu.glasskube.kubernetes.api.model.startupProbe
 import eu.glasskube.kubernetes.api.model.volume
 import eu.glasskube.kubernetes.api.model.volumeMount
 import eu.glasskube.kubernetes.api.model.volumeMounts
-import eu.glasskube.operator.apps.gitea.Gitea
 import eu.glasskube.operator.apps.odoo.Odoo
 import eu.glasskube.operator.apps.odoo.Odoo.Postgres.postgresHostName
 import eu.glasskube.operator.apps.odoo.Odoo.Postgres.postgresSecretName
@@ -34,9 +38,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 
 @KubernetesDependent(labelSelector = OdooReconciler.SELECTOR)
 class OdooDeployment : CRUDKubernetesDependentResource<Deployment, Odoo>(Deployment::class.java) {
-    private companion object {
-        const val IMAGE = "gitea/gitea:${Gitea.APP_VERSION}"
-    }
+
     override fun desired(primary: Odoo, context: Context<Odoo>) = deployment {
         metadata {
             name = primary.deploymentName
@@ -63,7 +65,7 @@ class OdooDeployment : CRUDKubernetesDependentResource<Deployment, Odoo>(Deploym
                                 envVar("USER") { secretKeyRef(primary.postgresSecretName, "username") }
                                 envVar("PASSWORD") { secretKeyRef(primary.postgresSecretName, "password") }
                             }
-                            ports = listOf(containerPort { containerPort = 8069 })
+                            ports = listOf(containerPort { containerPort = 8069; name = "http" })
                             volumeMounts {
                                 volumeMount {
                                     name = Odoo.volumeName
@@ -78,6 +80,37 @@ class OdooDeployment : CRUDKubernetesDependentResource<Deployment, Odoo>(Deploym
                             command = mutableListOf("/glasskube/run.sh", "--proxy-mode")
                             if (!primary.spec.demoEnabled) {
                                 command.addAll(listOf("--without-demo", "all"))
+                            }
+                            startupProbe {
+                                periodSeconds = 10
+                                successThreshold = 1
+                                // If the container is still unresponsive after 10 minutes, it will be restarted
+                                failureThreshold = 60
+                                httpGet {
+                                    path = PROBE_PATH
+                                    port = "http".intOrString()
+                                }
+                            }
+                            livenessProbe {
+                                periodSeconds = 10
+                                successThreshold = 1
+                                // If the container becomes unresponsive for 1 minute, it will be restarted
+                                failureThreshold = 6
+                                timeoutSeconds = 9
+                                httpGet {
+                                    path = PROBE_PATH
+                                    port = "http".intOrString()
+                                }
+                            }
+                            readinessProbe {
+                                periodSeconds = 10
+                                successThreshold = 1
+                                failureThreshold = 3
+                                timeoutSeconds = 9
+                                httpGet {
+                                    path = PROBE_PATH
+                                    port = "http".intOrString()
+                                }
                             }
                         }
                     )
@@ -105,5 +138,9 @@ class OdooDeployment : CRUDKubernetesDependentResource<Deployment, Odoo>(Deploym
                 }
             }
         }
+    }
+
+    private companion object {
+        private const val PROBE_PATH = "/web/health"
     }
 }
