@@ -58,12 +58,14 @@ class ConfigService(
 
     private val dynamicCloudProvider
         get() = when {
+            kubernetesClient.configMaps().inNamespace("kube-system").withName("shoot-info").get()?.data?.get("extensions")?.contains("shoot-dns-service") == true ->
+                CloudProvider.gardener
+
             kubernetesClient.nodes().withLabel("eks.amazonaws.com/nodegroup").list().items.isNotEmpty() ->
                 CloudProvider.aws
 
             kubernetesClient.nodes().withLabel("csi.hetzner.cloud/location").list().items.isNotEmpty() ->
                 CloudProvider.hcloud
-
             else ->
                 CloudProvider.generic
         }

@@ -74,6 +74,7 @@ enum class ConfigKey {
 enum class CloudProvider {
     aws,
     hcloud,
+    gardener,
     generic,
 
     @Deprecated("please use `generic` instead")

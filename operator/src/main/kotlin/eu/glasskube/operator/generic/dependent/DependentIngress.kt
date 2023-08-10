@@ -21,6 +21,7 @@ abstract class DependentIngress<T : HasMetadata>(private val configService: Conf
         get() = configService.getCommonIngressAnnotations(this) +
             when (configService.cloudProvider) {
                 CloudProvider.aws -> awsDefaultAnnotations
+                CloudProvider.gardener -> gardenerDefaultAnnotations
                 else -> certManagerDefaultAnnotations
             }
 
@@ -31,6 +32,13 @@ abstract class DependentIngress<T : HasMetadata>(private val configService: Conf
             "alb.ingress.kubernetes.io/target-type" to "ip",
             "alb.ingress.kubernetes.io/ssl-redirect" to "443",
             "alb.ingress.kubernetes.io/group.name" to "glasskube"
+        )
+
+    private val gardenerDefaultAnnotations
+        get() = mapOf(
+            "dns.gardener.cloud/class" to "garden",
+            "dns.gardener.cloud/dnsnames" to "*",
+            "dns.gardener.cloud/ttl" to "600"
         )
 
     private val certManagerDefaultAnnotations
