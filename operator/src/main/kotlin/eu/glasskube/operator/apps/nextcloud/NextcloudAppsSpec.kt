@@ -14,6 +14,6 @@ data class NextcloudAppsSpec(
         val name: String,
         val clientId: String,
         val clientSecret: String,
-        val discoveryEndpoint: String,
+        val discoveryEndpoint: String
     )
 }
