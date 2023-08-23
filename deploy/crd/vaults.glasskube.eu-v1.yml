@@ -74,6 +74,9 @@ spec:
                       optional:
                         type: boolean
                     type: object
+                  authPath:
+                    description: Optional. Default is "kubernetes".
+                    type: string
                   roleName:
                     description: Optional. Default is "namespace.name".
                     type: string

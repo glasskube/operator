@@ -169,6 +169,7 @@ class VaultStatefulSet : CRUDKubernetesDependentResource<StatefulSet, Vault>(Sta
             envVar("VAULT_ADDR", address)
             tlsCaSecret?.let { envVar("VAULT_CACERT", "$UNSEAL_TLS_VOLUME_DIR/${it.key}") }
             envVar("VAULT_TRANSIT_SEAL_MOUNT_PATH", mountPath)
+            envVar("AUTH_PATH", authPath)
             val defaultKeyAndRoleName = "${primary.namespace}.${primary.metadata.name}"
             envVar("VAULT_TRANSIT_SEAL_KEY_NAME", keyName ?: defaultKeyAndRoleName)
             envVar("AUTH_ROLE_NAME", roleName ?: defaultKeyAndRoleName)

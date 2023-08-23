@@ -35,6 +35,8 @@ data class VaultSpec(
         val address: String,
         @field:Nullable
         val tlsCaSecret: SecretKeySelector?,
+        @field:JsonPropertyDescription("Optional. Default is \"kubernetes\".")
+        val authPath: String = "kubernetes",
         @field:JsonPropertyDescription("Optional. Default is \"namespace.name\".")
         val roleName: String?,
         @field:JsonPropertyDescription("Optional. Default is \"transit\".")
