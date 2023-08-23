@@ -30,8 +30,8 @@ The Glasskube Operator delegates creation and management of PostgreSQL instances
 
 Installing this dependency is always required.
 
-## Minio
+## MinIO
 
-The Glasskube Operator configures database instances to push WALs and backups to a local [Minio](https://min.io/) cluster.
+The Glasskube Operator configures database instances to push WALs and backups to a local [MinIO](https://min.io/) cluster.
 
 Installing this dependency is always required.

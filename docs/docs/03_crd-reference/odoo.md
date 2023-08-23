@@ -6,7 +6,7 @@ sidebar_position: 1
 
 [Odoo](https://github.com/odoo/odoo) is an Open-Source suite of web based business apps written in Python and stores
 data in a PostgreSQL database. The Glasskube Operator will automatically perform Upgrades and manages the database. Make
-sure you also have the[cnpg-operator](https://github.com/cloudnative-pg/cloudnative-pg) installed. After applying the
+sure you also have the [cnpg-operator](https://github.com/cloudnative-pg/cloudnative-pg) installed. After applying the
 custom resource Odoo will be reachable via an ingress at the configured host. Daily database backups are stored in an
 integrated S3 compatible MinIO bucket inside the glasskube-system namespace.
 

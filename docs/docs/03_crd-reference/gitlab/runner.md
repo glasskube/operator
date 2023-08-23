@@ -1,6 +1,7 @@
 # GitLab Runner
 
-GitLab runners are necessary for the execution of CI/CD pipelines on GitLab.
+Runners on GitLab are execution agents that power continuous integration and continuous delivery (CI/CD) pipelines. 
+They're responsible for running jobs, which are the individual steps or tasks within a pipeline.
 
 ## Spec
 

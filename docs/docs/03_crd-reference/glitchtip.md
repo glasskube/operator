@@ -4,9 +4,9 @@ sidebar_position: 1
 
 # GlitchTip
 
-:::note TODO
-Add a tool-specific blurb here
-:::
+GlitchTip is a simplified software monitoring platform that centralizes error tracking, application performance monitoring, and website uptime checks.
+It seamlessly integrates with Sentry client SDKs, streamlining error collection and resolution. 
+GlitchTip offers straightforward performance insights and the ability to monitor website uptime, providing a comprehensive solution for application health. 
 
 ## Spec
 
