@@ -4,10 +4,10 @@ sidebar_position: 1
 
 # Matomo
 
-[Matomo](https://github.com/matomo-org/matomo) is an Open-Source Web Analytics Tool written in PHP and stores data in
-MySQL database. The Glasskube Operator will automatically perform Upgrades and manages the database. Make sure you also
-have the [mariadb-operator](https://github.com/mariadb-operator/mariadb-operator) installed. After applying the custom
-resource Matomo will be reachable via an ingress at the configured host.
+Matomo is a robust and privacy-focused web analytics platform designed to help organizations gather valuable insights into their website's performance and visitor behavior.
+It stands out for its open-source nature, making it a transparent and customizable choice for analytics. 
+Matomo offers a comprehensive feature set, making it a dependable alternative to traditional analytics solutions.
+This tool empowers businesses to make data-driven decisions while respecting user privacy and data ownership.
 
 ## Example
 

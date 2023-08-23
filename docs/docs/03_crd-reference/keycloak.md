@@ -4,9 +4,9 @@ sidebar_position: 1
 
 # Keycloak
 
-:::note TODO
-Add a tool-specific blurb here
-:::
+Keycloak is an open-source Identity and Access Management platform that simplifies user authentication, offers user federation with various data sources,
+and supports standard security protocols like OpenID Connect, OAuth 2.0, and SAML. 
+It includes an admin console for centralized management of user permissions, sessions, and application configurations.
 
 ## Spec
 
