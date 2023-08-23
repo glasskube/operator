@@ -2,7 +2,7 @@
 toc_max_heading_level: 5
 ---
 
-# Gitlab
+# GitLab
 
 :::note TODO
 Add a tool-specific blurb here

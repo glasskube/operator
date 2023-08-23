@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Glitchtip
+# GlitchTip
 
 :::note TODO
 Add a tool-specific blurb here
