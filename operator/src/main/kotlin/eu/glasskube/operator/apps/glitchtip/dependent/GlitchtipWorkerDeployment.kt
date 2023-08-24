@@ -83,6 +83,20 @@ class GlitchtipWorkerDeployment : CRUDKubernetesDependentResource<Deployment, Gl
                                     secretKeyRef(primary.postgresSecretName, "password")
                                 }
                                 envVar("SERVER_ROLE", "worker_with_beat")
+                                primary.spec.smtp?.also {
+                                    envVar("SMTP_USERNAME") {
+                                        secretKeyRef(it.authSecret.name, "username")
+                                    }
+                                    envVar("SMTP_PASSWORD") {
+                                        secretKeyRef(it.authSecret.name, "password")
+                                    }
+
+                                    envVar("EMAIL_URL", "smtp://\$(SMTP_USERNAME):\$(SMTP_PASSWORD)@${it.host}:${it.port}")
+                                    envVar("DEFAULT_FROM_EMAIL", it.fromAddress)
+                                }
+                                if (primary.spec.smtp == null) {
+                                    envVar("EMAIL_URL", "consolemail://")
+                                }
                             }
                             volumeMounts {
                                 volumeMount {
