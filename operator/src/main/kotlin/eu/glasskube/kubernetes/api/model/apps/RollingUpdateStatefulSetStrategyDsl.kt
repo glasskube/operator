@@ -1,9 +1,11 @@
 package eu.glasskube.kubernetes.api.model.apps
 
+import eu.glasskube.kubernetes.api.annotation.KubernetesDslMarker
 import eu.glasskube.kubernetes.api.model.intOrString
 import io.fabric8.kubernetes.api.model.apps.RollingUpdateStatefulSetStrategy
 import io.fabric8.kubernetes.api.model.apps.RollingUpdateStatefulSetStrategyBuilder
 
+@KubernetesDslMarker
 class RollingUpdateStatefulSetStrategyDsl private constructor() {
     private val builder = RollingUpdateStatefulSetStrategyBuilder(true)
 

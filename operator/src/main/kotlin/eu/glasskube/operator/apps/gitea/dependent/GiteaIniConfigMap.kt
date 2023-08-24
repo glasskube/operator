@@ -34,7 +34,7 @@ class GiteaIniConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitea>(Conf
             namespace(primary.namespace)
             labels(primary.resourceLabels)
         }
-        data = primary.baseConfig + getSmtpConfig(primary, context)
+        data = primary.baseConfig + getSmtpConfig(primary, context) + primary.actionsConfig
     }
 
     private val Gitea.baseConfig: Map<String, String>
@@ -86,6 +86,11 @@ class GiteaIniConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitea>(Conf
                 )
             }
         }
+
+    private val Gitea.actionsConfig: Map<String, String>
+        get() = mapOf(
+            "GITEA__actions__ENABLED" to spec.actions.enabled.toString()
+        )
 
     override fun onUpdated(primary: Gitea, updated: ConfigMap, actual: ConfigMap, context: Context<Gitea>) {
         super.onUpdated(primary, updated, actual, context)

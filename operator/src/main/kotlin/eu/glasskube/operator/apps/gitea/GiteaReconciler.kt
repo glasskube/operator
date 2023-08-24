@@ -4,6 +4,8 @@ import eu.glasskube.kubernetes.client.patchOrUpdateStatus
 import eu.glasskube.operator.Labels
 import eu.glasskube.operator.api.reconciler.informerEventSource
 import eu.glasskube.operator.api.reconciler.secondaryResource
+import eu.glasskube.operator.apps.gitea.dependent.GiteaActionRunnerSecrets
+import eu.glasskube.operator.apps.gitea.dependent.GiteaActionRunnerStatefulSets
 import eu.glasskube.operator.apps.gitea.dependent.GiteaConfigMap
 import eu.glasskube.operator.apps.gitea.dependent.GiteaDeployment
 import eu.glasskube.operator.apps.gitea.dependent.GiteaHttpService
@@ -85,7 +87,8 @@ import io.javaoperatorsdk.operator.processing.event.source.informer.Mappers
             type = GiteaDeployment::class,
             name = "GiteaDeployment",
             dependsOn = ["GiteaPostgresCluster", "GiteaVolume", "GiteaSecret", "GiteaConfigMap", "GiteaIniConfigMap", "GiteaRedisService"],
-            useEventSourceWithName = GiteaReconciler.DEPLOYMENT_EVENT_SOURCE
+            useEventSourceWithName = GiteaReconciler.DEPLOYMENT_EVENT_SOURCE,
+            readyPostcondition = GiteaDeployment.ReadyCondition::class
         ),
         Dependent(
             type = GiteaHttpService::class,
@@ -106,6 +109,16 @@ import io.javaoperatorsdk.operator.processing.event.source.informer.Mappers
             type = GiteaServiceMonitor::class,
             name = "GiteaServiceMonitor",
             dependsOn = ["GiteaHttpService"]
+        ),
+        Dependent(
+            type = GiteaActionRunnerStatefulSets::class,
+            name = "GiteaActionRunnerStatefulSets",
+            dependsOn = ["GiteaDeployment"]
+        ),
+        Dependent(
+            type = GiteaActionRunnerSecrets::class,
+            name = "GiteaActionRunnerSecrets",
+            dependsOn = ["GiteaDeployment"]
         ),
         Dependent(
             type = GiteaVeleroSecret::class,
