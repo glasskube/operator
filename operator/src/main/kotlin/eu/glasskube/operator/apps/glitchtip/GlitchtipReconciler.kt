@@ -71,7 +71,7 @@ import kotlin.jvm.optionals.getOrDefault
         Dependent(
             type = GlitchtipWorkerDeployment::class,
             name = "GlitchtipWorkerDeployment",
-            dependsOn = ["GlitchtipDeployment", "GlitchtipVolume"],
+            dependsOn = ["GlitchtipDeployment"],
             useEventSourceWithName = GlitchtipReconciler.DEPLOYMENT_EVENT_SOURCE
         ),
         Dependent(
@@ -91,6 +91,8 @@ class GlitchtipReconciler : Reconciler<Glitchtip>, EventSourceInitializer<Glitch
         resource.patchOrUpdateStatus(
             GlitchtipStatus(
                 readyReplicas = getSecondaryResource(GlitchtipDeployment.Discriminator())
+                    .map { it.status?.readyReplicas ?: 0 }.getOrDefault(0),
+                workerReadyReplicas = getSecondaryResource(GlitchtipWorkerDeployment.Discriminator())
                     .map { it.status?.readyReplicas ?: 0 }.getOrDefault(0),
                 redisReady = getSecondaryResource(GlitchtipRedisDeployment.Discriminator())
                     .map { it.isReady }.getOrDefault(false),
