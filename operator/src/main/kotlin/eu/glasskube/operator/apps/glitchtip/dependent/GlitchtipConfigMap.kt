@@ -11,7 +11,6 @@ import eu.glasskube.operator.apps.glitchtip.configMapName
 import eu.glasskube.operator.apps.glitchtip.resourceLabels
 import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
-import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
@@ -30,8 +29,12 @@ class GlitchtipConfigMap : CRUDKubernetesDependentResource<ConfigMap, Glitchtip>
 
     override fun onUpdated(primary: Glitchtip, updated: ConfigMap, actual: ConfigMap, context: Context<Glitchtip>) {
         super.onUpdated(primary, updated, actual, context)
-        context.getSecondaryResource<Deployment>().ifPresent {
+        context.getSecondaryResource(GlitchtipDeployment.Discriminator()).ifPresent {
             log.info("Restarting deployment after config change")
+            kubernetesClient.apps().deployments().resource(it).rolling().restart()
+        }
+        context.getSecondaryResource(GlitchtipWorkerDeployment.Discriminator()).ifPresent {
+            log.info("Restarting worker deployment after config change")
             kubernetesClient.apps().deployments().resource(it).rolling().restart()
         }
     }

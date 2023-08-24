@@ -77,6 +77,8 @@ spec:
             properties:
               readyReplicas:
                 type: integer
+              workerReadyReplicas:
+                type: integer
               redisReady:
                 type: boolean
               postgresReady:
