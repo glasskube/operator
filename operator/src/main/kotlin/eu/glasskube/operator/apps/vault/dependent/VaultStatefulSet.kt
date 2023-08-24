@@ -59,7 +59,6 @@ class VaultStatefulSet : CRUDKubernetesDependentResource<StatefulSet, Vault>(Sta
                         }
                     }
                 }
-                persistentVolumeClaimRetentionPolicy(whenScaled = "Retain", whenDeleted = "Delete")
             }
 
             template {
