@@ -1,0 +1,44 @@
+name: Docs
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: docs
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.17'
+          cache: npm
+          cache-dependency-path: docs/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Build docs
+        run: npm run build
+      - uses: aws-actions/configure-aws-credentials@v1
+        if: github.ref == 'refs/heads/main'
+        with:
+          aws-access-key-id: ${{ secrets.DOCS_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.DOCS_AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+      - name: Deploy
+        if: github.ref == 'refs/heads/main'
+        run: >-
+          aws s3 sync build s3://glasskube/docs/
+          --cache-control "max-age=60, public"
+          --acl=public-read
+      - name: Invalidate cache
+        if: github.ref == 'refs/heads/main'
+        run: >-
+          aws cloudfront create-invalidation
+          --distribution-id E255221I2BC85
+          --invalidation-batch "Paths={Quantity='1' ,Items=['/docs/*']},CallerReference=DOCS_$GITHUB_RUN_ID"
