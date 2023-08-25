@@ -4,9 +4,38 @@ toc_max_heading_level: 5
 
 # GitLab
 
-:::note TODO
-Add a tool-specific blurb here
-:::
+GitLab is a robust platform for software development that provides a range of essential tools for version control,
+continuous integration, issue tracking, and more. It serves as a centralized hub for collaborative software development.
+GitLab simplifies the development workflow, offering a user-friendly interface and a suite of features that streamline
+the software development process.
+
+## Example
+
+```yaml title=gitlab.yaml
+apiVersion: glasskube.eu/v1alpha1
+kind: Gitlab
+metadata:
+  name: gitlab
+spec:
+  host: gitlab.mycompany.eu
+  sshEnabled: true
+  sshHost: ssh.gitlab.mycompany.eu
+  runners: []
+  registry:
+    host: registry.gitlab.mycompany.eu
+    storage:
+      s3:
+        bucket: gitlab-registry-bucket
+        accessKeySecret:
+          name: gitlab-registry-bucket-secret
+          key: accessKey
+        secretKeySecret:
+          name: gitlab-registry-bucket-secret
+          key: secretKey
+        hostname: s3host.yourcompany.eu
+        usePathStyle: true
+        region: eu
+```
 
 ## Spec
 
@@ -17,19 +46,10 @@ Add a tool-specific blurb here
 | sshHost                   | String?                                                                                                | `null`     |                                                |
 | initialRootPasswordSecret | SecretKeySelector?                                                                                     | `null`     |                                                |
 | smtp                      | [SmtpSpec](../common/smtp)?                                                                            | `null`     |                                                | 
-| runners                   | List&lt;[RunnerSpecTemplate](#runner-spec-template)>                                                   | `[]`       |                                                |
+| runners                   | List&lt;[RunnerSpecTemplate](./runner)>                                                   | `[]`       |                                                |
 | resources                 | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |            |                                                |
 | omnibusConfigOverride     | String?                                                                                                | `null`     | For advanced users only. Use at your own risk! |
 | registry                  | [RegistrySpec](#registry)?                                                                             | `null`     |                                                |
-
-### RunnerSpecTemplate {#runner-spec-template}
-
-Partial specification of a [runner](./runner) that should be started for this instance.
-
-| Name        | Type   | Default    |
-|-------------|--------|------------|
-| token       | String | (required) |
-| concurrency | Int    | `1`        |
 
 ### RegistrySpec {#registry}
 

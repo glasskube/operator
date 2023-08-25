@@ -6,7 +6,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Operator Docs | Glasskube',
+  title: 'Kubernetes Operator Docs | Glasskube',
   favicon: 'img/favicon.png',
   url: 'https://glasskube.eu/',
   baseUrl: '/docs/',
@@ -45,10 +45,11 @@ const config = {
     ({
       image: 'https://cms.glasskube.eu/uploads/Meta_Image_final_0628edc18a.png',
       navbar: {
-        title: 'Glasskube Operator',
+        title: 'Glasskube Kubernetes Operator',
         logo: {alt: 'Glasskube Logo', src: 'img/glasskube-logo.svg',},
         items: [
           {type: 'docSidebar', sidebarId: 'docsSidebar', label: 'Docs', position: 'left'},
+          {href: 'https://glasskube.eu/', label: 'Website', position: 'left'},
           {href: 'https://github.com/glasskube/operator', label: 'GitHub', position: 'right'}
         ],
       },
@@ -63,13 +64,29 @@ const config = {
             ],
           },
           {
-            title: 'More',
+            title: 'Star us on',
             items: [
               {label: 'GitHub', href: 'https://github.com/glasskube/operator'},
+              {label: 'Docker Hub', href: 'https://hub.docker.com/r/glasskube/operator'},
+              {label: 'Artifact Hub', href: 'https://artifacthub.io/packages/helm/glasskube/glasskube-operator'},
+            ],
+          },
+          {
+            title: 'Links',
+            items: [
+              {label: 'Website', href: 'https://glasskube.eu/'},
+              {label: 'LinkedIn', href: 'https://www.linkedin.com/company/glasskube/'},
+            ],
+          },
+          {
+            title: 'Contact',
+            items: [
+              {label: 'Schedule a Meeting', href: 'https://glasskube.eu/en/consulting/'},
+              {label: 'Contact us', href: 'https://glasskube.eu/en/contact/'},
             ],
           },
         ],
-        copyright: `© ${new Date().getFullYear()} Glasskube OS GmbH.<br>Built with Docusaurus.`,
+        copyright: `© ${new Date().getFullYear()} Glasskube<br>Built with Docusaurus`,
       },
       prism: {
         theme: lightCodeTheme,

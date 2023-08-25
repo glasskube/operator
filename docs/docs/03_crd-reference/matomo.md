@@ -17,7 +17,7 @@ kind: Matomo
 metadata:
   name: matomo
 spec:
-  host: analytics.mycompany.eu
+  host: stats.mycompany.eu
 ```
 
 ## Spec
