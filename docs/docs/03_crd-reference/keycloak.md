@@ -8,6 +8,19 @@ Keycloak is an open-source Identity and Access Management platform that simplifi
 and supports standard security protocols like OpenID Connect, OAuth 2.0, and SAML. 
 It includes an admin console for centralized management of user permissions, sessions, and application configurations.
 
+## Example
+
+```yaml title=glitchtip.yaml
+apiVersion: glasskube.eu/v1alpha1
+kind: Keycloak
+metadata:
+  name: keycloak
+spec:
+  host: keycloak.mycompany.eu
+  management:
+    enabled: true
+```
+
 ## Spec
 
 | Name       | Type                                                                                                   | Default    |                                             | 

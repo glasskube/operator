@@ -6,7 +6,20 @@ sidebar_position: 1
 
 HashiCorp Vault is an open-source tool that serves as a centralized hub for secrets management, encryption services, and privileged access management.
 It enhances security by consolidating dynamic secrets, offers robust management within Kubernetes, provides comprehensive data protection features, including encryption and tokenization. 
-Vault is a perfect fit for organizations implementing zero trust strategies, ensuring heightened security and access control. 
+Vault is a perfect fit for organizations implementing zero trust strategies, ensuring heightened security and access control.
+
+## Example
+
+```yaml title=glitchtip.yaml
+kind: Vault
+metadata:
+  name: vault
+spec:
+  host: vault.mycompany.eu
+  auditStorage:
+    enabled: true
+
+```
 
 ## Spec
 

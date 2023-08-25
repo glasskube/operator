@@ -8,6 +8,20 @@ GlitchTip is a simplified software monitoring platform that centralizes error tr
 It seamlessly integrates with Sentry client SDKs, streamlining error collection and resolution. 
 GlitchTip offers straightforward performance insights and the ability to monitor website uptime, providing a comprehensive solution for application health. 
 
+## Example
+
+```yaml title=glitchtip.yaml
+apiVersion: glasskube.eu/v1alpha1
+kind: Glitchtip
+metadata:
+  name: glitchtip
+spec:
+  host: glitchtip.mycompany.eu
+  registrationEnabled: false
+  organizationCreationEnabled: false
+```
+
+
 ## Spec
 
 | Name                        | Type                                                                                                   | Default    |

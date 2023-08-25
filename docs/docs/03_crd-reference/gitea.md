@@ -7,7 +7,20 @@ sidebar_position: 1
 Gitea is a user-friendly, self-hosted Git service designed for managing code repositories, collaborating on projects, and automating workflows. 
 It includes essential features like issue tracking, pull requests, and code reviews, making it a comprehensive platform for software project management. 
 Gitea is often considered a lightweight and cost-efficient alternative to GitLab.
-While it may offer fewer functionalities than GitLab, it's perfect for small teams seeking a simpler and budget-friendly solution for their development needs. 
+While it may offer fewer functionalities than GitLab, it's perfect for small teams seeking a simpler and budget-friendly solution for their development needs.
+
+## Example
+
+```yaml title=gitea.yaml
+apiVersion: glasskube.eu/v1alpha1
+kind: Gitea
+metadata:
+  name: gitea
+spec:
+  host: git.mycompany.eu
+  sshHost: ssh.git.mycompany.eu
+  registrationEnabled: true
+```
 
 ## Spec
 

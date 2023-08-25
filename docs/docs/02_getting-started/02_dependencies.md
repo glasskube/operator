@@ -4,6 +4,10 @@ Some tasks are delegated by the Glasskube Operator to other controllers or opera
 All dependencies can be installed alongside the operator when using the helm chart but are disabled by default (except for [minio](#minio)).
 This document enumerates those dependencies and describes whether and for which use-cases they are required.
 
+You could either install these dependencies implicitly with the default values of the Glasskube Operator helm chart or manage them your self.
+In that case you can disable the dependencies.
+For more information and default values checkout [Glasskube on the ArtifactHUB](https://artifacthub.io/packages/helm/glasskube/glasskube-operator).
+
 ## Cert-manager
 
 By default, the Glasskube Operator annotates *Ingress* resources it creates such that [cert-manager](https://cert-manager.io/) automatically generates TLS certificates.
