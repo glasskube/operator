@@ -24,7 +24,7 @@ jobs:
         run: npm ci
       - name: Build docs
         run: npm run build
-      - uses: aws-actions/configure-aws-credentials@67fbcbb121271f7775d2e7715933280b06314838 # v1
+      - uses: aws-actions/configure-aws-credentials@04b98b3f9e85f563fb061be8751a0352327246b0 # v3
         if: github.ref == 'refs/heads/main'
         with:
           aws-access-key-id: ${{ secrets.DOCS_AWS_ACCESS_KEY_ID }}
