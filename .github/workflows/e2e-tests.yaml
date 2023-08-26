@@ -2,10 +2,14 @@ name: Test Scenarios
 on:
   push:
     branches:
-      - 'main'
+      - main
+    paths-ignore:
+      - docs/**
   pull_request:
     branches:
-      - 'main'
+      - main
+    paths-ignore:
+      - docs/**
 
 env:
   # renovate: datasource=github-tags depName=kudobuilder/kuttl
