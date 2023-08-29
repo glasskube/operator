@@ -11,7 +11,7 @@ You will also need the following command line interface (CLI) tools on your loca
 - `kubectl`
 - `helm`
 
-For installing the operator with default values we recommend a fresh Kubernetes Cluster. 
+For installing the operator with all dependencies enabled we recommend a fresh Kubernetes Cluster. 
 
 ## Operator Installation
 
