@@ -9,6 +9,7 @@ const config = {
   title: 'Kubernetes Operator Docs | Glasskube',
   favicon: 'img/favicon.png',
   url: 'https://glasskube.eu/',
+  trailingSlash: true,
   baseUrl: '/docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',

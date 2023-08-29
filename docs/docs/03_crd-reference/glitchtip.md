@@ -30,5 +30,5 @@ spec:
 | replicas                    | Int                                                                                                    | `1`        | 
 | registrationEnabled         | Boolean                                                                                                | `false`    |
 | organizationCreationEnabled | Boolean                                                                                                | `false`    |
-| smtp                        | [SmtpSpec](common/smtp)?                                                                                              | `null`     | 
+| smtp                        | [SmtpSpec](./../common/smtp/)?                                                                         | `null`     | 
 | resources                   | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |            |

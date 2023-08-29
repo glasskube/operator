@@ -25,5 +25,5 @@ spec:
 |-----------|--------------------------------------------------------------------------------------------------------|------------|
 | host      | String                                                                                                 | (required) |
 | replicas  | Int                                                                                                    | 1          |
-| smtp      | [SmtpSpec](common/smtp)?                                                                                              | `null`     |
+| smtp      | [SmtpSpec](./../common/smtp/)?                                                                         | `null`     |
 | resources | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |            |
