@@ -1,10 +1,27 @@
 apiVersion: v2
 name: glasskube-operator
-description: Glasskube Operator Helm Chart
+description: >
+  The Glasskube Operator is an open source Kubernetes operator that aims to simplify the deployment and maintenance of
+  various popular open source tools. Each tool is represented by a new Kubernetes custom resource definition (CRD) and
+  most user-facing configuration parameters are available via that CRD. Our philosophy is to emphasize ease-of-use and
+  strong defaults over rich configuration. Our configurations are designed to cover as many use-cases as possible with
+  minimal user configuration.
+keywords:
+  - Glasskube
+  - Gitea Operator
+  - GitLab Operator
+  - GlitchTip Operator
+  - Keycloak Operator
+  - Matomo Operator
+  - Metabase Operator
+  - Nextcloud Operator
+  - Odoo Operator
+  - HashiCorp Vault Operator
 home: https://glasskube.eu/
 icon: https://raw.githubusercontent.com/glasskube/.github/main/images/glasskube-icon.svg
 sources:
   - https://github.com/glasskube/operator/
+  - https://glasskube.eu/docs/
 type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
