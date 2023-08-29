@@ -1,7 +1,7 @@
 [![GitHub Repo stars](https://img.shields.io/github/stars/glasskube/operator)](https://github.com/glasskube/operator)
 [![Docker Pulls](https://img.shields.io/docker/pulls/glasskube/operator)](https://hub.docker.com/r/glasskube/operator)
 [![license](https://img.shields.io/badge/license-LGPL_3.0-blue)](https://opensource.org/license/lgpl-3-0/)
-![Docs](https://img.shields.io/badge/docs-glasskube.eu%2Fdocs-blue)
+[![Docs](https://img.shields.io/badge/docs-glasskube.eu%2Fdocs-blue)](https://glasskube.eu/docs/)
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/glasskube)](https://artifacthub.io/packages/helm/glasskube/glasskube-operator)
 
 
