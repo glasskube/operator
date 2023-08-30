@@ -62,6 +62,7 @@ const config = {
             items: [
               {label: 'Getting started', to: 'getting-started/install'},
               {label: 'CRD Reference', to: 'crd-reference'},
+              {label: 'Search', to: 'search'},
             ],
           },
           {
