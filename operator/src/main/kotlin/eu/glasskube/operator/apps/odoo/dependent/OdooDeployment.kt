@@ -31,13 +31,15 @@ import eu.glasskube.operator.apps.odoo.deploymentName
 import eu.glasskube.operator.apps.odoo.identifyingLabel
 import eu.glasskube.operator.apps.odoo.resourceLabels
 import eu.glasskube.operator.apps.odoo.volumeName
+import eu.glasskube.operator.config.ConfigService
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = OdooReconciler.SELECTOR)
-class OdooDeployment : CRUDKubernetesDependentResource<Deployment, Odoo>(Deployment::class.java) {
+class OdooDeployment(private val configService: ConfigService) :
+    CRUDKubernetesDependentResource<Deployment, Odoo>(Deployment::class.java) {
 
     override fun desired(primary: Odoo, context: Context<Odoo>) = deployment {
         metadata {
@@ -53,6 +55,7 @@ class OdooDeployment : CRUDKubernetesDependentResource<Deployment, Odoo>(Deploym
             template {
                 metadata {
                     labels = primary.resourceLabels
+                    annotations = configService.getBackupAnnotations(Odoo.volumeName)
                 }
                 spec {
                     containers = listOf(

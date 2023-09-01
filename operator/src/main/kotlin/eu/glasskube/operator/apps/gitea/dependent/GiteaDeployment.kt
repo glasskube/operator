@@ -30,6 +30,7 @@ import eu.glasskube.operator.apps.gitea.iniConfigMapName
 import eu.glasskube.operator.apps.gitea.resourceLabelSelector
 import eu.glasskube.operator.apps.gitea.resourceLabels
 import eu.glasskube.operator.apps.gitea.secretName
+import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.utils.addTo
 import io.fabric8.kubernetes.api.model.HTTPGetAction
 import io.fabric8.kubernetes.api.model.IntOrString
@@ -46,7 +47,8 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
     labelSelector = GiteaReconciler.SELECTOR,
     resourceDiscriminator = GiteaDeployment.Discriminator::class
 )
-class GiteaDeployment : CRUDKubernetesDependentResource<Deployment, Gitea>(Deployment::class.java) {
+class GiteaDeployment(private val configService: ConfigService) :
+    CRUDKubernetesDependentResource<Deployment, Gitea>(Deployment::class.java) {
     internal class Discriminator : ResourceIDMatcherDiscriminator<Deployment, Gitea>({ ResourceID(it.deploymentName) })
 
     override fun desired(primary: Gitea, context: Context<Gitea>) = deployment {
@@ -64,6 +66,7 @@ class GiteaDeployment : CRUDKubernetesDependentResource<Deployment, Gitea>(Deplo
             template {
                 metadata {
                     labels = primary.resourceLabels
+                    annotations = configService.getBackupAnnotations(VOLUME_NAME)
                 }
                 spec {
                     containers = listOf(
@@ -86,7 +89,7 @@ class GiteaDeployment : CRUDKubernetesDependentResource<Deployment, Gitea>(Deplo
                             }
                             volumeMounts {
                                 volumeMount {
-                                    name = "data"
+                                    name = VOLUME_NAME
                                     mountPath = Gitea.WORK_DIR
                                 }
                             }
@@ -111,7 +114,7 @@ class GiteaDeployment : CRUDKubernetesDependentResource<Deployment, Gitea>(Deplo
                             args = listOf("git:git", Gitea.WORK_DIR)
                             volumeMounts {
                                 volumeMount {
-                                    name = "data"
+                                    name = VOLUME_NAME
                                     mountPath = Gitea.WORK_DIR
                                 }
                             }
@@ -123,7 +126,7 @@ class GiteaDeployment : CRUDKubernetesDependentResource<Deployment, Gitea>(Deplo
                             args = listOf("-c", "mkdir -p /data/gitea/conf && environment-to-ini")
                             volumeMounts {
                                 volumeMount {
-                                    name = "data"
+                                    name = VOLUME_NAME
                                     mountPath = Gitea.WORK_DIR
                                 }
                             }
@@ -152,7 +155,7 @@ class GiteaDeployment : CRUDKubernetesDependentResource<Deployment, Gitea>(Deplo
                             args = listOf("migrate")
                             volumeMounts {
                                 volumeMount {
-                                    name = "data"
+                                    name = VOLUME_NAME
                                     mountPath = Gitea.WORK_DIR
                                 }
                             }
@@ -186,7 +189,7 @@ class GiteaDeployment : CRUDKubernetesDependentResource<Deployment, Gitea>(Deplo
                                     )
                                     volumeMounts {
                                         volumeMount {
-                                            name = "data"
+                                            name = VOLUME_NAME
                                             mountPath = Gitea.WORK_DIR
                                         }
                                     }
@@ -203,7 +206,7 @@ class GiteaDeployment : CRUDKubernetesDependentResource<Deployment, Gitea>(Deplo
                             ?.addTo(this)
                     }
                     volumes = listOf(
-                        volume("data") {
+                        volume(VOLUME_NAME) {
                             persistentVolumeClaim(primary.genericResourceName)
                         }
                     )
@@ -214,5 +217,6 @@ class GiteaDeployment : CRUDKubernetesDependentResource<Deployment, Gitea>(Deplo
 
     private companion object {
         const val IMAGE = "gitea/gitea:${Gitea.APP_VERSION}"
+        private const val VOLUME_NAME = "data"
     }
 }

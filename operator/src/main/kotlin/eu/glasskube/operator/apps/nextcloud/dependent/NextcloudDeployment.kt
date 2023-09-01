@@ -35,6 +35,7 @@ import eu.glasskube.operator.apps.nextcloud.genericResourceName
 import eu.glasskube.operator.apps.nextcloud.resourceLabelSelector
 import eu.glasskube.operator.apps.nextcloud.resourceLabels
 import eu.glasskube.operator.apps.nextcloud.volumeName
+import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.generic.condition.DeploymentReadyCondition
 import io.fabric8.kubernetes.api.model.HTTPHeader
 import io.fabric8.kubernetes.api.model.IntOrString
@@ -50,7 +51,9 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
     labelSelector = NextcloudReconciler.SELECTOR,
     resourceDiscriminator = NextcloudDeployment.Discriminator::class
 )
-class NextcloudDeployment : CRUDKubernetesDependentResource<Deployment, Nextcloud>(Deployment::class.java) {
+class NextcloudDeployment(private val configService: ConfigService) :
+    CRUDKubernetesDependentResource<Deployment, Nextcloud>(Deployment::class.java) {
+
     class ReadyPostCondition : DeploymentReadyCondition<Nextcloud>()
 
     internal class Discriminator : ResourceIDMatcherDiscriminator<Deployment, Nextcloud>({
@@ -72,6 +75,7 @@ class NextcloudDeployment : CRUDKubernetesDependentResource<Deployment, Nextclou
             template {
                 metadata {
                     labels = primary.resourceLabels
+                    annotations = configService.getBackupAnnotations(DATA_VOLUME)
                 }
                 spec {
                     volumes = listOfNotNull(

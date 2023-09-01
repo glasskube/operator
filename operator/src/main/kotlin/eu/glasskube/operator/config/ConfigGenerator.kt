@@ -37,7 +37,8 @@ class ConfigGenerator(private val kubernetesClient: KubernetesClient, private va
             ConfigKey.databaseStorageClassName -> detectDatabaseStorageClass()
             ConfigKey.commonIngressAnnotations,
             ConfigKey.commonLoadBalancerAnnotations,
-            ConfigKey.ingressClassName -> null
+            ConfigKey.ingressClassName,
+            ConfigKey.backupAnnotationsEnabled -> null
         }
     }
 
@@ -68,7 +69,8 @@ enum class ConfigKey {
     commonIngressAnnotations,
     commonLoadBalancerAnnotations,
     databaseStorageClassName,
-    ingressClassName
+    ingressClassName,
+    backupAnnotationsEnabled
 }
 
 enum class CloudProvider {

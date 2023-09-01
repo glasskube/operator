@@ -3,6 +3,7 @@ package eu.glasskube.operator.generic.dependent.postgres
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.kubernetes.api.model.secretKeySelector
+import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.infra.minio.MinioBucket
 import eu.glasskube.operator.infra.postgres.BackupConfiguration
 import eu.glasskube.operator.infra.postgres.BarmanObjectStoreConfiguration
@@ -11,6 +12,7 @@ import eu.glasskube.operator.infra.postgres.BootstrapInitDB
 import eu.glasskube.operator.infra.postgres.ClusterSpec
 import eu.glasskube.operator.infra.postgres.CompressionType
 import eu.glasskube.operator.infra.postgres.DataBackupConfiguration
+import eu.glasskube.operator.infra.postgres.EmbeddedObjectMetadata
 import eu.glasskube.operator.infra.postgres.MonitoringConfiguration
 import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.infra.postgres.S3Credentials
@@ -24,7 +26,8 @@ import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 
 abstract class DependentPostgresCluster<P : HasMetadata>(
-    override val postgresNameMapper: PostgresNameMapper<P>
+    override val postgresNameMapper: PostgresNameMapper<P>,
+    private val configService: ConfigService
 ) : PostgresDependentResource<P>, CRUDKubernetesDependentResource<PostgresCluster, P>(PostgresCluster::class.java) {
 
     protected abstract val P.storageSize: String
@@ -52,6 +55,9 @@ abstract class DependentPostgresCluster<P : HasMetadata>(
         spec = ClusterSpec(
             instances = 1,
             enableSuperuserAccess = false,
+            inheritedMetadata = EmbeddedObjectMetadata(
+                annotations = configService.getBackupAnnotations("pgdata")
+            ),
             bootstrap = BootstrapConfiguration(
                 initdb = BootstrapInitDB(
                     database = postgresNameMapper.getDatabaseName(primary),
