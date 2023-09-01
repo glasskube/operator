@@ -38,6 +38,7 @@ import eu.glasskube.operator.apps.glitchtip.genericResourceName
 import eu.glasskube.operator.apps.glitchtip.resourceLabelSelector
 import eu.glasskube.operator.apps.glitchtip.resourceLabels
 import eu.glasskube.operator.apps.glitchtip.secretName
+import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.generic.condition.DeploymentReadyCondition
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
@@ -50,7 +51,8 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
     labelSelector = GlitchtipReconciler.SELECTOR,
     resourceDiscriminator = GlitchtipDeployment.Discriminator::class
 )
-class GlitchtipDeployment : CRUDKubernetesDependentResource<Deployment, Glitchtip>(Deployment::class.java) {
+class GlitchtipDeployment(private val configService: ConfigService) :
+    CRUDKubernetesDependentResource<Deployment, Glitchtip>(Deployment::class.java) {
 
     internal class Discriminator : ResourceIDMatcherDiscriminator<Deployment, Glitchtip>({
         ResourceID(it.genericResourceName, it.namespace)
@@ -73,6 +75,7 @@ class GlitchtipDeployment : CRUDKubernetesDependentResource<Deployment, Glitchti
             template {
                 metadata {
                     labels = primary.resourceLabels
+                    annotations = configService.getBackupAnnotations(Glitchtip.UPLOADS_VOLUME_NAME)
                 }
                 spec {
                     containers = listOf(

@@ -35,6 +35,7 @@ import eu.glasskube.operator.apps.gitlab.genericResourceName
 import eu.glasskube.operator.apps.gitlab.resourceLabelSelector
 import eu.glasskube.operator.apps.gitlab.resourceLabels
 import eu.glasskube.operator.apps.gitlab.volumeName
+import eu.glasskube.operator.config.ConfigService
 import io.fabric8.kubernetes.api.model.VolumeMount
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
@@ -42,7 +43,9 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernete
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = GitlabReconciler.SELECTOR)
-class GitlabDeployment : CRUDKubernetesDependentResource<Deployment, Gitlab>(Deployment::class.java) {
+class GitlabDeployment(private val configService: ConfigService) :
+    CRUDKubernetesDependentResource<Deployment, Gitlab>(Deployment::class.java) {
+
     override fun desired(primary: Gitlab, context: Context<Gitlab>) = deployment {
         metadata {
             name = primary.genericResourceName
@@ -57,6 +60,7 @@ class GitlabDeployment : CRUDKubernetesDependentResource<Deployment, Gitlab>(Dep
             template {
                 metadata {
                     labels = primary.resourceLabels
+                    annotations = configService.getBackupAnnotations(VOLUME_NAME)
                 }
                 spec {
                     volumes = listOf(

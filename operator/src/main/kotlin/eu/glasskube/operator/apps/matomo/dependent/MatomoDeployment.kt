@@ -33,13 +33,15 @@ import eu.glasskube.operator.apps.matomo.deploymentName
 import eu.glasskube.operator.apps.matomo.identifyingLabel
 import eu.glasskube.operator.apps.matomo.resourceLabels
 import eu.glasskube.operator.apps.matomo.volumeName
+import eu.glasskube.operator.config.ConfigService
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = MatomoReconciler.SELECTOR)
-class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Deployment::class.java) {
+class MatomoDeployment(private val configService: ConfigService) :
+    CRUDKubernetesDependentResource<Deployment, Matomo>(Deployment::class.java) {
 
     companion object {
         private const val wwwDataVolumeName = "data"
@@ -71,6 +73,7 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
             template {
                 metadata {
                     labels = primary.resourceLabels
+                    annotations = configService.getBackupAnnotations(wwwDataVolumeName)
                 }
                 spec {
                     initContainers = listOf(

@@ -44,6 +44,16 @@ class ConfigService(
         get() = this[ConfigKey.cloudProvider]?.let { CloudProvider.valueOf(it) }
             ?: dynamicCloudProvider
 
+    val backupAnnotationsEnabled: Boolean
+        get() = this[ConfigKey.backupAnnotationsEnabled].toBoolean()
+
+    fun getBackupAnnotations(vararg volumeNames: String): Map<String, String> =
+        if (backupAnnotationsEnabled) {
+            mapOf("backup.velero.io/backup-volumes" to volumeNames.joinToString(","))
+        } else {
+            emptyMap()
+        }
+
     fun getCommonLoadBalancerAnnotations(primary: HasMetadata): Map<String, String> =
         labelSubstitutionService.substituteVariables(
             this[ConfigKey.commonLoadBalancerAnnotations]?.parseAsMap().orEmpty(),
@@ -58,7 +68,8 @@ class ConfigService(
 
     private val dynamicCloudProvider
         get() = when {
-            kubernetesClient.configMaps().inNamespace("kube-system").withName("shoot-info").get()?.data?.get("extensions")?.contains("shoot-dns-service") == true ->
+            kubernetesClient.configMaps().inNamespace("kube-system").withName("shoot-info")
+                .get()?.data?.get("extensions")?.contains("shoot-dns-service") == true ->
                 CloudProvider.gardener
 
             kubernetesClient.nodes().withLabel("eks.amazonaws.com/nodegroup").list().items.isNotEmpty() ->
@@ -66,6 +77,7 @@ class ConfigService(
 
             kubernetesClient.nodes().withLabel("csi.hetzner.cloud/location").list().items.isNotEmpty() ->
                 CloudProvider.hcloud
+
             else ->
                 CloudProvider.generic
         }

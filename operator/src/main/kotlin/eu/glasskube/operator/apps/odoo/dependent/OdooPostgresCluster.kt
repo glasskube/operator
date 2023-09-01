@@ -12,7 +12,8 @@ import eu.glasskube.operator.generic.dependent.postgres.PostgresBackupInfoProvid
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = OdooReconciler.SELECTOR)
-class OdooPostgresCluster(private val configService: ConfigService) : DependentPostgresCluster<Odoo>(Odoo.Postgres) {
+class OdooPostgresCluster(private val configService: ConfigService) :
+    DependentPostgresCluster<Odoo>(Odoo.Postgres, configService) {
     override val Odoo.storageSize get() = "10Gi"
     override val Odoo.storageClass get() = configService[ConfigKey.databaseStorageClassName]
     override val Odoo.backupRetentionPolicy get() = "15d"
