@@ -88,6 +88,57 @@ spec:
                       x-kubernetes-int-or-string: true
                     type: object
                 type: object
+              omnibusConfigOverride:
+                nullable: true
+                type: string
+              registry:
+                nullable: true
+                properties:
+                  host:
+                    type: string
+                  storage:
+                    nullable: true
+                    properties:
+                      s3:
+                        properties:
+                          bucket:
+                            type: string
+                          accessKeySecret:
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                type: string
+                              optional:
+                                type: boolean
+                            type: object
+                          secretKeySecret:
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                type: string
+                              optional:
+                                type: boolean
+                            type: object
+                          region:
+                            type: string
+                          hostname:
+                            type: string
+                          usePathStyle:
+                            type: boolean
+                        required:
+                        - bucket
+                        - accessKeySecret
+                        - secretKeySecret
+                        - region
+                        - hostname
+                        - usePathStyle
+                        type: object
+                    type: object
+                required:
+                - host
+                type: object
             required:
             - host
             type: object
