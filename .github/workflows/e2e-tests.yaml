@@ -58,7 +58,7 @@ jobs:
 
       - name: Run chart-testing (install)
         run: >
-          ct install --chart-dirs charts --skip-clean-up --target-branch ${{ github.event.repository.default_branch }} --all
+          kubectl create ns glasskube-operator && ct install --chart-dirs charts --skip-clean-up --namespace glasskube-operator --target-branch ${{ github.event.repository.default_branch }} --all
           --helm-extra-set-args '--set=cert-manager.enabled=true --set=mariadb-operator.enabled=true --set=cloudnative-pg.enabled=true --set=kube-prometheus-stack.enabled=true'
 
       - name: Run Tests
