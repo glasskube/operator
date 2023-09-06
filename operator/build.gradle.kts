@@ -15,9 +15,6 @@ group = "eu.glasskube.operator"
 
 val javaOperatorVersion: String by project
 val crdGeneratorVersion: String by project
-val slf4jVersion: String by project
-val logbackVersion: String by project
-val jacksonVersion: String by project
 val bouncyCastleVersion: String by project
 val minioVersion: String by project
 
@@ -25,10 +22,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
 
     implementation("io.javaoperatorsdk", "operator-framework", javaOperatorVersion)
-    implementation("org.slf4j", "slf4j-api", slf4jVersion)
-    implementation("ch.qos.logback", "logback-core", logbackVersion)
-    implementation("ch.qos.logback", "logback-classic", logbackVersion)
-    implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", jacksonVersion)
+    implementation("com.fasterxml.jackson.module", "jackson-module-kotlin")
     implementation("org.bouncycastle", "bcpkix-jdk15to18", bouncyCastleVersion)
     implementation("io.minio", "minio", minioVersion)
     implementation("io.minio", "minio-admin", minioVersion)
