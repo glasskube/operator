@@ -43,7 +43,7 @@ dependencies:
     version: 50.3.1
   - name: mariadb-operator
     condition: mariadb-operator.enabled
-    version: 0.19.0
+    version: 0.20.0
     repository: https://mariadb-operator.github.io/mariadb-operator
   - name: cloudnative-pg
     condition: cloudnative-pg.enabled
