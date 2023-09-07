@@ -70,7 +70,7 @@
       "log_level": "ERROR"
     },
     "General": {
-      "force_ssl": 0,
+      "force_ssl": 1,
       "show_update_notification_to_superusers_only": 1,
       "noreply_email_address": "",
       "enable_framed_pages": 1,
