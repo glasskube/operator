@@ -13,7 +13,7 @@ import io.fabric8.kubernetes.model.annotation.Version
 class Vault : CustomResource<VaultSpec, VaultStatus>(), Namespaced {
     companion object {
         internal const val APP_NAME = "vault"
-        internal const val APP_VERSION = "1.14.0"
+        internal const val APP_VERSION = "1.14.2"
         internal const val APP_IMAGE = "hashicorp/$APP_NAME:$APP_VERSION"
     }
 
