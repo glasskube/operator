@@ -26,7 +26,7 @@ data class OdooStatus(
 class Odoo : CustomResource<OdooSpec, OdooStatus>(), Namespaced {
     internal companion object {
         const val APP_NAME = "odoo"
-        const val APP_VERSION = "16.0.20230710"
+        const val APP_VERSION = "16.0.20230901"
         const val APP_IMAGE = "glasskube/$APP_NAME:$APP_VERSION"
 
         const val volumeName = "web-data"
