@@ -61,12 +61,14 @@ class NextcloudConfigMap : CRUDKubernetesDependentResource<ConfigMap, Nextcloud>
                     spec.apps.oidc?.let { "oidc_login_logout_url" to spec.host },
                     spec.apps.oidc?.let { "oidc_login_button_text" to "Login with " + it.name },
                     spec.apps.oidc?.let { "oidc_login_disable_registration" to false },
-                    spec.apps.oidc?.let { "oidc_login_scope" to "openid profile email"},
-                    spec.apps.oidc?.let { "oidc_login_attributes" to mapOf(
-                        "id" to "sub",
-                        "name" to "name",
-                        "mail" to "email",)
-                    },
+                    spec.apps.oidc?.let { "oidc_login_scope" to "openid profile email" },
+                    spec.apps.oidc?.let {
+                        "oidc_login_attributes" to mapOf(
+                            "id" to "sub",
+                            "name" to "name",
+                            "mail" to "email"
+                        )
+                    }
                 ).toMap(),
                 listOfNotNull(
                     spec.apps.office?.let {
