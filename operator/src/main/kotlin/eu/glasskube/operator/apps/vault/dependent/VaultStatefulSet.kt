@@ -28,6 +28,7 @@ import eu.glasskube.operator.apps.vault.headlessServiceName
 import eu.glasskube.operator.apps.vault.resourceLabelSelector
 import eu.glasskube.operator.apps.vault.resourceLabels
 import eu.glasskube.operator.apps.vault.tlsSecretName
+import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.utils.resourceProperty
 import io.fabric8.kubernetes.api.model.EnvVar
 import io.fabric8.kubernetes.api.model.VolumeMount
@@ -35,7 +36,9 @@ import io.fabric8.kubernetes.api.model.apps.StatefulSet
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 
-class VaultStatefulSet : CRUDKubernetesDependentResource<StatefulSet, Vault>(StatefulSet::class.java) {
+class VaultStatefulSet(private val configService: ConfigService) :
+    CRUDKubernetesDependentResource<StatefulSet, Vault>(StatefulSet::class.java) {
+
     override fun desired(primary: Vault, context: Context<Vault>) = statefulSet {
         metadata {
             name(primary.genericResourceName)
@@ -64,6 +67,9 @@ class VaultStatefulSet : CRUDKubernetesDependentResource<StatefulSet, Vault>(Sta
             template {
                 metadata {
                     labels = primary.resourceLabels
+
+                    annotations =
+                        if (primary.spec.auditStorage.enabled) configService.getBackupAnnotations(AUDIT_VOLUME_NAME) else emptyMap()
                 }
 
                 spec {
