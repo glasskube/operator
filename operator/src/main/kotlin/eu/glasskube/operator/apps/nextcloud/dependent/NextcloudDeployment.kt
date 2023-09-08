@@ -108,18 +108,15 @@ class NextcloudDeployment : CRUDKubernetesDependentResource<Deployment, Nextclou
                             command = listOf("sh")
                             args = listOf(
                                 "-c",
-                                """
-                                    php $OCC_PATH app:install richdocuments
-                                    php $OCC_PATH app:install contacts
-                                    php $OCC_PATH app:install calendar
-                                    php $OCC_PATH app:install user_oidc
-                                    php ./occ user_oidc:provider ${primary.spec.apps.oidc?.name} \
-                                        --clientid=${primary.spec.apps.oidc?.clientId} \
-                                        --clientsecret=${primary.spec.apps.oidc?.clientSecret} \
-                                        --discoveryuri=${primary.spec.apps.oidc?.discoveryEndpoint} \
-                                        --unique-uid=0
-                                    true
-                                """.trimIndent()
+                                listOf(
+                                    "php $OCC_PATH app:install richdocuments",
+                                    "php $OCC_PATH app:install contacts",
+                                    "php $OCC_PATH app:install calendar",
+                                    primary.spec.apps?.oidc.let {
+                                        "php $OCC_PATH app:install oidc_login"
+                                    },
+                                    "true"
+                                ).joinToString("\n") { it }
                             )
                             securityContext {
                                 runAsUser = 33
@@ -181,7 +178,8 @@ class NextcloudDeployment : CRUDKubernetesDependentResource<Deployment, Nextclou
                             name = Nextcloud.APP_NAME
                             image = Nextcloud.APP_IMAGE
                             resources = primary.spec.resources
-                            env = primary.defaultEnv + primary.databaseEnv + primary.smtpEnv + primary.storageEnv
+                            env =
+                                primary.defaultEnv + primary.databaseEnv + primary.smtpEnv + primary.oidcEnv + primary.storageEnv
                             volumeMounts {
                                 volumeMount {
                                     name = DATA_VOLUME
@@ -275,6 +273,19 @@ class NextcloudDeployment : CRUDKubernetesDependentResource<Deployment, Nextclou
             envVar("MAIL_DOMAIN", mailDomain)
             envVar("SMTP_NAME") { secretKeyRef(authSecret.name, "username") }
             envVar("SMTP_PASSWORD") { secretKeyRef(authSecret.name, "password") }
+        }
+
+    private val Nextcloud.oidcEnv
+        get() = createEnv {
+            spec.apps.oidc?.let { envVar("NC_oidc_login_client_id") { secretKeyRef(it.oidcSecret.name, "clientId") } }
+            spec.apps.oidc?.let {
+                envVar("NC_oidc_login_client_secret") {
+                    secretKeyRef(
+                        it.oidcSecret.name,
+                        "clientSecret"
+                    )
+                }
+            }
         }
 
     private val Nextcloud.storageEnv

@@ -1,6 +1,8 @@
 package eu.glasskube.operator.apps.nextcloud
 
 import io.fabric8.generator.annotation.Nullable
+import io.fabric8.generator.annotation.Required
+import io.fabric8.kubernetes.api.model.LocalObjectReference
 
 data class NextcloudAppsSpec(
     @field:Nullable
@@ -11,9 +13,11 @@ data class NextcloudAppsSpec(
         val host: String
     )
     data class Oidc(
+        @field:Required
         val name: String,
-        val clientId: String,
-        val clientSecret: String,
-        val discoveryEndpoint: String
+        @field:Required
+        val oidcSecret: LocalObjectReference,
+        @field:Required
+        val issuerUrl: String
     )
 }

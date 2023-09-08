@@ -33,12 +33,17 @@ spec:
                     properties:
                       name:
                         type: string
-                      clientId:
+                      oidcSecret:
+                        properties:
+                          name:
+                            type: string
+                        type: object
+                      issuerUrl:
                         type: string
-                      clientSecret:
-                        type: string
-                      discoveryEndpoint:
-                        type: string
+                    required:
+                    - name
+                    - oidcSecret
+                    - issuerUrl
                     type: object
                 type: object
               resources:
