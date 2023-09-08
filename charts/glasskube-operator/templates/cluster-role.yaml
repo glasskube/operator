@@ -45,7 +45,6 @@ rules:
       - services
       - secrets
       - configmaps
-      - persistentvolumeclaims
       - serviceaccounts
     verbs:
       - create
@@ -54,6 +53,18 @@ rules:
       - patch
       - update
       - watch
+  - apiGroups:
+      - ""
+    resources:
+      - persistentvolumeclaims
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
+      - delete
   - apiGroups:
       - ""
     resources:
