@@ -6,8 +6,8 @@ import eu.glasskube.kubernetes.api.model.resources
 import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.operator.apps.matomo.Matomo
 import eu.glasskube.operator.apps.matomo.MatomoReconciler
-import eu.glasskube.operator.apps.matomo.persistentVolumeClaimName
 import eu.glasskube.operator.apps.matomo.resourceLabels
+import eu.glasskube.operator.apps.matomo.volumeName
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaim
 import io.fabric8.kubernetes.api.model.Quantity
 import io.javaoperatorsdk.operator.api.reconciler.Context
@@ -19,7 +19,7 @@ class MatomoVolume : CRUDKubernetesDependentResource<PersistentVolumeClaim, Mato
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = persistentVolumeClaim {
         metadata {
-            name = primary.persistentVolumeClaimName
+            name = primary.volumeName
             namespace = primary.metadata.namespace
             labels = primary.resourceLabels
         }

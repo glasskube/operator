@@ -27,8 +27,8 @@ import eu.glasskube.operator.apps.matomo.configSecretName
 import eu.glasskube.operator.apps.matomo.databaseSecretName
 import eu.glasskube.operator.apps.matomo.deploymentName
 import eu.glasskube.operator.apps.matomo.identifyingLabel
-import eu.glasskube.operator.apps.matomo.persistentVolumeClaimName
 import eu.glasskube.operator.apps.matomo.resourceLabels
+import eu.glasskube.operator.apps.matomo.volumeName
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
@@ -38,24 +38,18 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Deployment::class.java) {
 
     companion object {
-        private const val matomoImage = "glasskube/matomo:4.15.1"
-        private const val wwwDataVolumeName = "www-data"
-        private const val miscVolumeName = "misc"
+        private const val wwwDataVolumeName = "data"
         private const val configurationVolumeName = "matomo-configuration"
         private const val secretConfigVolumeName = "secret-configuration"
-        private const val cronVolumeName = "cron"
-        private const val htmlDir = "/var/www/html"
-        private const val miscDir = "$htmlDir/misc"
+        const val htmlDir = "/var/www/html"
         private const val scriptsDir = "/glasskube/scripts"
         private const val configDir = "/glasskube/config"
-        private const val cronDir = "/etc/cron.d"
         const val initSh = "init.sh"
         const val initShPath = "$scriptsDir/$initSh"
         const val installSh = "install.sh"
         const val installShPath = "$scriptsDir/$installSh"
         const val installJson = "install.json"
         const val installJsonPath = "$configDir/$installJson"
-        const val archiveCron = "glasskube-matomo-archive-cron"
     }
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = deployment {
@@ -77,17 +71,13 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                     initContainers = listOf(
                         container {
                             name = "init"
-                            image = matomoImage
+                            image = Matomo.APP_IMAGE
                             command = listOf("sh")
                             args = listOf(initShPath)
                             volumeMounts {
                                 volumeMount {
                                     name = wwwDataVolumeName
                                     mountPath = htmlDir
-                                }
-                                volumeMount {
-                                    name = miscVolumeName
-                                    mountPath = miscDir
                                 }
                                 volumeMount {
                                     name = configurationVolumeName
@@ -98,7 +88,7 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                         },
                         container {
                             name = "install"
-                            image = matomoImage
+                            image = Matomo.APP_IMAGE
                             command = listOf("sh")
                             args = listOf(installShPath)
                             envFrom {
@@ -109,10 +99,6 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                                 volumeMount {
                                     name = wwwDataVolumeName
                                     mountPath = htmlDir
-                                }
-                                volumeMount {
-                                    name = miscVolumeName
-                                    mountPath = miscDir
                                 }
                                 volumeMount {
                                     name = configurationVolumeName
@@ -128,7 +114,7 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                         },
                         container {
                             name = "chown"
-                            image = matomoImage
+                            image = Matomo.APP_IMAGE
                             command = listOf("chown")
                             args = listOf("-R", "www-data:www-data", htmlDir)
                             volumeMounts {
@@ -136,17 +122,13 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                                     name = wwwDataVolumeName
                                     mountPath = htmlDir
                                 }
-                                volumeMount {
-                                    name = miscVolumeName
-                                    mountPath = miscDir
-                                }
                             }
                         }
                     )
                     containers = listOf(
                         container {
-                            name = "matomo"
-                            image = matomoImage
+                            name = Matomo.APP_NAME
+                            image = Matomo.APP_IMAGE
                             ports = listOf(containerPort { containerPort = 80 })
                             resources = primary.spec.resources
                             envFrom {
@@ -158,20 +140,11 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                                     name = wwwDataVolumeName
                                     mountPath = htmlDir
                                 }
-                                volumeMount {
-                                    name = miscVolumeName
-                                    mountPath = miscDir
-                                }
-                                volumeMount {
-                                    name = cronVolumeName
-                                    mountPath = cronDir
-                                }
                             }
                         }
                     )
                     volumes = listOf(
-                        volume(wwwDataVolumeName),
-                        volume(miscVolumeName) { persistentVolumeClaim(primary.persistentVolumeClaimName) },
+                        volume(wwwDataVolumeName) { persistentVolumeClaim(primary.volumeName) },
                         volume(secretConfigVolumeName) { secret(primary.configSecretName) },
                         volume(configurationVolumeName) {
                             configMap(primary.configMapName) {
@@ -179,14 +152,6 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                                 items {
                                     item(installSh, installSh)
                                     item(initSh, initSh)
-                                }
-                            }
-                        },
-                        volume(cronVolumeName) {
-                            configMap(primary.configMapName) {
-                                defaultMode = 420
-                                items {
-                                    item(archiveCron, archiveCron)
                                 }
                             }
                         }

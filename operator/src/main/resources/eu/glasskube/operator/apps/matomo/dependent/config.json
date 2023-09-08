@@ -85,7 +85,7 @@
       "enable_geolocation_admin": 1,
       "proxy_client_headers[]": "HTTP_X_FORWARDED_FOR",
       "browser_archiving_disabled_enforce": 0,
-      "enable_browser_archiving_triggering": 1,
+      "enable_browser_archiving_triggering": 0,
       "archiving_range_force_on_browser_request": 1,
       "enable_sql_optimize_queries": 0,
       "enabled_periods_UI": "day,week,month,year,range",

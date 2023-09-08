@@ -29,20 +29,27 @@ class MatomoStatus {
 @Group("glasskube.eu")
 @Version("v1alpha1")
 @Plural("matomos")
-class Matomo : CustomResource<MatomoSpec, MatomoStatus>(), Namespaced
+class Matomo : CustomResource<MatomoSpec, MatomoStatus>(), Namespaced {
+    companion object {
+        const val APP_NAME = "matomo"
+        const val APP_VERSION = "4.15.1.1"
+        const val APP_IMAGE = "glasskube/$APP_NAME:$APP_VERSION"
+    }
+}
 
-val Matomo.identifyingLabel get() = MatomoReconciler.LABEL to metadata.name
-val Matomo.resourceLabels get() = resourceLabels(MatomoReconciler.APP_NAME, identifyingLabel)
-val Matomo.genericResourceName get() = "${MatomoReconciler.APP_NAME}-${metadata.name}"
-val Matomo.deploymentName get() = genericResourceName
-val Matomo.serviceName get() = genericResourceName
-val Matomo.ingressName get() = genericResourceName
-val Matomo.ingressTlsCertName get() = "$genericResourceName-cert"
-val Matomo.configMapName get() = genericResourceName
-val Matomo.configSecretName get() = "$genericResourceName-config"
-val Matomo.genericMariaDBName get() = "$genericResourceName-mariadb"
-val Matomo.databaseSecretName get() = genericMariaDBName
-val Matomo.mariaDBHost get() = genericMariaDBName
-val Matomo.persistentVolumeClaimName get() = "$genericResourceName-misc"
+internal val Matomo.identifyingLabel get() = MatomoReconciler.LABEL to metadata.name
+internal val Matomo.resourceLabels get() = resourceLabels(Matomo.APP_NAME, identifyingLabel)
+internal val Matomo.genericResourceName get() = "${Matomo.APP_NAME}-${metadata.name}"
+internal val Matomo.cronName get() = "$genericResourceName-cron"
+internal val Matomo.volumeName get() = "$genericResourceName-data"
+internal val Matomo.deploymentName get() = genericResourceName
+internal val Matomo.serviceName get() = genericResourceName
+internal val Matomo.ingressName get() = genericResourceName
+internal val Matomo.ingressTlsCertName get() = "$genericResourceName-cert"
+internal val Matomo.configMapName get() = genericResourceName
+internal val Matomo.configSecretName get() = "$genericResourceName-config"
+internal val Matomo.genericMariaDBName get() = "$genericResourceName-mariadb"
+internal val Matomo.databaseSecretName get() = genericMariaDBName
+internal val Matomo.mariaDBHost get() = genericMariaDBName
 val Matomo.databaseName get() = "matomo"
 val Matomo.databaseUser get() = "matomo"
