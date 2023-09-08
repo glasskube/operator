@@ -37,8 +37,7 @@ class MatomoConfigMap : CRUDKubernetesDependentResource<ConfigMap, Matomo>(Confi
             "MATOMO_FIRST_SITE_URL" to "www.example.com",
             "MATOMO_INSTALL_FILE" to MatomoDeployment.installJsonPath,
             MatomoDeployment.initSh to initSh,
-            MatomoDeployment.installSh to installSh,
-            MatomoDeployment.archiveCron to primary.archiveCron
+            MatomoDeployment.installSh to installSh
         )
     }
 
