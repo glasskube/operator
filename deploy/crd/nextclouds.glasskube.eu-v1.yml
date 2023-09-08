@@ -30,6 +30,7 @@ spec:
                         type: string
                     type: object
                   oidc:
+                    nullable: true
                     properties:
                       name:
                         type: string

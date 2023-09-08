@@ -7,6 +7,7 @@ import io.fabric8.kubernetes.api.model.LocalObjectReference
 data class NextcloudAppsSpec(
     @field:Nullable
     val office: Office? = null,
+    @field:Nullable
     val oidc: Oidc? = null
 ) {
     data class Office(
