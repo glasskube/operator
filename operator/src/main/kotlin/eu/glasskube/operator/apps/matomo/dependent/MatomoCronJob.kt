@@ -38,7 +38,7 @@ class MatomoCronJob : CRUDKubernetesDependentResource<CronJob, Matomo>(CronJob::
             labels = primary.resourceLabels
         }
         spec {
-            schedule = "*/5 * * * *"
+            schedule = "5 * * * *"
             jobTemplate {
                 spec {
                     template {
