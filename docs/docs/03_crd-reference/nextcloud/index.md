@@ -41,6 +41,7 @@ spec:
 | Name   | Type                   |        |
 |--------|------------------------|--------|
 | office | [OfficeSpec](./office) | `null` |
+| oidc   | [OidcSpec](./oidc)     | `null` |
 
 ### StorageSpec {#storage}
 
