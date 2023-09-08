@@ -112,7 +112,7 @@ class NextcloudDeployment : CRUDKubernetesDependentResource<Deployment, Nextclou
                                     "php $OCC_PATH app:install richdocuments",
                                     "php $OCC_PATH app:install contacts",
                                     "php $OCC_PATH app:install calendar",
-                                    primary.spec.apps?.oidc.let {
+                                    primary.spec.apps.oidc.let {
                                         "php $OCC_PATH app:install oidc_login"
                                     },
                                     "true"
