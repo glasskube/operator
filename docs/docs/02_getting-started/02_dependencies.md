@@ -43,7 +43,7 @@ The Glasskube Operator delegates creation and management of PostgreSQL instances
 ## MinIO
 
 ![Static Badge](https://img.shields.io/badge/always_required-gray)
-[![License](https://img.shields.io/github/license/minio/minio)](https://github.com/github/license/minio/minio/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/minio/minio)](https://github.com/minio/minio/blob/master/LICENSE)
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/minio-official)](https://artifacthub.io/packages/helm/minio-official/minio)
 [![GitHub](https://img.shields.io/github/stars/minio/minio)](https://github.com/minio/minio)
 
