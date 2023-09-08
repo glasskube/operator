@@ -21,7 +21,6 @@ import eu.glasskube.kubernetes.api.model.readinessProbe
 import eu.glasskube.kubernetes.api.model.secret
 import eu.glasskube.kubernetes.api.model.secretRef
 import eu.glasskube.kubernetes.api.model.spec
-import eu.glasskube.kubernetes.api.model.startupProbe
 import eu.glasskube.kubernetes.api.model.volume
 import eu.glasskube.kubernetes.api.model.volumeMount
 import eu.glasskube.kubernetes.api.model.volumeMounts
@@ -145,16 +144,6 @@ class MatomoDeployment : CRUDKubernetesDependentResource<Deployment, Matomo>(Dep
                                 volumeMount {
                                     name = wwwDataVolumeName
                                     mountPath = htmlDir
-                                }
-                            }
-                            startupProbe {
-                                periodSeconds = 10
-                                successThreshold = 1
-                                // If the container is still unresponsive after 10 minutes, it will be restarted
-                                failureThreshold = 60
-                                httpGet {
-                                    path = PROBE_PATH
-                                    port = "http".intOrString()
                                 }
                             }
                             livenessProbe {

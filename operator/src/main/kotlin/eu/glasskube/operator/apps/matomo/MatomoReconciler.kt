@@ -14,6 +14,7 @@ import eu.glasskube.operator.apps.matomo.dependent.MatomoIngress
 import eu.glasskube.operator.apps.matomo.dependent.MatomoMariaDB
 import eu.glasskube.operator.apps.matomo.dependent.MatomoService
 import eu.glasskube.operator.apps.matomo.dependent.MatomoVolume
+import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaim
 import io.fabric8.kubernetes.api.model.Secret
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition
@@ -68,6 +69,7 @@ class MatomoReconciler(private val kubernetesClient: KubernetesClient) :
         context.getSecondaryResources(PersistentVolumeClaim::class.java)
             .filter { it.metadata.name.endsWith("-misc") }
             .forEach {
+                log.info("Deleting old persisted volume claim ${it.metadata.name}")
                 kubernetesClient.persistentVolumeClaims().resource(it).delete()
             }
 
@@ -82,5 +84,6 @@ class MatomoReconciler(private val kubernetesClient: KubernetesClient) :
         const val LABEL = "glasskube.eu/Matomo"
         const val SELECTOR = "app.kubernetes.io/managed-by=glasskube-operator,app=$APP_NAME"
         internal const val SECRET_EVENT_SOURCE = "MatomoSecretEventSource"
+        private val log = logger()
     }
 }
