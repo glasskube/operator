@@ -46,6 +46,7 @@ rules:
       - secrets
       - configmaps
       - serviceaccounts
+      - pods
     verbs:
       - create
       - get
@@ -156,3 +157,13 @@ rules:
       - patch
       - update
       - watch
+  - apiGroups: [ rbac.authorization.k8s.io ]
+    resources:
+      - clusterrolebindings
+    verbs:
+      - delete
+  - apiGroups: [ rbac.authorization.k8s.io ]
+    resources: [ clusterroles ]
+    resourceNames: [ system:auth-delegator ]
+    verbs:
+      - bind
