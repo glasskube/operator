@@ -15,7 +15,7 @@ import io.fabric8.kubernetes.model.annotation.Version
 class Glitchtip : CustomResource<GlitchtipSpec, GlitchtipStatus>(), Namespaced {
     companion object {
         const val APP_NAME = "glitchtip"
-        const val APP_VERSION = "3.3.0"
+        const val APP_VERSION = "3.3.1"
         const val UPLOADS_DIR = "/code/uploads"
         const val UPLOADS_VOLUME_NAME = "uploads"
         const val APP_UID = 5000L
@@ -30,10 +30,10 @@ class Glitchtip : CustomResource<GlitchtipSpec, GlitchtipStatus>(), Namespaced {
         override fun getVersion(primary: Glitchtip) = VERSION
 
         override fun getLabels(primary: Glitchtip) =
-            Labels.resourceLabels(NAME, primary.metadata.name, Glitchtip.APP_NAME, VERSION, NAME)
+            Labels.resourceLabels(NAME, primary.metadata.name, APP_NAME, VERSION, NAME)
 
         override fun getLabelSelector(primary: Glitchtip) =
-            Labels.resourceLabelSelector(NAME, primary.metadata.name, Glitchtip.APP_NAME)
+            Labels.resourceLabelSelector(NAME, primary.metadata.name, APP_NAME)
     }
 
     object Postgres : PostgresNameMapper<Glitchtip>() {
