@@ -21,10 +21,16 @@ jobs:
         with:
           java-version: 17
           distribution: zulu
-          cache: gradle
+      - uses: gradle/gradle-build-action@ef76a971e2fa3f867b617efd72f2fbd72cf6f8bc # v2.8.0
+        with:
+          dependency-graph: generate
       - name: Java build
         run: ./gradlew assemble
       - name: Tests
         run: ./gradlew test
+        env:
+          GITHUB_DEPENDENCY_GRAPH_ENABLED: false
       - name: Lint
         run: ./gradlew --continue ktlintCheck
+        env:
+          GITHUB_DEPENDENCY_GRAPH_ENABLED: false
