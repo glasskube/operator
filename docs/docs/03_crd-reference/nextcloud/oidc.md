@@ -19,3 +19,10 @@ The Glasskube operator can configure the [`oidc_login`](https://apps.nextcloud.c
 | name       | String                                                                                                                 | (required) |
 | issuerUrl  | String                                                                                                                 | (required) |
 | oidcSecret | [LocalObjectReference](https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/local-object-reference/) | (required) |
+
+### OidcSecret
+
+| Key          | Description                                                |            |
+|--------------|------------------------------------------------------------|------------|
+| clientId     | Id of the client/application in your OIDC provider         | (required) |
+| clientSecret | Secret corresponding to the clientId in your OIDC provider | (required) |
