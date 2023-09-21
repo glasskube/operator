@@ -48,7 +48,7 @@ class KeycloakIngress(configService: ConfigService) : DependentIngress<Keycloak>
      */
     private val Keycloak.exposedPrefixPaths
         get() = listOf("/js/", "/realms/", "/resources/") +
-            if (spec.management.enabled) listOf("/admin/") else emptyList()
+            if (spec.management.enabled) listOf("/admin/", "/welcome-content/") else emptyList()
 
     private val Keycloak.exposedExactPaths
         get() = listOf("/robots.txt") +
