@@ -19,11 +19,11 @@ class SecretGenerator(private val random: Random) : Reconciler<Secret> {
         val generateKeys = resource.metadata.annotations[GENERATE_KEYS]?.split(',')?.toSet().orEmpty()
         val generatedKeys = resource.metadata.annotations[GENERATED_KEYS]?.split(',')?.toSet().orEmpty()
 
-        log.info("Desired keys: $generateKeys")
-        log.info("Existing keys: $generatedKeys")
+        log.debug("Desired keys: {}", generateKeys)
+        log.debug("Existing keys: {}", generatedKeys)
 
         if (generateKeys == generatedKeys) {
-            log.info("No update required")
+            log.debug("No update required")
             return UpdateControl.noUpdate()
         }
 
