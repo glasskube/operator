@@ -12,6 +12,7 @@ import eu.glasskube.kubernetes.api.model.createEnv
 import eu.glasskube.kubernetes.api.model.emptyDir
 import eu.glasskube.kubernetes.api.model.envVar
 import eu.glasskube.kubernetes.api.model.httpGet
+import eu.glasskube.kubernetes.api.model.intOrString
 import eu.glasskube.kubernetes.api.model.limits
 import eu.glasskube.kubernetes.api.model.livenessProbe
 import eu.glasskube.kubernetes.api.model.metadata
@@ -38,7 +39,6 @@ import eu.glasskube.operator.apps.nextcloud.volumeName
 import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.generic.condition.DeploymentReadyCondition
 import io.fabric8.kubernetes.api.model.HTTPHeader
-import io.fabric8.kubernetes.api.model.IntOrString
 import io.fabric8.kubernetes.api.model.Quantity
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
@@ -228,7 +228,7 @@ class NextcloudDeployment(private val configService: ConfigService) :
                                 successThreshold = 1
                                 failureThreshold = 3
                                 httpGet {
-                                    port = IntOrString("http")
+                                    port = intOrString("http")
                                     path = "/login"
                                     httpHeaders = listOf(
                                         HTTPHeader("Host", primary.spec.host)
@@ -240,7 +240,7 @@ class NextcloudDeployment(private val configService: ConfigService) :
                                 successThreshold = 1
                                 failureThreshold = 6
                                 httpGet {
-                                    port = IntOrString("http")
+                                    port = intOrString("http")
                                     path = "/login"
                                     httpHeaders = listOf(
                                         HTTPHeader("Host", primary.spec.host)

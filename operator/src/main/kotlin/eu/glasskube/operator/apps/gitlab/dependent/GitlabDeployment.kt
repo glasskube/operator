@@ -133,7 +133,7 @@ class GitlabDeployment(private val configService: ConfigService) :
                                 failureThreshold = 60
                                 httpGet {
                                     path = "/"
-                                    port = "http".intOrString()
+                                    port = intOrString("http")
                                 }
                             }
                             livenessProbe {
@@ -143,7 +143,7 @@ class GitlabDeployment(private val configService: ConfigService) :
                                 failureThreshold = 6
                                 httpGet {
                                     path = "/"
-                                    port = "http".intOrString()
+                                    port = intOrString("http")
                                 }
                             }
                             readinessProbe {
@@ -152,7 +152,7 @@ class GitlabDeployment(private val configService: ConfigService) :
                                 failureThreshold = 3
                                 httpGet {
                                     path = "/"
-                                    port = "http".intOrString()
+                                    port = intOrString("http")
                                 }
                             }
                         }

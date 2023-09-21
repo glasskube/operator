@@ -91,7 +91,7 @@ class OdooDeployment(private val configService: ConfigService) :
                                 failureThreshold = 60
                                 httpGet {
                                     path = PROBE_PATH
-                                    port = "http".intOrString()
+                                    port = intOrString("http")
                                 }
                             }
                             livenessProbe {
@@ -102,7 +102,7 @@ class OdooDeployment(private val configService: ConfigService) :
                                 timeoutSeconds = 9
                                 httpGet {
                                     path = PROBE_PATH
-                                    port = "http".intOrString()
+                                    port = intOrString("http")
                                 }
                             }
                             readinessProbe {
@@ -112,7 +112,7 @@ class OdooDeployment(private val configService: ConfigService) :
                                 timeoutSeconds = 9
                                 httpGet {
                                     path = PROBE_PATH
-                                    port = "http".intOrString()
+                                    port = intOrString("http")
                                 }
                             }
                         }

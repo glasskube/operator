@@ -1,12 +1,12 @@
 package eu.glasskube.operator.generic.dependent.redis
 
+import eu.glasskube.kubernetes.api.model.intOrString
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.kubernetes.api.model.service
 import eu.glasskube.kubernetes.api.model.servicePort
 import eu.glasskube.kubernetes.api.model.spec
 import io.fabric8.kubernetes.api.model.HasMetadata
-import io.fabric8.kubernetes.api.model.IntOrString
 import io.fabric8.kubernetes.api.model.Service
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
@@ -25,7 +25,7 @@ abstract class RedisService<T : HasMetadata> :
             ports = listOf(
                 servicePort {
                     port = 6379
-                    targetPort = IntOrString(6379)
+                    targetPort = intOrString(6379)
                 }
             )
         }

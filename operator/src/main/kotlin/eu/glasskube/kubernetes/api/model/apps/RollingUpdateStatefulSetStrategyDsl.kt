@@ -12,11 +12,11 @@ class RollingUpdateStatefulSetStrategyDsl private constructor() {
     }
 
     fun maxUnavailable(maxUnavailable: Int) {
-        builder.withMaxUnavailable(maxUnavailable.intOrString())
+        builder.withMaxUnavailable(intOrString(maxUnavailable))
     }
 
     fun maxUnavailable(maxUnavailable: String) {
-        builder.withMaxUnavailable(maxUnavailable.intOrString())
+        builder.withMaxUnavailable(intOrString(maxUnavailable))
     }
 
     fun build(): RollingUpdateStatefulSetStrategy = builder.build()

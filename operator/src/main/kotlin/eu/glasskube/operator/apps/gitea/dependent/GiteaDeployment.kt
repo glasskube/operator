@@ -12,6 +12,7 @@ import eu.glasskube.kubernetes.api.model.containerPort
 import eu.glasskube.kubernetes.api.model.env
 import eu.glasskube.kubernetes.api.model.envFrom
 import eu.glasskube.kubernetes.api.model.envVar
+import eu.glasskube.kubernetes.api.model.intOrString
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.persistentVolumeClaim
 import eu.glasskube.kubernetes.api.model.secretKeyRef
@@ -33,7 +34,6 @@ import eu.glasskube.operator.apps.gitea.secretName
 import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.utils.addTo
 import io.fabric8.kubernetes.api.model.HTTPGetAction
-import io.fabric8.kubernetes.api.model.IntOrString
 import io.fabric8.kubernetes.api.model.Probe
 import io.fabric8.kubernetes.api.model.SecurityContext
 import io.fabric8.kubernetes.api.model.apps.Deployment
@@ -96,7 +96,7 @@ class GiteaDeployment(private val configService: ConfigService) :
                             livenessProbe = Probe().apply {
                                 httpGet = HTTPGetAction().apply {
                                     path = "/api/healthz"
-                                    port = IntOrString("http")
+                                    port = intOrString("http")
                                 }
                                 initialDelaySeconds = 200
                                 timeoutSeconds = 5
