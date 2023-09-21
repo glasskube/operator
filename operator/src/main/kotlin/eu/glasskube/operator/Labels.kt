@@ -28,11 +28,13 @@ object Labels {
     fun resourceLabelSelector(
         name: String,
         instance: String,
-        partOf: String? = null
+        partOf: String? = null,
+        component: String? = null
     ) = mutableMapOf(
         NAME to name,
         INSTANCE to instance
     ).also {
         if (partOf != null) it += PART_OF to partOf
+        if (component != null) it += COMPONENT to component
     }.toMap()
 }
