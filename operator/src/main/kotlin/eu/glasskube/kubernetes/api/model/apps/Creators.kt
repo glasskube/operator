@@ -1,8 +1,8 @@
 package eu.glasskube.kubernetes.api.model.apps
 
 import eu.glasskube.kubernetes.api.annotation.KubernetesDslMarker
+import eu.glasskube.kubernetes.api.model.intOrString
 import eu.glasskube.kubernetes.api.model.labelSelector
-import io.fabric8.kubernetes.api.model.IntOrString
 import io.fabric8.kubernetes.api.model.LabelSelector
 import io.fabric8.kubernetes.api.model.PodTemplateSpec
 import io.fabric8.kubernetes.api.model.apps.Deployment
@@ -31,8 +31,8 @@ fun DeploymentSpec.strategyRecreate() {
 
 fun DeploymentSpec.strategyRollingUpdate(
     block: (@KubernetesDslMarker RollingUpdateDeployment).() -> Unit = {
-        maxSurge = IntOrString("25%")
-        maxUnavailable = IntOrString("25%")
+        maxSurge = intOrString("25%")
+        maxUnavailable = intOrString("25%")
     }
 ) {
     strategy = DeploymentStrategy(RollingUpdateDeployment().apply(block), "RollingUpdate")

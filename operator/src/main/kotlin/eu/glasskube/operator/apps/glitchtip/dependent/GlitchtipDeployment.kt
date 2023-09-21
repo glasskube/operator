@@ -123,7 +123,7 @@ class GlitchtipDeployment(private val configService: ConfigService) :
                                 failureThreshold = 60
                                 httpGet {
                                     path = PROBE_PATH
-                                    port = HTTP.intOrString()
+                                    port = intOrString(HTTP)
                                 }
                             }
                             livenessProbe {
@@ -133,7 +133,7 @@ class GlitchtipDeployment(private val configService: ConfigService) :
                                 failureThreshold = 6
                                 httpGet {
                                     path = PROBE_PATH
-                                    port = HTTP.intOrString()
+                                    port = intOrString(HTTP)
                                 }
                             }
                             readinessProbe {
@@ -142,7 +142,7 @@ class GlitchtipDeployment(private val configService: ConfigService) :
                                 failureThreshold = 3
                                 httpGet {
                                     path = PROBE_PATH
-                                    port = HTTP.intOrString()
+                                    port = intOrString(HTTP)
                                 }
                             }
                             volumeMounts {

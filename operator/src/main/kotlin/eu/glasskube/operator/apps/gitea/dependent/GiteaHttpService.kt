@@ -1,5 +1,6 @@
 package eu.glasskube.operator.apps.gitea.dependent
 
+import eu.glasskube.kubernetes.api.model.intOrString
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.service
 import eu.glasskube.kubernetes.api.model.servicePort
@@ -9,7 +10,6 @@ import eu.glasskube.operator.apps.gitea.GiteaReconciler
 import eu.glasskube.operator.apps.gitea.httpServiceName
 import eu.glasskube.operator.apps.gitea.resourceLabelSelector
 import eu.glasskube.operator.apps.gitea.resourceLabels
-import io.fabric8.kubernetes.api.model.IntOrString
 import io.fabric8.kubernetes.api.model.Service
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
@@ -37,7 +37,7 @@ class GiteaHttpService : CRUDKubernetesDependentResource<Service, Gitea>(Service
                 servicePort {
                     port = 3000
                     name = "http"
-                    targetPort = IntOrString(3000)
+                    targetPort = intOrString(3000)
                 }
             )
         }

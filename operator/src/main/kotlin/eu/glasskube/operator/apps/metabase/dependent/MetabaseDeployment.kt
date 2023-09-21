@@ -95,7 +95,7 @@ class MetabaseDeployment : CRUDKubernetesDependentResource<Deployment, Metabase>
                                 failureThreshold = 60
                                 httpGet {
                                     path = PROBE_PATH
-                                    port = "http".intOrString()
+                                    port = intOrString("http")
                                 }
                             }
                             livenessProbe {
@@ -105,7 +105,7 @@ class MetabaseDeployment : CRUDKubernetesDependentResource<Deployment, Metabase>
                                 failureThreshold = 6
                                 httpGet {
                                     path = PROBE_PATH
-                                    port = "http".intOrString()
+                                    port = intOrString("http")
                                 }
                             }
                             readinessProbe {
@@ -114,7 +114,7 @@ class MetabaseDeployment : CRUDKubernetesDependentResource<Deployment, Metabase>
                                 failureThreshold = 3
                                 httpGet {
                                     path = PROBE_PATH
-                                    port = "http".intOrString()
+                                    port = intOrString("http")
                                 }
                             }
                         }

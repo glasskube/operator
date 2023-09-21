@@ -157,7 +157,7 @@ class MatomoDeployment(private val configService: ConfigService) :
                                 timeoutSeconds = 9
                                 httpGet {
                                     path = PROBE_PATH
-                                    port = "http".intOrString()
+                                    port = intOrString("http")
                                 }
                             }
                             readinessProbe {
@@ -167,7 +167,7 @@ class MatomoDeployment(private val configService: ConfigService) :
                                 timeoutSeconds = 9
                                 httpGet {
                                     path = PROBE_PATH
-                                    port = "http".intOrString()
+                                    port = intOrString("http")
                                 }
                             }
                         }

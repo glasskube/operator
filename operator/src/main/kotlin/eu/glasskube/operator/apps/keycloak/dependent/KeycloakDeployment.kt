@@ -11,6 +11,7 @@ import eu.glasskube.kubernetes.api.model.env
 import eu.glasskube.kubernetes.api.model.envVar
 import eu.glasskube.kubernetes.api.model.envVars
 import eu.glasskube.kubernetes.api.model.httpGet
+import eu.glasskube.kubernetes.api.model.intOrString
 import eu.glasskube.kubernetes.api.model.livenessProbe
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.namespace
@@ -25,7 +26,6 @@ import eu.glasskube.operator.apps.keycloak.discoveryServiceName
 import eu.glasskube.operator.apps.keycloak.genericResourceName
 import eu.glasskube.operator.apps.keycloak.resourceLabelSelector
 import eu.glasskube.operator.apps.keycloak.resourceLabels
-import io.fabric8.kubernetes.api.model.IntOrString
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
@@ -85,7 +85,7 @@ class KeycloakDeployment : CRUDKubernetesDependentResource<Deployment, Keycloak>
                                 successThreshold = 1
                                 failureThreshold = 6
                                 httpGet {
-                                    port = IntOrString("http")
+                                    port = intOrString("http")
                                     path = "/health/live"
                                 }
                             }
@@ -94,7 +94,7 @@ class KeycloakDeployment : CRUDKubernetesDependentResource<Deployment, Keycloak>
                                 successThreshold = 1
                                 failureThreshold = 3
                                 httpGet {
-                                    port = IntOrString("http")
+                                    port = intOrString("http")
                                     path = "/health/ready"
                                 }
                             }

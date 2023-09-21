@@ -1,5 +1,6 @@
 package eu.glasskube.operator.apps.gitea.dependent
 
+import eu.glasskube.kubernetes.api.model.intOrString
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.service
 import eu.glasskube.kubernetes.api.model.servicePort
@@ -10,7 +11,6 @@ import eu.glasskube.operator.apps.gitea.resourceLabelSelector
 import eu.glasskube.operator.apps.gitea.resourceLabels
 import eu.glasskube.operator.apps.gitea.sshServiceName
 import eu.glasskube.operator.config.ConfigService
-import io.fabric8.kubernetes.api.model.IntOrString
 import io.fabric8.kubernetes.api.model.Service
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
@@ -50,7 +50,7 @@ class GiteaSSHService(private val configService: ConfigService) :
                 servicePort {
                     port = 22
                     name = "ssh"
-                    targetPort = IntOrString(22)
+                    targetPort = intOrString(22)
                 }
             )
         }
