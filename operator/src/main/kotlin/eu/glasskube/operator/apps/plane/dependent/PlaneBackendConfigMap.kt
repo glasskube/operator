@@ -49,7 +49,8 @@ class PlaneBackendConfigMap : CRUDKubernetesDependentResource<ConfigMap, Plane>(
                 "EMAIL_HOST" to host,
                 "EMAIL_PORT" to port.toString(),
                 "EMAIL_FROM" to fromAddress,
-                "EMAIL_USE_TLS" to if (tlsEnabled) "1" else "0"
+                "EMAIL_USE_TLS" to if (tlsEnabled) "1" else "0",
+                "EMAIL_USE_SSL" to if (sslEnabled) "1" else "0"
             )
         }.orEmpty()
 
