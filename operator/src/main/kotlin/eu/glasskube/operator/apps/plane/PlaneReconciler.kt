@@ -26,6 +26,7 @@ import eu.glasskube.operator.apps.plane.dependent.PlaneWorkerDeployment
 import eu.glasskube.operator.generic.condition.isReady
 import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.infra.postgres.isReady
+import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.apps.Deployment
@@ -140,6 +141,7 @@ import kotlin.jvm.optionals.getOrDefault
 )
 class PlaneReconciler : Reconciler<Plane>, EventSourceInitializer<Plane> {
     override fun reconcile(resource: Plane, context: Context<Plane>) = with(context) {
+        log.info("Reconciling ${resource.metadata.name}@${resource.metadata.namespace}")
         resource.patchOrUpdateStatus(
             PlaneStatus(
                 frontend = getSecondaryResource(PlaneFrontendDeployment.Discriminator()).getComponentStatus(),
@@ -171,5 +173,7 @@ class PlaneReconciler : Reconciler<Plane>, EventSourceInitializer<Plane> {
         internal const val SERVICE_EVENT_SOURCE = "PlaneServiceEventSource"
         internal const val DEPLOYMENT_EVENT_SOURCE = "PlaneDeploymentEventSource"
         internal const val CONFIGMAP_EVENT_SOURCE = "PlaneConfigMapEventSource"
+
+        private val log = logger()
     }
 }
