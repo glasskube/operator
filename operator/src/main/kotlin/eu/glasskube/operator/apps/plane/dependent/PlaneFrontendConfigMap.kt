@@ -3,9 +3,11 @@ package eu.glasskube.operator.apps.plane.dependent
 import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.namespace
+import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.apps.plane.Plane
 import eu.glasskube.operator.apps.plane.frontendResourceLabels
 import eu.glasskube.operator.apps.plane.frontendResourceName
+import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
@@ -34,5 +36,17 @@ class PlaneFrontendConfigMap : CRUDKubernetesDependentResource<ConfigMap, Plane>
             "NEXT_PUBLIC_DEPLOY_URL" to "https://${primary.spec.host}/spaces",
             "NEXT_PUBLIC_API_BASE_URL" to "https://${primary.spec.host}"
         )
+    }
+
+    override fun onUpdated(primary: Plane, updated: ConfigMap, actual: ConfigMap, context: Context<Plane>) {
+        super.onUpdated(primary, updated, actual, context)
+        context.getSecondaryResource(PlaneFrontendDeployment.Discriminator()).ifPresent {
+            log.info("Restarting frontend Deployment after ConfigMap changed")
+            kubernetesClient.apps().deployments().resource(it).rolling().restart()
+        }
+    }
+
+    companion object {
+        private val log = logger()
     }
 }
