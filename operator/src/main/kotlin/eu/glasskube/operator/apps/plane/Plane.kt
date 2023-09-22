@@ -63,6 +63,8 @@ internal val Plane.genericResourceLabels
 internal val Plane.genericResourceLabelSelector
     get() = Labels.resourceLabelSelector(Plane.APP_NAME, metadata.name)
 
+internal val Plane.tlsSecretName get() = "$genericResourceName-tls"
+
 internal val Plane.frontendResourceName get() = "$genericResourceName-${Plane.FRONTEND_NAME}"
 internal val Plane.frontendResourceLabels get() = genericResourceLabels + frontendComponentLabel
 internal val Plane.frontendResourceLabelSelector get() = genericResourceLabelSelector + frontendComponentLabel
