@@ -6,7 +6,6 @@ import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.apps.plane.Plane
 import eu.glasskube.operator.apps.plane.Plane.Redis.redisName
-import eu.glasskube.operator.apps.plane.apiResourceName
 import eu.glasskube.operator.apps.plane.backendResourceName
 import eu.glasskube.operator.apps.plane.genericResourceLabels
 import eu.glasskube.utils.logger
@@ -17,9 +16,9 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernete
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 import io.javaoperatorsdk.operator.processing.event.ResourceID
 
-@KubernetesDependent(resourceDiscriminator = PlaneApiConfigMap.Discriminator::class)
+@KubernetesDependent(resourceDiscriminator = PlaneBackendConfigMap.Discriminator::class)
 class PlaneBackendConfigMap : CRUDKubernetesDependentResource<ConfigMap, Plane>(ConfigMap::class.java) {
-    internal class Discriminator : ResourceIDMatcherDiscriminator<ConfigMap, Plane>({ ResourceID(it.apiResourceName) })
+    internal class Discriminator : ResourceIDMatcherDiscriminator<ConfigMap, Plane>({ ResourceID(it.backendResourceName) })
 
     override fun desired(primary: Plane, context: Context<Plane>) = configMap {
         metadata {
