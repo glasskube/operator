@@ -107,7 +107,8 @@ data class PlaneSpec(
         val fromAddress: String,
         @field:Required
         val authSecret: LocalObjectReference,
-        val tlsEnabled: Boolean = true
+        val tlsEnabled: Boolean = true,
+        val sslEnabled: Boolean = false
     )
 
     data class S3Spec(

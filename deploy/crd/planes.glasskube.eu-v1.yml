@@ -190,6 +190,8 @@ spec:
                     type: object
                   tlsEnabled:
                     type: boolean
+                  sslEnabled:
+                    type: boolean
                 required:
                 - host
                 - fromAddress
