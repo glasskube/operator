@@ -14,8 +14,10 @@ import eu.glasskube.operator.apps.plane.frontendResourceName
 import eu.glasskube.operator.apps.plane.genericResourceLabels
 import eu.glasskube.operator.apps.plane.genericResourceName
 import eu.glasskube.operator.apps.plane.spaceResourceName
+import eu.glasskube.operator.apps.plane.tlsSecretName
 import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.generic.dependent.DependentIngress
+import io.fabric8.kubernetes.api.model.networking.v1.IngressTLS
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
@@ -39,6 +41,9 @@ class PlaneIngress(configService: ConfigService) : DependentIngress<Plane>(confi
                         ingressPath("/", "Prefix", ingressBackend(primary.frontendResourceName, 3000))
                     )
                 }
+            )
+            tls = listOf(
+                IngressTLS(listOf(primary.spec.host), primary.tlsSecretName)
             )
         }
     }
