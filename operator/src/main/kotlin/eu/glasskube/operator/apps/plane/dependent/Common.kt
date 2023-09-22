@@ -17,4 +17,8 @@ val Plane.commonBackendEnv
             envVar("EMAIL_HOST_USER") { secretKeyRef(authSecret.name, "username") }
             envVar("EMAIL_HOST_PASSWORD") { secretKeyRef(authSecret.name, "password") }
         }
+        spec.s3?.apply {
+            envVar("AWS_ACCESS_KEY_ID") { secretKeyRef(accessKeySecret.name, accessKeySecret.key) }
+            envVar("AWS_SECRET_ACCESS_KEY") { secretKeyRef(secretKeySecret.name, secretKeySecret.key) }
+        }
     }
