@@ -28,30 +28,25 @@ spec:
                     properties:
                       host:
                         type: string
+                      version:
+                        type: string
                     type: object
-                type: object
-              resources:
-                properties:
-                  claims:
-                    items:
-                      properties:
-                        name:
-                          type: string
-                      type: object
-                    type: array
-                  limits:
-                    additionalProperties:
-                      anyOf:
-                      - type: integer
-                      - type: string
-                      x-kubernetes-int-or-string: true
-                    type: object
-                  requests:
-                    additionalProperties:
-                      anyOf:
-                      - type: integer
-                      - type: string
-                      x-kubernetes-int-or-string: true
+                  oidc:
+                    nullable: true
+                    properties:
+                      name:
+                        type: string
+                      oidcSecret:
+                        properties:
+                          name:
+                            type: string
+                        type: object
+                      issuerUrl:
+                        type: string
+                    required:
+                    - name
+                    - oidcSecret
+                    - issuerUrl
                     type: object
                 type: object
               smtp:
@@ -127,6 +122,45 @@ spec:
                     - accessKeySecret
                     - secretKeySecret
                     type: object
+                type: object
+              version:
+                pattern: \d+\.\d+\.\d+
+                type: string
+              server:
+                properties:
+                  resources:
+                    nullable: true
+                    properties:
+                      claims:
+                        items:
+                          properties:
+                            name:
+                              type: string
+                          type: object
+                        type: array
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          x-kubernetes-int-or-string: true
+                        type: object
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          x-kubernetes-int-or-string: true
+                        type: object
+                    type: object
+                  maxChildren:
+                    type: integer
+                  startServers:
+                    type: integer
+                  minSpareServers:
+                    type: integer
+                  maxSpareServers:
+                    type: integer
                 type: object
             type: object
           status:

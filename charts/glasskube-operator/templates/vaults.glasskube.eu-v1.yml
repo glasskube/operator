@@ -102,6 +102,9 @@ spec:
                 required:
                 - enabled
                 type: object
+              version:
+                pattern: \d+\.\d+\.\d+
+                type: string
             required:
             - host
             type: object
