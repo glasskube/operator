@@ -60,6 +60,9 @@ spec:
                       type: string
                     concurrency:
                       type: integer
+                    version:
+                      pattern: \d+\.\d+\.\d+
+                      type: string
                   required:
                   - token
                   type: object
@@ -139,6 +142,9 @@ spec:
                 required:
                 - host
                 type: object
+              version:
+                pattern: \d+\.\d+\.\d+
+                type: string
             required:
             - host
             type: object

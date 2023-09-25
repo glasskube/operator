@@ -26,6 +26,9 @@ spec:
                 type: object
               concurrency:
                 type: integer
+              version:
+                pattern: \d+\.\d+\.\d+
+                type: string
             required:
             - token
             - gitlab
