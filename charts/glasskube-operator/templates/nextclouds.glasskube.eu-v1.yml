@@ -29,6 +29,23 @@ spec:
                       host:
                         type: string
                     type: object
+                  oidc:
+                    nullable: true
+                    properties:
+                      name:
+                        type: string
+                      oidcSecret:
+                        properties:
+                          name:
+                            type: string
+                        type: object
+                      issuerUrl:
+                        type: string
+                    required:
+                    - name
+                    - oidcSecret
+                    - issuerUrl
+                    type: object
                 type: object
               resources:
                 properties:
