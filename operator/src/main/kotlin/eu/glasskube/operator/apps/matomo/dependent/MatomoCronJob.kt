@@ -18,12 +18,12 @@ import eu.glasskube.kubernetes.api.model.volumeMounts
 import eu.glasskube.operator.Affinities
 import eu.glasskube.operator.apps.matomo.Matomo
 import eu.glasskube.operator.apps.matomo.MatomoReconciler
+import eu.glasskube.operator.apps.matomo.appImage
 import eu.glasskube.operator.apps.matomo.configMapName
 import eu.glasskube.operator.apps.matomo.cronName
 import eu.glasskube.operator.apps.matomo.databaseSecretName
 import eu.glasskube.operator.apps.matomo.resourceLabels
 import eu.glasskube.operator.apps.matomo.volumeName
-import eu.glasskube.operator.apps.nextcloud.volumeName
 import io.fabric8.kubernetes.api.model.batch.v1.CronJob
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
@@ -52,7 +52,7 @@ class MatomoCronJob : CRUDKubernetesDependentResource<CronJob, Matomo>(CronJob::
                             containers = listOf(
                                 container {
                                     name = Matomo.APP_NAME
-                                    image = Matomo.APP_IMAGE
+                                    image = primary.appImage
                                     command = listOf("/var/www/html/console")
                                     args = listOf("core:archive", "--url=https://${primary.spec.host}")
                                     envFrom {

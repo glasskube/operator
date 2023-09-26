@@ -23,6 +23,7 @@ import eu.glasskube.operator.apps.vault.Vault
 import eu.glasskube.operator.apps.vault.Vault.Postgres.postgresDatabaseName
 import eu.glasskube.operator.apps.vault.Vault.Postgres.postgresHostName
 import eu.glasskube.operator.apps.vault.Vault.Postgres.postgresSecretName
+import eu.glasskube.operator.apps.vault.appImage
 import eu.glasskube.operator.apps.vault.genericResourceName
 import eu.glasskube.operator.apps.vault.headlessServiceName
 import eu.glasskube.operator.apps.vault.resourceLabelSelector
@@ -95,7 +96,7 @@ class VaultStatefulSet(private val configService: ConfigService) :
                     containers = listOf(
                         container {
                             name = Vault.APP_NAME
-                            image = Vault.APP_IMAGE
+                            image = primary.appImage
 
                             ports = listOf(
                                 containerPort {

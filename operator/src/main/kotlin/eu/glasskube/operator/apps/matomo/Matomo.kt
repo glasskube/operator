@@ -1,5 +1,8 @@
 package eu.glasskube.operator.apps.matomo
 
+import eu.glasskube.operator.apps.common.HasUpdatesSpec
+import eu.glasskube.operator.apps.common.ResourceWithUpdatesSpec
+import eu.glasskube.operator.apps.common.SimpleUpdatesSpec
 import eu.glasskube.utils.resourceLabels
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.kubernetes.api.model.Namespaced
@@ -18,8 +21,9 @@ data class MatomoSpec(
         null,
         mapOf("memory" to Quantity("600", "Mi")),
         mapOf("memory" to Quantity("300", "Mi"))
-    )
-)
+    ),
+    override val updates: SimpleUpdatesSpec = SimpleUpdatesSpec("4.15.1.1")
+) : HasUpdatesSpec
 
 class MatomoStatus {
     override fun equals(other: Any?) = this === other || javaClass == other?.javaClass
@@ -29,11 +33,9 @@ class MatomoStatus {
 @Group("glasskube.eu")
 @Version("v1alpha1")
 @Plural("matomos")
-class Matomo : CustomResource<MatomoSpec, MatomoStatus>(), Namespaced {
+class Matomo : CustomResource<MatomoSpec, MatomoStatus>(), Namespaced, ResourceWithUpdatesSpec {
     companion object {
         const val APP_NAME = "matomo"
-        const val APP_VERSION = "4.15.1.1"
-        const val APP_IMAGE = "glasskube/$APP_NAME:$APP_VERSION"
     }
 }
 
@@ -53,3 +55,4 @@ internal val Matomo.databaseSecretName get() = genericMariaDBName
 internal val Matomo.mariaDBHost get() = genericMariaDBName
 val Matomo.databaseName get() = "matomo"
 val Matomo.databaseUser get() = "matomo"
+internal val Matomo.appImage get() = "glasskube/${Matomo.APP_NAME}:${spec.updates.version}"

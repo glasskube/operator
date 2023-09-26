@@ -72,7 +72,7 @@ class GiteaDeployment(private val configService: ConfigService) :
                     containers = listOf(
                         container {
                             name = "gitea"
-                            image = IMAGE
+                            image = primary.image
                             resources = primary.spec.resources
                             ports = listOf(
                                 containerPort {
@@ -90,7 +90,7 @@ class GiteaDeployment(private val configService: ConfigService) :
                             volumeMounts {
                                 volumeMount {
                                     name = VOLUME_NAME
-                                    mountPath = Gitea.WORK_DIR
+                                    mountPath = WORK_DIR
                                 }
                             }
                             livenessProbe = Probe().apply {
@@ -109,25 +109,25 @@ class GiteaDeployment(private val configService: ConfigService) :
                     initContainers = mutableListOf(
                         container {
                             name = "chown-data"
-                            image = IMAGE
+                            image = primary.image
                             command = listOf("chown")
-                            args = listOf("git:git", Gitea.WORK_DIR)
+                            args = listOf("git:git", WORK_DIR)
                             volumeMounts {
                                 volumeMount {
                                     name = VOLUME_NAME
-                                    mountPath = Gitea.WORK_DIR
+                                    mountPath = WORK_DIR
                                 }
                             }
                         },
                         container {
                             name = "environment-to-ini"
-                            image = IMAGE
+                            image = primary.image
                             command = listOf("/bin/sh")
                             args = listOf("-c", "mkdir -p /data/gitea/conf && environment-to-ini")
                             volumeMounts {
                                 volumeMount {
                                     name = VOLUME_NAME
-                                    mountPath = Gitea.WORK_DIR
+                                    mountPath = WORK_DIR
                                 }
                             }
                             envFrom {
@@ -150,13 +150,13 @@ class GiteaDeployment(private val configService: ConfigService) :
                         },
                         container {
                             name = "gitea-migrate"
-                            image = IMAGE
+                            image = primary.image
                             command = listOf("gitea")
                             args = listOf("migrate")
                             volumeMounts {
                                 volumeMount {
                                     name = VOLUME_NAME
-                                    mountPath = Gitea.WORK_DIR
+                                    mountPath = WORK_DIR
                                 }
                             }
                             envFrom {
@@ -172,7 +172,7 @@ class GiteaDeployment(private val configService: ConfigService) :
                             ?.let { adminSecret ->
                                 container {
                                     name = "gitea-admin-user"
-                                    image = IMAGE
+                                    image = primary.image
                                     command = listOf("/bin/sh")
                                     args = listOf(
                                         "-c",
@@ -190,7 +190,7 @@ class GiteaDeployment(private val configService: ConfigService) :
                                     volumeMounts {
                                         volumeMount {
                                             name = VOLUME_NAME
-                                            mountPath = Gitea.WORK_DIR
+                                            mountPath = WORK_DIR
                                         }
                                     }
                                     envFrom {
@@ -215,8 +215,10 @@ class GiteaDeployment(private val configService: ConfigService) :
         }
     }
 
-    private companion object {
-        const val IMAGE = "gitea/gitea:${Gitea.APP_VERSION}"
+    private val Gitea.image get() = "gitea/gitea:${spec.updates.version}"
+
+    companion object {
         private const val VOLUME_NAME = "data"
+        internal const val WORK_DIR = "/data"
     }
 }

@@ -1,6 +1,7 @@
 package eu.glasskube.operator.apps.gitea
 
 import eu.glasskube.operator.Labels
+import eu.glasskube.operator.apps.common.ResourceWithUpdatesSpec
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import eu.glasskube.operator.generic.dependent.redis.RedisNameMapper
 import io.fabric8.kubernetes.api.model.Namespaced
@@ -12,11 +13,9 @@ import io.fabric8.kubernetes.model.annotation.Version
 @Group("glasskube.eu")
 @Version("v1alpha1")
 @Plural("giteas")
-class Gitea : CustomResource<GiteaSpec, GiteaStatus>(), Namespaced {
+class Gitea : CustomResource<GiteaSpec, GiteaStatus>(), Namespaced, ResourceWithUpdatesSpec {
     companion object {
         const val APP_NAME = "gitea"
-        const val APP_VERSION = "1.20.4"
-        const val WORK_DIR = "/data"
     }
 
     object Redis : RedisNameMapper<Gitea>() {
@@ -42,7 +41,7 @@ class Gitea : CustomResource<GiteaSpec, GiteaStatus>(), Namespaced {
 }
 
 val Gitea.resourceLabels
-    get() = Labels.resourceLabels(Gitea.APP_NAME, metadata.name, Gitea.APP_NAME, Gitea.APP_VERSION)
+    get() = Labels.resourceLabels(Gitea.APP_NAME, metadata.name, Gitea.APP_NAME, spec.updates.version)
 val Gitea.resourceLabelSelector
     get() = Labels.resourceLabelSelector(Gitea.APP_NAME, metadata.name, Gitea.APP_NAME)
 val Gitea.genericResourceName get() = "${Gitea.APP_NAME}-${metadata.name}"

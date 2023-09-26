@@ -44,7 +44,7 @@ class GiteaIniConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitea>(Conf
             "GITEA__server__SSH_DOMAIN" to spec.sshHost,
             "GITEA__server__DISABLE_SSH" to (!spec.sshEnabled).toString(),
             "GITEA__service__DISABLE_REGISTRATION" to (!spec.registrationEnabled).toString(),
-            "GITEA__repository__ROOT" to "${Gitea.WORK_DIR}/data/gitea-repositories",
+            "GITEA__repository__ROOT" to "${GiteaDeployment.WORK_DIR}/data/gitea-repositories",
             "GITEA__security__INSTALL_LOCK" to "true",
             "GITEA__session__PROVIDER" to "db",
             "GITEA__indexer__ISSUE_INDEXER_TYPE" to "db",

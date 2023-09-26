@@ -27,7 +27,7 @@ class GiteaConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitea>(ConfigM
             labels = primary.resourceLabels
         }
         data = mapOf(
-            "GITEA_WORK_DIR" to Gitea.WORK_DIR
+            "GITEA_WORK_DIR" to GiteaDeployment.WORK_DIR
         )
     }
 }

@@ -233,6 +233,13 @@ spec:
                 - secretKeySecret
                 - region
                 type: object
+              updates:
+                properties:
+                  version:
+                    type: string
+                required:
+                - version
+                type: object
             required:
             - host
             type: object

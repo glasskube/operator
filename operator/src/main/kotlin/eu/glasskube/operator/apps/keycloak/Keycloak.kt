@@ -1,6 +1,7 @@
 package eu.glasskube.operator.apps.keycloak
 
 import eu.glasskube.operator.Labels
+import eu.glasskube.operator.apps.common.ResourceWithUpdatesSpec
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.client.CustomResource
@@ -9,11 +10,9 @@ import io.fabric8.kubernetes.model.annotation.Version
 
 @Group("glasskube.eu")
 @Version("v1alpha1")
-class Keycloak : CustomResource<KeycloakSpec, KeycloakStatus>(), Namespaced {
+class Keycloak : CustomResource<KeycloakSpec, KeycloakStatus>(), Namespaced, ResourceWithUpdatesSpec {
     companion object {
         internal const val APP_NAME = "keycloak"
-        internal const val APP_VERSION = "21.1.2"
-        internal const val APP_IMAGE = "quay.io/keycloak/$APP_NAME:$APP_VERSION"
     }
 
     object Postgres : PostgresNameMapper<Keycloak>() {
@@ -24,10 +23,11 @@ class Keycloak : CustomResource<KeycloakSpec, KeycloakStatus>(), Namespaced {
 }
 
 internal val Keycloak.resourceLabels
-    get() = Labels.resourceLabels(Keycloak.APP_NAME, metadata.name, Keycloak.APP_NAME, Keycloak.APP_VERSION)
+    get() = Labels.resourceLabels(Keycloak.APP_NAME, metadata.name, Keycloak.APP_NAME, spec.updates.version)
 internal val Keycloak.resourceLabelSelector
     get() = Labels.resourceLabelSelector(Keycloak.APP_NAME, metadata.name, Keycloak.APP_NAME)
 internal val Keycloak.genericResourceName get() = "${Keycloak.APP_NAME}-${metadata.name}"
 internal val Keycloak.backupBucketName get() = "$genericResourceName-backup"
 internal val Keycloak.ingressTlsCertName get() = "$genericResourceName-tls"
 internal val Keycloak.discoveryServiceName get() = "$genericResourceName-discovery"
+internal val Keycloak.appImage get() = "quay.io/keycloak/${Keycloak.APP_NAME}:${spec.updates.version}"

@@ -1,5 +1,7 @@
 package eu.glasskube.operator.apps.plane
 
+import eu.glasskube.operator.apps.common.HasUpdatesSpec
+import eu.glasskube.operator.apps.common.SimpleUpdatesSpec
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Required
 import io.fabric8.kubernetes.api.model.LocalObjectReference
@@ -18,8 +20,9 @@ data class PlaneSpec(
     val beatWorker: BeatWorkerSpec = BeatWorkerSpec(),
     val worker: WorkerSpec = WorkerSpec(),
     val smtp: SmtpSpec? = null,
-    val s3: S3Spec? = null
-) {
+    val s3: S3Spec? = null,
+    override val updates: SimpleUpdatesSpec = SimpleUpdatesSpec("v0.12.2-dev")
+) : HasUpdatesSpec {
     data class DefaultUserSpec(
         @field:Required
         val email: String,

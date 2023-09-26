@@ -1,6 +1,7 @@
 package eu.glasskube.operator.apps.glitchtip
 
 import eu.glasskube.operator.Labels
+import eu.glasskube.operator.apps.common.ResourceWithUpdatesSpec
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import eu.glasskube.operator.generic.dependent.redis.RedisNameMapper
 import io.fabric8.kubernetes.api.model.Namespaced
@@ -12,10 +13,9 @@ import io.fabric8.kubernetes.model.annotation.Version
 @Group("glasskube.eu")
 @Version("v1alpha1")
 @Plural("glitchtips")
-class Glitchtip : CustomResource<GlitchtipSpec, GlitchtipStatus>(), Namespaced {
+class Glitchtip : CustomResource<GlitchtipSpec, GlitchtipStatus>(), Namespaced, ResourceWithUpdatesSpec {
     companion object {
         const val APP_NAME = "glitchtip"
-        const val APP_VERSION = "3.3.1"
         const val UPLOADS_DIR = "/code/uploads"
         const val UPLOADS_VOLUME_NAME = "uploads"
         const val APP_UID = 5000L
@@ -44,7 +44,7 @@ class Glitchtip : CustomResource<GlitchtipSpec, GlitchtipStatus>(), Namespaced {
 }
 
 val Glitchtip.resourceLabels
-    get() = Labels.resourceLabels(Glitchtip.APP_NAME, metadata.name, Glitchtip.APP_NAME, Glitchtip.APP_VERSION)
+    get() = Labels.resourceLabels(Glitchtip.APP_NAME, metadata.name, Glitchtip.APP_NAME, spec.updates.version)
 val Glitchtip.resourceLabelSelector
     get() = Labels.resourceLabelSelector(Glitchtip.APP_NAME, metadata.name, Glitchtip.APP_NAME)
 val Glitchtip.genericResourceName get() = "${Glitchtip.APP_NAME}-${metadata.name}"
@@ -54,3 +54,4 @@ val Glitchtip.configMapName get() = genericResourceName
 val Glitchtip.ingressName get() = genericResourceName
 val Glitchtip.httpServiceName get() = "$genericResourceName-http"
 val Glitchtip.ingressTlsCertName get() = "$genericResourceName-cert"
+internal val Glitchtip.appImage get() = "${Glitchtip.APP_NAME}/${Glitchtip.APP_NAME}:v${spec.updates.version}"

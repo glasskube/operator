@@ -65,7 +65,7 @@ class GitlabRunnerDeployment : CRUDKubernetesDependentResource<Deployment, Gitla
                     initContainers = listOf(
                         container {
                             name = "registration"
-                            image = "${GitlabRunner.APP_IMAGE}:${GitlabRunner.APP_VERSION}"
+                            image = primary.image
                             envFrom {
                                 secretRef(primary.secretName)
                             }
@@ -90,7 +90,7 @@ class GitlabRunnerDeployment : CRUDKubernetesDependentResource<Deployment, Gitla
                     containers = listOf(
                         container {
                             name = GitlabRunner.APP_NAME
-                            image = "${GitlabRunner.APP_IMAGE}:${GitlabRunner.APP_VERSION}"
+                            image = primary.image
                             lifecycle = Lifecycle().apply {
                                 preStop = LifecycleHandler().apply {
                                     exec = ExecAction(
@@ -149,6 +149,8 @@ class GitlabRunnerDeployment : CRUDKubernetesDependentResource<Deployment, Gitla
             }
         }
     }
+
+    private val GitlabRunner.image get() = "${GitlabRunner.APP_IMAGE}:v${spec.updates.version}"
 
     companion object {
         private const val CONFIG_VOLUME = "config"

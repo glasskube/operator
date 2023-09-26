@@ -16,6 +16,7 @@ import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.kubernetes.api.model.readinessProbe
 import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.operator.apps.plane.Plane
+import eu.glasskube.operator.apps.plane.spaceImage
 import eu.glasskube.operator.apps.plane.spaceResourceLabelSelector
 import eu.glasskube.operator.apps.plane.spaceResourceLabels
 import eu.glasskube.operator.apps.plane.spaceResourceName
@@ -50,7 +51,7 @@ class PlaneSpaceDeployment : CRUDKubernetesDependentResource<Deployment, Plane>(
                     containers = listOf(
                         container {
                             name = Plane.SPACE_NAME
-                            image = Plane.SPACE_IMAGE
+                            image = primary.spaceImage
                             command = listOf(
                                 "/usr/local/bin/start.sh",
                                 "space/server.js",

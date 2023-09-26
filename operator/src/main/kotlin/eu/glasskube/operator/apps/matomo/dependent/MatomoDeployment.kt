@@ -26,6 +26,7 @@ import eu.glasskube.kubernetes.api.model.volumeMount
 import eu.glasskube.kubernetes.api.model.volumeMounts
 import eu.glasskube.operator.apps.matomo.Matomo
 import eu.glasskube.operator.apps.matomo.MatomoReconciler
+import eu.glasskube.operator.apps.matomo.appImage
 import eu.glasskube.operator.apps.matomo.configMapName
 import eu.glasskube.operator.apps.matomo.configSecretName
 import eu.glasskube.operator.apps.matomo.databaseSecretName
@@ -79,7 +80,7 @@ class MatomoDeployment(private val configService: ConfigService) :
                     initContainers = listOf(
                         container {
                             name = "init"
-                            image = Matomo.APP_IMAGE
+                            image = primary.appImage
                             command = listOf("sh")
                             args = listOf(initShPath)
                             volumeMounts {
@@ -96,7 +97,7 @@ class MatomoDeployment(private val configService: ConfigService) :
                         },
                         container {
                             name = "install"
-                            image = Matomo.APP_IMAGE
+                            image = primary.appImage
                             command = listOf("sh")
                             args = listOf(installShPath)
                             envFrom {
@@ -122,7 +123,7 @@ class MatomoDeployment(private val configService: ConfigService) :
                         },
                         container {
                             name = "chown"
-                            image = Matomo.APP_IMAGE
+                            image = primary.appImage
                             command = listOf("chown")
                             args = listOf("-R", "www-data:www-data", htmlDir)
                             volumeMounts {
@@ -136,7 +137,7 @@ class MatomoDeployment(private val configService: ConfigService) :
                     containers = listOf(
                         container {
                             name = Matomo.APP_NAME
-                            image = Matomo.APP_IMAGE
+                            image = primary.appImage
                             ports = listOf(containerPort { containerPort = 80; name = "http" })
                             resources = primary.spec.resources
                             envFrom {
