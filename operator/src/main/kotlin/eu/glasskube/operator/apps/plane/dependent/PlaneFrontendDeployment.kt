@@ -60,12 +60,16 @@ class PlaneFrontendDeployment : CRUDKubernetesDependentResource<Deployment, Plan
                             )
                             resources = primary.spec.frontend.resources
                             readinessProbe {
+                                initialDelaySeconds = 20
+                                timeoutSeconds = 5
                                 httpGet {
                                     path = "/"
                                     port = intOrString(3000)
                                 }
                             }
                             livenessProbe {
+                                initialDelaySeconds = 20
+                                timeoutSeconds = 5
                                 httpGet {
                                     path = "/"
                                     port = intOrString(3000)
