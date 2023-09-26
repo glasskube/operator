@@ -33,6 +33,7 @@ import eu.glasskube.operator.Affinities
 import eu.glasskube.operator.apps.glitchtip.Glitchtip
 import eu.glasskube.operator.apps.glitchtip.Glitchtip.Postgres.postgresSecretName
 import eu.glasskube.operator.apps.glitchtip.GlitchtipReconciler
+import eu.glasskube.operator.apps.glitchtip.appImage
 import eu.glasskube.operator.apps.glitchtip.configMapName
 import eu.glasskube.operator.apps.glitchtip.genericResourceName
 import eu.glasskube.operator.apps.glitchtip.resourceLabelSelector
@@ -81,7 +82,7 @@ class GlitchtipDeployment(private val configService: ConfigService) :
                     containers = listOf(
                         container {
                             name = Glitchtip.APP_NAME
-                            image = "${Glitchtip.APP_NAME}/${Glitchtip.APP_NAME}:v${Glitchtip.APP_VERSION}"
+                            image = primary.appImage
                             envFrom {
                                 configMapRef(primary.configMapName, false)
                                 secretRef(primary.secretName, false)
@@ -165,7 +166,7 @@ class GlitchtipDeployment(private val configService: ConfigService) :
                     initContainers = mutableListOf(
                         container {
                             name = "${Glitchtip.APP_NAME}-migrate"
-                            image = "${Glitchtip.APP_NAME}/${Glitchtip.APP_NAME}:v${Glitchtip.APP_VERSION}"
+                            image = primary.appImage
                             command = listOf("./manage.py")
                             args = listOf("migrate")
                             envFrom {

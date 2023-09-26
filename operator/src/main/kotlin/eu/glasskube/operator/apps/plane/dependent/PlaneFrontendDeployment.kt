@@ -16,6 +16,7 @@ import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.kubernetes.api.model.readinessProbe
 import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.operator.apps.plane.Plane
+import eu.glasskube.operator.apps.plane.frontendImage
 import eu.glasskube.operator.apps.plane.frontendResourceLabelSelector
 import eu.glasskube.operator.apps.plane.frontendResourceLabels
 import eu.glasskube.operator.apps.plane.frontendResourceName
@@ -50,7 +51,7 @@ class PlaneFrontendDeployment : CRUDKubernetesDependentResource<Deployment, Plan
                     containers = listOf(
                         container {
                             name = Plane.FRONTEND_NAME
-                            image = Plane.FRONTEND_IMAGE
+                            image = primary.frontendImage
                             command = listOf("/usr/local/bin/start.sh", "web/server.js", "web")
                             envFrom {
                                 configMapRef(primary.frontendResourceName)

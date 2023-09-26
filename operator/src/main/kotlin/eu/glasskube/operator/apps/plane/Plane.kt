@@ -1,6 +1,7 @@
 package eu.glasskube.operator.apps.plane
 
 import eu.glasskube.operator.Labels
+import eu.glasskube.operator.apps.common.ResourceWithUpdatesSpec
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import eu.glasskube.operator.generic.dependent.redis.RedisNameMapper
 import io.fabric8.kubernetes.api.model.Namespaced
@@ -12,7 +13,7 @@ import io.fabric8.kubernetes.model.annotation.Version
 @Group("glasskube.eu")
 @Version("v1alpha1")
 @Plural("planes")
-class Plane : CustomResource<PlaneSpec, PlaneStatus>(), Namespaced {
+class Plane : CustomResource<PlaneSpec, PlaneStatus>(), Namespaced, ResourceWithUpdatesSpec {
     object Redis : RedisNameMapper<Plane>() {
         private const val NAME = "redis"
         private const val VERSION = "7.2.1"
@@ -38,13 +39,9 @@ class Plane : CustomResource<PlaneSpec, PlaneStatus>(), Namespaced {
 
     internal companion object {
         const val APP_NAME = "plane"
-        const val APP_VERSION = "v0.12.2-dev"
         const val FRONTEND_NAME = "frontend"
-        const val FRONTEND_IMAGE = "makeplane/plane-$FRONTEND_NAME:$APP_VERSION"
         const val SPACE_NAME = "deploy"
-        const val SPACE_IMAGE = "makeplane/plane-$SPACE_NAME:$APP_VERSION"
         const val BACKEND_NAME = "backend"
-        const val BACKEND_IMAGE = "makeplane/plane-$BACKEND_NAME:$APP_VERSION"
         const val API_NAME = "api"
         const val WORKER_NAME = "worker"
         const val BEAT_WORKER_NAME = "beat-worker"
@@ -57,9 +54,13 @@ private val apiComponentLabel = Labels.COMPONENT to Plane.API_NAME
 private val workerComponentLabel = Labels.COMPONENT to Plane.WORKER_NAME
 private val beatWorkerComponentLabel = Labels.COMPONENT to Plane.BEAT_WORKER_NAME
 
+internal val Plane.frontendImage get() = "makeplane/plane-${Plane.FRONTEND_NAME}:${spec.updates.version}"
+internal val Plane.spaceImage get() = "makeplane/plane-${Plane.SPACE_NAME}:${spec.updates.version}"
+internal val Plane.backendImage get() = "makeplane/plane-${Plane.BACKEND_NAME}:${spec.updates.version}"
+
 internal val Plane.genericResourceName get() = "${Plane.APP_NAME}-${metadata.name}"
 internal val Plane.genericResourceLabels
-    get() = Labels.resourceLabels(Plane.APP_NAME, metadata.name, version = Plane.APP_VERSION)
+    get() = Labels.resourceLabels(Plane.APP_NAME, metadata.name, version = spec.updates.version)
 internal val Plane.genericResourceLabelSelector
     get() = Labels.resourceLabelSelector(Plane.APP_NAME, metadata.name)
 

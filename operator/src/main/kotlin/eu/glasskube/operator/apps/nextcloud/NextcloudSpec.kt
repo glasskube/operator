@@ -1,5 +1,7 @@
 package eu.glasskube.operator.apps.nextcloud
 
+import eu.glasskube.operator.apps.common.HasUpdatesSpec
+import eu.glasskube.operator.apps.common.SemanticVersionUpdatesSpec
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.kubernetes.api.model.Quantity
 import io.fabric8.kubernetes.api.model.ResourceRequirements
@@ -11,8 +13,9 @@ data class NextcloudSpec(
     val resources: ResourceRequirements = defaultResourceRequirements,
     @field:Nullable
     val smtp: NextcloudSmtpSpec?,
-    val storage: NextcloudStorageSpec?
-) {
+    val storage: NextcloudStorageSpec?,
+    override val updates: SemanticVersionUpdatesSpec = SemanticVersionUpdatesSpec("27.0.1")
+) : HasUpdatesSpec {
     companion object {
         private val defaultResourceRequirements
             get() = ResourceRequirements(

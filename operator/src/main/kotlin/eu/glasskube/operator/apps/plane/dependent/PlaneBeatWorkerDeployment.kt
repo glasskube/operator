@@ -13,6 +13,7 @@ import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.kubernetes.api.model.secretRef
 import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.operator.apps.plane.Plane
+import eu.glasskube.operator.apps.plane.backendImage
 import eu.glasskube.operator.apps.plane.backendResourceName
 import eu.glasskube.operator.apps.plane.beatWorkerResourceLabelSelector
 import eu.glasskube.operator.apps.plane.beatWorkerResourceLabels
@@ -49,7 +50,7 @@ class PlaneBeatWorkerDeployment : CRUDKubernetesDependentResource<Deployment, Pl
                     containers = listOf(
                         container {
                             name = Plane.BACKEND_NAME
-                            image = Plane.BACKEND_IMAGE
+                            image = primary.backendImage
                             command = listOf("./bin/beat")
                             env = primary.commonBackendEnv
                             envFrom {

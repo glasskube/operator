@@ -1,5 +1,8 @@
 package eu.glasskube.operator.apps.odoo
 
+import eu.glasskube.operator.apps.common.HasUpdatesSpec
+import eu.glasskube.operator.apps.common.ResourceWithUpdatesSpec
+import eu.glasskube.operator.apps.common.SemanticVersionUpdatesSpec
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import eu.glasskube.utils.resourceLabels
 import io.fabric8.kubernetes.api.model.Namespaced
@@ -12,8 +15,9 @@ import io.fabric8.kubernetes.model.annotation.Version
 data class OdooSpec(
     val host: String,
     val demoEnabled: Boolean = true,
-    val resources: ResourceRequirements = ResourceRequirements()
-)
+    val resources: ResourceRequirements = ResourceRequirements(),
+    override val updates: SemanticVersionUpdatesSpec = SemanticVersionUpdatesSpec("16.0.20230901")
+) : HasUpdatesSpec
 
 data class OdooStatus(
     val ready: Boolean = false,
@@ -23,11 +27,9 @@ data class OdooStatus(
 @Group("glasskube.eu")
 @Version("v1alpha1")
 @Plural("odoos")
-class Odoo : CustomResource<OdooSpec, OdooStatus>(), Namespaced {
+class Odoo : CustomResource<OdooSpec, OdooStatus>(), Namespaced, ResourceWithUpdatesSpec {
     internal companion object {
         const val APP_NAME = "odoo"
-        const val APP_VERSION = "16.0.20230901"
-        const val APP_IMAGE = "glasskube/$APP_NAME:$APP_VERSION"
 
         const val volumeName = "web-data"
         const val volumePath = "/var/lib/odoo"

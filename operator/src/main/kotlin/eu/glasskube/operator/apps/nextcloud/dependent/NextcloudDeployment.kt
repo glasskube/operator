@@ -29,6 +29,7 @@ import eu.glasskube.kubernetes.api.model.volumeMounts
 import eu.glasskube.operator.apps.nextcloud.Nextcloud
 import eu.glasskube.operator.apps.nextcloud.NextcloudReconciler
 import eu.glasskube.operator.apps.nextcloud.NextcloudSmtpSpec
+import eu.glasskube.operator.apps.nextcloud.appImage
 import eu.glasskube.operator.apps.nextcloud.configName
 import eu.glasskube.operator.apps.nextcloud.databaseEnv
 import eu.glasskube.operator.apps.nextcloud.defaultEnv
@@ -95,7 +96,7 @@ class NextcloudDeployment(private val configService: ConfigService) :
                     initContainers = listOf(
                         container {
                             name = "nextcloud-update"
-                            image = Nextcloud.APP_IMAGE
+                            image = primary.appImage
                             args = listOf("true")
                             env = primary.defaultEnv + primary.databaseEnv + adminUserEnv + primary.smtpEnv +
                                 primary.storageEnv + updateControlEnv
@@ -108,7 +109,7 @@ class NextcloudDeployment(private val configService: ConfigService) :
                         },
                         container {
                             name = "nextcloud-apps"
-                            image = Nextcloud.APP_IMAGE
+                            image = primary.appImage
                             command = listOf("sh")
                             args = listOf(
                                 "-c",
@@ -135,7 +136,7 @@ class NextcloudDeployment(private val configService: ConfigService) :
                         },
                         container {
                             name = "nextcloud-config"
-                            image = Nextcloud.APP_IMAGE
+                            image = primary.appImage
                             command = listOf("php")
                             args = listOf(OCC_PATH, "config:import", CONFIG_FILE_PATH)
                             securityContext {
@@ -155,7 +156,7 @@ class NextcloudDeployment(private val configService: ConfigService) :
                         },
                         container {
                             name = "nextcloud-indices"
-                            image = Nextcloud.APP_IMAGE
+                            image = primary.appImage
                             command = listOf("sh")
                             args = listOf(
                                 "-c",
@@ -180,7 +181,7 @@ class NextcloudDeployment(private val configService: ConfigService) :
                     containers = listOf(
                         container {
                             name = Nextcloud.APP_NAME
-                            image = Nextcloud.APP_IMAGE
+                            image = primary.appImage
                             resources = primary.spec.resources
                             env =
                                 primary.defaultEnv + primary.databaseEnv + primary.smtpEnv + primary.oidcEnv + primary.storageEnv

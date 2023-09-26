@@ -19,6 +19,7 @@ import eu.glasskube.kubernetes.api.model.volume
 import eu.glasskube.kubernetes.api.model.volumeMount
 import eu.glasskube.kubernetes.api.model.volumeMounts
 import eu.glasskube.operator.apps.plane.Plane
+import eu.glasskube.operator.apps.plane.backendImage
 import eu.glasskube.operator.apps.plane.backendResourceName
 import eu.glasskube.operator.apps.plane.workerResourceLabelSelector
 import eu.glasskube.operator.apps.plane.workerResourceLabels
@@ -57,7 +58,7 @@ class PlaneWorkerDeployment : CRUDKubernetesDependentResource<Deployment, Plane>
                     containers = listOf(
                         container {
                             name = Plane.BACKEND_NAME
-                            image = Plane.BACKEND_IMAGE
+                            image = primary.backendImage
                             command = listOf(ENTRYPOINT_PATH)
                             env = primary.run { commonBackendEnv + workerEnv }
                             envFrom {

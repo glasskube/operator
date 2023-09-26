@@ -15,6 +15,7 @@ import eu.glasskube.kubernetes.api.model.volumeMounts
 import eu.glasskube.operator.Affinities
 import eu.glasskube.operator.apps.nextcloud.Nextcloud
 import eu.glasskube.operator.apps.nextcloud.NextcloudReconciler
+import eu.glasskube.operator.apps.nextcloud.appImage
 import eu.glasskube.operator.apps.nextcloud.cronName
 import eu.glasskube.operator.apps.nextcloud.databaseEnv
 import eu.glasskube.operator.apps.nextcloud.defaultEnv
@@ -49,7 +50,7 @@ class NextcloudCronJob : CRUDKubernetesDependentResource<CronJob, Nextcloud>(Cro
                             containers = listOf(
                                 container {
                                     name = Nextcloud.APP_NAME
-                                    image = Nextcloud.APP_IMAGE
+                                    image = primary.appImage
                                     command = listOf("php")
                                     args = listOf("cron.php")
                                     env = primary.defaultEnv + primary.databaseEnv

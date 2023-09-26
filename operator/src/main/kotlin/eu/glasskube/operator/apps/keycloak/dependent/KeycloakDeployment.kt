@@ -22,6 +22,7 @@ import eu.glasskube.operator.apps.keycloak.Keycloak
 import eu.glasskube.operator.apps.keycloak.Keycloak.Postgres.postgresHostName
 import eu.glasskube.operator.apps.keycloak.Keycloak.Postgres.postgresSecretName
 import eu.glasskube.operator.apps.keycloak.KeycloakReconciler
+import eu.glasskube.operator.apps.keycloak.appImage
 import eu.glasskube.operator.apps.keycloak.discoveryServiceName
 import eu.glasskube.operator.apps.keycloak.genericResourceName
 import eu.glasskube.operator.apps.keycloak.resourceLabelSelector
@@ -52,7 +53,7 @@ class KeycloakDeployment : CRUDKubernetesDependentResource<Deployment, Keycloak>
                     containers = listOf(
                         container {
                             name = Keycloak.APP_NAME
-                            image = Keycloak.APP_IMAGE
+                            image = primary.appImage
                             args = listOf("start")
                             env {
                                 envVars(

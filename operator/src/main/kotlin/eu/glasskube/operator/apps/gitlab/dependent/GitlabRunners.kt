@@ -28,7 +28,9 @@ class GitlabRunners :
             concurrency = template.concurrency,
             token = template.token,
             gitlab = LocalObjectReference(primary.metadata.name)
-        )
+        ).let { runnerSpec ->
+            template.updates?.let { runnerSpec.copy(updates = it) } ?: runnerSpec
+        }
     }
 
     override fun desiredResources(primary: Gitlab, context: Context<Gitlab>) =

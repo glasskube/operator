@@ -26,6 +26,7 @@ import eu.glasskube.operator.apps.plane.Plane
 import eu.glasskube.operator.apps.plane.apiResourceLabelSelector
 import eu.glasskube.operator.apps.plane.apiResourceLabels
 import eu.glasskube.operator.apps.plane.apiResourceName
+import eu.glasskube.operator.apps.plane.backendImage
 import eu.glasskube.operator.apps.plane.backendResourceName
 import eu.glasskube.operator.generic.condition.DeploymentReadyCondition
 import io.fabric8.kubernetes.api.model.apps.Deployment
@@ -62,7 +63,7 @@ class PlaneApiDeployment : CRUDKubernetesDependentResource<Deployment, Plane>(De
                     containers = listOf(
                         container {
                             name = Plane.BACKEND_NAME
-                            image = Plane.BACKEND_IMAGE
+                            image = primary.backendImage
                             command = listOf(ENTRYPOINT_PATH)
                             env = primary.run { commonBackendEnv + apiEnv }
                             envFrom {
