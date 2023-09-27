@@ -132,7 +132,7 @@ class GitlabDeployment(private val configService: ConfigService) :
                                 // If the container is still unresponsive after 10 minutes, it will be restarted
                                 failureThreshold = 60
                                 httpGet {
-                                    path = "/"
+                                    path = PROBE_PATH
                                     port = intOrString("http")
                                 }
                             }
@@ -142,7 +142,7 @@ class GitlabDeployment(private val configService: ConfigService) :
                                 // If the container becomes unresponsive for 1 minute, it will be restarted
                                 failureThreshold = 6
                                 httpGet {
-                                    path = "/"
+                                    path = PROBE_PATH
                                     port = intOrString("http")
                                 }
                             }
@@ -151,7 +151,7 @@ class GitlabDeployment(private val configService: ConfigService) :
                                 successThreshold = 1
                                 failureThreshold = 3
                                 httpGet {
-                                    path = "/"
+                                    path = PROBE_PATH
                                     port = intOrString("http")
                                 }
                             }
@@ -232,5 +232,6 @@ class GitlabDeployment(private val configService: ConfigService) :
         private const val VOLUME_NAME = "data"
         private const val TLS_VOLUME_NAME = "tls"
         private const val TLS_VOLUME_DIR = "/etc/gitlab/ssl/"
+        private const val PROBE_PATH = "/users/sign_in"
     }
 }
