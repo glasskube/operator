@@ -1,6 +1,8 @@
 package eu.glasskube.operator.apps.keycloak
 
 import eu.glasskube.operator.Labels
+import eu.glasskube.operator.apps.common.backups.database.PostgresBackupsSpec
+import eu.glasskube.operator.apps.common.backups.database.ResourceWithDatabaseBackupsSpec
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.client.CustomResource
@@ -9,7 +11,10 @@ import io.fabric8.kubernetes.model.annotation.Version
 
 @Group("glasskube.eu")
 @Version("v1alpha1")
-class Keycloak : CustomResource<KeycloakSpec, KeycloakStatus>(), Namespaced {
+class Keycloak :
+    CustomResource<KeycloakSpec, KeycloakStatus>(),
+    Namespaced,
+    ResourceWithDatabaseBackupsSpec<PostgresBackupsSpec> {
     companion object {
         internal const val APP_NAME = "keycloak"
     }

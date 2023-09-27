@@ -1,5 +1,8 @@
 package eu.glasskube.operator.apps.metabase
 
+import eu.glasskube.operator.apps.common.backups.database.BackupsSpecWithPostgres
+import eu.glasskube.operator.apps.common.backups.database.HasBackupsSpecWithDatabase
+import eu.glasskube.operator.apps.common.backups.database.PostgresBackupsSpec
 import eu.glasskube.operator.validation.Patterns
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Pattern
@@ -19,5 +22,7 @@ data class MetabaseSpec(
         mapOf("memory" to Quantity("700", "Mi"))
     ),
     @field:Pattern(Patterns.SEMVER)
-    val version: String = "0.47.1"
-)
+    val version: String = "0.47.1",
+    @field:Nullable
+    override val backups: BackupsSpecWithPostgres?
+) : HasBackupsSpecWithDatabase<PostgresBackupsSpec>

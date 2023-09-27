@@ -1,6 +1,8 @@
 package eu.glasskube.operator.apps.metabase
 
 import eu.glasskube.operator.Labels
+import eu.glasskube.operator.apps.common.backups.database.PostgresBackupsSpec
+import eu.glasskube.operator.apps.common.backups.database.ResourceWithDatabaseBackupsSpec
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.client.CustomResource
@@ -11,7 +13,7 @@ import io.fabric8.kubernetes.model.annotation.Version
 @Group("glasskube.eu")
 @Version("v1alpha1")
 @Plural("metabases")
-class Metabase : CustomResource<MetabaseSpec, MetabaseStatus>(), Namespaced {
+class Metabase : CustomResource<MetabaseSpec, MetabaseStatus>(), Namespaced, ResourceWithDatabaseBackupsSpec<PostgresBackupsSpec> {
     companion object {
         const val APP_NAME = "metabase"
     }
