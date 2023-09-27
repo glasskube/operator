@@ -1,5 +1,8 @@
 package eu.glasskube.operator.apps.plane
 
+import eu.glasskube.operator.apps.common.backups.database.BackupsSpecWithPostgres
+import eu.glasskube.operator.apps.common.backups.database.HasBackupsSpecWithDatabase
+import eu.glasskube.operator.apps.common.backups.database.PostgresBackupsSpec
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Required
 import io.fabric8.kubernetes.api.model.LocalObjectReference
@@ -19,8 +22,10 @@ data class PlaneSpec(
     val worker: WorkerSpec = WorkerSpec(),
     val smtp: SmtpSpec? = null,
     val s3: S3Spec? = null,
-    val version: String = "v0.12.2-dev"
-) {
+    val version: String = "v0.12.2-dev",
+    @field:Nullable
+    override val backups: BackupsSpecWithPostgres?
+) : HasBackupsSpecWithDatabase<PostgresBackupsSpec> {
     data class DefaultUserSpec(
         @field:Required
         val email: String,

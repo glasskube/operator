@@ -1,6 +1,8 @@
 package eu.glasskube.operator.apps.plane
 
 import eu.glasskube.operator.Labels
+import eu.glasskube.operator.apps.common.backups.database.PostgresBackupsSpec
+import eu.glasskube.operator.apps.common.backups.database.ResourceWithDatabaseBackupsSpec
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import eu.glasskube.operator.generic.dependent.redis.RedisNameMapper
 import io.fabric8.kubernetes.api.model.Namespaced
@@ -12,7 +14,10 @@ import io.fabric8.kubernetes.model.annotation.Version
 @Group("glasskube.eu")
 @Version("v1alpha1")
 @Plural("planes")
-class Plane : CustomResource<PlaneSpec, PlaneStatus>(), Namespaced {
+class Plane :
+    CustomResource<PlaneSpec, PlaneStatus>(),
+    Namespaced,
+    ResourceWithDatabaseBackupsSpec<PostgresBackupsSpec> {
     object Redis : RedisNameMapper<Plane>() {
         private const val NAME = "redis"
         private const val VERSION = "7.2.1"

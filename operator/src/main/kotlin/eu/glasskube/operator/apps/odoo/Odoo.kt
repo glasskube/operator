@@ -1,8 +1,13 @@
 package eu.glasskube.operator.apps.odoo
 
+import eu.glasskube.operator.apps.common.backups.database.BackupsSpecWithPostgres
+import eu.glasskube.operator.apps.common.backups.database.HasBackupsSpecWithDatabase
+import eu.glasskube.operator.apps.common.backups.database.PostgresBackupsSpec
+import eu.glasskube.operator.apps.common.backups.database.ResourceWithDatabaseBackupsSpec
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import eu.glasskube.operator.validation.Patterns
 import eu.glasskube.utils.resourceLabels
+import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Pattern
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.api.model.ResourceRequirements
@@ -16,8 +21,10 @@ data class OdooSpec(
     val demoEnabled: Boolean = true,
     val resources: ResourceRequirements = ResourceRequirements(),
     @field:Pattern(Patterns.SEMVER)
-    val version: String = "16.0.20230901"
-)
+    val version: String = "16.0.20230901",
+    @field:Nullable
+    override val backups: BackupsSpecWithPostgres?
+) : HasBackupsSpecWithDatabase<PostgresBackupsSpec>
 
 data class OdooStatus(
     val ready: Boolean = false,
@@ -27,7 +34,7 @@ data class OdooStatus(
 @Group("glasskube.eu")
 @Version("v1alpha1")
 @Plural("odoos")
-class Odoo : CustomResource<OdooSpec, OdooStatus>(), Namespaced {
+class Odoo : CustomResource<OdooSpec, OdooStatus>(), Namespaced, ResourceWithDatabaseBackupsSpec<PostgresBackupsSpec> {
     internal companion object {
         const val APP_NAME = "odoo"
 

@@ -1,6 +1,9 @@
 package eu.glasskube.operator.apps.gitea
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription
+import eu.glasskube.operator.apps.common.backups.database.BackupsSpecWithPostgres
+import eu.glasskube.operator.apps.common.backups.database.HasBackupsSpecWithDatabase
+import eu.glasskube.operator.apps.common.backups.database.PostgresBackupsSpec
 import eu.glasskube.operator.validation.Patterns.SEMVER
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Pattern
@@ -26,5 +29,7 @@ data class GiteaSpec(
         mapOf("memory" to Quantity("200", "Mi"))
     ),
     @field:Pattern(SEMVER)
-    val version: String = "1.20.4"
-)
+    val version: String = "1.20.4",
+    @field:Nullable
+    override val backups: BackupsSpecWithPostgres? = null
+) : HasBackupsSpecWithDatabase<PostgresBackupsSpec>

@@ -1,5 +1,8 @@
 package eu.glasskube.operator.apps.nextcloud
 
+import eu.glasskube.operator.apps.common.backups.database.BackupsSpecWithPostgres
+import eu.glasskube.operator.apps.common.backups.database.HasBackupsSpecWithDatabase
+import eu.glasskube.operator.apps.common.backups.database.PostgresBackupsSpec
 import eu.glasskube.operator.validation.Patterns
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Pattern
@@ -15,7 +18,9 @@ data class NextcloudSpec(
     val storage: NextcloudStorageSpec?,
     @field:Pattern(Patterns.SEMVER)
     val version: String = "27.0.1",
-    val server: ServerSpec = ServerSpec()
+    val server: ServerSpec = ServerSpec(),
+    @field:Nullable
+    override val backups: BackupsSpecWithPostgres?
 ) {
     data class ServerSpec(
         @field:Nullable

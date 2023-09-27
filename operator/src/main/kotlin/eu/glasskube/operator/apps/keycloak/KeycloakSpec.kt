@@ -1,6 +1,10 @@
 package eu.glasskube.operator.apps.keycloak
 
+import eu.glasskube.operator.apps.common.backups.database.BackupsSpecWithPostgres
+import eu.glasskube.operator.apps.common.backups.database.HasBackupsSpecWithDatabase
+import eu.glasskube.operator.apps.common.backups.database.PostgresBackupsSpec
 import eu.glasskube.operator.validation.Patterns.SEMVER
+import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Pattern
 import io.fabric8.generator.annotation.Required
 import io.fabric8.kubernetes.api.model.Quantity
@@ -12,8 +16,10 @@ data class KeycloakSpec(
     val management: ManagementSpec = ManagementSpec(),
     val resources: ResourceRequirements = defaultResourceRequirements,
     @field:Pattern(SEMVER)
-    val version: String = "21.1.2"
-) {
+    val version: String = "21.1.2",
+    @field:Nullable
+    override val backups: BackupsSpecWithPostgres?
+) : HasBackupsSpecWithDatabase<PostgresBackupsSpec> {
     data class ManagementSpec(val enabled: Boolean = true)
 
     companion object {

@@ -4,6 +4,8 @@ import eu.glasskube.kubernetes.api.model.createEnv
 import eu.glasskube.kubernetes.api.model.envVar
 import eu.glasskube.kubernetes.api.model.secretKeyRef
 import eu.glasskube.operator.Labels
+import eu.glasskube.operator.apps.common.backups.database.PostgresBackupsSpec
+import eu.glasskube.operator.apps.common.backups.database.ResourceWithDatabaseBackupsSpec
 import eu.glasskube.operator.apps.nextcloud.Nextcloud.Postgres.postgresClusterName
 import eu.glasskube.operator.apps.nextcloud.Nextcloud.Postgres.postgresDatabaseName
 import eu.glasskube.operator.apps.nextcloud.Nextcloud.Postgres.postgresHostName
@@ -18,7 +20,10 @@ import io.fabric8.kubernetes.model.annotation.Version
 
 @Group("glasskube.eu")
 @Version("v1alpha1")
-class Nextcloud : CustomResource<NextcloudSpec, NextcloudStatus>(), Namespaced {
+class Nextcloud :
+    CustomResource<NextcloudSpec, NextcloudStatus>(),
+    Namespaced,
+    ResourceWithDatabaseBackupsSpec<PostgresBackupsSpec> {
     internal companion object {
         const val APP_NAME = "nextcloud"
         const val NGINX_NAME = "nginx"
