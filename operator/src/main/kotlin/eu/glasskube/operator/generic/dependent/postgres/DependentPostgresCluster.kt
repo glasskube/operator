@@ -2,11 +2,11 @@ package eu.glasskube.operator.generic.dependent.postgres
 
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.namespace
-import eu.glasskube.operator.apps.common.backups.database.PostgresBackupsSpec
-import eu.glasskube.operator.apps.common.backups.database.ResourceWithDatabaseBackupsSpec
+import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
+import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
 import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.generic.dependent.postgres.backup.BackupSpecBackupConfigurationProvider
-import eu.glasskube.operator.generic.dependent.postgres.backup.ChainedBackupConfigurationProvider
+import eu.glasskube.operator.generic.dependent.postgres.backup.ChainingBackupConfigurationProvider
 import eu.glasskube.operator.generic.dependent.postgres.backup.MinioBucketBackupConfigurationProvider
 import eu.glasskube.operator.generic.dependent.postgres.backup.PostgresBackupConfigurationProvider
 import eu.glasskube.operator.generic.dependent.postgres.backup.bucketinfo.MinioBucketInfoProvider
@@ -29,7 +29,7 @@ abstract class DependentPostgresCluster<P>(
     override val postgresNameMapper: PostgresNameMapper<P>,
     private val configService: ConfigService
 ) : CRUDKubernetesDependentResource<PostgresCluster, P>(PostgresCluster::class.java), PostgresDependentResource<P>
-    where P : HasMetadata, P : ResourceWithDatabaseBackupsSpec<PostgresBackupsSpec> {
+    where P : HasMetadata, P : ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
 
     protected abstract val P.storageSize: String
     protected open val P.storageClass: String? get() = null
@@ -45,7 +45,7 @@ abstract class DependentPostgresCluster<P>(
         SecondaryResourceMinioBucketInfoProvider.Default()
     protected open val P.defaultBackupRetentionPolicy: String? get() = null
     protected open val backupConfigurationProvider: PostgresBackupConfigurationProvider<P> =
-        ChainedBackupConfigurationProvider(
+        ChainingBackupConfigurationProvider(
             MinioBucketBackupConfigurationProvider(
                 { primary, context -> backupBucketInfoProvider.getMinioBucketInfo(primary, context) },
                 { defaultBackupRetentionPolicy }

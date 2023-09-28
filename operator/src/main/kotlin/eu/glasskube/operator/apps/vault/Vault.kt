@@ -2,8 +2,8 @@ package eu.glasskube.operator.apps.vault
 
 import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.operator.Labels
-import eu.glasskube.operator.apps.common.backups.database.PostgresBackupsSpec
-import eu.glasskube.operator.apps.common.backups.database.ResourceWithDatabaseBackupsSpec
+import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
+import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.client.CustomResource
@@ -12,7 +12,7 @@ import io.fabric8.kubernetes.model.annotation.Version
 
 @Group("glasskube.eu")
 @Version("v1alpha1")
-class Vault : CustomResource<VaultSpec, VaultStatus>(), Namespaced, ResourceWithDatabaseBackupsSpec<PostgresBackupsSpec> {
+class Vault : CustomResource<VaultSpec, VaultStatus>(), Namespaced, ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
     companion object {
         internal const val APP_NAME = "vault"
     }
