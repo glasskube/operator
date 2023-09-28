@@ -2,8 +2,8 @@ package eu.glasskube.operator.apps.gitlab
 
 import eu.glasskube.kubernetes.client.resources
 import eu.glasskube.operator.Labels
-import eu.glasskube.operator.apps.common.backups.database.PostgresBackupsSpec
-import eu.glasskube.operator.apps.common.backups.database.ResourceWithDatabaseBackupsSpec
+import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
+import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.client.CustomResource
@@ -16,7 +16,7 @@ import io.fabric8.kubernetes.model.annotation.Version
 class Gitlab :
     CustomResource<GitlabSpec, GitlabStatus>(),
     Namespaced,
-    ResourceWithDatabaseBackupsSpec<PostgresBackupsSpec> {
+    ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
     companion object {
         const val APP_NAME = "gitlab"
         const val APP_IMAGE = "gitlab/gitlab-ce"

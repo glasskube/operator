@@ -3,7 +3,7 @@ package eu.glasskube.operator.generic.dependent.postgres.backup
 import io.fabric8.kubernetes.api.model.HasMetadata
 import io.javaoperatorsdk.operator.api.reconciler.Context
 
-class ChainedBackupConfigurationProvider<P : HasMetadata>(
+class ChainingBackupConfigurationProvider<P : HasMetadata>(
     private val fallbackProvider: PostgresBackupConfigurationProvider<P>,
     private vararg val optionalProviders: OptionalPostgresBackupConfigurationProvider<P>
 ) : PostgresBackupConfigurationProvider<P> {

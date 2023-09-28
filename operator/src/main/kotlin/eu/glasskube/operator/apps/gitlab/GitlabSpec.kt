@@ -1,8 +1,7 @@
 package eu.glasskube.operator.apps.gitlab
 
-import eu.glasskube.operator.apps.common.backups.database.BackupsSpecWithPostgres
-import eu.glasskube.operator.apps.common.backups.database.HasBackupsSpecWithDatabase
-import eu.glasskube.operator.apps.common.backups.database.PostgresBackupsSpec
+import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
+import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
 import eu.glasskube.operator.validation.Patterns.SEMVER
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Pattern
@@ -32,5 +31,5 @@ data class GitlabSpec(
     @field:Pattern(SEMVER)
     val version: String = "16.2.5",
     @field:Nullable
-    override val backups: BackupsSpecWithPostgres?
-) : HasBackupsSpecWithDatabase<PostgresBackupsSpec>
+    override val database: PostgresDatabaseSpec?
+) : HasDatabaseSpec<PostgresDatabaseSpec>

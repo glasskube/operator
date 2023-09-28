@@ -1,14 +1,15 @@
-package eu.glasskube.operator.apps.common.backups.database
+package eu.glasskube.operator.apps.common.database.postgres
 
+import eu.glasskube.operator.apps.common.database.BackupsSpec
 import io.fabric8.generator.annotation.Required
 import io.fabric8.kubernetes.api.model.SecretKeySelector
 
 data class PostgresBackupsSpec(
     val schedule: String?,
-    @field:Required
     val retentionPolicy: String?,
+    @field:Required
     val s3: S3Spec
-) : DatabaseBackupSpec {
+) : BackupsSpec {
     data class S3Spec(
         val endpoint: String?,
         val regionSecret: SecretKeySelector?,

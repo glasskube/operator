@@ -2,8 +2,8 @@ package eu.glasskube.operator.generic.dependent.postgres
 
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.namespace
-import eu.glasskube.operator.apps.common.backups.database.PostgresBackupsSpec
-import eu.glasskube.operator.apps.common.backups.database.ResourceWithDatabaseBackupsSpec
+import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
+import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
 import eu.glasskube.operator.infra.postgres.ScheduledBackup
 import eu.glasskube.operator.infra.postgres.ScheduledBackupSpec
 import eu.glasskube.operator.infra.postgres.scheduledBackup
@@ -15,7 +15,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernete
 abstract class DependentPostgresScheduledBackup<P>(
     override val postgresNameMapper: PostgresNameMapper<P>
 ) : PostgresDependentResource<P>, CRUDKubernetesDependentResource<ScheduledBackup, P>(ScheduledBackup::class.java)
-    where P : HasMetadata, P : ResourceWithDatabaseBackupsSpec<PostgresBackupsSpec> {
+    where P : HasMetadata, P : ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
 
     /**
      * The schedule that should be declared for this scheduled backup if not otherwise specified in the backup spec.
@@ -31,7 +31,7 @@ abstract class DependentPostgresScheduledBackup<P>(
             labels = postgresNameMapper.getLabels(primary)
         }
         spec = ScheduledBackupSpec(
-            schedule = primary.getSpec().backups?.database?.schedule ?: primary.defaultSchedule,
+            schedule = primary.getSpec().database?.backups?.schedule ?: primary.defaultSchedule,
             cluster = LocalObjectReference(postgresNameMapper.getName(primary))
         )
     }
