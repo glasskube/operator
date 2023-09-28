@@ -12,5 +12,5 @@ class GlitchtipPostgresCluster(configService: ConfigService) :
     DependentPostgresCluster<Glitchtip>(Glitchtip.Postgres, configService) {
     class ReadyPostCondition : PostgresReadyCondition<Glitchtip>()
 
-    override val Glitchtip.storageSize get() = "5Gi"
+    override val Glitchtip.defaultStorageSize get() = "5Gi"
 }

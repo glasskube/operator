@@ -31,5 +31,5 @@ data class GitlabSpec(
     @field:Pattern(SEMVER)
     val version: String = "16.2.5",
     @field:Nullable
-    override val database: PostgresDatabaseSpec?
+    override val database: PostgresDatabaseSpec = PostgresDatabaseSpec()
 ) : HasDatabaseSpec<PostgresDatabaseSpec>

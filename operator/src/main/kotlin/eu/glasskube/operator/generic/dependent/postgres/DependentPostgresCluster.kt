@@ -31,8 +31,8 @@ abstract class DependentPostgresCluster<P>(
 ) : CRUDKubernetesDependentResource<PostgresCluster, P>(PostgresCluster::class.java), PostgresDependentResource<P>
     where P : HasMetadata, P : ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
 
-    protected abstract val P.storageSize: String
-    protected open val P.storageClass: String? get() = null
+    protected abstract val P.defaultStorageSize: String
+    protected open val P.defaultStorageClass: String? get() = null
     protected open val P.databaseOwnerName: String? get() = null
     protected open val P.initSql: String? get() = null
     protected open val P.databaseResources: ResourceRequirements
@@ -60,7 +60,7 @@ abstract class DependentPostgresCluster<P>(
             labels = postgresNameMapper.getLabels(primary)
         }
         spec = ClusterSpec(
-            instances = 1,
+            instances = primary.getSpec().database.instances,
             enableSuperuserAccess = false,
             inheritedMetadata = EmbeddedObjectMetadata(
                 annotations = configService.getBackupAnnotations("pgdata")
@@ -72,7 +72,10 @@ abstract class DependentPostgresCluster<P>(
                     postInitApplicationSQL = primary.initSql?.let { listOf(it) }
                 )
             ),
-            storage = StorageConfiguration(storageClass = primary.storageClass, size = primary.storageSize),
+            storage = StorageConfiguration(
+                storageClass = primary.getSpec().database.storage?.storageClass ?: primary.defaultStorageClass,
+                size = primary.getSpec().database.storage?.size ?: primary.defaultStorageSize
+            ),
             backup = backupConfigurationProvider.getBackupConfiguration(primary, context),
             monitoring = MonitoringConfiguration(enablePodMonitor = true),
             resources = primary.databaseResources

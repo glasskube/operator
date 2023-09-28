@@ -31,7 +31,7 @@ abstract class DependentPostgresScheduledBackup<P>(
             labels = postgresNameMapper.getLabels(primary)
         }
         spec = ScheduledBackupSpec(
-            schedule = primary.getSpec().database?.backups?.schedule ?: primary.defaultSchedule,
+            schedule = primary.getSpec().database.backups?.schedule ?: primary.defaultSchedule,
             cluster = LocalObjectReference(postgresNameMapper.getName(primary))
         )
     }

@@ -25,7 +25,7 @@ data class VaultSpec(
     @field:Pattern(Patterns.SEMVER)
     val version: String = "1.14.2",
     @field:Nullable
-    override val database: PostgresDatabaseSpec?
+    override val database: PostgresDatabaseSpec = PostgresDatabaseSpec()
 ) : HasDatabaseSpec<PostgresDatabaseSpec> {
 
     data class UiSpec(

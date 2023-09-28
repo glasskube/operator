@@ -12,5 +12,5 @@ class PlanePostgresCluster(configService: ConfigService) :
 
     class ReadyCondition : PostgresReadyCondition<Plane>()
 
-    override val Plane.storageSize get() = "10Gi"
+    override val Plane.defaultStorageSize get() = "10Gi"
 }

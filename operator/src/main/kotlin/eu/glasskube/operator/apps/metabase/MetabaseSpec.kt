@@ -23,5 +23,5 @@ data class MetabaseSpec(
     @field:Pattern(Patterns.SEMVER)
     val version: String = "0.47.1",
     @field:Nullable
-    override val database: PostgresDatabaseSpec?
+    override val database: PostgresDatabaseSpec = PostgresDatabaseSpec()
 ) : HasDatabaseSpec<PostgresDatabaseSpec>

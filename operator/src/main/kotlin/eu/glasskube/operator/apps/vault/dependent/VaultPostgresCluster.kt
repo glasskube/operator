@@ -15,5 +15,5 @@ class VaultPostgresCluster(configService: ConfigService) :
 
     private val initSql by resourceProperty()
     override val Vault.initSql get() = this@VaultPostgresCluster.initSql
-    override val Vault.storageSize get() = "10Gi"
+    override val Vault.defaultStorageSize get() = "10Gi"
 }

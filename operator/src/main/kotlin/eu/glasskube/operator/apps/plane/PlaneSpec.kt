@@ -23,7 +23,7 @@ data class PlaneSpec(
     val s3: S3Spec? = null,
     val version: String = "v0.12.2-dev",
     @field:Nullable
-    override val database: PostgresDatabaseSpec?
+    override val database: PostgresDatabaseSpec = PostgresDatabaseSpec()
 ) : HasDatabaseSpec<PostgresDatabaseSpec> {
     data class DefaultUserSpec(
         @field:Required

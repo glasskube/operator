@@ -17,7 +17,7 @@ open class BackupSpecBackupConfigurationProvider<P>(
     where P : HasMetadata, P : ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
 
     override fun getBackupConfiguration(primary: P, context: Context<P>) =
-        primary.getSpec().database?.backups?.let { spec ->
+        primary.getSpec().database.backups?.let { spec ->
             BackupConfiguration(
                 BarmanObjectStoreConfiguration(
                     endpointURL = spec.s3.endpoint?.let {

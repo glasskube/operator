@@ -9,5 +9,5 @@ class KeycloakPostgresCluster(configService: ConfigService) :
     DependentPostgresCluster<Keycloak>(Keycloak.Postgres, configService) {
     class ReadyCondition : PostgresReadyCondition<Keycloak>()
 
-    override val Keycloak.storageSize get() = "10Gi"
+    override val Keycloak.defaultStorageSize get() = "10Gi"
 }

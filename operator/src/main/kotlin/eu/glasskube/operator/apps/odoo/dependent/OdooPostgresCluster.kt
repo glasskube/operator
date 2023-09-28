@@ -14,8 +14,8 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 @KubernetesDependent(labelSelector = OdooReconciler.SELECTOR)
 class OdooPostgresCluster(private val configService: ConfigService) :
     DependentPostgresCluster<Odoo>(Odoo.Postgres, configService) {
-    override val Odoo.storageSize get() = "10Gi"
-    override val Odoo.storageClass get() = configService[ConfigKey.databaseStorageClassName]
+    override val Odoo.defaultStorageSize get() = "10Gi"
+    override val Odoo.defaultStorageClass get() = configService[ConfigKey.databaseStorageClassName]
     override val Odoo.defaultBackupRetentionPolicy get() = "15d"
     override val backupBucketInfoProvider = MinioBucketInfoProvider<Odoo> { primary, _ ->
         MinioBucketInfo(primary.bucketName, primary.dbBackupSecretName)

@@ -17,7 +17,7 @@ data class KeycloakSpec(
     @field:Pattern(SEMVER)
     val version: String = "21.1.2",
     @field:Nullable
-    override val database: PostgresDatabaseSpec?
+    override val database: PostgresDatabaseSpec = PostgresDatabaseSpec()
 ) : HasDatabaseSpec<PostgresDatabaseSpec> {
     data class ManagementSpec(val enabled: Boolean = true)
 
