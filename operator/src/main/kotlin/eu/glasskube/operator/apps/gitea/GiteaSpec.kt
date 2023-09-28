@@ -30,5 +30,5 @@ data class GiteaSpec(
     @field:Pattern(SEMVER)
     val version: String = "1.20.4",
     @field:Nullable
-    override val database: PostgresDatabaseSpec? = null
+    override val database: PostgresDatabaseSpec = PostgresDatabaseSpec()
 ) : HasDatabaseSpec<PostgresDatabaseSpec>

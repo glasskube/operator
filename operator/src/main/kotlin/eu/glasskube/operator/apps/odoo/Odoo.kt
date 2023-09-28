@@ -22,7 +22,7 @@ data class OdooSpec(
     @field:Pattern(Patterns.SEMVER)
     val version: String = "16.0.20230901",
     @field:Nullable
-    override val database: PostgresDatabaseSpec?
+    override val database: PostgresDatabaseSpec = PostgresDatabaseSpec()
 ) : HasDatabaseSpec<PostgresDatabaseSpec>
 
 data class OdooStatus(

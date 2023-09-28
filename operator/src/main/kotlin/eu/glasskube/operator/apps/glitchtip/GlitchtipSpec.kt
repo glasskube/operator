@@ -25,5 +25,5 @@ data class GlitchtipSpec(
     @field:Pattern(SEMVER)
     val version: String = "3.3.1",
     @field:Nullable
-    override val database: PostgresDatabaseSpec?
+    override val database: PostgresDatabaseSpec = PostgresDatabaseSpec()
 ) : HasDatabaseSpec<PostgresDatabaseSpec>

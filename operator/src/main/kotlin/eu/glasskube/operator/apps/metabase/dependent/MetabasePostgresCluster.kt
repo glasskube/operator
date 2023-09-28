@@ -12,5 +12,5 @@ class MetabasePostgresCluster(configService: ConfigService) :
     DependentPostgresCluster<Metabase>(Metabase.Postgres, configService) {
     class ReadyPostCondition : PostgresReadyCondition<Metabase>()
 
-    override val Metabase.storageSize get() = "5Gi"
+    override val Metabase.defaultStorageSize get() = "5Gi"
 }

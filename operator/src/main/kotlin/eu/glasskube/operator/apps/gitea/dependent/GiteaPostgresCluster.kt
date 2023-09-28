@@ -11,5 +11,5 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class GiteaPostgresCluster(configService: ConfigService) :
     DependentPostgresCluster<Gitea>(Gitea.Postgres, configService) {
     class ReadyPostCondition : PostgresReadyCondition<Gitea>()
-    override val Gitea.storageSize get() = "20Gi"
+    override val Gitea.defaultStorageSize get() = "20Gi"
 }

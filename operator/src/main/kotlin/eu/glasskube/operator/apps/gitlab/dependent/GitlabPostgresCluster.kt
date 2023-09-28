@@ -13,5 +13,5 @@ class GitlabPostgresCluster(configService: ConfigService) :
     class ReadyPostCondition : PostgresReadyCondition<Gitlab>()
 
     override val Gitlab.databaseOwnerName get() = "gitlab"
-    override val Gitlab.storageSize get() = "20Gi"
+    override val Gitlab.defaultStorageSize get() = "20Gi"
 }

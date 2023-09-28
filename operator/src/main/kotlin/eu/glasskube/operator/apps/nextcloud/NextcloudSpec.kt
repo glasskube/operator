@@ -19,7 +19,7 @@ data class NextcloudSpec(
     val version: String = "27.0.1",
     val server: ServerSpec = ServerSpec(),
     @field:Nullable
-    override val database: PostgresDatabaseSpec?
+    override val database: PostgresDatabaseSpec = PostgresDatabaseSpec()
 ) : HasDatabaseSpec<PostgresDatabaseSpec> {
     data class ServerSpec(
         @field:Nullable
