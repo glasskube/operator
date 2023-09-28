@@ -18,7 +18,7 @@ open class MinioBucketBackupConfigurationProvider<P : HasMetadata>(
     private val defaultRetentionPolicyProvider: DefaultRetentionPolicyProvider<P>
 ) : PostgresBackupConfigurationProvider<P> {
     override fun getBackupConfiguration(primary: P, context: Context<P>) =
-        bucketInfoProvider.getMinioBucketInfo(primary, context).let { bucketInfo ->
+        bucketInfoProvider.getMinioBucketInfo(primary, context)?.let { bucketInfo ->
             BackupConfiguration(
                 BarmanObjectStoreConfiguration(
                     endpointURL = "http://${Environment.MINIO_HOST_NAME}.${Environment.NAMESPACE}:9000",

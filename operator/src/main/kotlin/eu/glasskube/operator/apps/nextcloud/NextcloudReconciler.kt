@@ -36,7 +36,11 @@ import kotlin.jvm.optionals.getOrDefault
         Dependent(type = NextcloudConfigMap::class, name = "NextcloudConfigMap"),
         Dependent(type = NextcloudVolume::class, name = "NextcloudVolume"),
         Dependent(type = NextcloudIngress::class, name = "NextcloudIngress"),
-        Dependent(type = NextcloudMinioBucket::class, name = "NextcloudMinioBucket"),
+        Dependent(
+            type = NextcloudMinioBucket::class,
+            name = "NextcloudMinioBucket",
+            reconcilePrecondition = NextcloudMinioBucket.ReconcilePrecondition::class
+        ),
         Dependent(
             type = NextcloudService::class,
             name = "NextcloudService",
@@ -45,8 +49,7 @@ import kotlin.jvm.optionals.getOrDefault
         Dependent(
             type = NextcloudPostgresCluster::class,
             name = "NextcloudPostgresCluster",
-            readyPostcondition = NextcloudPostgresCluster.ReadyPostCondition::class,
-            dependsOn = ["NextcloudMinioBucket"]
+            readyPostcondition = NextcloudPostgresCluster.ReadyPostCondition::class
         ),
         Dependent(
             type = NextcloudPostgresBackup::class,

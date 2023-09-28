@@ -26,11 +26,14 @@ import kotlin.jvm.optionals.getOrDefault
 
 @ControllerConfiguration(
     dependents = [
-        Dependent(type = KeycloakPostgresBackupBucket::class, name = "KeycloakPostgresBackupBucket"),
+        Dependent(
+            type = KeycloakPostgresBackupBucket::class,
+            name = "KeycloakPostgresBackupBucket",
+            reconcilePrecondition = KeycloakPostgresBackupBucket.ReconcilePrecondition::class
+        ),
         Dependent(
             type = KeycloakPostgresCluster::class,
             name = "KeycloakPostgresCluster",
-            dependsOn = ["KeycloakPostgresBackupBucket"],
             readyPostcondition = KeycloakPostgresCluster.ReadyCondition::class
         ),
         Dependent(

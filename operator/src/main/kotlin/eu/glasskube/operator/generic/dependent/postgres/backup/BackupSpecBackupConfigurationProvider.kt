@@ -13,7 +13,7 @@ import io.javaoperatorsdk.operator.api.reconciler.Context
 
 open class BackupSpecBackupConfigurationProvider<P>(
     private val defaultRetentionPolicyProvider: DefaultRetentionPolicyProvider<P>
-) : OptionalPostgresBackupConfigurationProvider<P>
+) : PostgresBackupConfigurationProvider<P>
     where P : HasMetadata, P : ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
 
     override fun getBackupConfiguration(primary: P, context: Context<P>) =

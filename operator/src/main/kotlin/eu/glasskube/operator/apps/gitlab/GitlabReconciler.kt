@@ -31,14 +31,17 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
 
 @ControllerConfiguration(
     dependents = [
-        Dependent(type = GitlabMinioBucket::class, name = "GitlabMinioBucket"),
+        Dependent(
+            type = GitlabMinioBucket::class,
+            name = "GitlabMinioBucket",
+            reconcilePrecondition = GitlabMinioBucket.ReconcilePrecondition::class
+        ),
         Dependent(type = GitlabConfigMap::class, name = "GitlabConfigMap"),
         Dependent(type = GitlabVolume::class, name = "GitlabVolume"),
         Dependent(
             type = GitlabPostgresCluster::class,
             name = "GitlabPostgresCluster",
-            readyPostcondition = GitlabPostgresCluster.ReadyPostCondition::class,
-            dependsOn = ["GitlabMinioBucket"]
+            readyPostcondition = GitlabPostgresCluster.ReadyPostCondition::class
         ),
         Dependent(
             type = GitlabPostgresBackup::class,

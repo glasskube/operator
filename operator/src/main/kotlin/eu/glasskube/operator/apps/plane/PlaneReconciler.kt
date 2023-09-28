@@ -43,13 +43,16 @@ import kotlin.jvm.optionals.getOrDefault
 @ControllerConfiguration(
     dependents = [
         Dependent(type = PlaneIngress::class, name = "PlaneIngress"),
-        Dependent(type = PlanePostgresMinioBucket::class, name = "PlanePostgresMinioBucket"),
         Dependent(type = PlaneBackendSecret::class, name = "PlaneBackendSecret"),
+        Dependent(
+            type = PlanePostgresMinioBucket::class,
+            name = "PlanePostgresMinioBucket",
+            reconcilePrecondition = PlanePostgresMinioBucket.ReconcilePrecondition::class
+        ),
         Dependent(
             type = PlanePostgresCluster::class,
             name = "PlanePostgresCluster",
-            readyPostcondition = PlanePostgresCluster.ReadyCondition::class,
-            dependsOn = ["PlanePostgresMinioBucket"]
+            readyPostcondition = PlanePostgresCluster.ReadyCondition::class
         ),
         Dependent(
             type = PlanePostgresBackup::class,

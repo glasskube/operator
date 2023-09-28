@@ -6,12 +6,16 @@ import eu.glasskube.operator.apps.odoo.dbBackupSecretName
 import eu.glasskube.operator.apps.odoo.dbBackupUsername
 import eu.glasskube.operator.apps.odoo.resourceLabels
 import eu.glasskube.operator.generic.dependent.GeneratedSecret
+import eu.glasskube.operator.generic.dependent.postgres.PostgresWithoutBackupsSpecCondition
+import io.fabric8.kubernetes.api.model.Secret
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(
     labelSelector = OdooReconciler.SELECTOR
 )
 class OdooDatabaseBackupSecret : GeneratedSecret<Odoo>() {
+    internal class ReconcilePrecondition : PostgresWithoutBackupsSpecCondition<Secret, Odoo>()
+
     override val Odoo.generatedSecretName get() = dbBackupSecretName
     override val Odoo.generatedSecretLabels get() = resourceLabels
     override val generatedKeys get() = arrayOf("password")

@@ -6,6 +6,7 @@ import eu.glasskube.operator.apps.vault.Vault
 import eu.glasskube.operator.apps.vault.VaultReconciler
 import eu.glasskube.operator.apps.vault.databaseBackupBucketName
 import eu.glasskube.operator.apps.vault.resourceLabels
+import eu.glasskube.operator.generic.dependent.postgres.PostgresWithoutBackupsSpecCondition
 import eu.glasskube.operator.infra.minio.MinioBucket
 import eu.glasskube.operator.infra.minio.MinioBucketSpec
 import eu.glasskube.operator.infra.minio.minioBucket
@@ -15,6 +16,8 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 
 @KubernetesDependent(labelSelector = VaultReconciler.SELECTOR)
 class VaultMinioBucket : CRUDKubernetesDependentResource<MinioBucket, Vault>(MinioBucket::class.java) {
+    internal class ReconcilePrecondition : PostgresWithoutBackupsSpecCondition<MinioBucket, Vault>()
+
     override fun desired(primary: Vault, context: Context<Vault>) = minioBucket {
         metadata {
             name = primary.databaseBackupBucketName

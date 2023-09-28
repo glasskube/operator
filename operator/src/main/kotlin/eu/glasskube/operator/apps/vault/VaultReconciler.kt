@@ -35,13 +35,16 @@ import kotlin.jvm.optionals.getOrDefault
 @ControllerConfiguration(
     dependents = [
         Dependent(type = VaultConfigMap::class, name = "VaultConfigMap"),
-        Dependent(type = VaultMinioBucket::class, name = "VaultMinioBucket"),
+        Dependent(
+            type = VaultMinioBucket::class,
+            name = "VaultMinioBucket",
+            reconcilePrecondition = VaultMinioBucket.ReconcilePrecondition::class
+        ),
         Dependent(type = VaultIngress::class, name = "VaultIngress"),
         Dependent(
             type = VaultPostgresCluster::class,
             name = "VaultPostgresCluster",
-            readyPostcondition = VaultPostgresCluster.ReadyCondition::class,
-            dependsOn = ["VaultMinioBucket"]
+            readyPostcondition = VaultPostgresCluster.ReadyCondition::class
         ),
         Dependent(
             type = VaultService::class,

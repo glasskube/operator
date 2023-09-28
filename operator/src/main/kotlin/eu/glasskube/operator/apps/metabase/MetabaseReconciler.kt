@@ -23,12 +23,15 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
 @ControllerConfiguration(
     dependents = [
         Dependent(type = MetabaseSecret::class, name = "MetabaseSecret"),
-        Dependent(type = MetabaseMinioBucket::class, name = "MetabaseMinioBucket"),
+        Dependent(
+            type = MetabaseMinioBucket::class,
+            name = "MetabaseMinioBucket",
+            reconcilePrecondition = MetabaseMinioBucket.ReconcilePrecondition::class
+        ),
         Dependent(
             type = MetabasePostgresCluster::class,
             name = "MetabasePostgresCluster",
-            readyPostcondition = MetabasePostgresCluster.ReadyPostCondition::class,
-            dependsOn = ["MetabaseMinioBucket"]
+            readyPostcondition = MetabasePostgresCluster.ReadyPostCondition::class
         ),
         Dependent(
             type = MetabasePostgresBackup::class,

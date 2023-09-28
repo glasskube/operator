@@ -34,12 +34,15 @@ import kotlin.jvm.optionals.getOrDefault
     dependents = [
         Dependent(type = GlitchtipVolume::class, name = "GlitchtipVolume"),
         Dependent(type = GlitchtipSecret::class, name = "GlitchtipSecret"),
-        Dependent(type = GlitchtipMinioBucket::class, name = "GlitchtipMinioBucket"),
+        Dependent(
+            type = GlitchtipMinioBucket::class,
+            name = "GlitchtipMinioBucket",
+            reconcilePrecondition = GlitchtipMinioBucket.ReconcilePrecondition::class
+        ),
         Dependent(
             type = GlitchtipPostgresCluster::class,
             name = "GlitchtipPostgresCluster",
-            readyPostcondition = GlitchtipPostgresCluster.ReadyPostCondition::class,
-            dependsOn = ["GlitchtipMinioBucket"]
+            readyPostcondition = GlitchtipPostgresCluster.ReadyPostCondition::class
         ),
         Dependent(
             type = GlitchtipPostgresBackup::class,
