@@ -39,24 +39,25 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         ),
         Dependent(
             name = "OdooPostgresCluster",
-            type = OdooPostgresCluster::class,
-            dependsOn = ["OdooDatabaseBackupSecret", "OdooMinioBucket"]
+            type = OdooPostgresCluster::class
         ),
         Dependent(
             type = OdooMinioBucket::class,
             name = "OdooMinioBucket",
-            dependsOn = ["OdooDatabaseBackupSecret"]
+            dependsOn = ["OdooDatabaseBackupSecret"],
+            reconcilePrecondition = OdooMinioBucket.ReconcilePrecondition::class
         ),
         Dependent(
+            type = OdooDatabaseBackupSecret::class,
             name = "OdooDatabaseBackupSecret",
-            type = OdooDatabaseBackupSecret::class
+            reconcilePrecondition = OdooDatabaseBackupSecret.ReconcilePrecondition::class
         )
     ]
 )
 class OdooReconciler : Reconciler<Odoo> {
     override fun reconcile(resource: Odoo, context: Context<Odoo>): UpdateControl<Odoo> {
-        if (resource.status?.demoEnabledOnInstall == !resource.spec.demoEnabled) {
-            throw IllegalStateException("demoEnabled can not be altered after first reconciliation")
+        check(resource.status?.demoEnabledOnInstall != !resource.spec.demoEnabled) {
+            "demoEnabled can not be altered after first reconciliation"
         }
 
         return with(resource) {

@@ -35,11 +35,14 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
     dependents = [
         Dependent(type = GiteaVolume::class, name = "GiteaVolume"),
         Dependent(type = GiteaSecret::class, name = "GiteaSecret"),
-        Dependent(type = GiteaMinioBucket::class, name = "GiteaMinioBucket"),
+        Dependent(
+            type = GiteaMinioBucket::class,
+            name = "GiteaMinioBucket",
+            reconcilePrecondition = GiteaMinioBucket.ReconcilePrecondition::class
+        ),
         Dependent(
             type = GiteaPostgresCluster::class,
             name = "GiteaPostgresCluster",
-            dependsOn = ["GiteaMinioBucket"],
             readyPostcondition = GiteaPostgresCluster.ReadyPostCondition::class
         ),
         Dependent(

@@ -46,11 +46,11 @@ abstract class DependentPostgresCluster<P>(
     protected open val P.defaultBackupRetentionPolicy: String? get() = null
     protected open val backupConfigurationProvider: PostgresBackupConfigurationProvider<P> =
         ChainingBackupConfigurationProvider(
+            BackupSpecBackupConfigurationProvider { defaultBackupRetentionPolicy },
             MinioBucketBackupConfigurationProvider(
                 { primary, context -> backupBucketInfoProvider.getMinioBucketInfo(primary, context) },
                 { defaultBackupRetentionPolicy }
-            ),
-            BackupSpecBackupConfigurationProvider { defaultBackupRetentionPolicy }
+            )
         )
 
     override fun desired(primary: P, context: Context<P>) = postgresCluster {
