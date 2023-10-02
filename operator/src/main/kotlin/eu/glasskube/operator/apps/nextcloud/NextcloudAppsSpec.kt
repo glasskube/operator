@@ -11,7 +11,8 @@ data class NextcloudAppsSpec(
     val oidc: Oidc? = null
 ) {
     data class Office(
-        val host: String
+        val host: String,
+        val version: String = "23.05.2.2.1"
     )
     data class Oidc(
         @field:Required

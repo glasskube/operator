@@ -28,6 +28,8 @@ spec:
                     properties:
                       host:
                         type: string
+                      version:
+                        type: string
                     type: object
                   oidc:
                     nullable: true
