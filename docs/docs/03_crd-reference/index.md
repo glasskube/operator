@@ -10,4 +10,5 @@ The list of supported applications is constantly growing, but currently consists
 - [Matomo](matomo)
 - [Nextcloud](nextcloud)
 - [Odoo](odoo)
+- [Plane](plane)
 - [Vault](vault)

@@ -26,6 +26,7 @@ Should you find that the Glasskube Operator does not fully cover your use-case, 
   - [Metabase](crd-reference/metabase)
   - [Nextcloud](crd-reference/nextcloud)
   - [Odoo](crd-reference/odoo)
+  - [Plane](crd-reference/plane)
   - [Vault](crd-reference/vault)
 
 ## About Glasskube
