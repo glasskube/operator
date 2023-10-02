@@ -215,7 +215,7 @@ class GiteaDeployment(private val configService: ConfigService) :
         }
     }
 
-    private val Gitea.image get() = "gitea/gitea:${spec.updates.version}"
+    private val Gitea.image get() = "gitea/gitea:${spec.version}"
 
     companion object {
         private const val VOLUME_NAME = "data"

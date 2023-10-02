@@ -1,7 +1,6 @@
 package eu.glasskube.operator.apps.metabase
 
 import eu.glasskube.operator.Labels
-import eu.glasskube.operator.apps.common.ResourceWithUpdatesSpec
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.client.CustomResource
@@ -12,7 +11,7 @@ import io.fabric8.kubernetes.model.annotation.Version
 @Group("glasskube.eu")
 @Version("v1alpha1")
 @Plural("metabases")
-class Metabase : CustomResource<MetabaseSpec, MetabaseStatus>(), Namespaced, ResourceWithUpdatesSpec {
+class Metabase : CustomResource<MetabaseSpec, MetabaseStatus>(), Namespaced {
     companion object {
         const val APP_NAME = "metabase"
     }
@@ -25,7 +24,7 @@ class Metabase : CustomResource<MetabaseSpec, MetabaseStatus>(), Namespaced, Res
 }
 
 val Metabase.resourceLabels
-    get() = Labels.resourceLabels(Metabase.APP_NAME, metadata.name, Metabase.APP_NAME, spec.updates.version)
+    get() = Labels.resourceLabels(Metabase.APP_NAME, metadata.name, Metabase.APP_NAME, spec.version)
 val Metabase.resourceLabelSelector
     get() = Labels.resourceLabelSelector(Metabase.APP_NAME, metadata.name, Metabase.APP_NAME)
 val Metabase.genericResourceName get() = "${Metabase.APP_NAME}-${metadata.name}"

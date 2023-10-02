@@ -1,8 +1,8 @@
 package eu.glasskube.operator.apps.gitlab
 
-import eu.glasskube.operator.apps.common.HasUpdatesSpec
-import eu.glasskube.operator.apps.common.SemanticVersionUpdatesSpec
+import eu.glasskube.operator.validation.Patterns.SEMVER
 import io.fabric8.generator.annotation.Nullable
+import io.fabric8.generator.annotation.Pattern
 import io.fabric8.generator.annotation.Required
 import io.fabric8.kubernetes.api.model.Quantity
 import io.fabric8.kubernetes.api.model.ResourceRequirements
@@ -26,5 +26,6 @@ data class GitlabSpec(
     val omnibusConfigOverride: String?,
     @field:Nullable
     val registry: GitlabRegistrySpec?,
-    override val updates: SemanticVersionUpdatesSpec = SemanticVersionUpdatesSpec("16.2.5")
-) : HasUpdatesSpec
+    @field:Pattern(SEMVER)
+    val version: String = "16.2.5"
+)

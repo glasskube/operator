@@ -61,7 +61,7 @@ class OdooDeployment(private val configService: ConfigService) :
                     containers = listOf(
                         container {
                             name = Odoo.APP_NAME
-                            image = "glasskube/${Odoo.APP_NAME}:${primary.spec.updates.version}"
+                            image = "glasskube/${Odoo.APP_NAME}:${primary.spec.version}"
                             resources = primary.spec.resources
                             env {
                                 envVar("HOST", primary.postgresHostName)

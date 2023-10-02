@@ -1,7 +1,7 @@
 package eu.glasskube.operator.apps.keycloak
 
-import eu.glasskube.operator.apps.common.HasUpdatesSpec
-import eu.glasskube.operator.apps.common.SemanticVersionUpdatesSpec
+import eu.glasskube.operator.validation.Patterns.SEMVER
+import io.fabric8.generator.annotation.Pattern
 import io.fabric8.generator.annotation.Required
 import io.fabric8.kubernetes.api.model.Quantity
 import io.fabric8.kubernetes.api.model.ResourceRequirements
@@ -11,8 +11,9 @@ data class KeycloakSpec(
     val host: String,
     val management: ManagementSpec = ManagementSpec(),
     val resources: ResourceRequirements = defaultResourceRequirements,
-    override val updates: SemanticVersionUpdatesSpec = SemanticVersionUpdatesSpec("21.1.2")
-) : HasUpdatesSpec {
+    @field:Pattern(SEMVER)
+    val version: String = "21.1.2"
+) {
     data class ManagementSpec(val enabled: Boolean = true)
 
     companion object {

@@ -29,7 +29,7 @@ class GitlabRunners :
             token = template.token,
             gitlab = LocalObjectReference(primary.metadata.name)
         ).let { runnerSpec ->
-            template.updates?.let { runnerSpec.copy(updates = it) } ?: runnerSpec
+            template.version?.let { runnerSpec.copy(version = it) } ?: runnerSpec
         }
     }
 

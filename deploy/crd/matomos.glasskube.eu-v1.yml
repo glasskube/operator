@@ -64,13 +64,8 @@ spec:
                       x-kubernetes-int-or-string: true
                     type: object
                 type: object
-              updates:
-                properties:
-                  version:
-                    type: string
-                required:
-                - version
-                type: object
+              version:
+                type: string
             type: object
           status:
             type: object
