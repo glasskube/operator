@@ -4,7 +4,6 @@ import eu.glasskube.kubernetes.api.model.createEnv
 import eu.glasskube.kubernetes.api.model.envVar
 import eu.glasskube.kubernetes.api.model.secretKeyRef
 import eu.glasskube.operator.Labels
-import eu.glasskube.operator.apps.common.ResourceWithUpdatesSpec
 import eu.glasskube.operator.apps.nextcloud.Nextcloud.Postgres.postgresClusterName
 import eu.glasskube.operator.apps.nextcloud.Nextcloud.Postgres.postgresDatabaseName
 import eu.glasskube.operator.apps.nextcloud.Nextcloud.Postgres.postgresHostName
@@ -19,7 +18,7 @@ import io.fabric8.kubernetes.model.annotation.Version
 
 @Group("glasskube.eu")
 @Version("v1alpha1")
-class Nextcloud : CustomResource<NextcloudSpec, NextcloudStatus>(), Namespaced, ResourceWithUpdatesSpec {
+class Nextcloud : CustomResource<NextcloudSpec, NextcloudStatus>(), Namespaced {
     internal companion object {
         const val APP_NAME = "nextcloud"
         const val NGINX_NAME = "nginx"
@@ -53,7 +52,7 @@ class Nextcloud : CustomResource<NextcloudSpec, NextcloudStatus>(), Namespaced, 
 }
 
 internal val Nextcloud.resourceLabels
-    get() = Labels.resourceLabels(Nextcloud.APP_NAME, metadata.name, Nextcloud.APP_NAME, spec.updates.version)
+    get() = Labels.resourceLabels(Nextcloud.APP_NAME, metadata.name, Nextcloud.APP_NAME, spec.version)
 internal val Nextcloud.resourceLabelSelector
     get() = Labels.resourceLabelSelector(Nextcloud.APP_NAME, metadata.name, Nextcloud.APP_NAME)
 internal val Nextcloud.officeResourceLabels
@@ -88,4 +87,4 @@ internal val Nextcloud.databaseEnv
         envVar("POSTGRES_USER") { secretKeyRef(postgresSecretName, "username") }
         envVar("POSTGRES_PASSWORD") { secretKeyRef(postgresSecretName, "password") }
     }
-internal val Nextcloud.appImage get() = "${Nextcloud.APP_NAME}:${spec.updates.version}-fpm"
+internal val Nextcloud.appImage get() = "${Nextcloud.APP_NAME}:${spec.version}-fpm"

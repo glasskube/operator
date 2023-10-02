@@ -56,7 +56,7 @@ class MetabaseDeployment : CRUDKubernetesDependentResource<Deployment, Metabase>
                     containers = listOf(
                         container {
                             name = Metabase.APP_NAME
-                            image = "${Metabase.APP_NAME}/${Metabase.APP_NAME}:v${primary.spec.updates.version}"
+                            image = "${Metabase.APP_NAME}/${Metabase.APP_NAME}:v${primary.spec.version}"
                             envFrom {
                                 configMapRef(primary.configMapName, false)
                                 secretRef(primary.secretName, false)

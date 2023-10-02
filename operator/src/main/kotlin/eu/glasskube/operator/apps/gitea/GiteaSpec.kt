@@ -1,9 +1,9 @@
 package eu.glasskube.operator.apps.gitea
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription
-import eu.glasskube.operator.apps.common.HasUpdatesSpec
-import eu.glasskube.operator.apps.common.SemanticVersionUpdatesSpec
+import eu.glasskube.operator.validation.Patterns.SEMVER
 import io.fabric8.generator.annotation.Nullable
+import io.fabric8.generator.annotation.Pattern
 import io.fabric8.generator.annotation.Required
 import io.fabric8.kubernetes.api.model.LocalObjectReference
 import io.fabric8.kubernetes.api.model.Quantity
@@ -25,5 +25,6 @@ data class GiteaSpec(
         mapOf("memory" to Quantity("400", "Mi")),
         mapOf("memory" to Quantity("200", "Mi"))
     ),
-    override val updates: SemanticVersionUpdatesSpec = SemanticVersionUpdatesSpec("1.20.4")
-) : HasUpdatesSpec
+    @field:Pattern(SEMVER)
+    val version: String = "1.20.4"
+)

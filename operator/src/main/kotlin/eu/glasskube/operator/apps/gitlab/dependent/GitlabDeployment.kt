@@ -71,7 +71,7 @@ class GitlabDeployment(private val configService: ConfigService) :
                     containers = listOf(
                         container {
                             name = Gitlab.APP_NAME
-                            image = "${Gitlab.APP_IMAGE}:${primary.spec.updates.version}-ce.0"
+                            image = "${Gitlab.APP_IMAGE}:${primary.spec.version}-ce.0"
                             resources = primary.spec.resources
                             envFrom {
                                 configMapRef(primary.configMapName)

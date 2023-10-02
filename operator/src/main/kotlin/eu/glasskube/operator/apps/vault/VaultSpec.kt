@@ -1,9 +1,9 @@
 package eu.glasskube.operator.apps.vault
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription
-import eu.glasskube.operator.apps.common.HasUpdatesSpec
-import eu.glasskube.operator.apps.common.SemanticVersionUpdatesSpec
+import eu.glasskube.operator.validation.Patterns
 import io.fabric8.generator.annotation.Nullable
+import io.fabric8.generator.annotation.Pattern
 import io.fabric8.generator.annotation.Required
 import io.fabric8.kubernetes.api.model.Quantity
 import io.fabric8.kubernetes.api.model.ResourceRequirements
@@ -20,8 +20,9 @@ data class VaultSpec(
     val autoUnseal: AutoUnsealSpec?,
     @field:Nullable
     val auditStorage: AuditStorageSpec = AuditStorageSpec(),
-    override val updates: SemanticVersionUpdatesSpec = SemanticVersionUpdatesSpec("1.14.2")
-) : HasUpdatesSpec {
+    @field:Pattern(Patterns.SEMVER)
+    val version: String = "1.14.2"
+) {
 
     data class UiSpec(
         @field:Required

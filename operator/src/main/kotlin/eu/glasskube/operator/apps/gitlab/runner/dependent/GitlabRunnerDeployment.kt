@@ -150,7 +150,7 @@ class GitlabRunnerDeployment : CRUDKubernetesDependentResource<Deployment, Gitla
         }
     }
 
-    private val GitlabRunner.image get() = "${GitlabRunner.APP_IMAGE}:v${spec.updates.version}"
+    private val GitlabRunner.image get() = "${GitlabRunner.APP_IMAGE}:v${spec.version}"
 
     companion object {
         private const val CONFIG_VOLUME = "config"

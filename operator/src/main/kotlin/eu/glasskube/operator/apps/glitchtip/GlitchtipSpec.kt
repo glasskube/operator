@@ -1,8 +1,8 @@
 package eu.glasskube.operator.apps.glitchtip
 
-import eu.glasskube.operator.apps.common.HasUpdatesSpec
-import eu.glasskube.operator.apps.common.SemanticVersionUpdatesSpec
+import eu.glasskube.operator.validation.Patterns.SEMVER
 import io.fabric8.generator.annotation.Nullable
+import io.fabric8.generator.annotation.Pattern
 import io.fabric8.generator.annotation.Required
 import io.fabric8.kubernetes.api.model.Quantity
 import io.fabric8.kubernetes.api.model.ResourceRequirements
@@ -20,5 +20,6 @@ data class GlitchtipSpec(
         mapOf("memory" to Quantity("800", "Mi")),
         mapOf("memory" to Quantity("700", "Mi"))
     ),
-    override val updates: SemanticVersionUpdatesSpec = SemanticVersionUpdatesSpec("3.3.1")
-) : HasUpdatesSpec
+    @field:Pattern(SEMVER)
+    val version: String = "3.3.1"
+)
