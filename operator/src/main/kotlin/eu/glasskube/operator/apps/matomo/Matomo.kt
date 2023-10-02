@@ -1,5 +1,8 @@
 package eu.glasskube.operator.apps.matomo
 
+import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
+import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
+import eu.glasskube.operator.apps.common.database.mariadb.MariaDbDatabaseSpec
 import eu.glasskube.utils.resourceLabels
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.kubernetes.api.model.Namespaced
@@ -19,8 +22,9 @@ data class MatomoSpec(
         mapOf("memory" to Quantity("600", "Mi")),
         mapOf("memory" to Quantity("300", "Mi"))
     ),
-    val version: String = "4.15.1.1"
-)
+    val version: String = "4.15.1.1",
+    override val database: MariaDbDatabaseSpec = MariaDbDatabaseSpec()
+) : HasDatabaseSpec<MariaDbDatabaseSpec>
 
 class MatomoStatus {
     override fun equals(other: Any?) = this === other || javaClass == other?.javaClass
@@ -30,7 +34,7 @@ class MatomoStatus {
 @Group("glasskube.eu")
 @Version("v1alpha1")
 @Plural("matomos")
-class Matomo : CustomResource<MatomoSpec, MatomoStatus>(), Namespaced {
+class Matomo : CustomResource<MatomoSpec, MatomoStatus>(), Namespaced, ResourceWithDatabaseSpec<MariaDbDatabaseSpec> {
     companion object {
         const val APP_NAME = "matomo"
     }
