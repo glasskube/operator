@@ -1,6 +1,10 @@
 package eu.glasskube.operator.apps.matomo.dependent
 
+import eu.glasskube.kubernetes.api.model.loggingId
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.namespace
+import eu.glasskube.kubernetes.api.model.secretKeySelector
+import eu.glasskube.kubernetes.api.model.toQuantity
 import eu.glasskube.operator.apps.matomo.Matomo
 import eu.glasskube.operator.apps.matomo.MatomoReconciler
 import eu.glasskube.operator.apps.matomo.databaseName
@@ -21,9 +25,10 @@ import eu.glasskube.operator.infra.mariadb.MariaDBVolumeClaimTemplate
 import eu.glasskube.operator.infra.mariadb.Metrics
 import eu.glasskube.operator.infra.mariadb.ServiceMonitor
 import eu.glasskube.operator.infra.mariadb.mariaDB
+import eu.glasskube.utils.logger
+import io.fabric8.kubernetes.api.model.PersistentVolumeClaim
 import io.fabric8.kubernetes.api.model.Quantity
 import io.fabric8.kubernetes.api.model.ResourceRequirements
-import io.fabric8.kubernetes.api.model.SecretKeySelector
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
@@ -34,6 +39,17 @@ class MatomoMariaDB(private val configService: ConfigService) :
 
     class ReadyPostCondition : MariaDBReadyCondition<Matomo>()
 
+    private val defaultStorageSize = "10Gi"
+    private val defaultStorageClass get() = configService.getValue(ConfigKey.databaseStorageClassName)
+
+    private val Matomo.storageSize get() = spec.database.storage?.size ?: defaultStorageSize
+    private val Matomo.storageClass get() = spec.database.storage?.storageClass ?: defaultStorageClass
+
+    private val MariaDB.storageSize get() = spec.volumeClaimTemplate.resources.requests?.storage
+    private val MariaDB.persistentVolumeClaim: PersistentVolumeClaim?
+        get() = kubernetesClient.persistentVolumeClaims().inNamespace(namespace)
+            .withName("storage-${metadata.name}-0").get()
+
     override fun desired(primary: Matomo, context: Context<Matomo>) = mariaDB {
         metadata {
             name = primary.genericMariaDBName
@@ -41,14 +57,14 @@ class MatomoMariaDB(private val configService: ConfigService) :
             labels = primary.resourceLabels
         }
         spec = MariaDBSpec(
-            rootPasswordSecretKeyRef = SecretKeySelector("ROOT_DATABASE_PASSWORD", primary.databaseSecretName, null),
+            rootPasswordSecretKeyRef = secretKeySelector(primary.databaseSecretName, ROOT_DATABASE_PASSWORD),
             image = MariaDBImage("mariadb", "10.7.4", "IfNotPresent"),
             database = primary.databaseName,
             username = primary.databaseUser,
-            passwordSecretKeyRef = SecretKeySelector("MATOMO_DATABASE_PASSWORD", primary.databaseSecretName, null),
+            passwordSecretKeyRef = secretKeySelector(primary.databaseSecretName, MATOMO_DATABASE_PASSWORD),
             volumeClaimTemplate = MariaDBVolumeClaimTemplate(
-                resources = MariaDBResources(MariaDBResourcesRequest("10Gi")),
-                storageClassName = configService.getValue(ConfigKey.databaseStorageClassName)
+                resources = MariaDBResources(MariaDBResourcesRequest(primary.storageSize)),
+                storageClassName = primary.storageClass
             ),
             resources = ResourceRequirements(
                 null,
@@ -64,5 +80,41 @@ class MatomoMariaDB(private val configService: ConfigService) :
                 )
             )
         )
+    }
+
+    override fun handleUpdate(actual: MariaDB, desired: MariaDB, primary: Matomo, context: Context<Matomo>): MariaDB =
+        if (desired.storageSize != actual.storageSize) {
+            // Do not update volumeClaimTemplate if the database has already been created. This would lead to an error,
+            // because this field is immutable. To handle expansion of the PersistentVolumeClaim, we update the claim
+            // directly, then recreate the MariaDB resource, so that the storage size is consistent with the claim.
+            log.info(
+                "storage request for ${primary.loggingId} has changed " +
+                    "(actual: ${actual.storageSize}, desired: ${desired.storageSize}). " +
+                    "Now updating the PersistentVolumeClaim and recreating MariaDB"
+            )
+            updateVolumeClaimStorageRequest(actual, primary)
+            recreate(actual, desired, primary, context)
+                .also { log.info("MariaDB for ${primary.loggingId} recreated") }
+        } else {
+            super.handleUpdate(actual, desired, primary, context)
+        }
+
+    private fun updateVolumeClaimStorageRequest(actual: MariaDB, primary: Matomo) {
+        actual.persistentVolumeClaim
+            ?.apply { spec.resources.requests["storage"] = primary.storageSize.toQuantity() }
+            ?.let { kubernetesClient.resource(it) }
+            ?.update()
+    }
+
+    private fun recreate(actual: MariaDB, desired: MariaDB, primary: Matomo, context: Context<Matomo>): MariaDB {
+        kubernetesClient.resource(actual).delete()
+        Thread.sleep(1000)
+        return handleCreate(desired, primary, context)
+    }
+
+    companion object {
+        private val log = logger()
+        internal const val ROOT_DATABASE_PASSWORD = "ROOT_DATABASE_PASSWORD"
+        internal const val MATOMO_DATABASE_PASSWORD = "MATOMO_DATABASE_PASSWORD"
     }
 }

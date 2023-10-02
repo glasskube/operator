@@ -3,6 +3,8 @@ package eu.glasskube.operator.apps.matomo.dependent
 import eu.glasskube.operator.apps.matomo.Matomo
 import eu.glasskube.operator.apps.matomo.MatomoReconciler
 import eu.glasskube.operator.apps.matomo.databaseSecretName
+import eu.glasskube.operator.apps.matomo.dependent.MatomoMariaDB.Companion.MATOMO_DATABASE_PASSWORD
+import eu.glasskube.operator.apps.matomo.dependent.MatomoMariaDB.Companion.ROOT_DATABASE_PASSWORD
 import eu.glasskube.operator.apps.matomo.resourceLabels
 import eu.glasskube.operator.generic.dependent.GeneratedSecret
 import io.fabric8.kubernetes.api.model.Secret
@@ -19,5 +21,5 @@ class MatomoDatabaseSecret : GeneratedSecret<Matomo>() {
 
     override val Matomo.generatedSecretName get() = databaseSecretName
     override val Matomo.generatedSecretLabels get() = resourceLabels
-    override val generatedKeys get() = arrayOf("MATOMO_DATABASE_PASSWORD", "ROOT_DATABASE_PASSWORD")
+    override val generatedKeys get() = arrayOf(MATOMO_DATABASE_PASSWORD, ROOT_DATABASE_PASSWORD)
 }
