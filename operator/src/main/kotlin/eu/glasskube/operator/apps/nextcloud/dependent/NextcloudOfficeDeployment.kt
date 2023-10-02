@@ -15,6 +15,7 @@ import eu.glasskube.kubernetes.api.model.resources
 import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.operator.apps.nextcloud.Nextcloud
 import eu.glasskube.operator.apps.nextcloud.NextcloudReconciler
+import eu.glasskube.operator.apps.nextcloud.image
 import eu.glasskube.operator.apps.nextcloud.officeName
 import eu.glasskube.operator.apps.nextcloud.officeResourceLabelSelector
 import eu.glasskube.operator.apps.nextcloud.officeResourceLabels
@@ -56,7 +57,7 @@ class NextcloudOfficeDeployment : CRUDKubernetesDependentResource<Deployment, Ne
                     containers = listOf(
                         container {
                             name = Nextcloud.OFFICE_NAME
-                            image = Nextcloud.OFFICE_IMAGE
+                            image = primary.spec.apps.office!!.image
                             resources {
                                 limits(memory = Quantity("500", "Mi"))
                             }

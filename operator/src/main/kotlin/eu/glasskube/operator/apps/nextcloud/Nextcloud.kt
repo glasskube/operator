@@ -25,8 +25,6 @@ class Nextcloud : CustomResource<NextcloudSpec, NextcloudStatus>(), Namespaced {
         const val NGINX_VERSION = "1.25.1"
         const val NGINX_IMAGE = "$NGINX_NAME:$NGINX_VERSION-alpine"
         const val OFFICE_NAME = "collabora"
-        const val OFFICE_VERSION = "23.05.2.2.1"
-        const val OFFICE_IMAGE = "$OFFICE_NAME/code:$OFFICE_VERSION"
     }
 
     object Redis : RedisNameMapper<Nextcloud>() {
@@ -60,7 +58,7 @@ internal val Nextcloud.officeResourceLabels
         Nextcloud.OFFICE_NAME,
         metadata.name,
         Nextcloud.APP_NAME,
-        Nextcloud.OFFICE_VERSION,
+        spec.apps.office?.version,
         Nextcloud.OFFICE_NAME
     )
 internal val Nextcloud.officeResourceLabelSelector
@@ -88,3 +86,4 @@ internal val Nextcloud.databaseEnv
         envVar("POSTGRES_PASSWORD") { secretKeyRef(postgresSecretName, "password") }
     }
 internal val Nextcloud.appImage get() = "${Nextcloud.APP_NAME}:${spec.version}-fpm"
+internal val NextcloudAppsSpec.Office.image get() = "${Nextcloud.OFFICE_NAME}/code:$version"
