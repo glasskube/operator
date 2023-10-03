@@ -145,6 +145,67 @@ spec:
               version:
                 pattern: \d+\.\d+\.\d+
                 type: string
+              database:
+                nullable: true
+                properties:
+                  instances:
+                    minimum: 1.0
+                    type: integer
+                  backups:
+                    properties:
+                      schedule:
+                        type: string
+                      retentionPolicy:
+                        type: string
+                      s3:
+                        properties:
+                          endpoint:
+                            type: string
+                          regionSecret:
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                type: string
+                              optional:
+                                type: boolean
+                            type: object
+                          bucket:
+                            type: string
+                          accessKeySecret:
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                type: string
+                              optional:
+                                type: boolean
+                            type: object
+                          secretKeySecret:
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                type: string
+                              optional:
+                                type: boolean
+                            type: object
+                        required:
+                        - bucket
+                        - accessKeySecret
+                        - secretKeySecret
+                        type: object
+                    required:
+                    - s3
+                    type: object
+                  storage:
+                    properties:
+                      size:
+                        type: string
+                      storageClass:
+                        type: string
+                    type: object
+                type: object
             required:
             - host
             type: object
