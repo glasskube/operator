@@ -182,7 +182,7 @@ class NextcloudDeployment(private val configService: ConfigService) :
                         container {
                             name = Nextcloud.APP_NAME
                             image = primary.appImage
-                            resources = primary.spec.resources
+                            resources = primary.spec.server.resources
                             env =
                                 primary.defaultEnv + primary.databaseEnv + primary.smtpEnv + primary.oidcEnv + primary.storageEnv
                             volumeMounts {

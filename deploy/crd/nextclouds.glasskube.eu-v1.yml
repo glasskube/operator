@@ -49,30 +49,6 @@ spec:
                     - issuerUrl
                     type: object
                 type: object
-              resources:
-                properties:
-                  claims:
-                    items:
-                      properties:
-                        name:
-                          type: string
-                      type: object
-                    type: array
-                  limits:
-                    additionalProperties:
-                      anyOf:
-                      - type: integer
-                      - type: string
-                      x-kubernetes-int-or-string: true
-                    type: object
-                  requests:
-                    additionalProperties:
-                      anyOf:
-                      - type: integer
-                      - type: string
-                      x-kubernetes-int-or-string: true
-                    type: object
-                type: object
               smtp:
                 nullable: true
                 properties:
@@ -150,8 +126,42 @@ spec:
               version:
                 pattern: \d+\.\d+\.\d+
                 type: string
-              maxChildProcesses:
-                type: integer
+              server:
+                properties:
+                  resources:
+                    nullable: true
+                    properties:
+                      claims:
+                        items:
+                          properties:
+                            name:
+                              type: string
+                          type: object
+                        type: array
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          x-kubernetes-int-or-string: true
+                        type: object
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          x-kubernetes-int-or-string: true
+                        type: object
+                    type: object
+                  maxChildren:
+                    type: integer
+                  startServers:
+                    type: integer
+                  minSpareServers:
+                    type: integer
+                  maxSpareServers:
+                    type: integer
+                type: object
             type: object
           status:
             properties:
