@@ -15,14 +15,15 @@ data class NextcloudSpec(
     val smtp: NextcloudSmtpSpec?,
     val storage: NextcloudStorageSpec?,
     @field:Pattern(Patterns.SEMVER)
-    val version: String = "27.0.1"
+    val version: String = "27.0.1",
+    val maxChildProcesses: Int = 256
 ) {
     companion object {
         private val defaultResourceRequirements
             get() = ResourceRequirements(
                 null,
-                mapOf("memory" to Quantity("400", "Mi")),
-                mapOf("memory" to Quantity("100", "Mi"))
+                mapOf("memory" to Quantity("600", "Mi")),
+                mapOf("memory" to Quantity("300", "Mi"))
             )
     }
 }

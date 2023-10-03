@@ -26,7 +26,7 @@ class NextcloudConfigMap : CRUDKubernetesDependentResource<ConfigMap, Nextcloud>
         data = mapOf(
             NextcloudDeployment.CONFIG_FILE_NAME to primary.configFile,
             NextcloudDeployment.NGINX_CONFIG_FILE_NAME to nginxConfigFile,
-            NextcloudDeployment.PHP_FPM_CONFIG_FILE_NAME to phpFpmConfigFile
+            NextcloudDeployment.PHP_FPM_CONFIG_FILE_NAME to phpFpmConfigFile(primary.spec.maxChildProcesses)
         )
     }
 
@@ -41,8 +41,12 @@ class NextcloudConfigMap : CRUDKubernetesDependentResource<ConfigMap, Nextcloud>
     private val nginxConfigFile: String
         get() = resourceAsString("nginx.conf")
 
-    private val phpFpmConfigFile: String
-        get() = resourceAsString("zzz-glasskube-php-fpm.conf")
+    private fun phpFpmConfigFile(maxChildProcesses: Int) =
+        resourceAsString("zzz-glasskube-php-fpm.conf")
+            .replace("%max_children%", maxChildProcesses.toString())
+            .replace("%start_servers%", (maxChildProcesses / 8).toString())
+            .replace("%min_spare_servers%", (maxChildProcesses / 16).toString())
+            .replace("%max_spare_servers%", (maxChildProcesses / 4).toString())
 
     private val Nextcloud.configFile: String
         get() = kubernetesClient.kubernetesSerialization.asJson(

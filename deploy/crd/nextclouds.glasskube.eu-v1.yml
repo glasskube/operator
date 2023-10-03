@@ -150,6 +150,8 @@ spec:
               version:
                 pattern: \d+\.\d+\.\d+
                 type: string
+              maxChildProcesses:
+                type: integer
             type: object
           status:
             properties:
