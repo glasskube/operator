@@ -6,6 +6,7 @@ abstract class PostgresNameMapper<in P> {
     abstract fun getDatabaseName(primary: P): String
     val P.postgresClusterName get() = getName(this)
     val P.postgresClusterLabels get() = getLabels(this)
+    val P.postgresClusterLabelSelector get() = mapOf("cnpg.io/cluster" to postgresClusterName)
     val P.postgresDatabaseName get() = getDatabaseName(this)
     val P.postgresHostName get() = "$postgresClusterName-rw"
     val P.postgresSecretName get() = "$postgresClusterName-app"
