@@ -6,4 +6,5 @@ abstract class RedisNameMapper<in T> {
     abstract fun getLabelSelector(primary: T): Map<String, String>
     abstract fun getVersion(primary: T): String
     val T.redisName get() = getName(this)
+    val T.redisLabelSelector get() = getLabelSelector(this)
 }
