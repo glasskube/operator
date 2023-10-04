@@ -3,24 +3,31 @@ kind: ClusterRole
 metadata:
   name: glasskube-operator
 rules:
-  - apiGroups: [ glasskube.eu ]
-    resources: [ "*" ]
+  - apiGroups:
+      - glasskube.eu
+    resources:
+      - '*'
     verbs:
       - get
       - list
       - watch
       - patch
       - update
-  - apiGroups: [ glasskube.eu ]
-    resources: [ gitlabrunners ]
+  - apiGroups:
+      - glasskube.eu
+    resources:
+      - gitlabrunners
     verbs:
       - create
       - delete
-  - apiGroups: [ glasskube.eu ]
-    resources: [ miniobuckets ]
+  - apiGroups:
+      - glasskube.eu
+    resources:
+      - miniobuckets
     verbs:
       - create
-  - apiGroups: [ apps ]
+  - apiGroups:
+      - apps
     resources:
       - deployments
       - statefulsets
@@ -31,7 +38,8 @@ rules:
       - patch
       - update
       - watch
-  - apiGroups: [ "" ]
+  - apiGroups:
+      - ""
     resources:
       - services
       - secrets
@@ -45,7 +53,8 @@ rules:
       - patch
       - update
       - watch
-  - apiGroups: [ "" ]
+  - apiGroups:
+      - ""
     resources:
       - persistentvolumeclaims
     verbs:
@@ -56,15 +65,18 @@ rules:
       - update
       - watch
       - delete
-  - apiGroups: [ "" ]
+  - apiGroups:
+      - ""
     resources:
       - nodes
     verbs:
       - get
       - list
       - watch
-  - apiGroups: [ networking.k8s.io ]
-    resources: [ ingresses ]
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - ingresses
     verbs:
       - create
       - get
@@ -72,19 +84,26 @@ rules:
       - patch
       - update
       - watch
-  - apiGroups: [ networking.k8s.io ]
-    resources: [ ingressclasses ]
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - ingressclasses
     verbs:
       - get
       - list
-  - apiGroups: [ storage.k8s.io ]
-    resources: [ storageclasses ]
+  - apiGroups:
+      - storage.k8s.io
+    resources:
+      - storageclasses
     verbs:
       - get
       - list
       - watch
-  - apiGroups: [ mariadb.mmontes.io, postgresql.cnpg.io ]
-    resources: [ "*" ]
+  - apiGroups:
+      - mariadb.mmontes.io
+      - postgresql.cnpg.io
+    resources:
+      - '*'
     verbs:
       - create
       - get
@@ -92,14 +111,18 @@ rules:
       - patch
       - update
       - watch
-  - apiGroups: [ cert-manager.io ]
-    resources: [ clusterissuers ]
+  - apiGroups:
+      - cert-manager.io
+    resources:
+      - clusterissuers
     verbs:
       - get
       - list
       - watch
-  - apiGroups: [ monitoring.coreos.com ]
-    resources: [ servicemonitors ]
+  - apiGroups:
+      - monitoring.coreos.com
+    resources:
+      - servicemonitors
     verbs:
       - create
       - get
@@ -107,13 +130,17 @@ rules:
       - patch
       - update
       - watch
-  - apiGroups: [ apiextensions.k8s.io ]
-    resources: [ customresourcedefinitions ]
+  - apiGroups:
+      - apiextensions.k8s.io
+    resources:
+      - customresourcedefinitions
     verbs:
       - get
       - list
-  - apiGroups: [ batch ]
-    resources: [ cronjobs ]
+  - apiGroups:
+      - batch
+    resources:
+      - cronjobs
     verbs:
       - create
       - get
@@ -121,7 +148,8 @@ rules:
       - patch
       - update
       - watch
-  - apiGroups: [ rbac.authorization.k8s.io ]
+  - apiGroups:
+      - rbac.authorization.k8s.io
     resources:
       - roles
       - rolebindings
@@ -133,13 +161,17 @@ rules:
       - patch
       - update
       - watch
-  - apiGroups: [ rbac.authorization.k8s.io ]
+  - apiGroups:
+      - rbac.authorization.k8s.io
     resources:
       - clusterrolebindings
     verbs:
       - delete
-  - apiGroups: [ rbac.authorization.k8s.io ]
-    resources: [ clusterroles ]
-    resourceNames: [ system:auth-delegator ]
+  - apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - clusterroles
+    resourceNames:
+      - system:auth-delegator
     verbs:
       - bind
