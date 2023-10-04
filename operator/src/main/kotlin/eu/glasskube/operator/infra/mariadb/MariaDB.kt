@@ -48,7 +48,7 @@ data class MariaDBSpec(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class MariaDBStatus(
-    val conditions: List<Condition>
+    val conditions: List<Condition>?
 )
 
 @Group("mariadb.mmontes.io")
