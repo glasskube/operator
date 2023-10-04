@@ -112,6 +112,12 @@ rules:
       - update
       - watch
   - apiGroups:
+      - mariadb.mmontes.io
+    resources:
+      - mariadbs
+    verbs:
+      - delete
+  - apiGroups:
       - cert-manager.io
     resources:
       - clusterissuers
