@@ -15,15 +15,20 @@ import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipPostgresCluster
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipRedisDeployment
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipRedisService
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipSecret
+import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipVeleroBackupStorageLocation
+import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipVeleroSchedule
+import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipVeleroSecret
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipVolume
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipWorkerDeployment
 import eu.glasskube.operator.generic.BaseReconciler
 import eu.glasskube.operator.generic.condition.isReady
 import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.infra.postgres.isReady
+import eu.glasskube.operator.processing.CompositeSecondaryToPrimaryMapper
 import eu.glasskube.operator.webhook.WebhookService
 import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
+import io.fabric8.kubernetes.api.model.Secret
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
@@ -31,12 +36,17 @@ import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceInitializer
 import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
+import io.javaoperatorsdk.operator.processing.event.source.informer.Mappers
 import kotlin.jvm.optionals.getOrDefault
 
 @ControllerConfiguration(
     dependents = [
         Dependent(type = GlitchtipVolume::class, name = "GlitchtipVolume"),
-        Dependent(type = GlitchtipSecret::class, name = "GlitchtipSecret"),
+        Dependent(
+            type = GlitchtipSecret::class,
+            name = "GlitchtipSecret",
+            useEventSourceWithName = GlitchtipReconciler.SECRET_EVENT_SOURCE
+        ),
         Dependent(
             type = GlitchtipMinioBucket::class,
             name = "GlitchtipMinioBucket",
@@ -94,6 +104,22 @@ import kotlin.jvm.optionals.getOrDefault
         Dependent(
             type = GlitchtipIngress::class,
             name = "GlitchtipIngress"
+        ),
+        Dependent(
+            type = GlitchtipVeleroSecret::class,
+            name = "GlitchtipVeleroSecret",
+            reconcilePrecondition = GlitchtipVeleroSecret.ReconcilePrecondition::class,
+            useEventSourceWithName = GlitchtipReconciler.SECRET_EVENT_SOURCE
+        ),
+        Dependent(
+            type = GlitchtipVeleroBackupStorageLocation::class,
+            name = "GlitchtipVeleroBackupStorageLocation",
+            dependsOn = ["GlitchtipVeleroSecret"]
+        ),
+        Dependent(
+            type = GlitchtipVeleroSchedule::class,
+            name = "GlitchtipVeleroSchedule",
+            dependsOn = ["GlitchtipVeleroBackupStorageLocation"]
         )
     ]
 )
@@ -119,7 +145,15 @@ class GlitchtipReconciler(webhookService: WebhookService) :
         mutableMapOf(
             DEPLOYMENT_EVENT_SOURCE to informerEventSource<Deployment>(),
             SERVICE_EVENT_SOURCE to informerEventSource<Service>(),
-            CONFIGMAP_EVENT_SOURCE to informerEventSource<ConfigMap>()
+            CONFIGMAP_EVENT_SOURCE to informerEventSource<ConfigMap>(),
+            SECRET_EVENT_SOURCE to informerEventSource<Secret> {
+                withSecondaryToPrimaryMapper(
+                    CompositeSecondaryToPrimaryMapper(
+                        Mappers.fromOwnerReference(),
+                        Mappers.fromDefaultAnnotations()
+                    )
+                )
+            }
         )
     }
 
@@ -132,6 +166,7 @@ class GlitchtipReconciler(webhookService: WebhookService) :
         internal const val DEPLOYMENT_EVENT_SOURCE = "GlitchtipDeploymentEventSource"
         internal const val SERVICE_EVENT_SOURCE = "GlitchtipServiceEventSource"
         internal const val CONFIGMAP_EVENT_SOURCE = "GlitchtipConfigMapEventSource"
+        internal const val SECRET_EVENT_SOURCE = "GlitchtipSecretEventSource"
 
         private val log = logger()
     }
