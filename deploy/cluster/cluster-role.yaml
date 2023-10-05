@@ -194,3 +194,16 @@ rules:
       - system:auth-delegator
     verbs:
       - bind
+  - apiGroups:
+      - velero.io
+    resources:
+      - schedules
+      - backupstoragelocations
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
+      - delete
