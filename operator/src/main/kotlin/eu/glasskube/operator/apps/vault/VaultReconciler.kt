@@ -16,6 +16,9 @@ import eu.glasskube.operator.apps.vault.dependent.VaultService
 import eu.glasskube.operator.apps.vault.dependent.VaultServiceAccount
 import eu.glasskube.operator.apps.vault.dependent.VaultServiceHeadless
 import eu.glasskube.operator.apps.vault.dependent.VaultStatefulSet
+import eu.glasskube.operator.apps.vault.dependent.VaultVeleroBackupStorageLocation
+import eu.glasskube.operator.apps.vault.dependent.VaultVeleroSchedule
+import eu.glasskube.operator.apps.vault.dependent.VaultVeleroSecret
 import eu.glasskube.operator.generic.BaseReconciler
 import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.infra.postgres.isReady
@@ -81,7 +84,26 @@ import kotlin.jvm.optionals.getOrDefault
             name = "VaultStatefulSet",
             dependsOn = ["VaultPostgresCluster", "VaultServiceAccount", "VaultServiceHeadless", "VaultConfigMap"]
         ),
-        Dependent(type = VaultPostgresBackup::class, name = "VaultPostgresBackup", dependsOn = ["VaultPostgresCluster"])
+        Dependent(
+            type = VaultPostgresBackup::class,
+            name = "VaultPostgresBackup",
+            dependsOn = ["VaultPostgresCluster"]
+        ),
+        Dependent(
+            type = VaultVeleroSecret::class,
+            name = "VaultVeleroSecret",
+            reconcilePrecondition = VaultVeleroSecret.ReconcilePrecondition::class
+        ),
+        Dependent(
+            type = VaultVeleroBackupStorageLocation::class,
+            name = "VaultVeleroBackupStorageLocation",
+            dependsOn = ["VaultVeleroSecret"]
+        ),
+        Dependent(
+            type = VaultVeleroSchedule::class,
+            name = "VaultVeleroSchedule",
+            dependsOn = ["VaultVeleroBackupStorageLocation"]
+        )
     ],
     maxReconciliationInterval = MaxReconciliationInterval(interval = 10, timeUnit = TimeUnit.SECONDS)
 )
