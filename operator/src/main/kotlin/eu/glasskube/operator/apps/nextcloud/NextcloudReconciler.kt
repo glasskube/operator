@@ -16,6 +16,9 @@ import eu.glasskube.operator.apps.nextcloud.dependent.NextcloudPostgresCluster
 import eu.glasskube.operator.apps.nextcloud.dependent.NextcloudRedisDeployment
 import eu.glasskube.operator.apps.nextcloud.dependent.NextcloudRedisService
 import eu.glasskube.operator.apps.nextcloud.dependent.NextcloudService
+import eu.glasskube.operator.apps.nextcloud.dependent.NextcloudVeleroBackupStorageLocation
+import eu.glasskube.operator.apps.nextcloud.dependent.NextcloudVeleroSchedule
+import eu.glasskube.operator.apps.nextcloud.dependent.NextcloudVeleroSecret
 import eu.glasskube.operator.apps.nextcloud.dependent.NextcloudVolume
 import eu.glasskube.operator.generic.BaseReconciler
 import eu.glasskube.operator.generic.condition.isReady
@@ -86,6 +89,21 @@ import kotlin.jvm.optionals.getOrDefault
             name = "NextcloudOfficeService",
             reconcilePrecondition = NextcloudOfficeService.ReconcilePrecondition::class,
             useEventSourceWithName = NextcloudReconciler.SERVICE_EVENT_SOURCE
+        ),
+        Dependent(
+            type = NextcloudVeleroSecret::class,
+            name = "NextcloudVeleroSecret",
+            reconcilePrecondition = NextcloudVeleroSecret.ReconcilePrecondition::class
+        ),
+        Dependent(
+            type = NextcloudVeleroBackupStorageLocation::class,
+            name = "NextcloudVeleroBackupStorageLocation",
+            dependsOn = ["NextcloudVeleroSecret"]
+        ),
+        Dependent(
+            type = NextcloudVeleroSchedule::class,
+            name = "NextcloudVeleroSchedule",
+            dependsOn = ["NextcloudVeleroBackupStorageLocation"]
         )
     ]
 )
