@@ -11,6 +11,9 @@ import eu.glasskube.operator.apps.keycloak.dependent.KeycloakPostgresBackup
 import eu.glasskube.operator.apps.keycloak.dependent.KeycloakPostgresBackupBucket
 import eu.glasskube.operator.apps.keycloak.dependent.KeycloakPostgresCluster
 import eu.glasskube.operator.apps.keycloak.dependent.KeycloakService
+import eu.glasskube.operator.apps.keycloak.dependent.KeycloakVeleroBackupStorageLocation
+import eu.glasskube.operator.apps.keycloak.dependent.KeycloakVeleroSchedule
+import eu.glasskube.operator.apps.keycloak.dependent.KeycloakVeleroSecret
 import eu.glasskube.operator.generic.BaseReconciler
 import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.infra.postgres.isReady
@@ -56,7 +59,22 @@ import kotlin.jvm.optionals.getOrDefault
             name = "KeycloakDiscoveryService",
             useEventSourceWithName = KeycloakReconciler.SERVICE_EVENT_SOURCE
         ),
-        Dependent(type = KeycloakIngress::class, name = "KeycloakIngress")
+        Dependent(type = KeycloakIngress::class, name = "KeycloakIngress"),
+        Dependent(
+            type = KeycloakVeleroSecret::class,
+            name = "KeycloakVeleroSecret",
+            reconcilePrecondition = KeycloakVeleroSecret.ReconcilePrecondition::class
+        ),
+        Dependent(
+            type = KeycloakVeleroBackupStorageLocation::class,
+            name = "KeycloakVeleroBackupStorageLocation",
+            dependsOn = ["KeycloakVeleroSecret"]
+        ),
+        Dependent(
+            type = KeycloakVeleroSchedule::class,
+            name = "KeycloakVeleroSchedule",
+            dependsOn = ["KeycloakVeleroBackupStorageLocation"]
+        )
     ]
 )
 class KeycloakReconciler(webhookService: WebhookService) :
