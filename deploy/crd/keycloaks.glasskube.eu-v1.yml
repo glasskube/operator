@@ -112,6 +112,55 @@ spec:
                         type: string
                     type: object
                 type: object
+              backups:
+                properties:
+                  schedule:
+                    type: string
+                  ttl:
+                    type: string
+                  s3:
+                    properties:
+                      hostname:
+                        nullable: true
+                        type: string
+                      port:
+                        nullable: true
+                        type: integer
+                      useSsl:
+                        type: boolean
+                      region:
+                        nullable: true
+                        type: string
+                      bucket:
+                        type: string
+                      accessKeySecret:
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            type: string
+                          optional:
+                            type: boolean
+                        type: object
+                      secretKeySecret:
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            type: string
+                          optional:
+                            type: boolean
+                        type: object
+                      usePathStyle:
+                        type: boolean
+                    required:
+                    - bucket
+                    - accessKeySecret
+                    - secretKeySecret
+                    type: object
+                required:
+                - s3
+                type: object
             required:
             - host
             type: object
