@@ -1,8 +1,12 @@
 package eu.glasskube.operator.apps.gitea
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import eu.glasskube.operator.Labels
+import eu.glasskube.operator.apps.common.backup.ResourceWithBackups
 import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
+import eu.glasskube.operator.apps.gitea.Gitea.Postgres.postgresClusterLabelSelector
+import eu.glasskube.operator.generic.dependent.backups.VeleroNameMapper
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import eu.glasskube.operator.generic.dependent.redis.RedisNameMapper
 import io.fabric8.kubernetes.api.model.Namespaced
@@ -17,7 +21,9 @@ import io.fabric8.kubernetes.model.annotation.Version
 class Gitea :
     CustomResource<GiteaSpec, GiteaStatus>(),
     Namespaced,
+    ResourceWithBackups,
     ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
+
     companion object {
         const val APP_NAME = "gitea"
     }
@@ -41,6 +47,15 @@ class Gitea :
         override fun getName(primary: Gitea) = "${primary.genericResourceName}-db"
         override fun getLabels(primary: Gitea) = primary.resourceLabels
         override fun getDatabaseName(primary: Gitea) = "gitea"
+    }
+
+    @delegate:JsonIgnore
+    override val velero by lazy {
+        object : VeleroNameMapper(this) {
+            override val resourceName = genericResourceName
+            override val resourceLabels = this@Gitea.resourceLabels
+            override val labelSelectors = listOf(resourceLabelSelector, postgresClusterLabelSelector)
+        }
     }
 }
 

@@ -1,6 +1,8 @@
 package eu.glasskube.operator.apps.gitea
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription
+import eu.glasskube.operator.apps.common.backup.BackupSpec
+import eu.glasskube.operator.apps.common.backup.HasBackupSpec
 import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
 import eu.glasskube.operator.validation.Patterns.SEMVER
@@ -30,5 +32,6 @@ data class GiteaSpec(
     @field:Pattern(SEMVER)
     val version: String = "1.20.4",
     @field:Nullable
-    override val database: PostgresDatabaseSpec = PostgresDatabaseSpec()
-) : HasDatabaseSpec<PostgresDatabaseSpec>
+    override val database: PostgresDatabaseSpec = PostgresDatabaseSpec(),
+    override val backups: BackupSpec?
+) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec>
