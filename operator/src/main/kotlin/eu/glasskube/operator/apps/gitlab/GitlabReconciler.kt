@@ -15,6 +15,9 @@ import eu.glasskube.operator.apps.gitlab.dependent.GitlabRunners
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabSSHService
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabService
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabServiceMonitor
+import eu.glasskube.operator.apps.gitlab.dependent.GitlabVeleroBackupStorageLocation
+import eu.glasskube.operator.apps.gitlab.dependent.GitlabVeleroSchedule
+import eu.glasskube.operator.apps.gitlab.dependent.GitlabVeleroSecret
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabVolume
 import eu.glasskube.operator.apps.gitlab.runner.GitlabRunner
 import eu.glasskube.operator.generic.BaseReconciler
@@ -86,6 +89,21 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(
             type = GitlabRunners::class,
             dependsOn = ["GitlabDeployment"]
+        ),
+        Dependent(
+            type = GitlabVeleroSecret::class,
+            name = "GitlabVeleroSecret",
+            reconcilePrecondition = GitlabVeleroSecret.ReconcilePrecondition::class
+        ),
+        Dependent(
+            type = GitlabVeleroBackupStorageLocation::class,
+            name = "GitlabVeleroBackupStorageLocation",
+            dependsOn = ["GitlabVeleroSecret"]
+        ),
+        Dependent(
+            type = GitlabVeleroSchedule::class,
+            name = "GitlabVeleroSchedule",
+            dependsOn = ["GitlabVeleroBackupStorageLocation"]
         )
     ]
 )

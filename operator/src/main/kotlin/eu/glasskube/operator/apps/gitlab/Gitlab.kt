@@ -1,9 +1,13 @@
 package eu.glasskube.operator.apps.gitlab
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import eu.glasskube.kubernetes.client.resources
 import eu.glasskube.operator.Labels
+import eu.glasskube.operator.apps.common.backup.ResourceWithBackups
 import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
+import eu.glasskube.operator.apps.gitlab.Gitlab.Postgres.postgresClusterLabelSelector
+import eu.glasskube.operator.generic.dependent.backups.VeleroNameMapper
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.client.CustomResource
@@ -16,6 +20,7 @@ import io.fabric8.kubernetes.model.annotation.Version
 class Gitlab :
     CustomResource<GitlabSpec, GitlabStatus>(),
     Namespaced,
+    ResourceWithBackups,
     ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
     companion object {
         const val APP_NAME = "gitlab"
@@ -26,6 +31,15 @@ class Gitlab :
         override fun getName(primary: Gitlab) = "${primary.genericResourceName}-db"
         override fun getLabels(primary: Gitlab) = primary.resourceLabels
         override fun getDatabaseName(primary: Gitlab) = "gitlabhq_production"
+    }
+
+    @delegate:JsonIgnore
+    override val velero by lazy {
+        object : VeleroNameMapper(this) {
+            override val resourceName = genericResourceName
+            override val resourceLabels = this@Gitlab.resourceLabels
+            override val labelSelectors = listOf(resourceLabelSelector, postgresClusterLabelSelector)
+        }
     }
 }
 
