@@ -1,5 +1,6 @@
 package eu.glasskube.operator.infra.minio
 
+import eu.glasskube.kubernetes.api.model.loggingId
 import eu.glasskube.kubernetes.client.patchOrUpdateStatus
 import eu.glasskube.operator.Labels
 import eu.glasskube.operator.infra.minio.dependent.MinioBucketSecret
@@ -39,8 +40,6 @@ class MinioBucketReconciler(
 ) : Reconciler<MinioBucket>, Cleaner<MinioBucket> {
 
     override fun reconcile(resource: MinioBucket, context: Context<MinioBucket>): UpdateControl<MinioBucket> {
-        log.info("reconciling {}@{}", resource.metadata.name, resource.metadata.namespace)
-
         val userSecret = resource.getUserSecret(context)
         val username = userSecret?.data?.get(MinioBucket.USERNAME_KEY)?.decodeBase64()
         val password = userSecret?.data?.get(MinioBucket.PASSWORD_KEY)?.decodeBase64()
@@ -65,7 +64,7 @@ class MinioBucketReconciler(
 
         return resource.patchOrUpdateStatus(status).apply {
             if (!status.allCreated) {
-                log.info("retry after 5s")
+                log.warn("{} not all created. retry after 5s", resource.loggingId)
                 rescheduleAfter(5, TimeUnit.SECONDS)
             }
         }
@@ -100,7 +99,7 @@ class MinioBucketReconciler(
                 .onFailure { log.warn("could not create bucket", it) }
                 .isSuccess
         } else {
-            log.info("bucket $bucketName already exists")
+            log.debug("bucket $bucketName already exists")
             true
         }
 
@@ -120,7 +119,7 @@ class MinioBucketReconciler(
                 .onFailure { log.warn("could not create user $username", it) }
                 .isSuccess
         } else {
-            log.info("minio user $username already exists")
+            log.debug("minio user $username already exists")
             true
         }
 
@@ -140,7 +139,7 @@ class MinioBucketReconciler(
                 .onFailure { log.warn("could not create bucket policy", it) }
                 .isSuccess
         } else {
-            log.info("bucket policy $policyName already exists")
+            log.debug("bucket policy $policyName already exists")
             true
         }
 

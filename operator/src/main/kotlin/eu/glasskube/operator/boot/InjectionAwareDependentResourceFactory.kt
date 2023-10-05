@@ -25,7 +25,7 @@ class InjectionAwareDependentResourceFactory :
         spec: DependentResourceSpec<*, *>,
         configuration: ControllerConfiguration<*>
     ): DependentResource<*, *> {
-        log.info("Creating dependent resource {}", spec.name)
+        log.debug("Creating dependent resource {}", spec.name)
         return applicationContext.autowireCapableBeanFactory.createBean(spec.dependentResourceClass)
             .also { DependentResourceConfigurationResolver.configure(it, spec, configuration) }
     }

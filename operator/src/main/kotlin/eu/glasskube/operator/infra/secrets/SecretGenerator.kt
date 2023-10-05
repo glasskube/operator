@@ -1,5 +1,6 @@
 package eu.glasskube.operator.infra.secrets
 
+import eu.glasskube.kubernetes.api.model.loggingId
 import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.Secret
 import io.javaoperatorsdk.operator.api.reconciler.Context
@@ -15,19 +16,18 @@ import java.util.Random
 )
 class SecretGenerator(private val random: Random) : Reconciler<Secret> {
     override fun reconcile(resource: Secret, context: Context<Secret>): UpdateControl<Secret> {
-        log.info("Reconciling ${resource.kind} ${resource.metadata.name}@${resource.metadata.namespace}")
         val generateKeys = resource.metadata.annotations[GENERATE_KEYS]?.split(',')?.toSet().orEmpty()
         val generatedKeys = resource.metadata.annotations[GENERATED_KEYS]?.split(',')?.toSet().orEmpty()
 
-        log.debug("Desired keys: {}", generateKeys)
-        log.debug("Existing keys: {}", generatedKeys)
+        log.debug("{} desired keys: {}", resource.loggingId, generateKeys)
+        log.debug("{} existing keys: {}", resource.loggingId, generatedKeys)
 
         if (generateKeys == generatedKeys) {
-            log.debug("No update required")
+            log.debug("{} no update required", resource.loggingId)
             return UpdateControl.noUpdate()
         }
 
-        log.info("Update required")
+        log.info("{} update required", resource.loggingId)
 
         (generateKeys - generatedKeys).forEach { resource.stringData[it] = random.nextString(32) }
         (generatedKeys - generateKeys).forEach { resource.data.remove(it) }
