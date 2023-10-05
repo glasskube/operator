@@ -1,8 +1,12 @@
 package eu.glasskube.operator.apps.plane
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import eu.glasskube.operator.Labels
+import eu.glasskube.operator.apps.common.backup.ResourceWithBackups
 import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
+import eu.glasskube.operator.apps.plane.Plane.Postgres.postgresClusterLabelSelector
+import eu.glasskube.operator.generic.dependent.backups.VeleroNameMapper
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import eu.glasskube.operator.generic.dependent.redis.RedisNameMapper
 import io.fabric8.kubernetes.api.model.Namespaced
@@ -17,6 +21,7 @@ import io.fabric8.kubernetes.model.annotation.Version
 class Plane :
     CustomResource<PlaneSpec, PlaneStatus>(),
     Namespaced,
+    ResourceWithBackups,
     ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
     object Redis : RedisNameMapper<Plane>() {
         private const val NAME = "redis"
@@ -39,6 +44,15 @@ class Plane :
             Labels.resourceLabels(APP_NAME, primary.metadata.name, component = "database")
 
         override fun getDatabaseName(primary: Plane) = "plane"
+    }
+
+    @delegate:JsonIgnore
+    override val velero by lazy {
+        object : VeleroNameMapper(this) {
+            override val resourceName = genericResourceName
+            override val resourceLabels = this@Plane.genericResourceLabels
+            override val labelSelectors = listOf(genericResourceLabelSelector, postgresClusterLabelSelector)
+        }
     }
 
     internal companion object {

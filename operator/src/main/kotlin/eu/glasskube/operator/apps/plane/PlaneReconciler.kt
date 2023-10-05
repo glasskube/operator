@@ -23,16 +23,21 @@ import eu.glasskube.operator.apps.plane.dependent.PlaneRedisService
 import eu.glasskube.operator.apps.plane.dependent.PlaneSpaceConfigMap
 import eu.glasskube.operator.apps.plane.dependent.PlaneSpaceDeployment
 import eu.glasskube.operator.apps.plane.dependent.PlaneSpaceService
+import eu.glasskube.operator.apps.plane.dependent.PlaneVeleroBackupStorageLocation
+import eu.glasskube.operator.apps.plane.dependent.PlaneVeleroSchedule
+import eu.glasskube.operator.apps.plane.dependent.PlaneVeleroSecret
 import eu.glasskube.operator.apps.plane.dependent.PlaneWorkerConfigMap
 import eu.glasskube.operator.apps.plane.dependent.PlaneWorkerDeployment
 import eu.glasskube.operator.generic.BaseReconciler
 import eu.glasskube.operator.generic.condition.isReady
 import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.infra.postgres.isReady
+import eu.glasskube.operator.processing.CompositeSecondaryToPrimaryMapper
 import eu.glasskube.operator.webhook.WebhookService
 import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.HasMetadata
+import io.fabric8.kubernetes.api.model.Secret
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.fabric8.kubernetes.client.KubernetesClient
@@ -44,13 +49,18 @@ import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceInitializer
 import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
 import io.javaoperatorsdk.operator.processing.event.source.EventSource
+import io.javaoperatorsdk.operator.processing.event.source.informer.Mappers
 import java.util.Optional
 import kotlin.jvm.optionals.getOrDefault
 
 @ControllerConfiguration(
     dependents = [
         Dependent(type = PlaneIngress::class, name = "PlaneIngress"),
-        Dependent(type = PlaneBackendSecret::class, name = "PlaneBackendSecret"),
+        Dependent(
+            type = PlaneBackendSecret::class,
+            name = "PlaneBackendSecret",
+            useEventSourceWithName = PlaneReconciler.SECRET_EVENT_SOURCE
+        ),
         Dependent(
             type = PlanePostgresMinioBucket::class,
             name = "PlanePostgresMinioBucket",
@@ -146,6 +156,22 @@ import kotlin.jvm.optionals.getOrDefault
             name = "PlaneWorkerDeployment",
             dependsOn = ["PlanePostgresCluster", "PlaneRedisDeployment", "PlaneBackendConfigMap", "PlaneBackendSecret", "PlaneWorkerConfigMap", "PlaneApiDeployment"],
             useEventSourceWithName = PlaneReconciler.DEPLOYMENT_EVENT_SOURCE
+        ),
+        Dependent(
+            type = PlaneVeleroSecret::class,
+            name = "PlaneVeleroSecret",
+            reconcilePrecondition = PlaneVeleroSecret.ReconcilePrecondition::class,
+            useEventSourceWithName = PlaneReconciler.SECRET_EVENT_SOURCE
+        ),
+        Dependent(
+            type = PlaneVeleroBackupStorageLocation::class,
+            name = "PlaneVeleroBackupStorageLocation",
+            dependsOn = ["PlaneVeleroSecret"]
+        ),
+        Dependent(
+            type = PlaneVeleroSchedule::class,
+            name = "PlaneVeleroSchedule",
+            dependsOn = ["PlaneVeleroBackupStorageLocation"]
         )
     ]
 )
@@ -196,7 +222,15 @@ class PlaneReconciler(webhookService: WebhookService) :
         mutableMapOf<String, EventSource>(
             SERVICE_EVENT_SOURCE to informerEventSource<Service>(),
             DEPLOYMENT_EVENT_SOURCE to informerEventSource<Deployment>(),
-            CONFIGMAP_EVENT_SOURCE to informerEventSource<ConfigMap>()
+            CONFIGMAP_EVENT_SOURCE to informerEventSource<ConfigMap>(),
+            SECRET_EVENT_SOURCE to informerEventSource<Secret> {
+                withSecondaryToPrimaryMapper(
+                    CompositeSecondaryToPrimaryMapper(
+                        Mappers.fromOwnerReference(),
+                        Mappers.fromDefaultAnnotations()
+                    )
+                )
+            }
         )
     }
 
@@ -204,6 +238,7 @@ class PlaneReconciler(webhookService: WebhookService) :
         internal const val SERVICE_EVENT_SOURCE = "PlaneServiceEventSource"
         internal const val DEPLOYMENT_EVENT_SOURCE = "PlaneDeploymentEventSource"
         internal const val CONFIGMAP_EVENT_SOURCE = "PlaneConfigMapEventSource"
+        internal const val SECRET_EVENT_SOURCE = "PlaneSecretEventSource"
 
         private val log = logger()
     }
