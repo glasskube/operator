@@ -17,12 +17,17 @@ import eu.glasskube.operator.apps.gitea.dependent.GiteaRedisService
 import eu.glasskube.operator.apps.gitea.dependent.GiteaSSHService
 import eu.glasskube.operator.apps.gitea.dependent.GiteaSecret
 import eu.glasskube.operator.apps.gitea.dependent.GiteaServiceMonitor
+import eu.glasskube.operator.apps.gitea.dependent.GiteaVeleroBackupStorageLocation
+import eu.glasskube.operator.apps.gitea.dependent.GiteaVeleroSchedule
+import eu.glasskube.operator.apps.gitea.dependent.GiteaVeleroSecret
 import eu.glasskube.operator.apps.gitea.dependent.GiteaVolume
 import eu.glasskube.operator.generic.BaseReconciler
 import eu.glasskube.operator.infra.postgres.PostgresCluster
+import eu.glasskube.operator.processing.CompositeSecondaryToPrimaryMapper
 import eu.glasskube.operator.webhook.WebhookService
 import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
+import io.fabric8.kubernetes.api.model.Secret
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
@@ -31,11 +36,16 @@ import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceInitializer
 import io.javaoperatorsdk.operator.api.reconciler.UpdateControl
 import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
+import io.javaoperatorsdk.operator.processing.event.source.informer.Mappers
 
 @ControllerConfiguration(
     dependents = [
         Dependent(type = GiteaVolume::class, name = "GiteaVolume"),
-        Dependent(type = GiteaSecret::class, name = "GiteaSecret"),
+        Dependent(
+            type = GiteaSecret::class,
+            name = "GiteaSecret",
+            useEventSourceWithName = GiteaReconciler.SECRET_EVENT_SOURCE
+        ),
         Dependent(
             type = GiteaMinioBucket::class,
             name = "GiteaMinioBucket",
@@ -96,6 +106,22 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
             type = GiteaServiceMonitor::class,
             name = "GiteaServiceMonitor",
             dependsOn = ["GiteaHttpService"]
+        ),
+        Dependent(
+            type = GiteaVeleroSecret::class,
+            name = "GiteaVeleroSecret",
+            reconcilePrecondition = GiteaVeleroSecret.ReconcilePrecondition::class,
+            useEventSourceWithName = GiteaReconciler.SECRET_EVENT_SOURCE
+        ),
+        Dependent(
+            type = GiteaVeleroBackupStorageLocation::class,
+            name = "GiteaVeleroBackupStorageLocation",
+            dependsOn = ["GiteaVeleroSecret"]
+        ),
+        Dependent(
+            type = GiteaVeleroSchedule::class,
+            name = "GiteaVeleroSchedule",
+            dependsOn = ["GiteaVeleroBackupStorageLocation"]
         )
     ]
 )
@@ -120,7 +146,15 @@ class GiteaReconciler(webhookService: WebhookService) :
         mutableMapOf(
             CONFIG_EVENT_SOURCE_NAME to informerEventSource<ConfigMap>(),
             SERVICE_EVENT_SOURCE to informerEventSource<Service>(),
-            DEPLOYMENT_EVENT_SOURCE to informerEventSource<Deployment>()
+            DEPLOYMENT_EVENT_SOURCE to informerEventSource<Deployment>(),
+            SECRET_EVENT_SOURCE to informerEventSource<Secret> {
+                withSecondaryToPrimaryMapper(
+                    CompositeSecondaryToPrimaryMapper(
+                        Mappers.fromOwnerReference(),
+                        Mappers.fromDefaultAnnotations()
+                    )
+                )
+            }
         )
     }
 
@@ -133,6 +167,7 @@ class GiteaReconciler(webhookService: WebhookService) :
         internal const val CONFIG_EVENT_SOURCE_NAME = "GiteaConfigMapEventSource"
         internal const val SERVICE_EVENT_SOURCE = "GiteaServiceEventSource"
         internal const val DEPLOYMENT_EVENT_SOURCE = "GiteaDeploymentEventSource"
+        internal const val SECRET_EVENT_SOURCE = "GiteaSecretEventSource"
 
         private val log = logger()
     }
