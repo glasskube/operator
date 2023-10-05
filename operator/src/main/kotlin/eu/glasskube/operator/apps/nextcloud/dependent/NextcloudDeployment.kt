@@ -76,7 +76,7 @@ class NextcloudDeployment(private val configService: ConfigService) :
             template {
                 metadata {
                     labels(primary.resourceLabels)
-                    annotations(configService.getBackupAnnotations(DATA_VOLUME))
+                    annotations(configService.getBackupAnnotations(primary, DATA_VOLUME))
                 }
                 spec {
                     volumes = listOfNotNull(

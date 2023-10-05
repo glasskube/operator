@@ -78,7 +78,7 @@ class GlitchtipDeployment(private val configService: ConfigService) :
             template {
                 metadata {
                     labels(primary.resourceLabels)
-                    annotations(configService.getBackupAnnotations(Glitchtip.UPLOADS_VOLUME_NAME))
+                    annotations(configService.getBackupAnnotations(primary, Glitchtip.UPLOADS_VOLUME_NAME))
                 }
                 spec {
                     containers = listOf(

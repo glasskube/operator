@@ -55,7 +55,7 @@ class OdooDeployment(private val configService: ConfigService) :
             template {
                 metadata {
                     labels(primary.resourceLabels)
-                    annotations(configService.getBackupAnnotations(Odoo.volumeName))
+                    annotations(configService.getBackupAnnotations(primary, Odoo.volumeName))
                 }
                 spec {
                     containers = listOf(

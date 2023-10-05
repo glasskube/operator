@@ -74,7 +74,7 @@ class MatomoDeployment(private val configService: ConfigService) :
             template {
                 metadata {
                     labels(primary.resourceLabels)
-                    annotations(configService.getBackupAnnotations(wwwDataVolumeName))
+                    annotations(configService.getBackupAnnotations(primary, wwwDataVolumeName))
                 }
                 spec {
                     initContainers = listOf(

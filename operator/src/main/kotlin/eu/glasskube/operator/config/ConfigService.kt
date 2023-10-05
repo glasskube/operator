@@ -6,6 +6,7 @@ import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.client.getDefaultIngressClass
 import eu.glasskube.kubernetes.client.ingressClasses
 import eu.glasskube.operator.Environment
+import eu.glasskube.operator.apps.common.backup.ResourceWithBackups
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.client.KubernetesClient
@@ -47,11 +48,17 @@ class ConfigService(
     val backupAnnotationsEnabled: Boolean
         get() = this[ConfigKey.backupAnnotationsEnabled].toBoolean()
 
-    fun getBackupAnnotations(vararg volumeNames: String): Map<String, String> =
-        if (backupAnnotationsEnabled) {
+    fun getBackupAnnotations(primary: HasMetadata, vararg volumeNames: String): Map<String, String> =
+        if (backupAnnotationsEnabled || primary.hasBackupSpec) {
             mapOf("backup.velero.io/backup-volumes" to volumeNames.joinToString(","))
         } else {
             emptyMap()
+        }
+
+    private val HasMetadata.hasBackupSpec
+        get() = when (this) {
+            is ResourceWithBackups -> getSpec().backups != null
+            else -> false
         }
 
     fun getCommonLoadBalancerAnnotations(primary: HasMetadata): Map<String, String> =
