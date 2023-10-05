@@ -50,6 +50,8 @@ fun HasMetadata.metadata(block: (@KubernetesDslMarker MetadataDsl).() -> Unit) {
     metadata = block.build()
 }
 
+fun objectMeta(block: MetadataDsl.() -> Unit) = block.build()
+
 inline fun labelSelector(block: (@KubernetesDslMarker LabelSelector).() -> Unit) =
     LabelSelector().apply(block)
 

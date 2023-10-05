@@ -1,9 +1,14 @@
 package eu.glasskube.operator.apps.matomo
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import eu.glasskube.operator.apps.common.backup.BackupSpec
+import eu.glasskube.operator.apps.common.backup.HasBackupSpec
+import eu.glasskube.operator.apps.common.backup.ResourceWithBackups
 import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
 import eu.glasskube.operator.apps.common.database.HasReadyStatus
 import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
 import eu.glasskube.operator.apps.common.database.mariadb.MariaDbDatabaseSpec
+import eu.glasskube.operator.generic.dependent.backups.VeleroNameMapper
 import eu.glasskube.utils.resourceLabels
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.kubernetes.api.model.Namespaced
@@ -24,8 +29,9 @@ data class MatomoSpec(
         mapOf("memory" to Quantity("300", "Mi"))
     ),
     val version: String = "4.15.1.1",
-    override val database: MariaDbDatabaseSpec = MariaDbDatabaseSpec()
-) : HasDatabaseSpec<MariaDbDatabaseSpec>
+    override val database: MariaDbDatabaseSpec = MariaDbDatabaseSpec(),
+    override val backups: BackupSpec?
+) : HasBackupSpec, HasDatabaseSpec<MariaDbDatabaseSpec>
 
 data class MatomoStatus(val readyReplicas: Int) : HasReadyStatus {
     override val isReady get() = readyReplicas > 0
@@ -34,14 +40,28 @@ data class MatomoStatus(val readyReplicas: Int) : HasReadyStatus {
 @Group("glasskube.eu")
 @Version("v1alpha1")
 @Plural("matomos")
-class Matomo : CustomResource<MatomoSpec, MatomoStatus>(), Namespaced, ResourceWithDatabaseSpec<MariaDbDatabaseSpec> {
+class Matomo :
+    CustomResource<MatomoSpec, MatomoStatus>(),
+    Namespaced,
+    ResourceWithBackups,
+    ResourceWithDatabaseSpec<MariaDbDatabaseSpec> {
     companion object {
         const val APP_NAME = "matomo"
+    }
+
+    @delegate:JsonIgnore
+    override val velero by lazy {
+        object : VeleroNameMapper(this) {
+            override val resourceName = genericResourceName
+            override val resourceLabels = this@Matomo.resourceLabels
+            override val labelSelectors = listOf(this@Matomo.resourceLabels, mariaDbLabels)
+        }
     }
 }
 
 internal val Matomo.identifyingLabel get() = MatomoReconciler.LABEL to metadata.name
 internal val Matomo.resourceLabels get() = resourceLabels(Matomo.APP_NAME, identifyingLabel)
+internal val Matomo.mariaDbLabels get() = mapOf(identifyingLabel)
 internal val Matomo.genericResourceName get() = "${Matomo.APP_NAME}-${metadata.name}"
 internal val Matomo.cronName get() = "$genericResourceName-cron"
 internal val Matomo.volumeName get() = "$genericResourceName-data"

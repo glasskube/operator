@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.kubernetes.api.model.Condition
 import io.fabric8.kubernetes.api.model.Namespaced
+import io.fabric8.kubernetes.api.model.ObjectMeta
 import io.fabric8.kubernetes.api.model.ResourceRequirements
 import io.fabric8.kubernetes.api.model.SecretKeySelector
 import io.fabric8.kubernetes.client.CustomResource
@@ -43,7 +44,8 @@ data class MariaDBSpec(
     var volumeClaimTemplate: MariaDBVolumeClaimTemplate,
     @field:Nullable
     var resources: ResourceRequirements?,
-    var metrics: Metrics? = null
+    var metrics: Metrics? = null,
+    var inheritMetadata: ObjectMeta? = null
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
