@@ -1,0 +1,14 @@
+package eu.glasskube.operator.apps.glitchtip.dependent
+
+import eu.glasskube.operator.apps.gitea.Gitea
+import eu.glasskube.operator.apps.glitchtip.Glitchtip
+import eu.glasskube.operator.generic.dependent.backups.BackupSpecNotNullCondition
+import eu.glasskube.operator.generic.dependent.backups.DependentVeleroSecret
+import io.fabric8.kubernetes.api.model.Secret
+import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
+
+@KubernetesDependent(resourceDiscriminator = GlitchtipVeleroSecret.Discriminator::class)
+class GlitchtipVeleroSecret : DependentVeleroSecret<Glitchtip>() {
+    internal class ReconcilePrecondition : BackupSpecNotNullCondition<Secret, Gitea>()
+    internal class Discriminator : DependentVeleroSecret.Discriminator<Glitchtip>()
+}
