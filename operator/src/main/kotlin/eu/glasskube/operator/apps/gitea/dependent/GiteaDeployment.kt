@@ -68,7 +68,7 @@ class GiteaDeployment(private val configService: ConfigService) :
             template {
                 metadata {
                     labels(primary.resourceLabels)
-                    annotations(configService.getBackupAnnotations(VOLUME_NAME))
+                    annotations(configService.getBackupAnnotations(primary, VOLUME_NAME))
                 }
                 spec {
                     containers = listOf(

@@ -70,7 +70,7 @@ class VaultStatefulSet(private val configService: ConfigService) :
                     labels(primary.resourceLabels)
                     annotations(
                         if (primary.spec.auditStorage.enabled) {
-                            configService.getBackupAnnotations(AUDIT_VOLUME_NAME)
+                            configService.getBackupAnnotations(primary, AUDIT_VOLUME_NAME)
                         } else {
                             emptyMap()
                         }
