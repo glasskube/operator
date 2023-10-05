@@ -3,6 +3,7 @@ package eu.glasskube.operator.apps.matomo.dependent
 import eu.glasskube.kubernetes.api.model.loggingId
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.namespace
+import eu.glasskube.kubernetes.api.model.objectMeta
 import eu.glasskube.kubernetes.api.model.secretKeySelector
 import eu.glasskube.kubernetes.api.model.toQuantity
 import eu.glasskube.operator.apps.matomo.Matomo
@@ -11,6 +12,7 @@ import eu.glasskube.operator.apps.matomo.databaseName
 import eu.glasskube.operator.apps.matomo.databaseSecretName
 import eu.glasskube.operator.apps.matomo.databaseUser
 import eu.glasskube.operator.apps.matomo.genericMariaDBName
+import eu.glasskube.operator.apps.matomo.mariaDbLabels
 import eu.glasskube.operator.apps.matomo.resourceLabels
 import eu.glasskube.operator.config.ConfigKey
 import eu.glasskube.operator.config.ConfigService
@@ -78,7 +80,11 @@ class MatomoMariaDB(private val configService: ConfigService) :
                 serviceMonitor = ServiceMonitor(
                     prometheusRelease = "kube-prometheus-stack"
                 )
-            )
+            ),
+            inheritMetadata = objectMeta {
+                labels(primary.mariaDbLabels)
+                annotations(configService.getBackupAnnotations(primary, "storage"))
+            }
         )
     }
 
@@ -94,7 +100,9 @@ class MatomoMariaDB(private val configService: ConfigService) :
             )
             updateVolumeClaimStorageRequest(actual, primary, context)
             recreate(actual, desired, primary, context)
-                .also { log.info("MariaDB for ${primary.loggingId} recreated") }
+        } else if (desired.spec.inheritMetadata != actual.spec.inheritMetadata) {
+            log.info("MariaDB {} inherited metadata mismatch. will be recreated", primary.loggingId)
+            recreate(actual, desired, primary, context)
         } else {
             super.handleUpdate(actual, desired, primary, context)
         }
@@ -110,6 +118,7 @@ class MatomoMariaDB(private val configService: ConfigService) :
         context.client.resource(actual).delete()
         Thread.sleep(1000)
         return handleCreate(desired, primary, context)
+            .also { log.info("MariaDB for ${primary.loggingId} recreated") }
     }
 
     companion object {
