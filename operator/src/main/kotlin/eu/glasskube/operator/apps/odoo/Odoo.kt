@@ -1,9 +1,15 @@
 package eu.glasskube.operator.apps.odoo
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import eu.glasskube.operator.apps.common.backup.BackupSpec
+import eu.glasskube.operator.apps.common.backup.HasBackupSpec
+import eu.glasskube.operator.apps.common.backup.ResourceWithBackups
 import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
 import eu.glasskube.operator.apps.common.database.HasReadyStatus
 import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
+import eu.glasskube.operator.apps.odoo.Odoo.Postgres.postgresClusterLabelSelector
+import eu.glasskube.operator.generic.dependent.backups.VeleroNameMapper
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import eu.glasskube.operator.validation.Patterns
 import eu.glasskube.utils.resourceLabels
@@ -23,8 +29,9 @@ data class OdooSpec(
     @field:Pattern(Patterns.SEMVER)
     val version: String = "16.0.20230901",
     @field:Nullable
-    override val database: PostgresDatabaseSpec = PostgresDatabaseSpec()
-) : HasDatabaseSpec<PostgresDatabaseSpec>
+    override val database: PostgresDatabaseSpec = PostgresDatabaseSpec(),
+    override val backups: BackupSpec?
+) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec>
 
 data class OdooStatus(
     val ready: Boolean = false,
@@ -36,7 +43,11 @@ data class OdooStatus(
 @Group("glasskube.eu")
 @Version("v1alpha1")
 @Plural("odoos")
-class Odoo : CustomResource<OdooSpec, OdooStatus>(), Namespaced, ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
+class Odoo :
+    CustomResource<OdooSpec, OdooStatus>(),
+    Namespaced,
+    ResourceWithBackups,
+    ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
     internal companion object {
         const val APP_NAME = "odoo"
 
@@ -51,6 +62,15 @@ class Odoo : CustomResource<OdooSpec, OdooStatus>(), Namespaced, ResourceWithDat
         override fun getName(primary: Odoo) = "${primary.genericResourceName}-db"
         override fun getLabels(primary: Odoo) = primary.resourceLabels
         override fun getDatabaseName(primary: Odoo) = "odoo"
+    }
+
+    @delegate:JsonIgnore
+    override val velero by lazy {
+        object : VeleroNameMapper(this) {
+            override val resourceName = genericResourceName
+            override val resourceLabels = this@Odoo.resourceLabels
+            override val labelSelectors = listOf(this@Odoo.resourceLabels, postgresClusterLabelSelector)
+        }
     }
 }
 
