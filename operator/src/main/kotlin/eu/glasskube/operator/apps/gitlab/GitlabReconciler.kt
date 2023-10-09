@@ -17,7 +17,9 @@ import eu.glasskube.operator.apps.gitlab.dependent.GitlabService
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabServiceMonitor
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabVolume
 import eu.glasskube.operator.apps.gitlab.runner.GitlabRunner
+import eu.glasskube.operator.generic.BaseReconciler
 import eu.glasskube.operator.infra.postgres.PostgresCluster
+import eu.glasskube.operator.webhook.WebhookService
 import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.apps.Deployment
@@ -26,7 +28,6 @@ import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceInitializer
-import io.javaoperatorsdk.operator.api.reconciler.Reconciler
 import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
 
 @ControllerConfiguration(
@@ -88,9 +89,10 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         )
     ]
 )
-class GitlabReconciler : Reconciler<Gitlab>, EventSourceInitializer<Gitlab> {
-    override fun reconcile(resource: Gitlab, context: Context<Gitlab>) = with(context) {
-        log.info("Reconciling ${resource.metadata.name}@${resource.metadata.namespace}")
+class GitlabReconciler(webhookService: WebhookService) :
+    BaseReconciler<Gitlab>(webhookService), EventSourceInitializer<Gitlab> {
+
+    override fun processReconciliation(resource: Gitlab, context: Context<Gitlab>) = with(context) {
         resource.patchOrUpdateStatus(
             GitlabStatus(
                 getSecondaryResource<Deployment>().map { it.status?.readyReplicas ?: 0 }.orElse(0),

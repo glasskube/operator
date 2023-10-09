@@ -11,9 +11,10 @@ import eu.glasskube.operator.apps.odoo.dependent.OdooPersistentVolumeClaim
 import eu.glasskube.operator.apps.odoo.dependent.OdooPostgresCluster
 import eu.glasskube.operator.apps.odoo.dependent.OdooPostgresScheduledBackup
 import eu.glasskube.operator.apps.odoo.dependent.OdooService
+import eu.glasskube.operator.generic.BaseReconciler
+import eu.glasskube.operator.webhook.WebhookService
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
-import io.javaoperatorsdk.operator.api.reconciler.Reconciler
 import io.javaoperatorsdk.operator.api.reconciler.UpdateControl
 import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
 
@@ -54,8 +55,8 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         )
     ]
 )
-class OdooReconciler : Reconciler<Odoo> {
-    override fun reconcile(resource: Odoo, context: Context<Odoo>): UpdateControl<Odoo> {
+class OdooReconciler(webhookService: WebhookService) : BaseReconciler<Odoo>(webhookService) {
+    override fun processReconciliation(resource: Odoo, context: Context<Odoo>): UpdateControl<Odoo> {
         check(resource.status?.demoEnabledOnInstall != !resource.spec.demoEnabled) {
             "demoEnabled can not be altered after first reconciliation"
         }

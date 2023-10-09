@@ -1,6 +1,7 @@
 package eu.glasskube.operator.apps.odoo
 
 import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
+import eu.glasskube.operator.apps.common.database.HasReadyStatus
 import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
@@ -28,7 +29,9 @@ data class OdooSpec(
 data class OdooStatus(
     val ready: Boolean = false,
     val demoEnabledOnInstall: Boolean? = null
-)
+) : HasReadyStatus {
+    override val isReady get() = ready
+}
 
 @Group("glasskube.eu")
 @Version("v1alpha1")
