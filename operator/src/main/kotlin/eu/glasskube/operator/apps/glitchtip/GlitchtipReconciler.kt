@@ -16,9 +16,11 @@ import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipRedisService
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipSecret
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipVolume
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipWorkerDeployment
+import eu.glasskube.operator.generic.BaseReconciler
 import eu.glasskube.operator.generic.condition.isReady
 import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.infra.postgres.isReady
+import eu.glasskube.operator.webhook.WebhookService
 import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.apps.Deployment
@@ -26,7 +28,6 @@ import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceInitializer
-import io.javaoperatorsdk.operator.api.reconciler.Reconciler
 import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
 import kotlin.jvm.optionals.getOrDefault
 
@@ -88,9 +89,10 @@ import kotlin.jvm.optionals.getOrDefault
         )
     ]
 )
-class GlitchtipReconciler : Reconciler<Glitchtip>, EventSourceInitializer<Glitchtip> {
-    override fun reconcile(resource: Glitchtip, context: Context<Glitchtip>) = with(context) {
-        log.info("Reconciling ${resource.metadata.name}@${resource.metadata.namespace}")
+class GlitchtipReconciler(webhookService: WebhookService) :
+    BaseReconciler<Glitchtip>(webhookService), EventSourceInitializer<Glitchtip> {
+
+    override fun processReconciliation(resource: Glitchtip, context: Context<Glitchtip>) = with(context) {
         resource.patchOrUpdateStatus(
             GlitchtipStatus(
                 readyReplicas = getSecondaryResource(GlitchtipDeployment.Discriminator())

@@ -3,6 +3,7 @@ package eu.glasskube.operator.apps.matomo
 import eu.glasskube.kubernetes.client.patchOrUpdateStatus
 import eu.glasskube.kubernetes.client.resources
 import eu.glasskube.operator.api.reconciler.HasRegistrationCondition
+import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.api.reconciler.informerEventSource
 import eu.glasskube.operator.apps.matomo.Matomo.Companion.APP_NAME
 import eu.glasskube.operator.apps.matomo.dependent.MatomoConfigMap
@@ -14,18 +15,20 @@ import eu.glasskube.operator.apps.matomo.dependent.MatomoIngress
 import eu.glasskube.operator.apps.matomo.dependent.MatomoMariaDB
 import eu.glasskube.operator.apps.matomo.dependent.MatomoService
 import eu.glasskube.operator.apps.matomo.dependent.MatomoVolume
+import eu.glasskube.operator.generic.BaseReconciler
+import eu.glasskube.operator.webhook.WebhookService
 import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaim
 import io.fabric8.kubernetes.api.model.Secret
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition
+import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.fabric8.kubernetes.client.KubernetesClient
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceInitializer
-import io.javaoperatorsdk.operator.api.reconciler.Reconciler
-import io.javaoperatorsdk.operator.api.reconciler.UpdateControl
 import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
+import kotlin.jvm.optionals.getOrNull
 
 @ControllerConfiguration(
     dependents = [
@@ -54,8 +57,8 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(type = MatomoCronJob::class, name = "MatomoCronJob", dependsOn = ["MatomoDeployment"])
     ]
 )
-class MatomoReconciler(private val kubernetesClient: KubernetesClient) :
-    Reconciler<Matomo>, EventSourceInitializer<Matomo>, HasRegistrationCondition {
+class MatomoReconciler(private val kubernetesClient: KubernetesClient, webhookService: WebhookService) :
+    BaseReconciler<Matomo>(webhookService), EventSourceInitializer<Matomo>, HasRegistrationCondition {
 
     override val isRegistrationEnabled
         get() = kubernetesClient.resources<CustomResourceDefinition>()
@@ -65,15 +68,19 @@ class MatomoReconciler(private val kubernetesClient: KubernetesClient) :
     override val registrationConditionHint =
         "CRDs provided by the MariaDB Operator must be present on the cluster."
 
-    override fun reconcile(resource: Matomo, context: Context<Matomo>): UpdateControl<Matomo> {
-        context.getSecondaryResources(PersistentVolumeClaim::class.java)
+    override fun processReconciliation(resource: Matomo, context: Context<Matomo>) = with(context) {
+        getSecondaryResources(PersistentVolumeClaim::class.java)
             .filter { it.metadata.name.endsWith("-misc") }
             .forEach {
                 log.info("Deleting old persisted volume claim ${it.metadata.name}")
                 kubernetesClient.persistentVolumeClaims().resource(it).delete()
             }
 
-        return resource.patchOrUpdateStatus(MatomoStatus())
+        resource.patchOrUpdateStatus(
+            MatomoStatus(
+                readyReplicas = getSecondaryResource<Deployment>().getOrNull()?.status?.readyReplicas ?: 0
+            )
+        )
     }
 
     override fun prepareEventSources(context: EventSourceContext<Matomo>) = with(context) {

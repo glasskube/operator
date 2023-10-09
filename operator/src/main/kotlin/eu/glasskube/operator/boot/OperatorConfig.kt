@@ -18,6 +18,7 @@ import io.javaoperatorsdk.operator.api.config.ConfigurationService
 import io.javaoperatorsdk.operator.api.config.ControllerConfigurationOverrider
 import io.javaoperatorsdk.operator.api.reconciler.Constants
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler
+import okhttp3.OkHttpClient
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import java.security.SecureRandom
@@ -60,6 +61,9 @@ class OperatorConfig {
     @Bean
     fun random(): Random =
         SecureRandom.getInstanceStrong()
+
+    @Bean
+    fun okHttpClient(): OkHttpClient = OkHttpClient()
 
     private fun <T : HasMetadata> Operator.registerForNamespaceOrCluster(reconciler: Reconciler<T>): RegisteredController<T> =
         register(reconciler) { it.settingNamespaceFromEnv() }

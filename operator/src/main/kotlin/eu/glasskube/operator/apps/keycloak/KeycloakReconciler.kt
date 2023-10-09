@@ -11,16 +11,16 @@ import eu.glasskube.operator.apps.keycloak.dependent.KeycloakPostgresBackup
 import eu.glasskube.operator.apps.keycloak.dependent.KeycloakPostgresBackupBucket
 import eu.glasskube.operator.apps.keycloak.dependent.KeycloakPostgresCluster
 import eu.glasskube.operator.apps.keycloak.dependent.KeycloakService
+import eu.glasskube.operator.generic.BaseReconciler
 import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.infra.postgres.isReady
+import eu.glasskube.operator.webhook.WebhookService
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceInitializer
-import io.javaoperatorsdk.operator.api.reconciler.Reconciler
-import io.javaoperatorsdk.operator.api.reconciler.UpdateControl
 import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
 import kotlin.jvm.optionals.getOrDefault
 
@@ -59,8 +59,10 @@ import kotlin.jvm.optionals.getOrDefault
         Dependent(type = KeycloakIngress::class, name = "KeycloakIngress")
     ]
 )
-class KeycloakReconciler : Reconciler<Keycloak>, EventSourceInitializer<Keycloak> {
-    override fun reconcile(resource: Keycloak, context: Context<Keycloak>): UpdateControl<Keycloak> = with(context) {
+class KeycloakReconciler(webhookService: WebhookService) :
+    BaseReconciler<Keycloak>(webhookService), EventSourceInitializer<Keycloak> {
+
+    override fun processReconciliation(resource: Keycloak, context: Context<Keycloak>) = with(context) {
         resource.patchOrUpdateStatus(
             KeycloakStatus(
                 getSecondaryResource<Deployment>().map { it.status?.readyReplicas ?: 0 }.getOrDefault(0),

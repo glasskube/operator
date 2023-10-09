@@ -23,9 +23,11 @@ import eu.glasskube.operator.apps.plane.dependent.PlaneSpaceDeployment
 import eu.glasskube.operator.apps.plane.dependent.PlaneSpaceService
 import eu.glasskube.operator.apps.plane.dependent.PlaneWorkerConfigMap
 import eu.glasskube.operator.apps.plane.dependent.PlaneWorkerDeployment
+import eu.glasskube.operator.generic.BaseReconciler
 import eu.glasskube.operator.generic.condition.isReady
 import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.infra.postgres.isReady
+import eu.glasskube.operator.webhook.WebhookService
 import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.Service
@@ -34,7 +36,6 @@ import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceInitializer
-import io.javaoperatorsdk.operator.api.reconciler.Reconciler
 import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
 import io.javaoperatorsdk.operator.processing.event.source.EventSource
 import java.util.Optional
@@ -142,9 +143,10 @@ import kotlin.jvm.optionals.getOrDefault
         )
     ]
 )
-class PlaneReconciler : Reconciler<Plane>, EventSourceInitializer<Plane> {
-    override fun reconcile(resource: Plane, context: Context<Plane>) = with(context) {
-        log.info("Reconciling ${resource.metadata.name}@${resource.metadata.namespace}")
+class PlaneReconciler(webhookService: WebhookService) :
+    BaseReconciler<Plane>(webhookService), EventSourceInitializer<Plane> {
+
+    override fun processReconciliation(resource: Plane, context: Context<Plane>) = with(context) {
         resource.patchOrUpdateStatus(
             PlaneStatus(
                 frontend = getSecondaryResource(PlaneFrontendDeployment.Discriminator()).getComponentStatus(),

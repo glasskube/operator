@@ -1,6 +1,7 @@
 package eu.glasskube.operator.apps.matomo
 
 import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
+import eu.glasskube.operator.apps.common.database.HasReadyStatus
 import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
 import eu.glasskube.operator.apps.common.database.mariadb.MariaDbDatabaseSpec
 import eu.glasskube.utils.resourceLabels
@@ -26,9 +27,8 @@ data class MatomoSpec(
     override val database: MariaDbDatabaseSpec = MariaDbDatabaseSpec()
 ) : HasDatabaseSpec<MariaDbDatabaseSpec>
 
-class MatomoStatus {
-    override fun equals(other: Any?) = this === other || javaClass == other?.javaClass
-    override fun hashCode() = javaClass.hashCode()
+data class MatomoStatus(val readyReplicas: Int) : HasReadyStatus {
+    override val isReady get() = readyReplicas > 0
 }
 
 @Group("glasskube.eu")

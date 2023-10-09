@@ -16,8 +16,10 @@ import eu.glasskube.operator.apps.vault.dependent.VaultService
 import eu.glasskube.operator.apps.vault.dependent.VaultServiceAccount
 import eu.glasskube.operator.apps.vault.dependent.VaultServiceHeadless
 import eu.glasskube.operator.apps.vault.dependent.VaultStatefulSet
+import eu.glasskube.operator.generic.BaseReconciler
 import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.infra.postgres.isReady
+import eu.glasskube.operator.webhook.WebhookService
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.apps.StatefulSet
 import io.fabric8.kubernetes.api.model.rbac.ClusterRoleBinding
@@ -26,7 +28,6 @@ import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceInitializer
 import io.javaoperatorsdk.operator.api.reconciler.MaxReconciliationInterval
-import io.javaoperatorsdk.operator.api.reconciler.Reconciler
 import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
 import io.javaoperatorsdk.operator.processing.event.source.informer.Mappers
 import java.util.concurrent.TimeUnit
@@ -84,8 +85,10 @@ import kotlin.jvm.optionals.getOrDefault
     ],
     maxReconciliationInterval = MaxReconciliationInterval(interval = 10, timeUnit = TimeUnit.SECONDS)
 )
-class VaultReconciler : Reconciler<Vault>, EventSourceInitializer<Vault> {
-    override fun reconcile(resource: Vault, context: Context<Vault>) = with(context) {
+class VaultReconciler(webhookService: WebhookService) :
+    BaseReconciler<Vault>(webhookService), EventSourceInitializer<Vault> {
+
+    override fun processReconciliation(resource: Vault, context: Context<Vault>) = with(context) {
         resource.patchOrUpdateStatus(
             VaultStatus(
                 getSecondaryResource<StatefulSet>().map { it.status?.readyReplicas ?: 0 }.getOrDefault(0),
