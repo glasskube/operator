@@ -66,8 +66,23 @@ spec:
                 type: object
               version:
                 type: string
+              database:
+                properties:
+                  storage:
+                    properties:
+                      size:
+                        type: string
+                      storageClass:
+                        type: string
+                    type: object
+                  backups:
+                    type: object
+                type: object
             type: object
           status:
+            properties:
+              readyReplicas:
+                type: integer
             type: object
         type: object
     served: true
