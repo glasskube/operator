@@ -6,4 +6,6 @@ import eu.glasskube.operator.generic.dependent.postgres.DependentPostgresSchedul
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = GiteaReconciler.SELECTOR)
-class GiteaPostgresBackup : DependentPostgresScheduledBackup<Gitea>(Gitea.Postgres)
+class GiteaPostgresBackup : DependentPostgresScheduledBackup<Gitea>(Gitea.Postgres) {
+    class ReconcilePrecondition : DependentPostgresScheduledBackup.ReconcilePrecondition<Gitea>()
+}

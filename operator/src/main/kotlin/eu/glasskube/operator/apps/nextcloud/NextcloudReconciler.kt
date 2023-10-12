@@ -55,7 +55,8 @@ import kotlin.jvm.optionals.getOrDefault
         Dependent(
             type = NextcloudPostgresBackup::class,
             name = "NextcloudPostgresBackup",
-            dependsOn = ["NextcloudPostgresCluster"]
+            dependsOn = ["NextcloudPostgresCluster"],
+            reconcilePrecondition = NextcloudPostgresBackup.ReconcilePrecondition::class
         ),
         Dependent(
             type = NextcloudDeployment::class,

@@ -47,7 +47,8 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(
             type = GitlabPostgresBackup::class,
             name = "GitlabPostgresBackup",
-            dependsOn = ["GitlabPostgresCluster"]
+            dependsOn = ["GitlabPostgresCluster"],
+            reconcilePrecondition = GitlabPostgresBackup.ReconcilePrecondition::class
         ),
         Dependent(
             type = GitlabDeployment::class,

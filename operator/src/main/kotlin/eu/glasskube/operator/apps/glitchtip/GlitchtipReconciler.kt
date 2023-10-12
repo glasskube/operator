@@ -48,7 +48,8 @@ import kotlin.jvm.optionals.getOrDefault
         Dependent(
             type = GlitchtipPostgresBackup::class,
             name = "GlitchtipPostgresBackup",
-            dependsOn = ["GlitchtipPostgresCluster"]
+            dependsOn = ["GlitchtipPostgresCluster"],
+            reconcilePrecondition = GlitchtipPostgresBackup.ReconcilePrecondition::class
         ),
         Dependent(
             type = GlitchtipConfigMap::class,

@@ -6,4 +6,6 @@ import eu.glasskube.operator.generic.dependent.postgres.DependentPostgresSchedul
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = VaultReconciler.SELECTOR)
-class VaultPostgresBackup : DependentPostgresScheduledBackup<Vault>(Vault.Postgres)
+class VaultPostgresBackup : DependentPostgresScheduledBackup<Vault>(Vault.Postgres) {
+    class ReconcilePrecondition : DependentPostgresScheduledBackup.ReconcilePrecondition<Vault>()
+}

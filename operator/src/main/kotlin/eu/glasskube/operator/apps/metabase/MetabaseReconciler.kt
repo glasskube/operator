@@ -37,7 +37,8 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(
             type = MetabasePostgresBackup::class,
             name = "MetabasePostgresBackup",
-            dependsOn = ["MetabasePostgresCluster"]
+            dependsOn = ["MetabasePostgresCluster"],
+            reconcilePrecondition = MetabasePostgresBackup.ReconcilePrecondition::class
         ),
         Dependent(
             type = MetabaseConfigMap::class,

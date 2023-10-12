@@ -17,26 +17,28 @@ open class BackupSpecBackupConfigurationProvider<P>(
     where P : HasMetadata, P : ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
 
     override fun getBackupConfiguration(primary: P, context: Context<P>) =
-        primary.getSpec().database.backups?.let { spec ->
-            BackupConfiguration(
-                BarmanObjectStoreConfiguration(
-                    endpointURL = spec.s3.endpoint?.let {
-                        when {
-                            "://" in it -> it
-                            else -> "https://$it"
-                        }
-                    },
-                    destinationPath = "s3://${spec.s3.bucket}",
-                    s3Credentials = S3Credentials(
-                        spec.s3.accessKeySecret,
-                        spec.s3.secretKeySecret,
-                        spec.s3.regionSecret
+        primary.getSpec().database.backups?.run {
+            s3?.let { s3Spec ->
+                BackupConfiguration(
+                    BarmanObjectStoreConfiguration(
+                        endpointURL = s3Spec.endpoint?.let {
+                            when {
+                                "://" in it -> it
+                                else -> "https://$it"
+                            }
+                        },
+                        destinationPath = "s3://${s3Spec.bucket}",
+                        s3Credentials = S3Credentials(
+                            s3Spec.accessKeySecret,
+                            s3Spec.secretKeySecret,
+                            s3Spec.regionSecret
+                        ),
+                        wal = WalBackupConfiguration(CompressionType.GZIP),
+                        data = DataBackupConfiguration(CompressionType.GZIP)
                     ),
-                    wal = WalBackupConfiguration(CompressionType.GZIP),
-                    data = DataBackupConfiguration(CompressionType.GZIP)
-                ),
-                retentionPolicy = spec.retentionPolicy
-                    ?: defaultRetentionPolicyProvider.run { primary.getDefaultRetentionPolicy() }
-            )
+                    retentionPolicy = retentionPolicy
+                        ?: defaultRetentionPolicyProvider.run { primary.getDefaultRetentionPolicy() }
+                )
+            }
         }
 }

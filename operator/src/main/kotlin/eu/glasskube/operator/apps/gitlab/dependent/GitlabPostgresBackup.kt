@@ -6,4 +6,6 @@ import eu.glasskube.operator.generic.dependent.postgres.DependentPostgresSchedul
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = GitlabReconciler.SELECTOR)
-class GitlabPostgresBackup : DependentPostgresScheduledBackup<Gitlab>(Gitlab.Postgres)
+class GitlabPostgresBackup : DependentPostgresScheduledBackup<Gitlab>(Gitlab.Postgres) {
+    class ReconcilePrecondition : DependentPostgresScheduledBackup.ReconcilePrecondition<Gitlab>()
+}

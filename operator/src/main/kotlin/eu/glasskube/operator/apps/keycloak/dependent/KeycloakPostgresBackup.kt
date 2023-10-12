@@ -6,4 +6,6 @@ import eu.glasskube.operator.generic.dependent.postgres.DependentPostgresSchedul
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = KeycloakReconciler.SELECTOR)
-class KeycloakPostgresBackup : DependentPostgresScheduledBackup<Keycloak>(Keycloak.Postgres)
+class KeycloakPostgresBackup : DependentPostgresScheduledBackup<Keycloak>(Keycloak.Postgres) {
+    class ReconcilePrecondition : DependentPostgresScheduledBackup.ReconcilePrecondition<Keycloak>()
+}

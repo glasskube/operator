@@ -36,7 +36,8 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(type = OdooIngress::class),
         Dependent(
             type = OdooPostgresScheduledBackup::class,
-            dependsOn = ["OdooPostgresCluster"]
+            dependsOn = ["OdooPostgresCluster"],
+            reconcilePrecondition = OdooPostgresScheduledBackup.ReconcilePrecondition::class
         ),
         Dependent(
             name = "OdooPostgresCluster",

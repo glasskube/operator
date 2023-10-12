@@ -5,7 +5,7 @@ import eu.glasskube.operator.apps.glitchtip.Glitchtip
 import eu.glasskube.operator.apps.glitchtip.GlitchtipReconciler
 import eu.glasskube.operator.apps.glitchtip.genericResourceName
 import eu.glasskube.operator.apps.glitchtip.resourceLabels
-import eu.glasskube.operator.generic.dependent.postgres.PostgresWithoutBackupsSpecCondition
+import eu.glasskube.operator.generic.dependent.postgres.backup.PostgresMinioBucketPrecondition
 import eu.glasskube.operator.infra.minio.MinioBucket
 import eu.glasskube.operator.infra.minio.MinioBucketSpec
 import eu.glasskube.operator.infra.minio.minioBucket
@@ -15,7 +15,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 
 @KubernetesDependent(labelSelector = GlitchtipReconciler.SELECTOR)
 class GlitchtipMinioBucket : CRUDKubernetesDependentResource<MinioBucket, Glitchtip>(MinioBucket::class.java) {
-    internal class ReconcilePrecondition : PostgresWithoutBackupsSpecCondition<MinioBucket, Glitchtip>()
+    internal class ReconcilePrecondition : PostgresMinioBucketPrecondition<MinioBucket, Glitchtip>()
 
     override fun desired(primary: Glitchtip, context: Context<Glitchtip>) = minioBucket {
         metadata {

@@ -17,6 +17,9 @@ abstract class DependentPostgresScheduledBackup<P>(
 ) : PostgresDependentResource<P>, CRUDKubernetesDependentResource<ScheduledBackup, P>(ScheduledBackup::class.java)
     where P : HasMetadata, P : ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
 
+    abstract class ReconcilePrecondition<P> : PostgresWithBackupsEnabledCondition<ScheduledBackup, P>()
+        where P : HasMetadata, P : ResourceWithDatabaseSpec<PostgresDatabaseSpec>
+
     /**
      * The schedule that should be declared for this scheduled backup if not otherwise specified in the backup spec.
      *

@@ -76,7 +76,11 @@ abstract class DependentPostgresCluster<P>(
                 storageClass = primary.getSpec().database.storage?.storageClass ?: primary.defaultStorageClass,
                 size = primary.getSpec().database.storage?.size ?: primary.defaultStorageSize
             ),
-            backup = backupConfigurationProvider.getBackupConfiguration(primary, context),
+            backup = if (primary.getSpec().database.backups?.enabled != false) {
+                backupConfigurationProvider.getBackupConfiguration(primary, context)
+            } else {
+                null
+            },
             monitoring = MonitoringConfiguration(enablePodMonitor = true),
             resources = primary.databaseResources
         )

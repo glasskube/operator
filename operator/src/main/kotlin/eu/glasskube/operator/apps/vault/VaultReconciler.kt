@@ -81,7 +81,12 @@ import kotlin.jvm.optionals.getOrDefault
             name = "VaultStatefulSet",
             dependsOn = ["VaultPostgresCluster", "VaultServiceAccount", "VaultServiceHeadless", "VaultConfigMap"]
         ),
-        Dependent(type = VaultPostgresBackup::class, name = "VaultPostgresBackup", dependsOn = ["VaultPostgresCluster"])
+        Dependent(
+            type = VaultPostgresBackup::class,
+            name = "VaultPostgresBackup",
+            dependsOn = ["VaultPostgresCluster"],
+            reconcilePrecondition = VaultPostgresBackup.ReconcilePrecondition::class
+        )
     ],
     maxReconciliationInterval = MaxReconciliationInterval(interval = 10, timeUnit = TimeUnit.SECONDS)
 )

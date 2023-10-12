@@ -58,7 +58,8 @@ import kotlin.jvm.optionals.getOrDefault
         Dependent(
             type = PlanePostgresBackup::class,
             name = "PlanePostgresBackup",
-            dependsOn = ["PlanePostgresCluster"]
+            dependsOn = ["PlanePostgresCluster"],
+            reconcilePrecondition = PlanePostgresBackup.ReconcilePrecondition::class
         ),
         Dependent(
             type = PlaneRedisService::class,

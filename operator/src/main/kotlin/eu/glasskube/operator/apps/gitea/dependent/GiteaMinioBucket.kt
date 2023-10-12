@@ -5,7 +5,7 @@ import eu.glasskube.operator.apps.gitea.Gitea
 import eu.glasskube.operator.apps.gitea.GiteaReconciler
 import eu.glasskube.operator.apps.gitea.genericResourceName
 import eu.glasskube.operator.apps.gitea.resourceLabels
-import eu.glasskube.operator.generic.dependent.postgres.PostgresWithoutBackupsSpecCondition
+import eu.glasskube.operator.generic.dependent.postgres.backup.PostgresMinioBucketPrecondition
 import eu.glasskube.operator.infra.minio.MinioBucket
 import eu.glasskube.operator.infra.minio.MinioBucketSpec
 import eu.glasskube.operator.infra.minio.minioBucket
@@ -15,7 +15,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 
 @KubernetesDependent(labelSelector = GiteaReconciler.SELECTOR)
 class GiteaMinioBucket : CRUDKubernetesDependentResource<MinioBucket, Gitea>(MinioBucket::class.java) {
-    internal class ReconcilePrecondition : PostgresWithoutBackupsSpecCondition<MinioBucket, Gitea>()
+    internal class ReconcilePrecondition : PostgresMinioBucketPrecondition<MinioBucket, Gitea>()
 
     override fun desired(primary: Gitea, context: Context<Gitea>) = minioBucket {
         metadata {

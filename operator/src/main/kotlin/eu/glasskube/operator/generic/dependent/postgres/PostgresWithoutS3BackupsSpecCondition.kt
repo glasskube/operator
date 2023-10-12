@@ -7,9 +7,9 @@ import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.dependent.DependentResource
 import io.javaoperatorsdk.operator.processing.dependent.workflow.Condition
 
-abstract class PostgresWithoutBackupsSpecCondition<R, P> : Condition<R, P>
+open class PostgresWithoutS3BackupsSpecCondition<R, P> : Condition<R, P>
     where P : HasMetadata, P : ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
 
     override fun isMet(dependentResource: DependentResource<R, P>, primary: P, context: Context<P>) =
-        primary.getSpec().database.backups == null
+        primary.getSpec().database.backups?.s3 == null
 }

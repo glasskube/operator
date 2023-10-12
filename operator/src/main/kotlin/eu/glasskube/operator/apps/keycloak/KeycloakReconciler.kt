@@ -39,7 +39,8 @@ import kotlin.jvm.optionals.getOrDefault
         Dependent(
             type = KeycloakPostgresBackup::class,
             name = "KeycloakPostgresBackup",
-            dependsOn = ["KeycloakPostgresCluster"]
+            dependsOn = ["KeycloakPostgresCluster"],
+            reconcilePrecondition = KeycloakPostgresBackup.ReconcilePrecondition::class
         ),
         Dependent(
             type = KeycloakDeployment::class,

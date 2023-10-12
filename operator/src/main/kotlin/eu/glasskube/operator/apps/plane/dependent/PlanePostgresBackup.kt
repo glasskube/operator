@@ -5,4 +5,6 @@ import eu.glasskube.operator.generic.dependent.postgres.DependentPostgresSchedul
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent
-class PlanePostgresBackup : DependentPostgresScheduledBackup<Plane>(Plane.Postgres)
+class PlanePostgresBackup : DependentPostgresScheduledBackup<Plane>(Plane.Postgres) {
+    class ReconcilePrecondition : DependentPostgresScheduledBackup.ReconcilePrecondition<Plane>()
+}

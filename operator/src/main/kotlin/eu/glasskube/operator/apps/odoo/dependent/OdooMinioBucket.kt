@@ -7,7 +7,7 @@ import eu.glasskube.operator.apps.odoo.bucketName
 import eu.glasskube.operator.apps.odoo.dbBackupSecretName
 import eu.glasskube.operator.apps.odoo.genericResourceName
 import eu.glasskube.operator.apps.odoo.resourceLabels
-import eu.glasskube.operator.generic.dependent.postgres.PostgresWithoutBackupsSpecCondition
+import eu.glasskube.operator.generic.dependent.postgres.backup.PostgresMinioBucketPrecondition
 import eu.glasskube.operator.infra.minio.MinioBucket
 import eu.glasskube.operator.infra.minio.MinioBucketSpec
 import eu.glasskube.operator.infra.minio.minioBucket
@@ -18,7 +18,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 
 @KubernetesDependent(labelSelector = OdooReconciler.SELECTOR)
 class OdooMinioBucket : CRUDKubernetesDependentResource<MinioBucket, Odoo>(MinioBucket::class.java) {
-    internal class ReconcilePrecondition : PostgresWithoutBackupsSpecCondition<MinioBucket, Odoo>()
+    internal class ReconcilePrecondition : PostgresMinioBucketPrecondition<MinioBucket, Odoo>()
 
     override fun desired(primary: Odoo, context: Context<Odoo>) = minioBucket {
         metadata {

@@ -49,7 +49,8 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(
             type = GiteaPostgresBackup::class,
             name = "GiteaPostgresBackup",
-            dependsOn = ["GiteaPostgresCluster"]
+            dependsOn = ["GiteaPostgresCluster"],
+            reconcilePrecondition = GiteaPostgresBackup.ReconcilePrecondition::class
         ),
         Dependent(
             type = GiteaConfigMap::class,

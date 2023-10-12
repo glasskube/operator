@@ -170,6 +170,8 @@ spec:
                     type: integer
                   backups:
                     properties:
+                      enabled:
+                        type: boolean
                       schedule:
                         type: string
                       retentionPolicy:
@@ -212,8 +214,6 @@ spec:
                         - accessKeySecret
                         - secretKeySecret
                         type: object
-                    required:
-                    - s3
                     type: object
                   storage:
                     properties:

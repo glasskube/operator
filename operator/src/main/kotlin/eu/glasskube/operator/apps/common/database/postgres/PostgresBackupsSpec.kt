@@ -5,10 +5,10 @@ import io.fabric8.generator.annotation.Required
 import io.fabric8.kubernetes.api.model.SecretKeySelector
 
 data class PostgresBackupsSpec(
+    val enabled: Boolean = true,
     val schedule: String?,
     val retentionPolicy: String?,
-    @field:Required
-    val s3: S3Spec
+    val s3: S3Spec?
 ) : BackupsSpec {
     data class S3Spec(
         val endpoint: String?,
