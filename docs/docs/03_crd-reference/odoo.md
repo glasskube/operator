@@ -23,8 +23,9 @@ spec:
 
 ## Spec
 
-| Name        | Type                                                                                                   |            |
-|-------------|--------------------------------------------------------------------------------------------------------|------------|
-| host        | String                                                                                                 | (required) |
-| demoEnabled | Boolean                                                                                                | `true`     |
-| resources   | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |            |
+| Name        | Type                                                                                                   |                   |                                                                               |
+|-------------|--------------------------------------------------------------------------------------------------------|-------------------|-------------------------------------------------------------------------------|
+| version     | String                                                                                                 | `"16.0.20230901"` | Check for [releases](https://github.com/glasskube/images/releases) on GitHub. |
+| host        | String                                                                                                 | (required)        |                                                                               |
+| demoEnabled | Boolean                                                                                                | `true`            |                                                                               |
+| resources   | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |                   |                                                                               |

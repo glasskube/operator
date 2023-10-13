@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Metabase
 
-Metabase is an open-source business intelligence and data analytics platform that simplifies data analysis and visualization. 
+Metabase is an open-source business intelligence and data analytics platform that simplifies data analysis and visualization.
 It connects to various data sources, including SQL databases and CSV files, making it accessible to both technical and non-technical users.
 Metabase offers pre-built dashboards, customization options, and data management features for insightful decision-making.
 
@@ -21,9 +21,10 @@ spec:
 
 ## Spec
 
-| Name      | Type                                                                                                   | Default    |
-|-----------|--------------------------------------------------------------------------------------------------------|------------|
-| host      | String                                                                                                 | (required) |
-| replicas  | Int                                                                                                    | 1          |
-| smtp      | [SmtpSpec](./../common/smtp/)?                                                                         | `null`     |
-| resources | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |            |
+| Name      | Type                                                                                                   | Default    |                                                                              |
+|-----------|--------------------------------------------------------------------------------------------------------|------------|------------------------------------------------------------------------------|
+| version   | String                                                                                                 | `"0.47.1"` | Check for [releases](https://github.com/metabase/metabase/releases) on GitHub. |
+| host      | String                                                                                                 | (required) |                                                                              |
+| replicas  | Int                                                                                                    | 1          |                                                                              |
+| smtp      | [SmtpSpec](./../common/smtp/)?                                                                         | `null`     |                                                                              |
+| resources | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |            |                                                                              |
