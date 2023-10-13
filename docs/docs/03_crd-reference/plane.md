@@ -23,6 +23,7 @@ spec:
 
 | Name                | Type                                | Default                                                       |                                                                                                                    |
 |---------------------|-------------------------------------|---------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| version             | String                              | `"v0.12.2-dev"`                                               | Check for [releases](https://github.com/makeplane/plane/releases) on GitHub.                                       |
 | host                | String                              | (required)                                                    |                                                                                                                    |
 | registrationEnabled | Boolean                             | `true`                                                        | If set to `false`, the registration page is still accessible, but trying to register an account leads to an error. |
 | defaultUser         | [DefaultUserSpec](#defaultuserspec) | email: `"root@example.com"`, password: `"glasskube-operator"` | We strongly recommend that you change the initial user password immediately after you first sign in.               |

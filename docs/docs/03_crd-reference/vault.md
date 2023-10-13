@@ -5,7 +5,7 @@ sidebar_position: 1
 # Vault
 
 HashiCorp Vault is an open-source tool that serves as a centralized hub for secrets management, encryption services, and privileged access management.
-It enhances security by consolidating dynamic secrets, offers robust management within Kubernetes, provides comprehensive data protection features, including encryption and tokenization. 
+It enhances security by consolidating dynamic secrets, offers robust management within Kubernetes, provides comprehensive data protection features, including encryption and tokenization.
 Vault is a perfect fit for organizations implementing zero trust strategies, ensuring heightened security and access control.
 
 ## Example
@@ -25,6 +25,7 @@ spec:
 
 | Name                | Type                                                                                                   |            |                                                                                                            |
 |---------------------|--------------------------------------------------------------------------------------------------------|------------|------------------------------------------------------------------------------------------------------------|
+| version             | String                                                                                                 | `"1.14.2"` | Check for [releases](https://github.com/hashicorp/vault/releases) on GitHub.                               |
 | host                | String                                                                                                 | (required) |                                                                                                            |
 | replicas            | Int                                                                                                    | 3          |                                                                                                            |
 | ui                  | [UiSpec](#uispec)                                                                                      |            |                                                                                                            |

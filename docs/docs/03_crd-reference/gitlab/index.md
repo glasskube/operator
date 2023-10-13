@@ -20,7 +20,7 @@ spec:
   host: gitlab.mycompany.eu
   sshEnabled: true
   sshHost: ssh.gitlab.mycompany.eu
-  runners: []
+  runners: [ ]
   registry:
     host: registry.gitlab.mycompany.eu
     storage:
@@ -39,17 +39,18 @@ spec:
 
 ## Spec
 
-| Name                      | Type                                                                                                   | Default    |                                                |
-|---------------------------|--------------------------------------------------------------------------------------------------------|------------|------------------------------------------------|
-| host                      | String                                                                                                 | (required) |                                                |
-| sshEnabled                | Boolean                                                                                                | `true`     |                                                |
-| sshHost                   | String?                                                                                                | `null`     |                                                |
-| initialRootPasswordSecret | SecretKeySelector?                                                                                     | `null`     |                                                |
-| smtp                      | [SmtpSpec](../common/smtp)?                                                                            | `null`     |                                                | 
-| runners                   | List&lt;[RunnerSpecTemplate](./runner)>                                                   | `[]`       |                                                |
-| resources                 | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |            |                                                |
-| omnibusConfigOverride     | String?                                                                                                | `null`     | For advanced users only. Use at your own risk! |
-| registry                  | [RegistrySpec](#registry)?                                                                             | `null`     |                                                |
+| Name                      | Type                                                                                                   | Default    |                                                                                       |
+|---------------------------|--------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------------------------------|
+| version                   | String                                                                                                 | `"16.2.5"` | Check for [releases](https://gitlab.com/gitlab-org/gitlab-foss/-/releases) on GitLab. |
+| host                      | String                                                                                                 | (required) |                                                                                       |
+| sshEnabled                | Boolean                                                                                                | `true`     |                                                                                       |
+| sshHost                   | String?                                                                                                | `null`     |                                                                                       |
+| initialRootPasswordSecret | SecretKeySelector?                                                                                     | `null`     |                                                                                       |
+| smtp                      | [SmtpSpec](../common/smtp)?                                                                            | `null`     |                                                                                       | 
+| runners                   | List&lt;[RunnerSpecTemplate](./runner)>                                                                | `[]`       |                                                                                       |
+| resources                 | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |            |                                                                                       |
+| omnibusConfigOverride     | String?                                                                                                | `null`     | For advanced users only. Use at your own risk!                                        |
+| registry                  | [RegistrySpec](#registry)?                                                                             | `null`     |                                                                                       |
 
 ### RegistrySpec {#registry}
 
