@@ -36,6 +36,7 @@ spec:
 | resources          | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |            |                                                                               |
 | smtp               | [SmtpSpec](../common/smtp)?                                                                            | `null`     |                                                                               |
 | storage            | [StorageSpec](#storage)                                                                                | `null`     |                                                                               |
+| database           | [PostgresDatabaseSpec](./../common/postgres)?                                                          |            |                                                                               |
 
 ### AppsSpec {#apps}
 

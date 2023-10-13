@@ -33,6 +33,7 @@ spec:
 | serviceRegistration | [ServiceRegistrationSpec](#serviceregistrationspec)                                                    |            |                                                                                                            |
 | autoUnsealSpec      | [AutoUnsealSpec](#autounsealspec)?                                                                     | `null`     | If set to `null`, auto-unsealing is disabled and the vault must be unsealed manually or by external means. |
 | auditStorage        | [AuditStorageSpec](#auditstoragespec)                                                                  |            |                                                                                                            |
+| database            | [PostgresDatabaseSpec](./../common/postgres)?                                                          |            |                                                                                                            |
 
 ### UiSpec
 

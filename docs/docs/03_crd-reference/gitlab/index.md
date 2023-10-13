@@ -51,6 +51,7 @@ spec:
 | resources                 | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |            |                                                                                       |
 | omnibusConfigOverride     | String?                                                                                                | `null`     | For advanced users only. Use at your own risk!                                        |
 | registry                  | [RegistrySpec](#registry)?                                                                             | `null`     |                                                                                       |
+| database                  | [PostgresDatabaseSpec](./../common/postgres)?                                                          |            |                                                                                       |
 
 ### RegistrySpec {#registry}
 
