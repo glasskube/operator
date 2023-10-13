@@ -5,7 +5,7 @@ sidebar_position: 1
 # Keycloak
 
 Keycloak is an open-source Identity and Access Management platform that simplifies user authentication, offers user federation with various data sources,
-and supports standard security protocols like OpenID Connect, OAuth 2.0, and SAML. 
+and supports standard security protocols like OpenID Connect, OAuth 2.0, and SAML.
 It includes an admin console for centralized management of user permissions, sessions, and application configurations.
 
 ## Example
@@ -23,12 +23,13 @@ spec:
 
 ## Spec
 
-| Name       | Type                                                                                                   | Default    |                                                                                            | 
-|------------|--------------------------------------------------------------------------------------------------------|------------|--------------------------------------------------------------------------------------------|
-| version                     | String                                                                                                 | `"21.1.2"`  | Check for [releases](https://github.com/keycloak/keycloak/releases) on GitHub. |
-| host       | String                                                                                                 | (required) |                                                                                            |
-| management | [ManagementSpec](#management)                                                                          |            | Configuration of the keycloak management UI                                                |
-| resources  | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |            |                                                                                            |
+| Name       | Type                                                                                                   | Default    |                                                                                | 
+|------------|--------------------------------------------------------------------------------------------------------|------------|--------------------------------------------------------------------------------|
+| version    | String                                                                                                 | `"21.1.2"` | Check for [releases](https://github.com/keycloak/keycloak/releases) on GitHub. |
+| host       | String                                                                                                 | (required) |                                                                                |
+| management | [ManagementSpec](#management)                                                                          |            | Configuration of the keycloak management UI                                    |
+| resources  | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |            |                                                                                |
+| database   | [PostgresDatabaseSpec](./../common/postgres)?                                                          |            |                                                                                |
 
 ### ManagementSpec {#management}
 

@@ -29,3 +29,4 @@ spec:
 | host        | String                                                                                                 | (required)        |                                                                               |
 | demoEnabled | Boolean                                                                                                | `true`            |                                                                               |
 | resources   | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |                   |                                                                               |
+| database    | [PostgresDatabaseSpec](./../common/postgres)?                                                          |                   |                                                                               |

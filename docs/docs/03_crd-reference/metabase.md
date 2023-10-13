@@ -21,10 +21,11 @@ spec:
 
 ## Spec
 
-| Name      | Type                                                                                                   | Default    |                                                                              |
-|-----------|--------------------------------------------------------------------------------------------------------|------------|------------------------------------------------------------------------------|
+| Name      | Type                                                                                                   | Default    |                                                                                |
+|-----------|--------------------------------------------------------------------------------------------------------|------------|--------------------------------------------------------------------------------|
 | version   | String                                                                                                 | `"0.47.1"` | Check for [releases](https://github.com/metabase/metabase/releases) on GitHub. |
-| host      | String                                                                                                 | (required) |                                                                              |
-| replicas  | Int                                                                                                    | 1          |                                                                              |
-| smtp      | [SmtpSpec](./../common/smtp/)?                                                                         | `null`     |                                                                              |
-| resources | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |            |                                                                              |
+| host      | String                                                                                                 | (required) |                                                                                |
+| replicas  | Int                                                                                                    | 1          |                                                                                |
+| smtp      | [SmtpSpec](./../common/smtp/)?                                                                         | `null`     |                                                                                |
+| resources | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |            |                                                                                |
+| database  | [PostgresDatabaseSpec](./../common/postgres)?                                                          |            |                                                                                |

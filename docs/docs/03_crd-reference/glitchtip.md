@@ -32,3 +32,4 @@ spec:
 | organizationCreationEnabled | Boolean                                                                                                | `false`    |                                                                                            |
 | smtp                        | [SmtpSpec](./../common/smtp/)?                                                                         | `null`     |                                                                                            |
 | resources                   | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |            |
+| database                    | [PostgresDatabaseSpec](./../common/postgres)?                                                          |            |                                                                                            |
