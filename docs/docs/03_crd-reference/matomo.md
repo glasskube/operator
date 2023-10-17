@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+toc_max_heading_level: 5
 ---
 
 # Matomo
@@ -28,3 +29,17 @@ spec:
 | host      | String                                                                                                 | (required)   |                                                                               |
 | smtp      | [SmtpSpec](./../common/smtp/)?                                                                         | `null`       |                                                                               |
 | resources | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |              |                                                                               |
+| database  | [MariaDBSpec](#mariadbspec)?                                                                           |              |                                                                               | 
+
+### MariaDBSpec
+
+| Name    | Type                                      | Default |
+|---------|-------------------------------------------|---------|
+| storage | [MariaDBStorageSpec](#mariadbstoragespec) |         |
+
+#### MariaDBStorageSpec
+
+| Name         | Type    | Default                                          |
+|--------------|---------|--------------------------------------------------|
+| size         | String? | `"10Gi"`                                         |
+| storageClass | String? | taken from [settings](/getting-started/settings) |
