@@ -33,23 +33,102 @@
 
 <hr>
 
-## Screencast
+## ⭐️ Why Glasskube?
+
+Turn on autopilot and deploy and manage Open Source Tools fully automated on Kubernetes. Our Open Source Glasskube Operator is the simplest and fastest way to manage all your favorite Open Source Tools and the related infrastructure components like databases, caches, and keep them up to date without manual hassle.
+
+## ✨ Features
+
+- 👌 Easy installation with little to no configuration
+- ✅ Automatic setup of databases and caches
+- 🔄 Automate and schedule version updates and patches
+- 🗓️ Scheduled database backups
+- ⚙️ Interface for simple SMTP configuration
+
+## 🗄️ Table Of Contents
+- [Quick Start](https://github.com/glasskube/operator#-quick-start)
+- [Supported Tools](https://github.com/glasskube/operator#-supported-tools)
+- [Screencast](https://github.com/glasskube/operator#-screencast)
+- [Need help?](https://github.com/glasskube/operator#-need-help)
+- [Related projects](https://github.com/glasskube/operator#-related-projects)
+- [How to Contribute](https://github.com/glasskube/operator#-how-to-contribute) 
+- [Supported by](https://github.com/glasskube/operator#-supported-by)
+
+
+
+## 🚀 Quick Start
+The Glasskube operator is simply deployed via Helm. To install the Open Source Tool simply apply the Custom Resoure. You can find more information and guidance in our [Docs](https://glasskube.eu/docs/). 
+
+First, add our helm repository and refresh your repository list: 
+
+```console
+helm repo add glasskube https://charts.glasskube.eu/
+helm repo update
+```
+
+Next, install the Glasskube Operator with helm:
+
+```
+helm install my-glasskube-operator glasskube/glasskube-operator
+```
+
+Install the tool of your choice, for example Gitlab:
+
+```
+kubectl apply -f gitlab.yaml
+```
+
+
+## 🔨 Supported Tools 
+- [Gitea](https://github.com/go-gitea/gitea)
+- [GitLab](https://gitlab.com/gitlab-org/gitlab)
+- [GlitchTip](https://gitlab.com/glitchtip)
+- [Keycloak](https://github.com/keycloak/keycloak)
+- [Matomo](https://github.com/matomo-org/matomo)
+- [Metabase](https://github.com/metabase/metabase)
+- [Nextcloud](https://github.com/nextcloud/server)
+- [Odoo](https://github.com/odoo/odoo)
+- [Plane](https://github.com/makeplane/plane)
+- [Vault](https://github.com/hashicorp/vault)
+
+> Don't find your tool? We are always adding new supported tools, so just join us on [Matrix](https://matrix.to/#/#glasskube:matrix.org) and let us know which tool is missing!
+
+## 🎬 Screencast
 
 https://user-images.githubusercontent.com/3041752/217483828-2f0245bc-dbe8-4fc5-901f-e96131187c22.mp4
 
 
-## Related projects
+## ☝️ Need help?
+If you encounter any problems, we will be happy to support you wherever we can. If you encounter any bugs or issues while working on this project, feel free to contact us on [Matrix](https://matrix.to/#/#glasskube:matrix.org). We are happy to assist you with anything related to the project.
+
+## 📎 Related projects
 
 - Java client for Kubernetes [`fabric8io/kubernetes-client`](https://github.com/fabric8io/kubernetes-client)
 - Java Operator SDK [`operator-framework/java-operator-sdk`](https://github.com/operator-framework/java-operator-sdk)
 
-## How to Contribute
+## 🤝 How to Contribute
 
 See [the contributing guide](CONTRIBUTING.md) for detailed instructions.
 
 Also join our [`architecture discussion`](https://github.com/glasskube/operator/discussions/4) on GitHub.
 
-## Supported by
+## 🤩 Thanks to all our contributers 
+
+Thanks to eveyone, that is supporting this project. We are thankful, for evey contribution, no matter its size! 
+
+<a href="
+https://github.com/glasskube/operator/graphs/contributors
+">
+  <img src="
+https://contrib.rocks/image?repo=glasskube/operator
+" />
+</a>
+
+## 📘 License 
+
+The Glasskube Operator is licensed under the LGPL-3.0 license. For more information check the [LICENSE](https://github.com/glasskube/operator/blob/main/LICENSE) file for details.
+
+## 🙏 Supported by
 
 - Media Tech Lab [`media-tech-lab`](https://github.com/media-tech-lab)
 
