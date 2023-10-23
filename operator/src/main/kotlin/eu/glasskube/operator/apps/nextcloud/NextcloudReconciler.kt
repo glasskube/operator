@@ -4,6 +4,7 @@ import eu.glasskube.kubernetes.client.patchOrUpdateStatus
 import eu.glasskube.operator.Labels
 import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.api.reconciler.informerEventSource
+import eu.glasskube.operator.apps.nextcloud.dependent.NextcloudCloudStorageBackupCronJob
 import eu.glasskube.operator.apps.nextcloud.dependent.NextcloudConfigMap
 import eu.glasskube.operator.apps.nextcloud.dependent.NextcloudCronJob
 import eu.glasskube.operator.apps.nextcloud.dependent.NextcloudDeployment
@@ -25,9 +26,9 @@ import eu.glasskube.operator.generic.condition.isReady
 import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.infra.postgres.isReady
 import eu.glasskube.operator.webhook.WebhookService
-import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.apps.Deployment
+import io.fabric8.kubernetes.api.model.batch.v1.CronJob
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext
@@ -67,7 +68,17 @@ import kotlin.jvm.optionals.getOrDefault
             useEventSourceWithName = NextcloudReconciler.DEPLOYMENT_EVENT_SOURCE,
             dependsOn = ["NextcloudVolume", "NextcloudConfigMap", "NextcloudPostgresCluster"]
         ),
-        Dependent(type = NextcloudCronJob::class, name = "NextcloudCronJob", dependsOn = ["NextcloudDeployment"]),
+        Dependent(
+            type = NextcloudCronJob::class,
+            name = "NextcloudCronJob",
+            dependsOn = ["NextcloudDeployment"],
+            useEventSourceWithName = NextcloudReconciler.CRON_JOB_EVENT_SOURCE
+        ),
+        Dependent(
+            type = NextcloudCloudStorageBackupCronJob::class,
+            name = "NextcloudCloudStorageBackupCronJob",
+            reconcilePrecondition = NextcloudCloudStorageBackupCronJob.ReconcilePrecondition::class
+        ),
         Dependent(
             type = NextcloudRedisDeployment::class,
             name = "NextcloudRedisDeployment",
@@ -128,7 +139,8 @@ class NextcloudReconciler(webhookService: WebhookService) :
     override fun prepareEventSources(context: EventSourceContext<Nextcloud>) = with(context) {
         mutableMapOf(
             DEPLOYMENT_EVENT_SOURCE to informerEventSource<Deployment>(),
-            SERVICE_EVENT_SOURCE to informerEventSource<Service>()
+            SERVICE_EVENT_SOURCE to informerEventSource<Service>(),
+            CRON_JOB_EVENT_SOURCE to informerEventSource<CronJob>()
         )
     }
 
@@ -142,7 +154,6 @@ class NextcloudReconciler(webhookService: WebhookService) :
 
         internal const val SERVICE_EVENT_SOURCE = "NextcloudServiceEventSource"
         internal const val DEPLOYMENT_EVENT_SOURCE = "NextcloudDeploymentEventSource"
-
-        private val log = logger()
+        internal const val CRON_JOB_EVENT_SOURCE = "NextcloudCronJobEventSource"
     }
 }

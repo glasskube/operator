@@ -2,6 +2,8 @@ package eu.glasskube.operator.apps.plane
 
 import eu.glasskube.operator.apps.common.backup.BackupSpec
 import eu.glasskube.operator.apps.common.backup.HasBackupSpec
+import eu.glasskube.operator.apps.common.cloudstorage.CloudStorageSpec
+import eu.glasskube.operator.apps.common.cloudstorage.HasCloudStorageSpec
 import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
 import io.fabric8.generator.annotation.Nullable
@@ -27,7 +29,10 @@ data class PlaneSpec(
     @field:Nullable
     override val database: PostgresDatabaseSpec = PostgresDatabaseSpec(),
     override val backups: BackupSpec?
-) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec> {
+) : HasBackupSpec, HasCloudStorageSpec, HasDatabaseSpec<PostgresDatabaseSpec> {
+
+    override val cloudStorage get() = s3
+
     data class DefaultUserSpec(
         @field:Required
         val email: String,
@@ -121,16 +126,19 @@ data class PlaneSpec(
 
     data class S3Spec(
         @field:Required
-        val bucket: String,
+        override val bucket: String,
         @field:Required
-        val accessKeySecret: SecretKeySelector,
+        override val accessKeySecret: SecretKeySelector,
         @field:Required
-        val secretKeySecret: SecretKeySelector,
+        override val secretKeySecret: SecretKeySelector,
         @field:Required
-        val region: String,
+        override val region: String,
         @field:Nullable
-        val endpoint: String?,
+        override val hostname: String?,
         @field:Nullable
-        val usePathStyle: Boolean?
-    )
+        override val port: Int?,
+        override val useSsl: Boolean = true,
+        @field:Nullable
+        override val usePathStyle: Boolean?
+    ) : CloudStorageSpec
 }

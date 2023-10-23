@@ -3,6 +3,7 @@ package eu.glasskube.operator.apps.plane
 import com.fasterxml.jackson.annotation.JsonIgnore
 import eu.glasskube.operator.Labels
 import eu.glasskube.operator.apps.common.backup.ResourceWithBackups
+import eu.glasskube.operator.apps.common.cloudstorage.ResourceWithCloudStorage
 import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
 import eu.glasskube.operator.apps.plane.Plane.Postgres.postgresClusterLabelSelector
@@ -22,6 +23,7 @@ class Plane :
     CustomResource<PlaneSpec, PlaneStatus>(),
     Namespaced,
     ResourceWithBackups,
+    ResourceWithCloudStorage,
     ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
     object Redis : RedisNameMapper<Plane>() {
         private const val NAME = "redis"
@@ -54,6 +56,9 @@ class Plane :
             override val labelSelectors = listOf(genericResourceLabelSelector, postgresClusterLabelSelector)
         }
     }
+
+    override val backupResourceName get() = "$genericResourceName-backup"
+    override val backupResourceLabels get() = genericResourceLabels
 
     internal companion object {
         const val APP_NAME = "plane"
