@@ -6,6 +6,7 @@ import eu.glasskube.kubernetes.api.model.envVar
 import eu.glasskube.kubernetes.api.model.secretKeyRef
 import eu.glasskube.operator.Labels
 import eu.glasskube.operator.apps.common.backup.ResourceWithBackups
+import eu.glasskube.operator.apps.common.cloudstorage.ResourceWithCloudStorage
 import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
 import eu.glasskube.operator.apps.nextcloud.Nextcloud.Postgres.postgresClusterLabelSelector
@@ -28,6 +29,7 @@ class Nextcloud :
     CustomResource<NextcloudSpec, NextcloudStatus>(),
     Namespaced,
     ResourceWithBackups,
+    ResourceWithCloudStorage,
     ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
     internal companion object {
         const val APP_NAME = "nextcloud"
@@ -57,6 +59,9 @@ class Nextcloud :
         override fun getLabels(primary: Nextcloud) = primary.resourceLabels
         override fun getDatabaseName(primary: Nextcloud) = "nextcloud"
     }
+
+    override val backupResourceName get() = "$genericResourceName-backup"
+    override val backupResourceLabels get() = resourceLabels
 
     @delegate:JsonIgnore
     override val velero by lazy {

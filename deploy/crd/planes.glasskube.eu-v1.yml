@@ -221,9 +221,14 @@ spec:
                     type: object
                   region:
                     type: string
-                  endpoint:
+                  hostname:
                     nullable: true
                     type: string
+                  port:
+                    nullable: true
+                    type: integer
+                  useSsl:
+                    type: boolean
                   usePathStyle:
                     nullable: true
                     type: boolean

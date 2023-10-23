@@ -4,6 +4,7 @@ import eu.glasskube.kubernetes.client.patchOrUpdateStatus
 import eu.glasskube.operator.Labels
 import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.api.reconciler.informerEventSource
+import eu.glasskube.operator.apps.gitlab.dependent.GitlabCloudStorageBackupCronJob
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabConfigMap
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabDeployment
 import eu.glasskube.operator.apps.gitlab.dependent.GitlabIngress
@@ -89,6 +90,11 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(
             type = GitlabRunners::class,
             dependsOn = ["GitlabDeployment"]
+        ),
+        Dependent(
+            type = GitlabCloudStorageBackupCronJob::class,
+            name = "GitlabCloudStorageBackupCronJob",
+            reconcilePrecondition = GitlabCloudStorageBackupCronJob.ReconcilePrecondition::class
         ),
         Dependent(
             type = GitlabVeleroSecret::class,

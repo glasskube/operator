@@ -1,6 +1,6 @@
 package eu.glasskube.operator.apps.common.backup
 
-import com.fasterxml.jackson.annotation.JsonIgnore
+import eu.glasskube.operator.apps.common.cloudstorage.CloudStorageSpec
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Required
 import io.fabric8.kubernetes.api.model.SecretKeySelector
@@ -13,29 +13,18 @@ data class BackupSpec(
 ) {
     data class S3Spec(
         @field:Nullable
-        val hostname: String?,
+        override val hostname: String?,
         @field:Nullable
-        val port: Int?,
-        val useSsl: Boolean = true,
+        override val port: Int?,
+        override val useSsl: Boolean = true,
         @field:Nullable
-        val region: String?,
+        override val region: String?,
         @field:Required
-        val bucket: String,
+        override val bucket: String,
         @field:Required
-        val accessKeySecret: SecretKeySelector,
+        override val accessKeySecret: SecretKeySelector,
         @field:Required
-        val secretKeySecret: SecretKeySelector,
-        val usePathStyle: Boolean = true
-    ) {
-        @get:JsonIgnore
-        val endpoint
-            get() = hostname?.let {
-                buildString {
-                    append(if (useSsl) "https" else "http", "://", it)
-                    if (port != null) {
-                        append(":", port)
-                    }
-                }
-            }
-    }
+        override val secretKeySecret: SecretKeySelector,
+        override val usePathStyle: Boolean = true
+    ) : CloudStorageSpec
 }

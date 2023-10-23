@@ -1,5 +1,7 @@
 package eu.glasskube.operator.apps.gitlab
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import eu.glasskube.operator.apps.common.cloudstorage.CloudStorageSpec
 import io.fabric8.generator.annotation.Required
 import io.fabric8.kubernetes.api.model.SecretKeySelector
 
@@ -8,16 +10,22 @@ data class GitlabRegistryStorageSpec(
 ) {
     data class S3(
         @field:Required
-        val bucket: String,
+        override val bucket: String,
         @field:Required
-        val accessKeySecret: SecretKeySelector,
+        override val accessKeySecret: SecretKeySelector,
         @field:Required
-        val secretKeySecret: SecretKeySelector,
+        override val secretKeySecret: SecretKeySelector,
         @field:Required
-        val region: String,
+        override val region: String,
         @field:Required
-        val hostname: String,
+        override val hostname: String,
         @field:Required
-        val usePathStyle: Boolean
-    )
+        override val usePathStyle: Boolean
+    ) : CloudStorageSpec {
+        @field:JsonIgnore
+        override val port = null
+
+        @field:JsonIgnore
+        override val useSsl = true
+    }
 }

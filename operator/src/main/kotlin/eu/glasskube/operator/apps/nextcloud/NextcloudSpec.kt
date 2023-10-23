@@ -2,13 +2,17 @@ package eu.glasskube.operator.apps.nextcloud
 
 import eu.glasskube.operator.apps.common.backup.BackupSpec
 import eu.glasskube.operator.apps.common.backup.HasBackupSpec
+import eu.glasskube.operator.apps.common.cloudstorage.CloudStorageSpec
+import eu.glasskube.operator.apps.common.cloudstorage.HasCloudStorageSpec
 import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
 import eu.glasskube.operator.validation.Patterns
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Pattern
+import io.fabric8.generator.annotation.Required
 import io.fabric8.kubernetes.api.model.Quantity
 import io.fabric8.kubernetes.api.model.ResourceRequirements
+import io.fabric8.kubernetes.api.model.SecretKeySelector
 
 data class NextcloudSpec(
     val host: String,
@@ -16,14 +20,17 @@ data class NextcloudSpec(
     val apps: NextcloudAppsSpec = NextcloudAppsSpec(),
     @field:Nullable
     val smtp: NextcloudSmtpSpec?,
-    val storage: NextcloudStorageSpec?,
+    val storage: StorageSpec?,
     @field:Pattern(Patterns.SEMVER)
     val version: String = "27.0.1",
     val server: ServerSpec = ServerSpec(),
     @field:Nullable
     override val database: PostgresDatabaseSpec = PostgresDatabaseSpec(),
     override val backups: BackupSpec?
-) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec> {
+) : HasBackupSpec, HasCloudStorageSpec, HasDatabaseSpec<PostgresDatabaseSpec> {
+
+    override val cloudStorage get() = storage?.s3
+
     data class ServerSpec(
         @field:Nullable
         val resources: ResourceRequirements = ResourceRequirements(
@@ -36,4 +43,32 @@ data class NextcloudSpec(
         val minSpareServers: Int = maxChildren / 16,
         val maxSpareServers: Int = maxChildren / 4
     )
+
+    data class StorageSpec(
+        val s3: S3?
+    ) {
+        data class S3(
+            @field:Required
+            override val bucket: String,
+            @field:Required
+            override val accessKeySecret: SecretKeySelector,
+            @field:Required
+            override val secretKeySecret: SecretKeySelector,
+            @field:Nullable
+            override val region: String?,
+            @field:Nullable
+            override val hostname: String?,
+            @field:Nullable
+            override val port: Int?,
+            @field:Nullable
+            val objectPrefix: String?,
+            @field:Nullable
+            val autoCreate: Boolean?,
+            override val useSsl: Boolean = true,
+            @field:Nullable
+            override val usePathStyle: Boolean?,
+            @field:Nullable
+            val legacyAuth: Boolean?
+        ) : CloudStorageSpec
+    }
 }

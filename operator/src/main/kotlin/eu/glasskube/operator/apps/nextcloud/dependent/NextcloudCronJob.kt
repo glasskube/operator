@@ -24,11 +24,20 @@ import eu.glasskube.operator.apps.nextcloud.resourceLabels
 import eu.glasskube.operator.apps.nextcloud.volumeName
 import io.fabric8.kubernetes.api.model.batch.v1.CronJob
 import io.javaoperatorsdk.operator.api.reconciler.Context
+import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
+import io.javaoperatorsdk.operator.processing.event.ResourceID
 
-@KubernetesDependent(labelSelector = NextcloudReconciler.SELECTOR)
+@KubernetesDependent(
+    labelSelector = NextcloudReconciler.SELECTOR,
+    resourceDiscriminator = NextcloudCronJob.Discriminator::class
+)
 class NextcloudCronJob : CRUDKubernetesDependentResource<CronJob, Nextcloud>(CronJob::class.java) {
+
+    internal class Discriminator :
+        ResourceIDMatcherDiscriminator<CronJob, Nextcloud>({ ResourceID(it.cronName, it.namespace) })
+
     override fun desired(primary: Nextcloud, context: Context<Nextcloud>) = CronJob().apply {
         metadata {
             name(primary.cronName)

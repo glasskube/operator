@@ -11,6 +11,7 @@ import eu.glasskube.operator.apps.plane.dependent.PlaneApiService
 import eu.glasskube.operator.apps.plane.dependent.PlaneBackendConfigMap
 import eu.glasskube.operator.apps.plane.dependent.PlaneBackendSecret
 import eu.glasskube.operator.apps.plane.dependent.PlaneBeatWorkerDeployment
+import eu.glasskube.operator.apps.plane.dependent.PlaneCloudStorageBackupCronJob
 import eu.glasskube.operator.apps.plane.dependent.PlaneFrontendConfigMap
 import eu.glasskube.operator.apps.plane.dependent.PlaneFrontendDeployment
 import eu.glasskube.operator.apps.plane.dependent.PlaneFrontendService
@@ -156,6 +157,11 @@ import kotlin.jvm.optionals.getOrDefault
             name = "PlaneWorkerDeployment",
             dependsOn = ["PlanePostgresCluster", "PlaneRedisDeployment", "PlaneBackendConfigMap", "PlaneBackendSecret", "PlaneWorkerConfigMap", "PlaneApiDeployment"],
             useEventSourceWithName = PlaneReconciler.DEPLOYMENT_EVENT_SOURCE
+        ),
+        Dependent(
+            type = PlaneCloudStorageBackupCronJob::class,
+            name = "PlaneCloudStorageBackupCronJob",
+            reconcilePrecondition = PlaneCloudStorageBackupCronJob.ReconcilePrecondition::class
         ),
         Dependent(
             type = PlaneVeleroSecret::class,
