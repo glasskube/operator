@@ -22,14 +22,15 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
     resourceDiscriminator = VaultServiceHeadless.Discriminator::class
 )
 class VaultServiceHeadless : CRUDKubernetesDependentResource<Service, Vault>(Service::class.java) {
+
     internal class Discriminator :
-        ResourceIDMatcherDiscriminator<Service, Vault>({ ResourceID(it.headlessServiceName) })
+        ResourceIDMatcherDiscriminator<Service, Vault>({ ResourceID(it.headlessServiceName, it.namespace) })
 
     override fun desired(primary: Vault, context: Context<Vault>) = service {
         metadata {
-            name = primary.headlessServiceName
-            namespace = primary.namespace
-            labels = primary.resourceLabels
+            name(primary.headlessServiceName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             type = "ClusterIP"

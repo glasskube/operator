@@ -22,9 +22,9 @@ class OdooMinioBucket : CRUDKubernetesDependentResource<MinioBucket, Odoo>(Minio
 
     override fun desired(primary: Odoo, context: Context<Odoo>) = minioBucket {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.genericResourceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec = MinioBucketSpec(
             userSecret = LocalObjectReference(primary.dbBackupSecretName),

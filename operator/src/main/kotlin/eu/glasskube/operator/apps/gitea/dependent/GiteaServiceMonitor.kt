@@ -21,9 +21,9 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class GiteaServiceMonitor : CRUDKubernetesDependentResource<ServiceMonitor, Gitea>(ServiceMonitor::class.java) {
     override fun desired(primary: Gitea, context: Context<Gitea>) = serviceMonitor {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.genericResourceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec = ServiceMonitorSpec(
             endpoints = listOf(

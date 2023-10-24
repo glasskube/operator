@@ -53,9 +53,9 @@ class GlitchtipWorkerDeployment : CRUDKubernetesDependentResource<Deployment, Gl
 
     override fun desired(primary: Glitchtip, context: Context<Glitchtip>) = deployment {
         metadata {
-            name = primary.workerName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.workerName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             selector {
@@ -65,7 +65,7 @@ class GlitchtipWorkerDeployment : CRUDKubernetesDependentResource<Deployment, Gl
             if (primary.spec.replicas > 1) strategyRollingUpdate() else strategyRecreate()
             template {
                 metadata {
-                    labels = primary.resourceLabels
+                    labels(primary.resourceLabels)
                 }
                 spec {
                     containers = listOf(
@@ -92,7 +92,10 @@ class GlitchtipWorkerDeployment : CRUDKubernetesDependentResource<Deployment, Gl
                                         secretKeyRef(it.authSecret.name, "password")
                                     }
 
-                                    envVar("EMAIL_URL", "smtp://\$(SMTP_USERNAME):\$(SMTP_PASSWORD)@${it.host}:${it.port}")
+                                    envVar(
+                                        "EMAIL_URL",
+                                        "smtp://\$(SMTP_USERNAME):\$(SMTP_PASSWORD)@${it.host}:${it.port}"
+                                    )
                                     envVar("DEFAULT_FROM_EMAIL", it.fromAddress)
                                 }
                                 if (primary.spec.smtp == null) {

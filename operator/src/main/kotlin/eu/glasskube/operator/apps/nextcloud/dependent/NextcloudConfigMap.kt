@@ -20,12 +20,12 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class NextcloudConfigMap : CRUDKubernetesDependentResource<ConfigMap, Nextcloud>(ConfigMap::class.java) {
     override fun desired(primary: Nextcloud, context: Context<Nextcloud>) = configMap {
         metadata {
-            name = primary.configName
-            namespace = primary.namespace
-            labels = primary.resourceLabels
+            name(primary.configName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
         }
         data = mapOf(
-            NextcloudDeployment.CONFIG_FILE_NAME to primary.configFile,
+            NextcloudDeployment.CONFIG_FILE_NAME to getConfigFile(primary, context),
             NextcloudDeployment.NGINX_CONFIG_FILE_NAME to nginxConfigFile,
             NextcloudDeployment.PHP_FPM_CONFIG_FILE_NAME to phpFpmConfigFile(primary.spec.server)
         )
@@ -35,7 +35,7 @@ class NextcloudConfigMap : CRUDKubernetesDependentResource<ConfigMap, Nextcloud>
         super.onUpdated(primary, updated, actual, context)
         context.getSecondaryResource(NextcloudDeployment.Discriminator()).ifPresent {
             log.info("Restarting deployment after config change")
-            kubernetesClient.apps().deployments().resource(it).rolling().restart()
+            context.client.apps().deployments().resource(it).rolling().restart()
         }
     }
 
@@ -49,11 +49,11 @@ class NextcloudConfigMap : CRUDKubernetesDependentResource<ConfigMap, Nextcloud>
             .replace("%min_spare_servers%", "${server.minSpareServers}")
             .replace("%max_spare_servers%", "${server.maxSpareServers}")
 
-    private val Nextcloud.configFile: String
-        get() = kubernetesClient.kubernetesSerialization.asJson(
+    private fun getConfigFile(primary: Nextcloud, context: Context<Nextcloud>): String =
+        context.client.kubernetesSerialization.asJson(
             NextcloudInstallConfig(
                 listOfNotNull(
-                    spec.defaultPhoneRegion?.let { "default_phone_region" to it },
+                    primary.spec.defaultPhoneRegion?.let { "default_phone_region" to it },
                     "overwriteprotocol" to "https",
                     "trusted_proxies" to listOf(
                         "10.0.0.0/8",
@@ -62,10 +62,10 @@ class NextcloudConfigMap : CRUDKubernetesDependentResource<ConfigMap, Nextcloud>
                     ),
                     "log_type" to "errorlog",
                     "log_level" to 2,
-                    *spec.apps.oidc?.let {
+                    *primary.spec.apps.oidc?.let {
                         arrayOf(
                             "oidc_login_provider_url" to it.issuerUrl,
-                            "oidc_login_logout_url" to spec.host,
+                            "oidc_login_logout_url" to primary.spec.host,
                             "oidc_login_button_text" to "Login with " + it.name,
                             "oidc_login_disable_registration" to false,
                             "oidc_login_scope" to "openid profile email",
@@ -78,7 +78,7 @@ class NextcloudConfigMap : CRUDKubernetesDependentResource<ConfigMap, Nextcloud>
                     }.orEmpty()
                 ).toMap(),
                 listOfNotNull(
-                    spec.apps.office?.let {
+                    primary.spec.apps.office?.let {
                         "richdocuments" to mapOf(
                             "wopi_url" to "https://${it.host}/",
                             "public_wopi_url" to "https://${it.host}"

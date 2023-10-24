@@ -56,7 +56,7 @@ class VaultStatefulSet(private val configService: ConfigService) :
             primary.spec.auditStorage.takeIf { it.enabled }?.let { auditStorage ->
                 volumeClaimTemplates {
                     volumeClaimTemplate {
-                        metadata { name = AUDIT_VOLUME_NAME }
+                        metadata { name(AUDIT_VOLUME_NAME) }
                         spec {
                             resources { requests = mapOf("storage" to auditStorage.size) }
                             accessModes = listOf("ReadWriteOnce")
@@ -67,10 +67,14 @@ class VaultStatefulSet(private val configService: ConfigService) :
 
             template {
                 metadata {
-                    labels = primary.resourceLabels
-
-                    annotations =
-                        if (primary.spec.auditStorage.enabled) configService.getBackupAnnotations(AUDIT_VOLUME_NAME) else emptyMap()
+                    labels(primary.resourceLabels)
+                    annotations(
+                        if (primary.spec.auditStorage.enabled) {
+                            configService.getBackupAnnotations(AUDIT_VOLUME_NAME)
+                        } else {
+                            emptyMap()
+                        }
+                    )
                 }
 
                 spec {

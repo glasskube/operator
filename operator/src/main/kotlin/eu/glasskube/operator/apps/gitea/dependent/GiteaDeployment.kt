@@ -14,6 +14,7 @@ import eu.glasskube.kubernetes.api.model.envFrom
 import eu.glasskube.kubernetes.api.model.envVar
 import eu.glasskube.kubernetes.api.model.intOrString
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.kubernetes.api.model.persistentVolumeClaim
 import eu.glasskube.kubernetes.api.model.secretKeyRef
 import eu.glasskube.kubernetes.api.model.secretRef
@@ -49,13 +50,14 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
 )
 class GiteaDeployment(private val configService: ConfigService) :
     CRUDKubernetesDependentResource<Deployment, Gitea>(Deployment::class.java) {
-    internal class Discriminator : ResourceIDMatcherDiscriminator<Deployment, Gitea>({ ResourceID(it.deploymentName) })
+    internal class Discriminator :
+        ResourceIDMatcherDiscriminator<Deployment, Gitea>({ ResourceID(it.deploymentName, it.namespace) })
 
     override fun desired(primary: Gitea, context: Context<Gitea>) = deployment {
         metadata {
-            name = primary.deploymentName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.deploymentName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             selector {
@@ -65,8 +67,8 @@ class GiteaDeployment(private val configService: ConfigService) :
             if (primary.spec.replicas > 1) strategyRollingUpdate() else strategyRecreate()
             template {
                 metadata {
-                    labels = primary.resourceLabels
-                    annotations = configService.getBackupAnnotations(VOLUME_NAME)
+                    labels(primary.resourceLabels)
+                    annotations(configService.getBackupAnnotations(VOLUME_NAME))
                 }
                 spec {
                     containers = listOf(

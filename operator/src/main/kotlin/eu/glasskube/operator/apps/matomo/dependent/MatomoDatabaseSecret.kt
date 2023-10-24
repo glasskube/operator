@@ -1,5 +1,6 @@
 package eu.glasskube.operator.apps.matomo.dependent
 
+import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.operator.apps.matomo.Matomo
 import eu.glasskube.operator.apps.matomo.MatomoReconciler
 import eu.glasskube.operator.apps.matomo.databaseSecretName
@@ -17,7 +18,8 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
     resourceDiscriminator = MatomoDatabaseSecret.Discriminator::class
 )
 class MatomoDatabaseSecret : GeneratedSecret<Matomo>() {
-    class Discriminator : ResourceIDMatcherDiscriminator<Secret, Matomo>({ ResourceID(it.databaseSecretName) })
+    class Discriminator :
+        ResourceIDMatcherDiscriminator<Secret, Matomo>({ ResourceID(it.databaseSecretName, it.namespace) })
 
     override val Matomo.generatedSecretName get() = databaseSecretName
     override val Matomo.generatedSecretLabels get() = resourceLabels

@@ -3,6 +3,7 @@ package eu.glasskube.operator.apps.matomo.dependent
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.kubernetes.api.model.secret
 import eu.glasskube.operator.apps.matomo.Matomo
 import eu.glasskube.operator.apps.matomo.MatomoInstallConfig
@@ -24,47 +25,48 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
 )
 class MatomoConfigSecret(private val objectMapper: ObjectMapper) :
     CRUDKubernetesDependentResource<Secret, Matomo>(Secret::class.java) {
-    class Discriminator : ResourceIDMatcherDiscriminator<Secret, Matomo>({ ResourceID(it.configSecretName) })
+
+    class Discriminator :
+        ResourceIDMatcherDiscriminator<Secret, Matomo>({ ResourceID(it.configSecretName, it.namespace) })
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = secret {
         metadata {
-            name = primary.configSecretName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.configSecretName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         type = "Opaque"
-        data = mapOf(MatomoDeployment.installJson to primary.installJson.encodeBase64())
+        data = mapOf(MatomoDeployment.installJson to getInstallJson(primary, context).encodeBase64())
     }
 
-    private val Matomo.installJson
-        get() = with(objectMapper) {
-            readValue<MatomoInstallConfig>(MatomoConfigMap::class.java.getResource("config.json")!!)
-                .apply {
-                    val smtp = spec.smtp
-                    config.getValue("General").let { general ->
-                        if (smtp == null) {
-                            general["emails_enabled"] = 0
-                        } else {
-                            general["emails_enabled"] = 1
-                            general["noreply_email_address"] = smtp.fromAddress
-                        }
-                    }
-                    if (smtp != null) {
-                        val authSecret = client.secrets()
-                            .inNamespace(metadata.namespace)
-                            .withName(smtp.authSecret.name)
-                            .require()
-                        config["mail"] = mutableMapOf(
-                            "transport" to "smtp",
-                            "host" to smtp.host,
-                            "port" to smtp.port,
-                            "type" to "LOGIN",
-                            "username" to authSecret.data.getValue("username").decodeBase64(),
-                            "password" to authSecret.data.getValue("password").decodeBase64(),
-                            "encryption" to if (smtp.tlsEnabled) "tls" else ""
-                        )
+    private fun getInstallJson(primary: Matomo, context: Context<Matomo>) = with(objectMapper) {
+        readValue<MatomoInstallConfig>(MatomoConfigMap::class.java.getResource("config.json")!!)
+            .apply {
+                val smtp = primary.spec.smtp
+                config.getValue("General").let { general ->
+                    if (smtp == null) {
+                        general["emails_enabled"] = 0
+                    } else {
+                        general["emails_enabled"] = 1
+                        general["noreply_email_address"] = smtp.fromAddress
                     }
                 }
-                .let { writeValueAsString(it) }
-        }
+                if (smtp != null) {
+                    val authSecret = context.client.secrets()
+                        .inNamespace(primary.metadata.namespace)
+                        .withName(smtp.authSecret.name)
+                        .require()
+                    config["mail"] = mutableMapOf(
+                        "transport" to "smtp",
+                        "host" to smtp.host,
+                        "port" to smtp.port,
+                        "type" to "LOGIN",
+                        "username" to authSecret.data.getValue("username").decodeBase64(),
+                        "password" to authSecret.data.getValue("password").decodeBase64(),
+                        "encryption" to if (smtp.tlsEnabled) "tls" else ""
+                    )
+                }
+            }
+            .let { writeValueAsString(it) }
+    }
 }

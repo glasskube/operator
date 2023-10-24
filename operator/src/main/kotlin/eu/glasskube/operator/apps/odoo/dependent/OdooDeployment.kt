@@ -43,9 +43,9 @@ class OdooDeployment(private val configService: ConfigService) :
 
     override fun desired(primary: Odoo, context: Context<Odoo>) = deployment {
         metadata {
-            name = primary.deploymentName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.deploymentName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             selector {
@@ -54,8 +54,8 @@ class OdooDeployment(private val configService: ConfigService) :
             strategyRecreate()
             template {
                 metadata {
-                    labels = primary.resourceLabels
-                    annotations = configService.getBackupAnnotations(Odoo.volumeName)
+                    labels(primary.resourceLabels)
+                    annotations(configService.getBackupAnnotations(Odoo.volumeName))
                 }
                 spec {
                     containers = listOf(

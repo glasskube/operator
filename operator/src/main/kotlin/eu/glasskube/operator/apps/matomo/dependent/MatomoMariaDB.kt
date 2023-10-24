@@ -46,15 +46,15 @@ class MatomoMariaDB(private val configService: ConfigService) :
     private val Matomo.storageClass get() = spec.database.storage?.storageClass ?: defaultStorageClass
 
     private val MariaDB.storageSize get() = spec.volumeClaimTemplate.resources.requests?.storage
-    private val MariaDB.persistentVolumeClaim: PersistentVolumeClaim?
-        get() = kubernetesClient.persistentVolumeClaims().inNamespace(namespace)
-            .withName("storage-${metadata.name}-0").get()
+    private fun getPersistentVolumeClaim(actual: MariaDB, context: Context<Matomo>): PersistentVolumeClaim? =
+        context.client.persistentVolumeClaims().inNamespace(actual.namespace)
+            .withName("storage-${actual.metadata.name}-0").get()
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = mariaDB {
         metadata {
-            name = primary.genericMariaDBName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.genericMariaDBName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec = MariaDBSpec(
             rootPasswordSecretKeyRef = secretKeySelector(primary.databaseSecretName, ROOT_DATABASE_PASSWORD),
@@ -92,22 +92,22 @@ class MatomoMariaDB(private val configService: ConfigService) :
                     "(actual: ${actual.storageSize}, desired: ${desired.storageSize}). " +
                     "Now updating the PersistentVolumeClaim and recreating MariaDB"
             )
-            updateVolumeClaimStorageRequest(actual, primary)
+            updateVolumeClaimStorageRequest(actual, primary, context)
             recreate(actual, desired, primary, context)
                 .also { log.info("MariaDB for ${primary.loggingId} recreated") }
         } else {
             super.handleUpdate(actual, desired, primary, context)
         }
 
-    private fun updateVolumeClaimStorageRequest(actual: MariaDB, primary: Matomo) {
-        actual.persistentVolumeClaim
+    private fun updateVolumeClaimStorageRequest(actual: MariaDB, primary: Matomo, context: Context<Matomo>) {
+        getPersistentVolumeClaim(actual, context)
             ?.apply { spec.resources.requests["storage"] = primary.storageSize.toQuantity() }
-            ?.let { kubernetesClient.resource(it) }
+            ?.let { context.client.resource(it) }
             ?.update()
     }
 
     private fun recreate(actual: MariaDB, desired: MariaDB, primary: Matomo, context: Context<Matomo>): MariaDB {
-        kubernetesClient.resource(actual).delete()
+        context.client.resource(actual).delete()
         Thread.sleep(1000)
         return handleCreate(desired, primary, context)
     }

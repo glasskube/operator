@@ -1,6 +1,7 @@
 package eu.glasskube.operator.apps.gitlab.dependent
 
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.kubernetes.api.model.service
 import eu.glasskube.kubernetes.api.model.servicePort
 import eu.glasskube.kubernetes.api.model.spec
@@ -26,7 +27,8 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
 class GitlabSSHService(private val configService: ConfigService) :
     CRUDKubernetesDependentResource<Service, Gitlab>(Service::class.java) {
 
-    internal class Discriminator : ResourceIDMatcherDiscriminator<Service, Gitlab>({ ResourceID(it.sshServiceName) })
+    internal class Discriminator :
+        ResourceIDMatcherDiscriminator<Service, Gitlab>({ ResourceID(it.sshServiceName, it.namespace) })
 
     class ReconcileCondition : Condition<Service, Gitlab> {
         override fun isMet(
@@ -38,10 +40,10 @@ class GitlabSSHService(private val configService: ConfigService) :
 
     override fun desired(primary: Gitlab, context: Context<Gitlab>) = service {
         metadata {
-            name = primary.sshServiceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
-            annotations = configService.getCommonLoadBalancerAnnotations(primary)
+            name(primary.sshServiceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
+            annotations(configService.getCommonLoadBalancerAnnotations(primary))
         }
         spec {
             type = "LoadBalancer"

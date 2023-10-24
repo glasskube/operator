@@ -31,9 +31,9 @@ class NextcloudOfficeService : CRUDKubernetesDependentResource<Service, Nextclou
 
     override fun desired(primary: Nextcloud, context: Context<Nextcloud>) = service {
         metadata {
-            name = primary.officeName
-            namespace = primary.namespace
-            labels = primary.officeResourceLabels
+            name(primary.officeName)
+            namespace(primary.namespace)
+            labels(primary.officeResourceLabels)
         }
         spec {
             type = "ClusterIP"

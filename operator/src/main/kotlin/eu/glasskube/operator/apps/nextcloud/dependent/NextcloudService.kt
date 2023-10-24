@@ -18,7 +18,10 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 import io.javaoperatorsdk.operator.processing.event.ResourceID
 
 // TODO: Add support for FastCGI without nginx proxy if Ingress controller supports it
-@KubernetesDependent(labelSelector = NextcloudReconciler.SELECTOR, resourceDiscriminator = NextcloudService.Discriminator::class)
+@KubernetesDependent(
+    labelSelector = NextcloudReconciler.SELECTOR,
+    resourceDiscriminator = NextcloudService.Discriminator::class
+)
 class NextcloudService : CRUDKubernetesDependentResource<Service, Nextcloud>(Service::class.java) {
 
     internal class Discriminator : ResourceIDMatcherDiscriminator<Service, Nextcloud>({
@@ -27,9 +30,9 @@ class NextcloudService : CRUDKubernetesDependentResource<Service, Nextcloud>(Ser
 
     override fun desired(primary: Nextcloud, context: Context<Nextcloud>) = service {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.namespace
-            labels = primary.resourceLabels
+            name(primary.genericResourceName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             type = "ClusterIP"

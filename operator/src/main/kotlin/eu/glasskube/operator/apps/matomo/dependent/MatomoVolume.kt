@@ -19,9 +19,9 @@ class MatomoVolume : CRUDKubernetesDependentResource<PersistentVolumeClaim, Mato
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = persistentVolumeClaim {
         metadata {
-            name = primary.volumeName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.volumeName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             resources {

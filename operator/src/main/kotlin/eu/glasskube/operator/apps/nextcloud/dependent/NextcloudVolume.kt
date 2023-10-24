@@ -20,9 +20,9 @@ class NextcloudVolume :
     CRUDKubernetesDependentResource<PersistentVolumeClaim, Nextcloud>(PersistentVolumeClaim::class.java) {
     override fun desired(primary: Nextcloud, context: Context<Nextcloud>) = persistentVolumeClaim {
         metadata {
-            name = primary.volumeName
-            namespace = primary.namespace
-            labels = primary.resourceLabels
+            name(primary.volumeName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             resources {

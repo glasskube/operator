@@ -19,9 +19,9 @@ class PlanePostgresMinioBucket : CRUDKubernetesDependentResource<MinioBucket, Pl
 
     override fun desired(primary: Plane, context: Context<Plane>) = minioBucket {
         metadata {
-            name = primary.postgresClusterName
-            namespace = primary.namespace
-            labels = primary.postgresClusterLabels
+            name(primary.postgresClusterName)
+            namespace(primary.namespace)
+            labels(primary.postgresClusterLabels)
         }
         spec = MinioBucketSpec()
     }

@@ -25,10 +25,10 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class PlaneIngress(configService: ConfigService) : DependentIngress<Plane>(configService) {
     override fun desired(primary: Plane, context: Context<Plane>) = ingress {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.namespace
-            labels = primary.genericResourceLabels
-            annotations = primary.defaultAnnotations
+            name(primary.genericResourceName)
+            namespace(primary.namespace)
+            labels(primary.genericResourceLabels)
+            annotations(getDefaultAnnotations(primary, context))
         }
         spec {
             ingressClassName = defaultIngressClassName

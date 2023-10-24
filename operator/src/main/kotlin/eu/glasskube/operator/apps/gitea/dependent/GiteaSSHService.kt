@@ -2,6 +2,7 @@ package eu.glasskube.operator.apps.gitea.dependent
 
 import eu.glasskube.kubernetes.api.model.intOrString
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.kubernetes.api.model.service
 import eu.glasskube.kubernetes.api.model.servicePort
 import eu.glasskube.kubernetes.api.model.spec
@@ -26,7 +27,8 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
 )
 class GiteaSSHService(private val configService: ConfigService) :
     CRUDKubernetesDependentResource<Service, Gitea>(Service::class.java) {
-    internal class Discriminator : ResourceIDMatcherDiscriminator<Service, Gitea>({ ResourceID(it.sshServiceName) })
+    internal class Discriminator :
+        ResourceIDMatcherDiscriminator<Service, Gitea>({ ResourceID(it.sshServiceName, it.namespace) })
 
     class ReconcileCondition : Condition<Service, Gitea> {
         override fun isMet(
@@ -38,10 +40,10 @@ class GiteaSSHService(private val configService: ConfigService) :
 
     override fun desired(primary: Gitea, context: Context<Gitea>) = service {
         metadata {
-            name = primary.sshServiceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
-            annotations = configService.getCommonLoadBalancerAnnotations(primary)
+            name(primary.sshServiceName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
+            annotations(configService.getCommonLoadBalancerAnnotations(primary))
         }
         spec {
             type = "LoadBalancer"

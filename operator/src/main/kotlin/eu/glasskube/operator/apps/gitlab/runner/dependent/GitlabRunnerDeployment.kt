@@ -41,9 +41,9 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class GitlabRunnerDeployment : CRUDKubernetesDependentResource<Deployment, GitlabRunner>(Deployment::class.java) {
     override fun desired(primary: GitlabRunner, context: Context<GitlabRunner>) = deployment {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.genericResourceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             selector {
@@ -53,7 +53,7 @@ class GitlabRunnerDeployment : CRUDKubernetesDependentResource<Deployment, Gitla
             strategyRecreate()
             template {
                 metadata {
-                    labels = primary.resourceLabels
+                    labels(primary.resourceLabels)
                 }
                 spec {
                     terminationGracePeriodSeconds = 1800

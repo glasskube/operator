@@ -20,9 +20,9 @@ class GlitchtipConfigMap : CRUDKubernetesDependentResource<ConfigMap, Glitchtip>
 
     override fun desired(primary: Glitchtip, context: Context<Glitchtip>) = configMap {
         metadata {
-            name = primary.configMapName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.configMapName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         data = primary.baseData
     }
@@ -31,11 +31,11 @@ class GlitchtipConfigMap : CRUDKubernetesDependentResource<ConfigMap, Glitchtip>
         super.onUpdated(primary, updated, actual, context)
         context.getSecondaryResource(GlitchtipDeployment.Discriminator()).ifPresent {
             log.info("Restarting deployment after config change")
-            kubernetesClient.apps().deployments().resource(it).rolling().restart()
+            context.client.apps().deployments().resource(it).rolling().restart()
         }
         context.getSecondaryResource(GlitchtipWorkerDeployment.Discriminator()).ifPresent {
             log.info("Restarting worker deployment after config change")
-            kubernetesClient.apps().deployments().resource(it).rolling().restart()
+            context.client.apps().deployments().resource(it).rolling().restart()
         }
     }
 

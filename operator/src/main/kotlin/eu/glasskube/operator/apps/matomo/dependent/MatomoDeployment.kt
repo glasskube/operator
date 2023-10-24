@@ -62,9 +62,9 @@ class MatomoDeployment(private val configService: ConfigService) :
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = deployment {
         metadata {
-            name = primary.deploymentName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.deploymentName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             selector {
@@ -73,8 +73,8 @@ class MatomoDeployment(private val configService: ConfigService) :
             strategyRecreate()
             template {
                 metadata {
-                    labels = primary.resourceLabels
-                    annotations = configService.getBackupAnnotations(wwwDataVolumeName)
+                    labels(primary.resourceLabels)
+                    annotations(configService.getBackupAnnotations(wwwDataVolumeName))
                 }
                 spec {
                     initContainers = listOf(

@@ -48,9 +48,9 @@ class GitlabDeployment(private val configService: ConfigService) :
 
     override fun desired(primary: Gitlab, context: Context<Gitlab>) = deployment {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.genericResourceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             selector {
@@ -59,8 +59,8 @@ class GitlabDeployment(private val configService: ConfigService) :
             strategyRecreate()
             template {
                 metadata {
-                    labels = primary.resourceLabels
-                    annotations = configService.getBackupAnnotations(VOLUME_NAME)
+                    labels(primary.resourceLabels)
+                    annotations(configService.getBackupAnnotations(VOLUME_NAME))
                 }
                 spec {
                     volumes = listOf(

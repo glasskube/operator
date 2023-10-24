@@ -15,13 +15,14 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernete
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = GlitchtipReconciler.SELECTOR)
-class GlitchtipVolume : CRUDKubernetesDependentResource<PersistentVolumeClaim, Glitchtip>(PersistentVolumeClaim::class.java) {
+class GlitchtipVolume :
+    CRUDKubernetesDependentResource<PersistentVolumeClaim, Glitchtip>(PersistentVolumeClaim::class.java) {
 
     override fun desired(primary: Glitchtip, context: Context<Glitchtip>) = persistentVolumeClaim {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.genericResourceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             resources {

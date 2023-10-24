@@ -22,9 +22,9 @@ class MetabaseConfigMap : CRUDKubernetesDependentResource<ConfigMap, Metabase>(C
 
     override fun desired(primary: Metabase, context: Context<Metabase>) = configMap {
         metadata {
-            name = primary.configMapName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.configMapName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         data = primary.run { baseData + smtpData }
     }
@@ -33,7 +33,7 @@ class MetabaseConfigMap : CRUDKubernetesDependentResource<ConfigMap, Metabase>(C
         super.onUpdated(primary, updated, actual, context)
         context.getSecondaryResource<Deployment>().ifPresent {
             log.info("Restarting deployment after config change")
-            kubernetesClient.apps().deployments().resource(it).rolling().restart()
+            context.client.apps().deployments().resource(it).rolling().restart()
         }
     }
 

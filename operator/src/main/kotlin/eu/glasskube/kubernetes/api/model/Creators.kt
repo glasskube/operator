@@ -1,6 +1,7 @@
 package eu.glasskube.kubernetes.api.model
 
 import eu.glasskube.kubernetes.api.annotation.KubernetesDslMarker
+import eu.glasskube.kubernetes.api.model.MetadataDsl.Companion.build
 import io.fabric8.kubernetes.api.model.Affinity
 import io.fabric8.kubernetes.api.model.Capabilities
 import io.fabric8.kubernetes.api.model.ConfigMap
@@ -20,7 +21,6 @@ import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.api.model.KeyToPath
 import io.fabric8.kubernetes.api.model.LabelSelector
 import io.fabric8.kubernetes.api.model.ObjectFieldSelector
-import io.fabric8.kubernetes.api.model.ObjectMeta
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaim
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaimSpec
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaimVolumeSource
@@ -46,18 +46,15 @@ import io.fabric8.kubernetes.api.model.TCPSocketAction
 import io.fabric8.kubernetes.api.model.Volume
 import io.fabric8.kubernetes.api.model.VolumeMount
 
-inline fun objectMeta(block: (@KubernetesDslMarker ObjectMeta).() -> Unit) =
-    ObjectMeta().apply(block)
-
-inline fun HasMetadata.metadata(block: (@KubernetesDslMarker ObjectMeta).() -> Unit) {
-    metadata = objectMeta(block)
+fun HasMetadata.metadata(block: (@KubernetesDslMarker MetadataDsl).() -> Unit) {
+    metadata = block.build()
 }
 
 inline fun labelSelector(block: (@KubernetesDslMarker LabelSelector).() -> Unit) =
     LabelSelector().apply(block)
 
-inline fun PodTemplateSpec.metadata(block: (@KubernetesDslMarker ObjectMeta).() -> Unit) {
-    metadata = objectMeta(block)
+fun PodTemplateSpec.metadata(block: (@KubernetesDslMarker MetadataDsl).() -> Unit) {
+    metadata = block.build()
 }
 
 inline fun PodTemplateSpec.spec(block: (@KubernetesDslMarker PodSpec).() -> Unit) {

@@ -23,10 +23,13 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class GlitchtipIngress(configService: ConfigService) : DependentIngress<Glitchtip>(configService) {
     override fun desired(primary: Glitchtip, context: Context<Glitchtip>) = ingress {
         metadata {
-            name = primary.ingressName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
-            annotations = primary.defaultAnnotations + ("nginx.ingress.kubernetes.io/proxy-body-size" to "256m")
+            name(primary.ingressName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
+            annotations(
+                getDefaultAnnotations(primary, context) +
+                    ("nginx.ingress.kubernetes.io/proxy-body-size" to "256m")
+            )
         }
         spec {
             ingressClassName = defaultIngressClassName

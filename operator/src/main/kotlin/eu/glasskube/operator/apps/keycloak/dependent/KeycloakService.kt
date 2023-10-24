@@ -28,9 +28,9 @@ class KeycloakService : CRUDKubernetesDependentResource<Service, Keycloak>(Servi
 
     override fun desired(primary: Keycloak, context: Context<Keycloak>) = service {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.namespace
-            labels = primary.resourceLabels
+            name(primary.genericResourceName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             type = "ClusterIP"

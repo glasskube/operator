@@ -24,9 +24,9 @@ class GitlabConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitlab>(Confi
 
     override fun desired(primary: Gitlab, context: Context<Gitlab>) = configMap {
         metadata {
-            name = primary.configMapName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.configMapName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         data = primary.run { baseData + sshData + smtpData }
     }
@@ -35,7 +35,7 @@ class GitlabConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitlab>(Confi
         super.onUpdated(primary, updated, actual, context)
         context.getSecondaryResource<Deployment>().ifPresent {
             log.info("Restarting deployment after config change")
-            kubernetesClient.apps().deployments().resource(it).rolling().restart()
+            context.client.apps().deployments().resource(it).rolling().restart()
         }
     }
 

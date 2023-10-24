@@ -24,10 +24,10 @@ class MatomoIngress(configService: ConfigService) : DependentIngress<Matomo>(con
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = ingress {
         metadata {
-            name = primary.ingressName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
-            annotations = primary.defaultAnnotations
+            name(primary.ingressName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
+            annotations(getDefaultAnnotations(primary, context))
         }
         spec {
             ingressClassName = defaultIngressClassName

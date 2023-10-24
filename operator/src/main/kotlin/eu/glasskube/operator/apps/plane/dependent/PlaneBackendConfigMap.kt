@@ -18,13 +18,15 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
 
 @KubernetesDependent(resourceDiscriminator = PlaneBackendConfigMap.Discriminator::class)
 class PlaneBackendConfigMap : CRUDKubernetesDependentResource<ConfigMap, Plane>(ConfigMap::class.java) {
-    internal class Discriminator : ResourceIDMatcherDiscriminator<ConfigMap, Plane>({ ResourceID(it.backendResourceName) })
+
+    internal class Discriminator :
+        ResourceIDMatcherDiscriminator<ConfigMap, Plane>({ ResourceID(it.backendResourceName, it.namespace) })
 
     override fun desired(primary: Plane, context: Context<Plane>) = configMap {
         metadata {
-            name = primary.backendResourceName
-            namespace = primary.namespace
-            labels = primary.genericResourceLabels
+            name(primary.backendResourceName)
+            namespace(primary.namespace)
+            labels(primary.genericResourceLabels)
         }
         data = primary.run { commonData + smtpData + s3Data }
     }
@@ -34,15 +36,15 @@ class PlaneBackendConfigMap : CRUDKubernetesDependentResource<ConfigMap, Plane>(
         with(context) {
             getSecondaryResource(PlaneApiDeployment.Discriminator()).ifPresent {
                 log.info("Restarting api Deployment after ConfigMap changed")
-                kubernetesClient.apps().deployments().resource(it).rolling().restart()
+                context.client.apps().deployments().resource(it).rolling().restart()
             }
             getSecondaryResource(PlaneWorkerDeployment.Discriminator()).ifPresent {
                 log.info("Restarting worker Deployment after ConfigMap changed")
-                kubernetesClient.apps().deployments().resource(it).rolling().restart()
+                context.client.apps().deployments().resource(it).rolling().restart()
             }
             getSecondaryResource(PlaneBeatWorkerDeployment.Discriminator()).ifPresent {
                 log.info("Restarting beat worker Deployment after ConfigMap changed")
-                kubernetesClient.apps().deployments().resource(it).rolling().restart()
+                context.client.apps().deployments().resource(it).rolling().restart()
             }
         }
     }

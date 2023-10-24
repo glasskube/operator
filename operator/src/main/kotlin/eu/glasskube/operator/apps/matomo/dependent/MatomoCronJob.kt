@@ -33,9 +33,9 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class MatomoCronJob : CRUDKubernetesDependentResource<CronJob, Matomo>(CronJob::class.java) {
     override fun desired(primary: Matomo, context: Context<Matomo>) = CronJob().apply {
         metadata {
-            name = primary.cronName
-            namespace = primary.namespace
-            labels = primary.resourceLabels
+            name(primary.cronName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             schedule = "5 * * * *"
@@ -77,6 +77,7 @@ class MatomoCronJob : CRUDKubernetesDependentResource<CronJob, Matomo>(CronJob::
             }
         }
     }
+
     companion object {
         private const val DATA_VOLUME = "data"
     }

@@ -19,9 +19,9 @@ class GitlabMinioBucket : CRUDKubernetesDependentResource<MinioBucket, Gitlab>(M
 
     override fun desired(primary: Gitlab, context: Context<Gitlab>) = minioBucket {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.genericResourceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec = MinioBucketSpec()
     }

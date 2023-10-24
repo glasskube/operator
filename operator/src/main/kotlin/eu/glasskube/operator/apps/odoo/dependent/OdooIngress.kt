@@ -23,10 +23,10 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class OdooIngress(configService: ConfigService) : DependentIngress<Odoo>(configService) {
     override fun desired(primary: Odoo, context: Context<Odoo>) = ingress {
         metadata {
-            name = primary.ingressName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
-            annotations = primary.defaultAnnotations
+            name(primary.ingressName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
+            annotations(getDefaultAnnotations(primary, context))
         }
         spec {
             ingressClassName = defaultIngressClassName

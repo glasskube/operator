@@ -17,9 +17,9 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class MatomoService : CRUDKubernetesDependentResource<Service, Matomo>(Service::class.java) {
     override fun desired(primary: Matomo, context: Context<Matomo>) = service {
         metadata {
-            name = primary.serviceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.serviceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             selector = mapOf(MatomoReconciler.LABEL to primary.metadata.name)

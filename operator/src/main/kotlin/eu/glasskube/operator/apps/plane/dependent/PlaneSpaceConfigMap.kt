@@ -17,14 +17,15 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
 
 @KubernetesDependent(resourceDiscriminator = PlaneSpaceConfigMap.Discriminator::class)
 class PlaneSpaceConfigMap : CRUDKubernetesDependentResource<ConfigMap, Plane>(ConfigMap::class.java) {
+
     internal class Discriminator :
-        ResourceIDMatcherDiscriminator<ConfigMap, Plane>({ ResourceID(it.spaceResourceName) })
+        ResourceIDMatcherDiscriminator<ConfigMap, Plane>({ ResourceID(it.spaceResourceName, it.namespace) })
 
     override fun desired(primary: Plane, context: Context<Plane>) = configMap {
         metadata {
-            name = primary.spaceResourceName
-            namespace = primary.namespace
-            labels = primary.spaceResourceLabels
+            name(primary.spaceResourceName)
+            namespace(primary.namespace)
+            labels(primary.spaceResourceLabels)
         }
         data = mapOf(
             "NEXT_PUBLIC_GOOGLE_CLIENTID" to "",
@@ -37,7 +38,7 @@ class PlaneSpaceConfigMap : CRUDKubernetesDependentResource<ConfigMap, Plane>(Co
         super.onUpdated(primary, updated, actual, context)
         context.getSecondaryResource(PlaneSpaceDeployment.Discriminator()).ifPresent {
             log.info("Restarting space Deployment after ConfigMap changed")
-            kubernetesClient.apps().deployments().resource(it).rolling().restart()
+            context.client.apps().deployments().resource(it).rolling().restart()
         }
     }
 

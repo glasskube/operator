@@ -19,9 +19,9 @@ class GiteaVolume : CRUDKubernetesDependentResource<PersistentVolumeClaim, Gitea
 
     override fun desired(primary: Gitea, context: Context<Gitea>) = persistentVolumeClaim {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.genericResourceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             resources {

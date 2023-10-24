@@ -29,13 +29,13 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
 class PlaneBeatWorkerDeployment : CRUDKubernetesDependentResource<Deployment, Plane>(Deployment::class.java) {
 
     internal class Discriminator :
-        ResourceIDMatcherDiscriminator<Deployment, Plane>({ ResourceID(it.beatWorkerResourceName) })
+        ResourceIDMatcherDiscriminator<Deployment, Plane>({ ResourceID(it.beatWorkerResourceName, it.namespace) })
 
     override fun desired(primary: Plane, context: Context<Plane>) = deployment {
         metadata {
-            name = primary.beatWorkerResourceName
-            namespace = primary.namespace
-            labels = primary.beatWorkerResourceLabels
+            name(primary.beatWorkerResourceName)
+            namespace(primary.namespace)
+            labels(primary.beatWorkerResourceLabels)
         }
         spec {
             selector {
@@ -44,7 +44,7 @@ class PlaneBeatWorkerDeployment : CRUDKubernetesDependentResource<Deployment, Pl
             strategyRecreate()
             template {
                 metadata {
-                    labels = primary.beatWorkerResourceLabelSelector
+                    labels(primary.beatWorkerResourceLabelSelector)
                 }
                 spec {
                     containers = listOf(

@@ -36,9 +36,9 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class KeycloakDeployment : CRUDKubernetesDependentResource<Deployment, Keycloak>(Deployment::class.java) {
     override fun desired(primary: Keycloak, context: Context<Keycloak>) = deployment {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.namespace
-            labels = primary.resourceLabels
+            name(primary.genericResourceName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             selector {
@@ -47,7 +47,7 @@ class KeycloakDeployment : CRUDKubernetesDependentResource<Deployment, Keycloak>
             strategyRollingUpdate()
             template {
                 metadata {
-                    labels = primary.resourceLabels
+                    labels(primary.resourceLabels)
                 }
                 spec {
                     containers = listOf(

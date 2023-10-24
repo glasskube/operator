@@ -20,9 +20,9 @@ class KeycloakPostgresBackupBucket : CRUDKubernetesDependentResource<MinioBucket
 
     override fun desired(primary: Keycloak, context: Context<Keycloak>) = minioBucket {
         metadata {
-            name = primary.backupBucketName
-            namespace = primary.namespace
-            labels = primary.resourceLabels
+            name(primary.backupBucketName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
         }
         spec = MinioBucketSpec()
     }

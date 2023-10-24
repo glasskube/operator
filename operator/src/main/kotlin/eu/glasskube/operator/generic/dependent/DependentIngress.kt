@@ -6,10 +6,11 @@ import io.fabric8.kubernetes.api.model.GenericKubernetesResource
 import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.api.model.networking.v1.Ingress
 import io.fabric8.kubernetes.client.dsl.base.ResourceDefinitionContext
+import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 
-abstract class DependentIngress<T : HasMetadata>(private val configService: ConfigService) :
-    CRUDKubernetesDependentResource<Ingress, T>(Ingress::class.java) {
+abstract class DependentIngress<P : HasMetadata>(private val configService: ConfigService) :
+    CRUDKubernetesDependentResource<Ingress, P>(Ingress::class.java) {
 
     protected val defaultIngressClassName: String?
         get() = when (configService.cloudProvider) {
@@ -17,12 +18,12 @@ abstract class DependentIngress<T : HasMetadata>(private val configService: Conf
             else -> configService.ingressClassName
         }
 
-    protected val T.defaultAnnotations: Map<String, String>
-        get() = configService.getCommonIngressAnnotations(this) +
+    protected fun getDefaultAnnotations(primary: P, context: Context<P>): Map<String, String> =
+        configService.getCommonIngressAnnotations(primary) +
             when (configService.cloudProvider) {
                 CloudProvider.aws -> awsDefaultAnnotations
                 CloudProvider.gardener -> gardenerDefaultAnnotations
-                else -> certManagerDefaultAnnotations
+                else -> getCertManagerDefaultAnnotations(context)
             }
 
     private val awsDefaultAnnotations
@@ -41,19 +42,18 @@ abstract class DependentIngress<T : HasMetadata>(private val configService: Conf
             "dns.gardener.cloud/ttl" to "600"
         )
 
-    private val certManagerDefaultAnnotations
-        get() = when (val clusterIssuer = defaultClusterIssuer) {
+    private fun getCertManagerDefaultAnnotations(context: Context<P>) =
+        when (val clusterIssuer = getDefaultClusterIssuer(context)) {
             null -> emptyMap()
             else -> mapOf("cert-manager.io/cluster-issuer" to clusterIssuer.metadata.name)
         }
 
-    private val defaultClusterIssuer: GenericKubernetesResource?
-        get() {
-            val clusterIssuerContext = ResourceDefinitionContext.Builder()
-                .withKind("ClusterIssuer")
-                .withGroup("cert-manager.io")
-                .withVersion("v1")
-                .build()
-            return client.genericKubernetesResources(clusterIssuerContext).list().items.firstOrNull()
-        }
+    private fun getDefaultClusterIssuer(context: Context<P>): GenericKubernetesResource? {
+        val clusterIssuerContext = ResourceDefinitionContext.Builder()
+            .withKind("ClusterIssuer")
+            .withGroup("cert-manager.io")
+            .withVersion("v1")
+            .build()
+        return context.client.genericKubernetesResources(clusterIssuerContext).list().items.firstOrNull()
+    }
 }

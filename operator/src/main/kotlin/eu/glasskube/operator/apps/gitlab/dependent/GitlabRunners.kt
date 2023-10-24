@@ -20,9 +20,9 @@ class GitlabRunners :
 
     fun desired(primary: Gitlab, template: GitlabRunnerSpecTemplate) = gitlabRunner {
         metadata {
-            name = "${primary.metadata.name}-${template.tokenHash}"
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name("${primary.metadata.name}-${template.tokenHash}")
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec = GitlabRunnerSpec(
             concurrency = template.concurrency,

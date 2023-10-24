@@ -16,9 +16,9 @@ abstract class RedisService<T : HasMetadata> :
 
     override fun desired(primary: T, context: Context<T>) = service {
         metadata {
-            name = redisNameMapper.getName(primary)
-            namespace = primary.namespace
-            labels = redisNameMapper.getLabels(primary)
+            name(redisNameMapper.getName(primary))
+            namespace(primary.namespace)
+            labels(redisNameMapper.getLabels(primary))
         }
         spec {
             selector = redisNameMapper.getLabelSelector(primary)

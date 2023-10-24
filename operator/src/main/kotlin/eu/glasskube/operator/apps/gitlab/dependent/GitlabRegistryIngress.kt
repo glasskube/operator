@@ -7,6 +7,7 @@ import eu.glasskube.kubernetes.api.model.extensions.ingressRule
 import eu.glasskube.kubernetes.api.model.extensions.ingressRuleValue
 import eu.glasskube.kubernetes.api.model.extensions.spec
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.operator.apps.gitlab.Gitlab
 import eu.glasskube.operator.apps.gitlab.GitlabReconciler
 import eu.glasskube.operator.apps.gitlab.genericRegistryResourceName
@@ -29,14 +30,19 @@ class GitlabRegistryIngress(configService: ConfigService) : DependentIngress<Git
 
     class ReconcilePrecondition : GitlabRegistryEnabledPrecondition<Ingress>()
 
-    internal class Discriminator : ResourceIDMatcherDiscriminator<Ingress, Gitlab>({ ResourceID(it.genericRegistryResourceName) })
+    internal class Discriminator :
+        ResourceIDMatcherDiscriminator<Ingress, Gitlab>({ ResourceID(it.genericRegistryResourceName, it.namespace) })
 
     override fun desired(primary: Gitlab, context: Context<Gitlab>) = ingress {
         metadata {
-            name = primary.genericRegistryResourceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
-            annotations = primary.defaultAnnotations + ("nginx.ingress.kubernetes.io/proxy-body-size" to "256m") + ("nginx.ingress.kubernetes.io/ssl-passthrough" to "true")
+            name(primary.genericRegistryResourceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
+            annotations(
+                getDefaultAnnotations(primary, context) +
+                    ("nginx.ingress.kubernetes.io/proxy-body-size" to "256m") +
+                    ("nginx.ingress.kubernetes.io/ssl-passthrough" to "true")
+            )
         }
         spec {
             ingressClassName = defaultIngressClassName

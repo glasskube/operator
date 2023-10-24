@@ -20,9 +20,9 @@ class NextcloudMinioBucket : CRUDKubernetesDependentResource<MinioBucket, Nextcl
 
     override fun desired(primary: Nextcloud, context: Context<Nextcloud>) = minioBucket {
         metadata {
-            name = primary.databaseBackupBucketName
-            namespace = primary.namespace
-            labels = primary.resourceLabels
+            name(primary.databaseBackupBucketName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
         }
         spec = MinioBucketSpec()
     }
