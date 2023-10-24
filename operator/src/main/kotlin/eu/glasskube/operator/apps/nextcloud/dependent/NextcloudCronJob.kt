@@ -31,9 +31,9 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class NextcloudCronJob : CRUDKubernetesDependentResource<CronJob, Nextcloud>(CronJob::class.java) {
     override fun desired(primary: Nextcloud, context: Context<Nextcloud>) = CronJob().apply {
         metadata {
-            name = primary.cronName
-            namespace = primary.namespace
-            labels = primary.resourceLabels
+            name(primary.cronName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             schedule = "*/5 * * * *"

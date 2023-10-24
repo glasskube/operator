@@ -22,9 +22,9 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class MatomoConfigMap : CRUDKubernetesDependentResource<ConfigMap, Matomo>(ConfigMap::class.java) {
     override fun desired(primary: Matomo, context: Context<Matomo>) = configMap {
         metadata {
-            name = primary.configMapName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.configMapName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         data = mapOf(
             "MATOMO_DATABASE_HOST" to primary.mariaDBHost,
@@ -45,7 +45,7 @@ class MatomoConfigMap : CRUDKubernetesDependentResource<ConfigMap, Matomo>(Confi
         super.onUpdated(primary, updated, actual, context)
         context.getSecondaryResource<Deployment>().ifPresent {
             log.info("restarting deployment after configmap changed")
-            kubernetesClient.apps().deployments().resource(it).rolling().restart()
+            context.client.apps().deployments().resource(it).rolling().restart()
         }
     }
 

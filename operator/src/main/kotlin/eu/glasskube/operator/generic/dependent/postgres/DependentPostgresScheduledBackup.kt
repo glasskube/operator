@@ -26,9 +26,9 @@ abstract class DependentPostgresScheduledBackup<P>(
 
     override fun desired(primary: P, context: Context<P>) = scheduledBackup {
         metadata {
-            name = postgresNameMapper.getName(primary)
-            namespace = primary.namespace
-            labels = postgresNameMapper.getLabels(primary)
+            name(postgresNameMapper.getName(primary))
+            namespace(primary.namespace)
+            labels(postgresNameMapper.getLabels(primary))
         }
         spec = ScheduledBackupSpec(
             schedule = primary.getSpec().database.backups?.schedule ?: primary.defaultSchedule,

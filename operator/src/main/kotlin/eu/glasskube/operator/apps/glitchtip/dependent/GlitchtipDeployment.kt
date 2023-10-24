@@ -63,9 +63,9 @@ class GlitchtipDeployment(private val configService: ConfigService) :
 
     override fun desired(primary: Glitchtip, context: Context<Glitchtip>) = deployment {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.genericResourceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             selector {
@@ -75,8 +75,8 @@ class GlitchtipDeployment(private val configService: ConfigService) :
             if (primary.spec.replicas > 1) strategyRollingUpdate() else strategyRecreate()
             template {
                 metadata {
-                    labels = primary.resourceLabels
-                    annotations = configService.getBackupAnnotations(Glitchtip.UPLOADS_VOLUME_NAME)
+                    labels(primary.resourceLabels)
+                    annotations(configService.getBackupAnnotations(Glitchtip.UPLOADS_VOLUME_NAME))
                 }
                 spec {
                     containers = listOf(
@@ -103,7 +103,10 @@ class GlitchtipDeployment(private val configService: ConfigService) :
                                         secretKeyRef(it.authSecret.name, "password")
                                     }
 
-                                    envVar("EMAIL_URL", "smtp://\$(SMTP_USERNAME):\$(SMTP_PASSWORD)@${it.host}:${it.port}")
+                                    envVar(
+                                        "EMAIL_URL",
+                                        "smtp://\$(SMTP_USERNAME):\$(SMTP_PASSWORD)@${it.host}:${it.port}"
+                                    )
                                     envVar("DEFAULT_FROM_EMAIL", it.fromAddress)
                                 }
                                 if (primary.spec.smtp == null) {

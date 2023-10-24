@@ -18,13 +18,13 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
 @KubernetesDependent(resourceDiscriminator = PlaneFrontendConfigMap.Discriminator::class)
 class PlaneFrontendConfigMap : CRUDKubernetesDependentResource<ConfigMap, Plane>(ConfigMap::class.java) {
     internal class Discriminator :
-        ResourceIDMatcherDiscriminator<ConfigMap, Plane>({ ResourceID(it.frontendResourceName) })
+        ResourceIDMatcherDiscriminator<ConfigMap, Plane>({ ResourceID(it.frontendResourceName, it.namespace) })
 
     override fun desired(primary: Plane, context: Context<Plane>) = configMap {
         metadata {
-            name = primary.frontendResourceName
-            namespace = primary.namespace
-            labels = primary.frontendResourceLabels
+            name(primary.frontendResourceName)
+            namespace(primary.namespace)
+            labels(primary.frontendResourceLabels)
         }
         data = mapOf(
             "NEXT_PUBLIC_ENABLE_OAUTH" to "0",
@@ -42,7 +42,7 @@ class PlaneFrontendConfigMap : CRUDKubernetesDependentResource<ConfigMap, Plane>
         super.onUpdated(primary, updated, actual, context)
         context.getSecondaryResource(PlaneFrontendDeployment.Discriminator()).ifPresent {
             log.info("Restarting frontend Deployment after ConfigMap changed")
-            kubernetesClient.apps().deployments().resource(it).rolling().restart()
+            context.client.apps().deployments().resource(it).rolling().restart()
         }
     }
 

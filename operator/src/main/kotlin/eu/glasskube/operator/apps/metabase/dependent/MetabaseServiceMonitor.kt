@@ -20,9 +20,9 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class MetabaseServiceMonitor : CRUDKubernetesDependentResource<ServiceMonitor, Metabase>(ServiceMonitor::class.java) {
     override fun desired(primary: Metabase, context: Context<Metabase>) = serviceMonitor {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.genericResourceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec = ServiceMonitorSpec(
             selector = labelSelector {

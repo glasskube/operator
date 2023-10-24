@@ -23,10 +23,13 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class GiteaIngress(configService: ConfigService) : DependentIngress<Gitea>(configService) {
     override fun desired(primary: Gitea, context: Context<Gitea>) = ingress {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
-            annotations = primary.defaultAnnotations + ("nginx.ingress.kubernetes.io/proxy-body-size" to "256m")
+            name(primary.genericResourceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
+            annotations(
+                getDefaultAnnotations(primary, context) +
+                    ("nginx.ingress.kubernetes.io/proxy-body-size" to "256m")
+            )
         }
         spec {
             ingressClassName = defaultIngressClassName

@@ -1,6 +1,7 @@
 package eu.glasskube.operator.apps.gitlab.dependent
 
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.kubernetes.api.model.service
 import eu.glasskube.kubernetes.api.model.servicePort
 import eu.glasskube.kubernetes.api.model.spec
@@ -21,13 +22,14 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
     resourceDiscriminator = GitlabService.Discriminator::class
 )
 class GitlabService : CRUDKubernetesDependentResource<Service, Gitlab>(Service::class.java) {
-    internal class Discriminator : ResourceIDMatcherDiscriminator<Service, Gitlab>({ ResourceID(it.serviceName) })
+    internal class Discriminator :
+        ResourceIDMatcherDiscriminator<Service, Gitlab>({ ResourceID(it.serviceName, it.namespace) })
 
     override fun desired(primary: Gitlab, context: Context<Gitlab>) = service {
         metadata {
-            name = primary.serviceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.serviceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             type = "ClusterIP"

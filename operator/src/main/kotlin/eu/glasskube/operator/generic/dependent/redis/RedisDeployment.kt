@@ -24,9 +24,9 @@ abstract class RedisDeployment<T : HasMetadata> :
 
     override fun desired(primary: T, context: Context<T>) = deployment {
         metadata {
-            name = redisNameMapper.getName(primary)
-            namespace = primary.namespace
-            labels = redisNameMapper.getLabels(primary)
+            name(redisNameMapper.getName(primary))
+            namespace(primary.namespace)
+            labels(redisNameMapper.getLabels(primary))
         }
         spec {
             selector {
@@ -35,7 +35,7 @@ abstract class RedisDeployment<T : HasMetadata> :
             strategyRecreate()
             template {
                 metadata {
-                    labels = redisNameMapper.getLabels(primary)
+                    labels(redisNameMapper.getLabels(primary))
                 }
                 spec {
                     containers = listOf(

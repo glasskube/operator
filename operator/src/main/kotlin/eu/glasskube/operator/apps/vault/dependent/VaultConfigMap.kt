@@ -17,9 +17,9 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class VaultConfigMap : CRUDKubernetesDependentResource<ConfigMap, Vault>(ConfigMap::class.java) {
     override fun desired(primary: Vault, context: Context<Vault>) = configMap {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.namespace
-            labels = primary.resourceLabels
+            name(primary.genericResourceName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
         }
         data = mapOf(
             VaultStatefulSet.CONFIG_FILE_NAME to listOfNotNull(

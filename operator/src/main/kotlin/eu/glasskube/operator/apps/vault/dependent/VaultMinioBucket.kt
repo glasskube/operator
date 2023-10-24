@@ -20,9 +20,9 @@ class VaultMinioBucket : CRUDKubernetesDependentResource<MinioBucket, Vault>(Min
 
     override fun desired(primary: Vault, context: Context<Vault>) = minioBucket {
         metadata {
-            name = primary.databaseBackupBucketName
-            namespace = primary.namespace
-            labels = primary.resourceLabels
+            name(primary.databaseBackupBucketName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
         }
         spec = MinioBucketSpec()
     }

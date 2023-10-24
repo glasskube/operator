@@ -2,6 +2,7 @@ package eu.glasskube.operator.apps.gitea.dependent
 
 import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.apps.gitea.Gitea
 import eu.glasskube.operator.apps.gitea.Gitea.Postgres.postgresHostName
@@ -23,15 +24,17 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
     resourceDiscriminator = GiteaIniConfigMap.Discriminator::class
 )
 class GiteaIniConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitea>(ConfigMap::class.java) {
-    internal class Discriminator : ResourceIDMatcherDiscriminator<ConfigMap, Gitea>({ ResourceID(it.iniConfigMapName) })
+    internal class Discriminator : ResourceIDMatcherDiscriminator<ConfigMap, Gitea>({
+        ResourceID(it.iniConfigMapName, it.namespace)
+    })
 
     override fun desired(primary: Gitea, context: Context<Gitea>) = configMap {
         metadata {
-            name = primary.iniConfigMapName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.iniConfigMapName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
         }
-        data = primary.baseConfig + primary.smtpConfig
+        data = primary.baseConfig + getSmtpConfig(primary, context)
     }
 
     private val Gitea.baseConfig: Map<String, String>
@@ -56,12 +59,12 @@ class GiteaIniConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitea>(Conf
             "GITEA__webhook__ALLOWED_HOST_LIST" to "*"
         )
 
-    private val Gitea.smtpConfig: Map<String, String>
-        get() = when (val smtp = spec.smtp) {
+    private fun getSmtpConfig(primary: Gitea, context: Context<Gitea>): Map<String, String> =
+        when (val smtp = primary.spec.smtp) {
             null -> emptyMap()
             else -> {
-                val authSecret = kubernetesClient.secrets()
-                    .inNamespace(metadata.namespace)
+                val authSecret = context.client.secrets()
+                    .inNamespace(primary.metadata.namespace)
                     .withName(smtp.authSecret.name)
                     .require()
                 mapOf(
@@ -82,7 +85,7 @@ class GiteaIniConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitea>(Conf
         super.onUpdated(primary, updated, actual, context)
         context.getSecondaryResource(GiteaDeployment.Discriminator()).ifPresent {
             log.info("Restarting deployment after config ini change")
-            kubernetesClient.apps().deployments().resource(it).rolling().restart()
+            context.client.apps().deployments().resource(it).rolling().restart()
         }
     }
 

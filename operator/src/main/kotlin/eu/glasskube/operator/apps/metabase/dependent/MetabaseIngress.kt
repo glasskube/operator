@@ -23,10 +23,13 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class MetabaseIngress(configService: ConfigService) : DependentIngress<Metabase>(configService) {
     override fun desired(primary: Metabase, context: Context<Metabase>) = ingress {
         metadata {
-            name = primary.ingressName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
-            annotations = primary.defaultAnnotations + ("nginx.ingress.kubernetes.io/proxy-body-size" to "256m")
+            name(primary.ingressName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
+            annotations(
+                getDefaultAnnotations(primary, context) +
+                    ("nginx.ingress.kubernetes.io/proxy-body-size" to "256m")
+            )
         }
         spec {
             ingressClassName = defaultIngressClassName

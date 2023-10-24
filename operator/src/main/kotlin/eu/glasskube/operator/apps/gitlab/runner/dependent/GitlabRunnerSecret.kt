@@ -16,9 +16,9 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class GitlabRunnerSecret : CRUDKubernetesDependentResource<Secret, GitlabRunner>(Secret::class.java) {
     override fun desired(primary: GitlabRunner, context: Context<GitlabRunner>) = secret {
         metadata {
-            name = primary.secretName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.secretName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         data = mapOf(
             "REGISTRATION_TOKEN" to primary.spec.token.encodeBase64()

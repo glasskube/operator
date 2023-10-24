@@ -19,9 +19,9 @@ class GlitchtipMinioBucket : CRUDKubernetesDependentResource<MinioBucket, Glitch
 
     override fun desired(primary: Glitchtip, context: Context<Glitchtip>) = minioBucket {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.genericResourceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec = MinioBucketSpec()
     }

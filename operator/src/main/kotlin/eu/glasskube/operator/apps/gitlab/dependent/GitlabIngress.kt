@@ -7,6 +7,7 @@ import eu.glasskube.kubernetes.api.model.extensions.ingressRule
 import eu.glasskube.kubernetes.api.model.extensions.ingressRuleValue
 import eu.glasskube.kubernetes.api.model.extensions.spec
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.operator.apps.gitlab.Gitlab
 import eu.glasskube.operator.apps.gitlab.GitlabReconciler
 import eu.glasskube.operator.apps.gitlab.ingressName
@@ -28,14 +29,18 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
 )
 class GitlabIngress(configService: ConfigService) : DependentIngress<Gitlab>(configService) {
 
-    internal class Discriminator : ResourceIDMatcherDiscriminator<Ingress, Gitlab>({ ResourceID(it.ingressName) })
+    internal class Discriminator :
+        ResourceIDMatcherDiscriminator<Ingress, Gitlab>({ ResourceID(it.ingressName, it.namespace) })
 
     override fun desired(primary: Gitlab, context: Context<Gitlab>) = ingress {
         metadata {
-            name = primary.ingressName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
-            annotations = primary.defaultAnnotations + ("nginx.ingress.kubernetes.io/proxy-body-size" to "256m")
+            name(primary.ingressName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
+            annotations(
+                getDefaultAnnotations(primary, context) +
+                    ("nginx.ingress.kubernetes.io/proxy-body-size" to "256m")
+            )
         }
         spec {
             ingressClassName = defaultIngressClassName

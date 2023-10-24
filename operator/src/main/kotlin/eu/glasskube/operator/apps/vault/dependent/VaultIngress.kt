@@ -24,10 +24,13 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class VaultIngress(configService: ConfigService) : DependentIngress<Vault>(configService) {
     override fun desired(primary: Vault, context: Context<Vault>) = ingress {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.namespace
-            labels = primary.resourceLabels
-            annotations = primary.defaultAnnotations + ("nginx.ingress.kubernetes.io/ssl-passthrough" to "true")
+            name(primary.genericResourceName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
+            annotations(
+                getDefaultAnnotations(primary, context) +
+                    ("nginx.ingress.kubernetes.io/ssl-passthrough" to "true")
+            )
         }
         spec {
             ingressClassName = defaultIngressClassName

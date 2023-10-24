@@ -19,9 +19,9 @@ class MetabaseHttpService : CRUDKubernetesDependentResource<Service, Metabase>(S
 
     override fun desired(primary: Metabase, context: Context<Metabase>) = service {
         metadata {
-            name = primary.httpServiceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.httpServiceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             type = "ClusterIP"

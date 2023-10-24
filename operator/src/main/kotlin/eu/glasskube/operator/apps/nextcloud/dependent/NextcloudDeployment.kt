@@ -63,9 +63,9 @@ class NextcloudDeployment(private val configService: ConfigService) :
 
     override fun desired(primary: Nextcloud, context: Context<Nextcloud>) = deployment {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.namespace
-            labels = primary.resourceLabels
+            name(primary.genericResourceName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             selector {
@@ -75,8 +75,8 @@ class NextcloudDeployment(private val configService: ConfigService) :
             strategyRecreate()
             template {
                 metadata {
-                    labels = primary.resourceLabels
-                    annotations = configService.getBackupAnnotations(DATA_VOLUME)
+                    labels(primary.resourceLabels)
+                    annotations(configService.getBackupAnnotations(DATA_VOLUME))
                 }
                 spec {
                     volumes = listOfNotNull(
@@ -324,7 +324,8 @@ class NextcloudDeployment(private val configService: ConfigService) :
         private const val CONFIG_FILE_PATH = "$CONFIG_DIR/$CONFIG_FILE_NAME"
         private const val NGINX_CONFIG_DIR = "/etc/nginx"
         private const val NGINX_CONFIG_PATH = "$NGINX_CONFIG_DIR/$NGINX_CONFIG_FILE_NAME"
-        private const val PHP_FPM_CONFIG_DIR = "/usr/local/etc/php-fpm.d/" // php-fpm config dir is different vom php.ini config dir
+        private const val PHP_FPM_CONFIG_DIR =
+            "/usr/local/etc/php-fpm.d/" // php-fpm config dir is different vom php.ini config dir
         private const val PHP_FPM_CONFIG_PATH = "$PHP_FPM_CONFIG_DIR/$PHP_FPM_CONFIG_FILE_NAME"
     }
 }

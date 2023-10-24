@@ -25,11 +25,12 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class NextcloudIngress(configService: ConfigService) : DependentIngress<Nextcloud>(configService) {
     override fun desired(primary: Nextcloud, context: Context<Nextcloud>) = ingress {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.namespace
-            labels = primary.resourceLabels
-            annotations = primary.defaultAnnotations + mapOf(
-                "nginx.ingress.kubernetes.io/proxy-body-size" to "10g"
+            name(primary.genericResourceName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
+            annotations(
+                getDefaultAnnotations(primary, context) +
+                    ("nginx.ingress.kubernetes.io/proxy-body-size" to "10g")
             )
         }
         spec {

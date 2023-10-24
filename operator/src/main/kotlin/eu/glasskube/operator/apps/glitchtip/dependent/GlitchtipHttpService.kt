@@ -1,6 +1,7 @@
 package eu.glasskube.operator.apps.glitchtip.dependent
 
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.kubernetes.api.model.service
 import eu.glasskube.kubernetes.api.model.servicePort
 import eu.glasskube.kubernetes.api.model.spec
@@ -21,13 +22,14 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
     resourceDiscriminator = GlitchtipHttpService.Discriminator::class
 )
 class GlitchtipHttpService : CRUDKubernetesDependentResource<Service, Glitchtip>(Service::class.java) {
-    internal class Discriminator : ResourceIDMatcherDiscriminator<Service, Glitchtip>({ ResourceID(it.httpServiceName) })
+    internal class Discriminator :
+        ResourceIDMatcherDiscriminator<Service, Glitchtip>({ ResourceID(it.httpServiceName, it.namespace) })
 
     override fun desired(primary: Glitchtip, context: Context<Glitchtip>) = service {
         metadata {
-            name = primary.httpServiceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.httpServiceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             type = "ClusterIP"

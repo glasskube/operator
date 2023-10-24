@@ -17,9 +17,9 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class OdooService : CRUDKubernetesDependentResource<Service, Odoo>(Service::class.java) {
     override fun desired(primary: Odoo, context: Context<Odoo>) = service {
         metadata {
-            name = primary.serviceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.serviceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             selector = mapOf(OdooReconciler.LABEL to primary.metadata.name)

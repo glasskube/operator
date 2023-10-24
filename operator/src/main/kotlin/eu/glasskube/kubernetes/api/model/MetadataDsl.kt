@@ -20,6 +20,10 @@ class MetadataDsl private constructor() {
         builder.withLabels<String, String>(labels)
     }
 
+    fun labels(vararg labels: Pair<String, String>) {
+        labels(labels.toMap())
+    }
+
     fun annotations(annotations: Map<String, String>) {
         builder.withAnnotations<String, String>(annotations)
     }

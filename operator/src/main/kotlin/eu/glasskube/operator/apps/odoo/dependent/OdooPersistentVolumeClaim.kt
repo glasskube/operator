@@ -19,9 +19,9 @@ class OdooPersistentVolumeClaim :
     CRUDKubernetesDependentResource<PersistentVolumeClaim, Odoo>(PersistentVolumeClaim::class.java) {
     override fun desired(primary: Odoo, context: Context<Odoo>) = persistentVolumeClaim {
         metadata {
-            name = primary.volumeName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.volumeName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             accessModes = listOf("ReadWriteOnce")

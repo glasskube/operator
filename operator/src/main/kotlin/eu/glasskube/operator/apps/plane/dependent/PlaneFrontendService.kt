@@ -20,13 +20,13 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
 @KubernetesDependent(resourceDiscriminator = PlaneFrontendService.Discriminator::class)
 class PlaneFrontendService : CRUDKubernetesDependentResource<Service, Plane>(Service::class.java) {
     internal class Discriminator :
-        ResourceIDMatcherDiscriminator<Service, Plane>({ ResourceID(it.frontendResourceName) })
+        ResourceIDMatcherDiscriminator<Service, Plane>({ ResourceID(it.frontendResourceName, it.namespace) })
 
     override fun desired(primary: Plane, context: Context<Plane>) = service {
         metadata {
-            name = primary.frontendResourceName
-            namespace = primary.namespace
-            labels = primary.frontendResourceLabels
+            name(primary.frontendResourceName)
+            namespace(primary.namespace)
+            labels(primary.frontendResourceLabels)
         }
         spec {
             type = "ClusterIP"

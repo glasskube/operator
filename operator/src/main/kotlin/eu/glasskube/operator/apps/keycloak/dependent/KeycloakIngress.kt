@@ -20,10 +20,13 @@ import io.javaoperatorsdk.operator.api.reconciler.Context
 class KeycloakIngress(configService: ConfigService) : DependentIngress<Keycloak>(configService) {
     override fun desired(primary: Keycloak, context: Context<Keycloak>) = ingress {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.namespace
-            labels = primary.resourceLabels
-            annotations = primary.defaultAnnotations + ("nginx.ingress.kubernetes.io/proxy-buffer-size" to "128k")
+            name(primary.genericResourceName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
+            annotations(
+                getDefaultAnnotations(primary, context) +
+                    ("nginx.ingress.kubernetes.io/proxy-buffer-size" to "128k")
+            )
         }
         spec {
             ingressClassName = defaultIngressClassName

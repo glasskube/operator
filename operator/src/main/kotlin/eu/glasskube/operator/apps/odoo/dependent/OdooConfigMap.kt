@@ -18,9 +18,9 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class OdooConfigMap : CRUDKubernetesDependentResource<ConfigMap, Odoo>(ConfigMap::class.java) {
     override fun desired(primary: Odoo, context: Context<Odoo>) = configMap {
         metadata {
-            name = primary.configMapName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.configMapName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         data = mapOf(
             Odoo.configFile to """
@@ -38,7 +38,7 @@ class OdooConfigMap : CRUDKubernetesDependentResource<ConfigMap, Odoo>(ConfigMap
         super.onUpdated(primary, updated, actual, context)
         context.getSecondaryResource<Deployment>().ifPresent {
             log.info("Restarting deployment after config change")
-            kubernetesClient.apps().deployments().resource(it).rolling().restart()
+            context.client.apps().deployments().resource(it).rolling().restart()
         }
     }
 

@@ -19,9 +19,9 @@ class MetabaseMinioBucket : CRUDKubernetesDependentResource<MinioBucket, Metabas
 
     override fun desired(primary: Metabase, context: Context<Metabase>) = minioBucket {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.genericResourceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec = MinioBucketSpec()
     }

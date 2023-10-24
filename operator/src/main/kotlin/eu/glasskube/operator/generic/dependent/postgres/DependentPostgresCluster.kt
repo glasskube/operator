@@ -55,9 +55,9 @@ abstract class DependentPostgresCluster<P>(
 
     override fun desired(primary: P, context: Context<P>) = postgresCluster {
         metadata {
-            name = postgresNameMapper.getName(primary)
-            namespace = primary.namespace
-            labels = postgresNameMapper.getLabels(primary)
+            name(postgresNameMapper.getName(primary))
+            namespace(primary.namespace)
+            labels(postgresNameMapper.getLabels(primary))
         }
         spec = ClusterSpec(
             instances = primary.getSpec().database.instances,

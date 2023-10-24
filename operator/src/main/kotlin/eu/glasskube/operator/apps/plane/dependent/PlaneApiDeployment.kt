@@ -39,14 +39,16 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
 @KubernetesDependent(resourceDiscriminator = PlaneApiDeployment.Discriminator::class)
 class PlaneApiDeployment : CRUDKubernetesDependentResource<Deployment, Plane>(Deployment::class.java) {
 
-    internal class Discriminator : ResourceIDMatcherDiscriminator<Deployment, Plane>({ ResourceID(it.apiResourceName) })
+    internal class Discriminator :
+        ResourceIDMatcherDiscriminator<Deployment, Plane>({ ResourceID(it.apiResourceName, it.namespace) })
+
     internal class ReadyCondition : DeploymentReadyCondition<Plane>()
 
     override fun desired(primary: Plane, context: Context<Plane>) = deployment {
         metadata {
-            name = primary.apiResourceName
-            namespace = primary.namespace
-            labels = primary.apiResourceLabels
+            name(primary.apiResourceName)
+            namespace(primary.namespace)
+            labels(primary.apiResourceLabels)
         }
         spec {
             selector {
@@ -54,7 +56,7 @@ class PlaneApiDeployment : CRUDKubernetesDependentResource<Deployment, Plane>(De
             }
             template {
                 metadata {
-                    labels = primary.apiResourceLabelSelector
+                    labels(primary.apiResourceLabelSelector)
                 }
                 spec {
                     volumes = listOf(
@@ -101,9 +103,10 @@ class PlaneApiDeployment : CRUDKubernetesDependentResource<Deployment, Plane>(De
         }
     }
 
-    private val Plane.apiEnv get() = createEnv {
-        envVar("BACKEND_WORKERS", spec.api.concurrency.toString())
-    }
+    private val Plane.apiEnv
+        get() = createEnv {
+            envVar("BACKEND_WORKERS", spec.api.concurrency.toString())
+        }
 
     companion object {
         internal const val BIN_VOLUME_NAME = "bin"

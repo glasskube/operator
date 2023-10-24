@@ -19,9 +19,9 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class GitlabServiceMonitor : CRUDKubernetesDependentResource<ServiceMonitor, Gitlab>(ServiceMonitor::class.java) {
     override fun desired(primary: Gitlab, context: Context<Gitlab>) = serviceMonitor {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.genericResourceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec = ServiceMonitorSpec(
             selector = labelSelector {

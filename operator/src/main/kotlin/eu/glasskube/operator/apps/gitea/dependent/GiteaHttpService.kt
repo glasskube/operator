@@ -2,6 +2,7 @@ package eu.glasskube.operator.apps.gitea.dependent
 
 import eu.glasskube.kubernetes.api.model.intOrString
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.kubernetes.api.model.service
 import eu.glasskube.kubernetes.api.model.servicePort
 import eu.glasskube.kubernetes.api.model.spec
@@ -22,13 +23,14 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
     resourceDiscriminator = GiteaHttpService.Discriminator::class
 )
 class GiteaHttpService : CRUDKubernetesDependentResource<Service, Gitea>(Service::class.java) {
-    internal class Discriminator : ResourceIDMatcherDiscriminator<Service, Gitea>({ ResourceID(it.httpServiceName) })
+    internal class Discriminator :
+        ResourceIDMatcherDiscriminator<Service, Gitea>({ ResourceID(it.httpServiceName, it.namespace) })
 
     override fun desired(primary: Gitea, context: Context<Gitea>) = service {
         metadata {
-            name = primary.httpServiceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.httpServiceName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             type = "ClusterIP"

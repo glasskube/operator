@@ -19,9 +19,9 @@ class GiteaMinioBucket : CRUDKubernetesDependentResource<MinioBucket, Gitea>(Min
 
     override fun desired(primary: Gitea, context: Context<Gitea>) = minioBucket {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.genericResourceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec = MinioBucketSpec()
     }

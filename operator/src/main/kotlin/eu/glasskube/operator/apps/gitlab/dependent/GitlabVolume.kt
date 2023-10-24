@@ -18,9 +18,9 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class GitlabVolume : CRUDKubernetesDependentResource<PersistentVolumeClaim, Gitlab>(PersistentVolumeClaim::class.java) {
     override fun desired(primary: Gitlab, context: Context<Gitlab>) = persistentVolumeClaim {
         metadata {
-            name = primary.volumeName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.volumeName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             resources {

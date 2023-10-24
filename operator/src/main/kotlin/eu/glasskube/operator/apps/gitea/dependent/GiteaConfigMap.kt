@@ -2,6 +2,7 @@ package eu.glasskube.operator.apps.gitea.dependent
 
 import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.operator.apps.gitea.Gitea
 import eu.glasskube.operator.apps.gitea.GiteaReconciler
 import eu.glasskube.operator.apps.gitea.configMapName
@@ -18,13 +19,14 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
     resourceDiscriminator = GiteaConfigMap.Discriminator::class
 )
 class GiteaConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitea>(ConfigMap::class.java) {
-    internal class Discriminator : ResourceIDMatcherDiscriminator<ConfigMap, Gitea>({ ResourceID(it.configMapName) })
+    internal class Discriminator :
+        ResourceIDMatcherDiscriminator<ConfigMap, Gitea>({ ResourceID(it.configMapName, it.namespace) })
 
     override fun desired(primary: Gitea, context: Context<Gitea>) = configMap {
         metadata {
-            name = primary.configMapName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.configMapName)
+            namespace(primary.namespace)
+            labels(primary.resourceLabels)
         }
         data = mapOf(
             "GITEA_WORK_DIR" to GiteaDeployment.WORK_DIR

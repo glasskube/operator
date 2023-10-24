@@ -27,10 +27,10 @@ abstract class GeneratedSecret<T : HasMetadata> : CRUDKubernetesDependentResourc
         val existingData = existing.map { it.data }.getOrNull().orEmpty()
 
         metadata {
-            name = primary.generatedSecretName
-            namespace = primary.generatedSecretNamespace
-            labels = primary.generatedSecretLabels + SecretGenerator.LABEL
-            annotations = existingAnnotations + mapOf(SecretGenerator.generateKeys(*generatedKeys))
+            name(primary.generatedSecretName)
+            namespace(primary.generatedSecretNamespace)
+            labels(primary.generatedSecretLabels + SecretGenerator.LABEL)
+            annotations(existingAnnotations + SecretGenerator.generateKeys(*generatedKeys))
         }
         type = generatedSecretType
         data = existingData + primary.generatedSecretData?.mapValues { (_, it) -> it.encodeBase64() }.orEmpty()

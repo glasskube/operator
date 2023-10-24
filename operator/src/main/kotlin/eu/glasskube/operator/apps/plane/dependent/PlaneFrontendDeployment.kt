@@ -30,13 +30,13 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
 @KubernetesDependent(resourceDiscriminator = PlaneFrontendDeployment.Discriminator::class)
 class PlaneFrontendDeployment : CRUDKubernetesDependentResource<Deployment, Plane>(Deployment::class.java) {
     internal class Discriminator :
-        ResourceIDMatcherDiscriminator<Deployment, Plane>({ ResourceID(it.frontendResourceName) })
+        ResourceIDMatcherDiscriminator<Deployment, Plane>({ ResourceID(it.frontendResourceName, it.namespace) })
 
     override fun desired(primary: Plane, context: Context<Plane>) = deployment {
         metadata {
-            name = primary.frontendResourceName
-            namespace = primary.namespace
-            labels = primary.frontendResourceLabels
+            name(primary.frontendResourceName)
+            namespace(primary.namespace)
+            labels(primary.frontendResourceLabels)
         }
         spec {
             selector {
@@ -44,7 +44,7 @@ class PlaneFrontendDeployment : CRUDKubernetesDependentResource<Deployment, Plan
             }
             template {
                 metadata {
-                    labels = primary.frontendResourceLabelSelector
+                    labels(primary.frontendResourceLabelSelector)
                 }
                 spec {
                     terminationGracePeriodSeconds = 10

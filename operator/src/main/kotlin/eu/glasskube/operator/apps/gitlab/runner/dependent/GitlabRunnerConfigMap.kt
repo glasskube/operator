@@ -21,13 +21,13 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class GitlabRunnerConfigMap : CRUDKubernetesDependentResource<ConfigMap, GitlabRunner>(ConfigMap::class.java) {
     override fun desired(primary: GitlabRunner, context: Context<GitlabRunner>) = configMap {
         metadata {
-            name = primary.configMapName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.configMapName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
 
         data = mapOf(
-            GitlabRunnerDeployment.CONFIG_TEMPLATE_NAME to with(primary.parent) {
+            GitlabRunnerDeployment.CONFIG_TEMPLATE_NAME to with(getParent(primary, context)) {
                 """
                     [[runners]]
                     url = "http://$serviceName"
@@ -51,12 +51,12 @@ class GitlabRunnerConfigMap : CRUDKubernetesDependentResource<ConfigMap, GitlabR
         super.onUpdated(primary, updated, actual, context)
         context.getSecondaryResource<Deployment>().ifPresent {
             log.info("Restarting deployment after config change")
-            kubernetesClient.apps().deployments().resource(it).rolling().restart()
+            context.client.apps().deployments().resource(it).rolling().restart()
         }
     }
 
-    private val GitlabRunner.parent: Gitlab
-        get() = kubernetesClient.gitlabs().inNamespace(metadata.namespace).withName(spec.gitlab.name).require()
+    private fun getParent(primary: GitlabRunner, context: Context<GitlabRunner>): Gitlab =
+        context.client.gitlabs().inNamespace(primary.metadata.namespace).withName(primary.spec.gitlab.name).require()
 
     companion object {
         @JvmStatic

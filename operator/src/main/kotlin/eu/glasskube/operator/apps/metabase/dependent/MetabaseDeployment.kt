@@ -38,9 +38,9 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class MetabaseDeployment : CRUDKubernetesDependentResource<Deployment, Metabase>(Deployment::class.java) {
     override fun desired(primary: Metabase, context: Context<Metabase>) = deployment {
         metadata {
-            name = primary.genericResourceName
-            namespace = primary.metadata.namespace
-            labels = primary.resourceLabels
+            name(primary.genericResourceName)
+            namespace(primary.metadata.namespace)
+            labels(primary.resourceLabels)
         }
         spec {
             selector {
@@ -50,7 +50,7 @@ class MetabaseDeployment : CRUDKubernetesDependentResource<Deployment, Metabase>
             if (primary.spec.replicas > 1) strategyRollingUpdate() else strategyRecreate()
             template {
                 metadata {
-                    labels = primary.resourceLabels
+                    labels(primary.resourceLabels)
                 }
                 spec {
                     containers = listOf(

@@ -94,9 +94,9 @@ class ConfigService(
             kubernetesClient.resource(
                 configMap {
                     metadata {
-                        name = ConfigGenerator.NAME
-                        namespace = Environment.NAMESPACE
-                        labels = mapOf(ConfigGenerator.LABEL_SELECTOR to "")
+                        name(ConfigGenerator.NAME)
+                        namespace(Environment.NAMESPACE)
+                        labels(ConfigGenerator.LABEL_SELECTOR to "")
                     }
                 }
             ).create()

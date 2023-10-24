@@ -41,9 +41,9 @@ class NextcloudOfficeDeployment : CRUDKubernetesDependentResource<Deployment, Ne
 
     override fun desired(primary: Nextcloud, context: Context<Nextcloud>) = deployment {
         metadata {
-            name = primary.officeName
-            namespace = primary.namespace
-            labels = primary.officeResourceLabels
+            name(primary.officeName)
+            namespace(primary.namespace)
+            labels(primary.officeResourceLabels)
         }
         spec {
             selector {
@@ -51,7 +51,7 @@ class NextcloudOfficeDeployment : CRUDKubernetesDependentResource<Deployment, Ne
             }
             template {
                 metadata {
-                    labels = primary.officeResourceLabels
+                    labels(primary.officeResourceLabels)
                 }
                 spec {
                     containers = listOf(

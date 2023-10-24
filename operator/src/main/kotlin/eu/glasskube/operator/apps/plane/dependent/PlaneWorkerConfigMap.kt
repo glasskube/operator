@@ -16,16 +16,17 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
 
 @KubernetesDependent(resourceDiscriminator = PlaneWorkerConfigMap.Discriminator::class)
 class PlaneWorkerConfigMap : CRUDKubernetesDependentResource<ConfigMap, Plane>(ConfigMap::class.java) {
+
     internal class Discriminator :
-        ResourceIDMatcherDiscriminator<ConfigMap, Plane>({ ResourceID(it.workerResourceName) })
+        ResourceIDMatcherDiscriminator<ConfigMap, Plane>({ ResourceID(it.workerResourceName, it.namespace) })
 
     private val workerEntrypointSh by resourceProperty()
 
     override fun desired(primary: Plane, context: Context<Plane>) = configMap {
         metadata {
-            name = primary.workerResourceName
-            namespace = primary.namespace
-            labels = primary.workerResourceLabels
+            name(primary.workerResourceName)
+            namespace(primary.namespace)
+            labels(primary.workerResourceLabels)
         }
         data = mapOf(
             PlaneWorkerDeployment.ENTRYPOINT_NAME to workerEntrypointSh
