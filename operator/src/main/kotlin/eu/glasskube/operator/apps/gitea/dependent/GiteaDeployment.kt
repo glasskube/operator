@@ -123,7 +123,7 @@ class GiteaDeployment(private val configService: ConfigService) :
                             name = "environment-to-ini"
                             image = primary.image
                             command = listOf("/bin/sh")
-                            args = listOf("-c", "mkdir -p /data/gitea/conf && environment-to-ini")
+                            args = listOf("-c", "mkdir -p /data/gitea/conf && rm -f /data/gitea/conf/app.ini && environment-to-ini")
                             volumeMounts {
                                 volumeMount {
                                     name = VOLUME_NAME
