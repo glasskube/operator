@@ -10,7 +10,7 @@ Vault is a perfect fit for organizations implementing zero trust strategies, ens
 
 ## Example
 
-```yaml title=glitchtip.yaml
+```yaml title=vault.yaml
 kind: Vault
 metadata:
   name: vault

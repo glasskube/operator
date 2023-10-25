@@ -10,7 +10,7 @@ It includes an admin console for centralized management of user permissions, ses
 
 ## Example
 
-```yaml title=glitchtip.yaml
+```yaml title=keycloak.yaml
 apiVersion: glasskube.eu/v1alpha1
 kind: Keycloak
 metadata:
