@@ -10,7 +10,7 @@ One instance can be used by several teams, as Plane allows you to create multipl
 
 ## Example
 
-```yaml plane.yaml
+```yaml title=plane.yaml
 apiVersion: glasskube.eu/v1alpha1
 kind: Plane
 metadata:
