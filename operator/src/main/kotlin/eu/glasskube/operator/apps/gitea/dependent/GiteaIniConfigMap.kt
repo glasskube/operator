@@ -68,10 +68,9 @@ class GiteaIniConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitea>(Conf
                     "GITEA__service__ENABLE_NOTIFY_MAIL" to "true",
                     "GITEA__mailer__ENABLED" to "true",
                     "GITEA__mailer__FROM" to smtp.fromAddress,
-                    "GITEA__mailer__MAILER_TYPE" to "smtp",
+                    "GITEA__mailer__PROTOCOL" to if (smtp.tlsEnabled) "smtp+starttls" else "smtp",
                     "GITEA__mailer__SMTP_ADDR" to smtp.host,
                     "GITEA__mailer__SMTP_PORT" to smtp.port.toString(),
-                    "GITEA__mailer__IS_TLS_ENABLED" to smtp.tlsEnabled.toString(),
                     "GITEA__mailer__USER" to authSecret.data.getValue("username").decodeBase64(),
                     "GITEA__mailer__PASSWD" to authSecret.data.getValue("password").decodeBase64()
                 )
