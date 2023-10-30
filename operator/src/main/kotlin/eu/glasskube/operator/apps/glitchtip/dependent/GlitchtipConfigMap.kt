@@ -2,6 +2,7 @@ package eu.glasskube.operator.apps.glitchtip.dependent
 
 import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.metadata
+import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.apps.glitchtip.Glitchtip
 import eu.glasskube.operator.apps.glitchtip.Glitchtip.Postgres.postgresHostName
@@ -12,11 +13,19 @@ import eu.glasskube.operator.apps.glitchtip.resourceLabels
 import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.javaoperatorsdk.operator.api.reconciler.Context
+import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
+import io.javaoperatorsdk.operator.processing.event.ResourceID
 
-@KubernetesDependent(labelSelector = GlitchtipReconciler.SELECTOR)
+@KubernetesDependent(
+    labelSelector = GlitchtipReconciler.SELECTOR,
+    resourceDiscriminator = GlitchtipConfigMap.Discriminator::class
+)
 class GlitchtipConfigMap : CRUDKubernetesDependentResource<ConfigMap, Glitchtip>(ConfigMap::class.java) {
+    internal class Discriminator : ResourceIDMatcherDiscriminator<ConfigMap, Glitchtip>({
+        ResourceID(it.configMapName, it.namespace)
+    })
 
     override fun desired(primary: Glitchtip, context: Context<Glitchtip>) = configMap {
         metadata {

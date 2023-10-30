@@ -4,6 +4,7 @@ import eu.glasskube.kubernetes.client.patchOrUpdateStatus
 import eu.glasskube.operator.Labels
 import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.api.reconciler.informerEventSource
+import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipBinConfigMap
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipConfigMap
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipDeployment
 import eu.glasskube.operator.apps.glitchtip.dependent.GlitchtipHttpService
@@ -22,6 +23,7 @@ import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.infra.postgres.isReady
 import eu.glasskube.operator.webhook.WebhookService
 import eu.glasskube.utils.logger
+import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
@@ -52,7 +54,13 @@ import kotlin.jvm.optionals.getOrDefault
         ),
         Dependent(
             type = GlitchtipConfigMap::class,
-            name = "GlitchtipConfigMap"
+            name = "GlitchtipConfigMap",
+            useEventSourceWithName = GlitchtipReconciler.CONFIGMAP_EVENT_SOURCE
+        ),
+        Dependent(
+            type = GlitchtipBinConfigMap::class,
+            name = "GlitchtipBinConfigMap",
+            useEventSourceWithName = GlitchtipReconciler.CONFIGMAP_EVENT_SOURCE
         ),
         Dependent(
             type = GlitchtipRedisDeployment::class,
@@ -110,8 +118,8 @@ class GlitchtipReconciler(webhookService: WebhookService) :
     override fun prepareEventSources(context: EventSourceContext<Glitchtip>) = with(context) {
         mutableMapOf(
             DEPLOYMENT_EVENT_SOURCE to informerEventSource<Deployment>(),
-            SERVICE_EVENT_SOURCE to informerEventSource<Service>()
-
+            SERVICE_EVENT_SOURCE to informerEventSource<Service>(),
+            CONFIGMAP_EVENT_SOURCE to informerEventSource<ConfigMap>()
         )
     }
 
@@ -123,6 +131,7 @@ class GlitchtipReconciler(webhookService: WebhookService) :
 
         internal const val DEPLOYMENT_EVENT_SOURCE = "GlitchtipDeploymentEventSource"
         internal const val SERVICE_EVENT_SOURCE = "GlitchtipServiceEventSource"
+        internal const val CONFIGMAP_EVENT_SOURCE = "GlitchtipConfigMapEventSource"
 
         private val log = logger()
     }
