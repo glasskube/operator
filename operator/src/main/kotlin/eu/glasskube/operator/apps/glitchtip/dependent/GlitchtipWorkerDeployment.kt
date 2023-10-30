@@ -7,6 +7,7 @@ import eu.glasskube.kubernetes.api.model.apps.strategyRecreate
 import eu.glasskube.kubernetes.api.model.apps.strategyRollingUpdate
 import eu.glasskube.kubernetes.api.model.apps.template
 import eu.glasskube.kubernetes.api.model.capabilities
+import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.configMapRef
 import eu.glasskube.kubernetes.api.model.container
 import eu.glasskube.kubernetes.api.model.emptyDir
@@ -28,6 +29,7 @@ import eu.glasskube.operator.apps.glitchtip.Glitchtip
 import eu.glasskube.operator.apps.glitchtip.Glitchtip.Postgres.postgresSecretName
 import eu.glasskube.operator.apps.glitchtip.GlitchtipReconciler
 import eu.glasskube.operator.apps.glitchtip.appImage
+import eu.glasskube.operator.apps.glitchtip.binResourceName
 import eu.glasskube.operator.apps.glitchtip.configMapName
 import eu.glasskube.operator.apps.glitchtip.genericResourceName
 import eu.glasskube.operator.apps.glitchtip.resourceLabelSelector
@@ -72,6 +74,7 @@ class GlitchtipWorkerDeployment : CRUDKubernetesDependentResource<Deployment, Gl
                         container {
                             name = Glitchtip.APP_NAME
                             image = primary.appImage
+                            command = listOf(GlitchtipDeployment.RUN_SH_PATH)
                             envFrom {
                                 configMapRef(primary.configMapName, false)
                                 secretRef(primary.secretName, false)
@@ -111,6 +114,10 @@ class GlitchtipWorkerDeployment : CRUDKubernetesDependentResource<Deployment, Gl
                                     name = TMP_VOLUME
                                     mountPath = TMP_DIR
                                 }
+                                volumeMount {
+                                    name = GlitchtipDeployment.CONFIG_VOLUME_NAME
+                                    mountPath = GlitchtipDeployment.SCRIPTS_DIR
+                                }
                             }
                             securityContext {
                                 capabilities { drop = listOf("ALL") }
@@ -132,6 +139,11 @@ class GlitchtipWorkerDeployment : CRUDKubernetesDependentResource<Deployment, Gl
                         },
                         volume(Glitchtip.UPLOADS_VOLUME_NAME) {
                             persistentVolumeClaim(primary.genericResourceName)
+                        },
+                        volume(GlitchtipDeployment.CONFIG_VOLUME_NAME) {
+                            configMap(primary.binResourceName) {
+                                defaultMode = 511
+                            }
                         }
                     )
                 }

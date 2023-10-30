@@ -7,6 +7,7 @@ import eu.glasskube.kubernetes.api.model.apps.strategyRecreate
 import eu.glasskube.kubernetes.api.model.apps.strategyRollingUpdate
 import eu.glasskube.kubernetes.api.model.apps.template
 import eu.glasskube.kubernetes.api.model.capabilities
+import eu.glasskube.kubernetes.api.model.configMap
 import eu.glasskube.kubernetes.api.model.configMapRef
 import eu.glasskube.kubernetes.api.model.container
 import eu.glasskube.kubernetes.api.model.containerPort
@@ -34,6 +35,7 @@ import eu.glasskube.operator.apps.glitchtip.Glitchtip
 import eu.glasskube.operator.apps.glitchtip.Glitchtip.Postgres.postgresSecretName
 import eu.glasskube.operator.apps.glitchtip.GlitchtipReconciler
 import eu.glasskube.operator.apps.glitchtip.appImage
+import eu.glasskube.operator.apps.glitchtip.binResourceName
 import eu.glasskube.operator.apps.glitchtip.configMapName
 import eu.glasskube.operator.apps.glitchtip.genericResourceName
 import eu.glasskube.operator.apps.glitchtip.resourceLabelSelector
@@ -83,6 +85,7 @@ class GlitchtipDeployment(private val configService: ConfigService) :
                         container {
                             name = Glitchtip.APP_NAME
                             image = primary.appImage
+                            command = listOf(RUN_SH_PATH)
                             envFrom {
                                 configMapRef(primary.configMapName, false)
                                 secretRef(primary.secretName, false)
@@ -158,6 +161,10 @@ class GlitchtipDeployment(private val configService: ConfigService) :
                                     name = TMP_VOLUME
                                     mountPath = TMP_DIR
                                 }
+                                volumeMount {
+                                    name = CONFIG_VOLUME_NAME
+                                    mountPath = SCRIPTS_DIR
+                                }
                             }
                             securityContext {
                                 capabilities { drop = listOf("ALL") }
@@ -199,6 +206,11 @@ class GlitchtipDeployment(private val configService: ConfigService) :
                         },
                         volume(Glitchtip.UPLOADS_VOLUME_NAME) {
                             persistentVolumeClaim(primary.genericResourceName)
+                        },
+                        volume(CONFIG_VOLUME_NAME) {
+                            configMap(primary.binResourceName) {
+                                defaultMode = 511
+                            }
                         }
                     )
                 }
@@ -211,5 +223,10 @@ class GlitchtipDeployment(private val configService: ConfigService) :
         private const val HTTP = "http"
         private const val TMP_VOLUME = "tmp"
         private const val TMP_DIR = "/tmp"
+
+        const val CONFIG_VOLUME_NAME = "glitchtip-configuration"
+        const val SCRIPTS_DIR = "/glasskube/scripts"
+        const val RUN_SH = "run.sh"
+        const val RUN_SH_PATH = "$SCRIPTS_DIR/$RUN_SH"
     }
 }
