@@ -80,16 +80,16 @@ kubectl apply -f gitlab.yaml
 
 
 ## 🔨 Supported Tools 
-- [Gitea](https://github.com/go-gitea/gitea)
-- [GitLab](https://gitlab.com/gitlab-org/gitlab)
-- [GlitchTip](https://gitlab.com/glitchtip)
-- [Keycloak](https://github.com/keycloak/keycloak)
-- [Matomo](https://github.com/matomo-org/matomo)
-- [Metabase](https://github.com/metabase/metabase)
-- [Nextcloud](https://github.com/nextcloud/server)
-- [Odoo](https://github.com/odoo/odoo)
-- [Plane](https://github.com/makeplane/plane)
-- [Vault](https://github.com/hashicorp/vault)
+- Gitea [`go-gitea/gitea`](https://github.com/go-gitea/gitea)
+- GitLab [`gitlab.com/gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab)
+- GlitchTip [`gitlab.com/glitchtip/glitchtip`](https://gitlab.com/glitchtip)
+- Keycloak [`keycloak/keycloak`](https://github.com/keycloak/keycloak)
+- Matomo [`matomo-org/matomo`](https://github.com/matomo-org/matomo)
+- Metabase [`metabase/metabase`](https://github.com/metabase/metabase)
+- Nextcloud [`nextcloud/server`](https://github.com/nextcloud/server)
+- Odoo [`odoo/odoo`](https://github.com/odoo/odoo)
+- Plane [`makeplane/plane`](https://github.com/makeplane/plane)
+- Vault [`hashicorp/vault`](https://github.com/hashicorp/vault)
 
 > Don't find your tool? We are always adding new supported tools, so just join us on [Matrix](https://matrix.to/#/#glasskube:matrix.org) and let us know which tool is missing!
 
@@ -112,16 +112,12 @@ See [the contributing guide](CONTRIBUTING.md) for detailed instructions.
 
 Also join our [`architecture discussion`](https://github.com/glasskube/operator/discussions/4) on GitHub.
 
-## 🤩 Thanks to all our contributers 
+## 🤩 Thanks to all our contributors 
 
-Thanks to eveyone, that is supporting this project. We are thankful, for evey contribution, no matter its size! 
+Thanks to everyone, that is supporting this project. We are thankful, for evey contribution, no matter its size! 
 
-<a href="
-https://github.com/glasskube/operator/graphs/contributors
-">
-  <img src="
-https://contrib.rocks/image?repo=glasskube/operator
-" />
+<a href="https://github.com/glasskube/operator/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=glasskube/operator" />
 </a>
 
 ## 📘 License 
