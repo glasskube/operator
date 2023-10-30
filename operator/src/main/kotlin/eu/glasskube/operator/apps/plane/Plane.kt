@@ -44,7 +44,8 @@ class Plane :
     internal companion object {
         const val APP_NAME = "plane"
         const val FRONTEND_NAME = "frontend"
-        const val SPACE_NAME = "deploy"
+        const val LEGACY_SPACE_NAME = "deploy"
+        const val SPACE_NAME = "space"
         const val BACKEND_NAME = "backend"
         const val API_NAME = "api"
         const val WORKER_NAME = "worker"
@@ -74,6 +75,7 @@ internal val Plane.frontendResourceName get() = "$genericResourceName-${Plane.FR
 internal val Plane.frontendResourceLabels get() = genericResourceLabels + frontendComponentLabel
 internal val Plane.frontendResourceLabelSelector get() = genericResourceLabelSelector + frontendComponentLabel
 
+internal val Plane.legacySpaceResourceName get() = "$genericResourceName-${Plane.LEGACY_SPACE_NAME}"
 internal val Plane.spaceResourceName get() = "$genericResourceName-${Plane.SPACE_NAME}"
 internal val Plane.spaceResourceLabels get() = genericResourceLabels + spacesComponentLabel
 internal val Plane.spaceResourceLabelSelector get() = genericResourceLabelSelector + spacesComponentLabel

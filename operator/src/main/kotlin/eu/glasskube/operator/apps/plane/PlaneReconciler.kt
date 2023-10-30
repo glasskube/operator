@@ -1,5 +1,7 @@
 package eu.glasskube.operator.apps.plane
 
+import eu.glasskube.kubernetes.api.model.loggingId
+import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.kubernetes.client.patchOrUpdateStatus
 import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.api.reconciler.informerEventSource
@@ -30,8 +32,12 @@ import eu.glasskube.operator.infra.postgres.isReady
 import eu.glasskube.operator.webhook.WebhookService
 import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
+import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.api.model.Service
 import io.fabric8.kubernetes.api.model.apps.Deployment
+import io.fabric8.kubernetes.client.KubernetesClient
+import io.fabric8.kubernetes.client.dsl.MixedOperation
+import io.fabric8.kubernetes.client.dsl.Resource
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext
@@ -147,6 +153,8 @@ class PlaneReconciler(webhookService: WebhookService) :
     BaseReconciler<Plane>(webhookService), EventSourceInitializer<Plane> {
 
     override fun processReconciliation(resource: Plane, context: Context<Plane>) = with(context) {
+        cleanupLegacyResources(resource)
+
         resource.patchOrUpdateStatus(
             PlaneStatus(
                 frontend = getSecondaryResource(PlaneFrontendDeployment.Discriminator()).getComponentStatus(),
@@ -158,6 +166,24 @@ class PlaneReconciler(webhookService: WebhookService) :
                 database = getSecondaryResource<PostgresCluster>().getDatabaseStatus()
             )
         )
+    }
+
+    private fun Context<Plane>.cleanupLegacyResources(resource: Plane) {
+        deleteLegacyResource(resource) { apps().deployments() }
+        deleteLegacyResource(resource) { services() }
+        deleteLegacyResource(resource) { configMaps() }
+    }
+
+    private fun <T : HasMetadata> Context<Plane>.deleteLegacyResource(
+        resource: Plane,
+        operationSelector: KubernetesClient.() -> MixedOperation<T, *, out Resource<T>>
+    ) {
+        with(client) {
+            operationSelector().inNamespace(resource.namespace).withName(resource.legacySpaceResourceName).get()
+                ?.also { log.info("deleting legacy resource {}", it.loggingId) }
+                ?.let { resource(it) }
+                ?.delete()
+        }
     }
 
     private fun Optional<Deployment>.getComponentStatus() =

@@ -21,7 +21,7 @@ data class PlaneSpec(
     val worker: WorkerSpec = WorkerSpec(),
     val smtp: SmtpSpec? = null,
     val s3: S3Spec? = null,
-    val version: String = "v0.12.2-dev",
+    val version: String = "v0.13.2-dev",
     @field:Nullable
     override val database: PostgresDatabaseSpec = PostgresDatabaseSpec()
 ) : HasDatabaseSpec<PostgresDatabaseSpec> {
