@@ -39,7 +39,7 @@ rules:
       - update
       - watch
   - apiGroups:
-      - ""
+      - ''
     resources:
       - services
       - secrets
@@ -54,7 +54,20 @@ rules:
       - update
       - watch
   - apiGroups:
-      - ""
+      - 'apps'
+    resources:
+      - deployments
+    verbs:
+      - delete
+  - apiGroups:
+      - ''
+    resources:
+      - configmaps
+      - services
+    verbs:
+      - delete
+  - apiGroups:
+      - ''
     resources:
       - persistentvolumeclaims
     verbs:
