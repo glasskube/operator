@@ -10,9 +10,9 @@ dependencies:
   version: 0.20.0
 - name: cloudnative-pg
   repository: https://cloudnative-pg.io/charts/
-  version: 0.18.2
+  version: 0.19.0
 - name: minio
   repository: https://charts.min.io/
   version: 5.0.14
-digest: sha256:34dd65ab5c5c1110443e99095e68992f14d87f1c12b612dcbdd6537095073a69
-generated: "2023-10-31T16:19:42.236120905Z"
+digest: sha256:8834a9391dda5716ccc43dd2579f123d613d665c1965df52c033d7203a52f25c
+generated: "2023-10-31T17:12:18.301565806Z"
