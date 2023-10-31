@@ -4,7 +4,7 @@ dependencies:
   version: v1.13.2
 - name: kube-prometheus-stack
   repository: https://prometheus-community.github.io/helm-charts
-  version: 51.2.0
+  version: 52.1.0
 - name: mariadb-operator
   repository: https://mariadb-operator.github.io/mariadb-operator
   version: 0.20.0
@@ -14,5 +14,5 @@ dependencies:
 - name: minio
   repository: https://charts.min.io/
   version: 5.0.14
-digest: sha256:426df77fff260abb6469ae1cafe7925634dc3ea8786f54f4d797be072f4c79c4
-generated: "2023-10-30T13:32:13.817198524Z"
+digest: sha256:34dd65ab5c5c1110443e99095e68992f14d87f1c12b612dcbdd6537095073a69
+generated: "2023-10-31T16:19:42.236120905Z"
