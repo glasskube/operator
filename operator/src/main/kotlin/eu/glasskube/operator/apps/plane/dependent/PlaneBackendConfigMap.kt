@@ -61,7 +61,8 @@ class PlaneBackendConfigMap : CRUDKubernetesDependentResource<ConfigMap, Plane>(
             "WEB_URL" to "https://${spec.host}/",
             "DEFAULT_EMAIL" to spec.defaultUser.email,
             "DEFAULT_PASSWORD" to spec.defaultUser.password,
-            "ENABLE_SIGNUP" to if (spec.registrationEnabled) "1" else "0"
+            "ENABLE_SIGNUP" to if (spec.registrationEnabled) "1" else "0",
+            "ENABLE_EMAIL_PASSWORD" to "1"
         )
 
     private val Plane.smtpData
