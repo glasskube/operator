@@ -51,7 +51,7 @@ The Glasskube Operator configures database instances to push WALs and backups to
 
 ## MariaDB Operator
 
-[![Static Badge](https://img.shields.io/badge/required_for-matomo-blue)](../03_crd-reference/matomo.md)
+[![Static Badge](https://img.shields.io/badge/required_for-matomo-blue)](../../crd-reference/matomo)
 [![License](https://img.shields.io/github/license/mariadb-operator/mariadb-operator)](https://github.com/mariadb-operator/mariadb-operator/blob/master/LICENSE)
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/mariadb-operator)](https://artifacthub.io/packages/helm/mariadb-operator/mariadb-operator)
 [![GitHub](https://img.shields.io/github/stars/mariadb-operator/mariadb-operator)](https://github.com/mariadb-operator/mariadb-operator)
