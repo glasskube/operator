@@ -23,7 +23,7 @@ data class GlitchtipSpec(
         mapOf("memory" to Quantity("700", "Mi"))
     ),
     @field:Pattern(SEMVER)
-    val version: String = "3.3.1",
+    val version: String = "3.4.0",
     @field:Nullable
     override val database: PostgresDatabaseSpec = PostgresDatabaseSpec()
 ) : HasDatabaseSpec<PostgresDatabaseSpec>
