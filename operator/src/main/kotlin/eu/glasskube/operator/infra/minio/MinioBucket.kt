@@ -1,6 +1,7 @@
 package eu.glasskube.operator.infra.minio
 
 import eu.glasskube.operator.Labels
+import eu.glasskube.utils.resourceHash
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.client.CustomResource
 import io.fabric8.kubernetes.model.annotation.Group
@@ -37,7 +38,9 @@ private val MinioBucket.defaultPolicy
         }
     """.trimIndent()
 val MinioBucket.policy get() = spec.policyOverride ?: defaultPolicy
-private val MinioBucket.defaultBucketName get() = "${metadata.name}-${metadata.namespace}"
+internal val MinioBucket.defaultBucketName
+    get() = "${metadata.name}-${metadata.namespace}"
+        .let { if (it.length > 63) "${it.substring(0, 54)}-${it.resourceHash}" else it }
 val MinioBucket.bucketName get() = spec.bucketNameOverride ?: defaultBucketName
 val MinioBucket.policyName get() = bucketName
 val MinioBucket.secretName get() = spec.userSecret?.name ?: genericResourceName
