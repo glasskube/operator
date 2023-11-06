@@ -127,7 +127,7 @@ class GitlabRunnerDeployment : CRUDKubernetesDependentResource<Deployment, Gitla
                                     memory = Quantity((primary.spec.concurrency * 100).toString(), "Mi")
                                 )
                                 limits(
-                                    cpu = Quantity((primary.spec.concurrency * 1000).toString(), "m"),
+                                    cpu = Quantity(primary.spec.concurrency.toString()),
                                     memory = Quantity((1000 + (primary.spec.concurrency - 1) * 500).toString(), "Mi")
                                 )
                             }
