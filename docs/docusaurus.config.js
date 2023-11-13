@@ -13,6 +13,7 @@ const config = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   i18n: {defaultLocale: 'en', locales: ['en']},
+  plugins: ['docusaurus-plugin-matomo'],
   presets: [
     [
       'classic',
@@ -92,6 +93,12 @@ const config = {
       prism: {
         theme: themes.github,
         darkTheme: themes.dracula
+      },
+      matomo: {
+        matomoUrl: 'https://a.glasskube.eu/',
+        siteId: '2',
+        phpLoader: 'matomo.php',
+        jsLoader: 'matomo.js',
       },
     }),
 };
