@@ -35,10 +35,10 @@ data class NextcloudSpec(
         @field:Nullable
         val resources: ResourceRequirements = ResourceRequirements(
             null,
-            mapOf("memory" to Quantity("600", "Mi")),
-            mapOf("memory" to Quantity("300", "Mi"))
+            mapOf("memory" to Quantity("1800", "Mi")),
+            mapOf("memory" to Quantity("900", "Mi"))
         ),
-        val maxChildren: Int = 256,
+        val maxChildren: Int = 512,
         val startServers: Int = maxChildren / 8,
         val minSpareServers: Int = maxChildren / 16,
         val maxSpareServers: Int = maxChildren / 4
