@@ -27,16 +27,16 @@ spec:
 
 ## Spec
 
-| Name               | Type                                                                                                   |            |                                                                               |
-|--------------------|--------------------------------------------------------------------------------------------------------|------------|-------------------------------------------------------------------------------|
-| version            | String                                                                                                 | `"27.0.1"` | Check for [releases](https://github.com/nextcloud/server/releases) on GitHub. |
-| host               | String                                                                                                 | (required) |                                                                               |
-| defaultPhoneRegion | String?                                                                                                | `null`     |                                                                               |
-| apps               | [AppsSpec](#apps)                                                                                      |            |                                                                               |
-| resources          | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |            |                                                                               |
-| smtp               | [SmtpSpec](../common/smtp)?                                                                            | `null`     |                                                                               |
-| storage            | [StorageSpec](#storage)                                                                                | `null`     |                                                                               |
-| database           | [PostgresDatabaseSpec](./../common/postgres)?                                                          |            |                                                                               |
+| Name               | Type                                        |            |                                                                               |
+|--------------------|---------------------------------------------|------------|-------------------------------------------------------------------------------|
+| version            | String                                      | `"27.0.1"` | Check for [releases](https://github.com/nextcloud/server/releases) on GitHub. |
+| host               | String                                      | (required) |                                                                               |
+| defaultPhoneRegion | String?                                     | `null`     |                                                                               |
+| apps               | [AppsSpec](#apps)                           |            |                                                                               |
+| server             | [ServerSpec](#serverspec)                   |            |                                                                               |
+| smtp               | [SmtpSpec](../common/smtp)?                 | `null`     |                                                                               |
+| storage            | [StorageSpec](#storage)                     | `null`     |                                                                               |
+| database           | [PostgresDatabaseSpec](../common/postgres)? |            |                                                                               |
 
 ### AppsSpec {#apps}
 
@@ -44,6 +44,16 @@ spec:
 |--------|------------------------|--------|
 | office | [OfficeSpec](./office) | `null` |
 | oidc   | [OidcSpec](./oidc)     | `null` |
+
+### ServerSpec
+
+| Name            | Type                                                                                                   |                          |
+|-----------------|--------------------------------------------------------------------------------------------------------|--------------------------|
+| resources       | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |                          |
+| maxChildren     | Int                                                                                                    | `512`                    |
+| startServers    | Int                                                                                                    | depends on `maxChildren` |
+| minSpareServers | Int                                                                                                    | depends on `maxChildren` |
+| maxSpareServers | Int                                                                                                    | depends on `maxChildren` |
 
 ### StorageSpec {#storage}
 
