@@ -8,6 +8,7 @@ import eu.glasskube.operator.validation.Patterns.SEMVER
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Pattern
 import io.fabric8.generator.annotation.Required
+import io.fabric8.kubernetes.api.model.LocalObjectReference
 import io.fabric8.kubernetes.api.model.Quantity
 import io.fabric8.kubernetes.api.model.ResourceRequirements
 
@@ -16,6 +17,8 @@ data class KeycloakSpec(
     val host: String,
     val management: ManagementSpec = ManagementSpec(),
     val resources: ResourceRequirements = defaultResourceRequirements,
+    val image: String?,
+    val imagePullSecrets: List<LocalObjectReference>?,
     @field:Pattern(SEMVER)
     val version: String = "21.1.2",
     @field:Nullable

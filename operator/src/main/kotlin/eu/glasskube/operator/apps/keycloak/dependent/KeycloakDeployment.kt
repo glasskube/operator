@@ -27,6 +27,7 @@ import eu.glasskube.operator.apps.keycloak.discoveryServiceName
 import eu.glasskube.operator.apps.keycloak.genericResourceName
 import eu.glasskube.operator.apps.keycloak.resourceLabelSelector
 import eu.glasskube.operator.apps.keycloak.resourceLabels
+import io.fabric8.kubernetes.api.model.LocalObjectReference
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
@@ -67,7 +68,7 @@ class KeycloakDeployment : CRUDKubernetesDependentResource<Deployment, Keycloak>
                                     "KC_HOSTNAME_STRICT_BACKCHANNEL" to "false",
                                     "KC_HTTP_ENABLED" to "true",
                                     "KC_HTTP_PORT" to "8080",
-                                    "KC_PROXY" to "passthrough",
+                                    "KC_PROXY" to "edge",
                                     "KEYCLOAK_ADMIN" to "root",
                                     "KEYCLOAK_ADMIN_PASSWORD" to "glasskube-operator",
                                     "jgroups.dns.query" to primary.discoveryServiceName
@@ -101,6 +102,7 @@ class KeycloakDeployment : CRUDKubernetesDependentResource<Deployment, Keycloak>
                             }
                         }
                     )
+                    imagePullSecrets = primary.spec.imagePullSecrets?.map { LocalObjectReference(it.name) }
                 }
             }
         }

@@ -48,4 +48,4 @@ internal val Keycloak.genericResourceName get() = "${Keycloak.APP_NAME}-${metada
 internal val Keycloak.backupBucketName get() = "$genericResourceName-backup"
 internal val Keycloak.ingressTlsCertName get() = "$genericResourceName-tls"
 internal val Keycloak.discoveryServiceName get() = "$genericResourceName-discovery"
-internal val Keycloak.appImage get() = "quay.io/keycloak/${Keycloak.APP_NAME}:${spec.version}"
+internal val Keycloak.appImage get() = spec.image ?: "quay.io/keycloak/${Keycloak.APP_NAME}:${spec.version}"
