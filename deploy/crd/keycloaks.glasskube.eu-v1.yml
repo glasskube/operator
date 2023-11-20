@@ -48,6 +48,15 @@ spec:
                       x-kubernetes-int-or-string: true
                     type: object
                 type: object
+              image:
+                type: string
+              imagePullSecrets:
+                items:
+                  properties:
+                    name:
+                      type: string
+                  type: object
+                type: array
               version:
                 pattern: \d+\.\d+\.\d+
                 type: string
