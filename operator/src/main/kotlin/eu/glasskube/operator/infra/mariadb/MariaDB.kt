@@ -45,7 +45,8 @@ data class MariaDBSpec(
     @field:Nullable
     var resources: ResourceRequirements?,
     var metrics: Metrics? = null,
-    var inheritMetadata: ObjectMeta? = null
+    var inheritMetadata: ObjectMeta? = null,
+    var myCnf: String? = null
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
