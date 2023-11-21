@@ -7,6 +7,8 @@ abort() {
 
 ./console matomo:install --install-file "$MATOMO_INSTALL_FILE" --force --do-not-drop-db || abort "could not install matomo"
 
+./console plugin:activate TagManager || abort "could not install tag manager"
+
 if ./console site:list; then
   echo "site:list exit code was 0. do not create a new site"
 else
