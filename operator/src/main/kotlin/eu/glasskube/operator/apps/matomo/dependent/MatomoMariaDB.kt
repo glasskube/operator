@@ -84,7 +84,11 @@ class MatomoMariaDB(private val configService: ConfigService) :
             inheritMetadata = objectMeta {
                 labels(primary.mariaDbLabels)
                 annotations(configService.getBackupAnnotations(primary, "storage"))
-            }
+            },
+            myCnf = """
+                [mariadb]
+                max_allowed_packet=256M
+            """.trimIndent()
         )
     }
 
@@ -100,8 +104,11 @@ class MatomoMariaDB(private val configService: ConfigService) :
             )
             updateVolumeClaimStorageRequest(actual, primary, context)
             recreate(actual, desired, primary, context)
-        } else if (desired.spec.inheritMetadata != actual.spec.inheritMetadata) {
-            log.info("MariaDB {} inherited metadata mismatch. will be recreated", primary.loggingId)
+        } else if (desired.spec.inheritMetadata != actual.spec.inheritMetadata || desired.spec.myCnf != actual.spec.myCnf) {
+            log.info(
+                "MariaDB {} spec changed but cannot be applied through update. will be recreated",
+                primary.loggingId
+            )
             recreate(actual, desired, primary, context)
         } else {
             super.handleUpdate(actual, desired, primary, context)
