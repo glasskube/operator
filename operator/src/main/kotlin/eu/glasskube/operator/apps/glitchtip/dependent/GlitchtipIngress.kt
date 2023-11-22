@@ -26,13 +26,7 @@ class GlitchtipIngress(configService: ConfigService) : DependentIngress<Glitchti
             name(primary.ingressName)
             namespace(primary.metadata.namespace)
             labels(primary.resourceLabels)
-            annotations(
-                getDefaultAnnotations(primary, context) +
-                    mapOf(
-                        "nginx.ingress.kubernetes.io/proxy-body-size" to "256m",
-                        "nginx.ingress.kubernetes.io/proxy-next-upstream-tries" to "10"
-                    )
-            )
+            annotations(getDefaultAnnotations(primary, context))
         }
         spec {
             ingressClassName = defaultIngressClassName
