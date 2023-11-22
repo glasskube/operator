@@ -23,7 +23,7 @@ abstract class DependentIngress<P : HasMetadata>(private val configService: Conf
             when (configService.cloudProvider) {
                 CloudProvider.aws -> awsDefaultAnnotations
                 CloudProvider.gardener -> gardenerDefaultAnnotations
-                else -> getCertManagerDefaultAnnotations(context)
+                else -> getCertManagerDefaultAnnotations(context) + ingressNginxDefaultAnnotations
             }
 
     private val awsDefaultAnnotations
@@ -47,6 +47,12 @@ abstract class DependentIngress<P : HasMetadata>(private val configService: Conf
             null -> emptyMap()
             else -> mapOf("cert-manager.io/cluster-issuer" to clusterIssuer.metadata.name)
         }
+
+    private val ingressNginxDefaultAnnotations
+        get() = mapOf(
+            "nginx.ingress.kubernetes.io/proxy-body-size" to "256m",
+            "nginx.ingress.kubernetes.io/proxy-next-upstream-tries" to "10"
+        )
 
     private fun getDefaultClusterIssuer(context: Context<P>): GenericKubernetesResource? {
         val clusterIssuerContext = ResourceDefinitionContext.Builder()
