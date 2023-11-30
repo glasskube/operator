@@ -91,14 +91,14 @@ kubectl apply -f gitlab.yaml
 - Plane [`makeplane/plane`](https://github.com/makeplane/plane)
 - Vault [`hashicorp/vault`](https://github.com/hashicorp/vault)
 
-> Don't find your tool? We are always adding new supported tools, so just join us on [Discord](https://discord.gg/qH6u2nJB) and let us know which tool is missing!
+> Don't find your tool? We are always adding new supported tools, so just join us on [Discord](https://discord.gg/naYhJGhJ) and let us know which tool is missing!
 
 ## 🎬 Screencast
 
 https://user-images.githubusercontent.com/3041752/217483828-2f0245bc-dbe8-4fc5-901f-e96131187c22.mp4
 
 ## ☝️ Need help?
-If you encounter any problems, we will be happy to support you wherever we can. If you encounter any bugs or issues while working on this project, feel free to contact us on [Discord](https://discord.gg/qH6u2nJB). We are happy to assist you with anything related to the project.
+If you encounter any problems, we will be happy to support you wherever we can. If you encounter any bugs or issues while working on this project, feel free to contact us on [Discord](https://discord.gg/naYhJGhJ). We are happy to assist you with anything related to the project.
 
 ## 📎 Related projects
 
