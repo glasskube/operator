@@ -25,11 +25,6 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.0.1"
   },
-  "overrides": {
-    "docusaurus-plugin-matomo": {
-      "@docusaurus/core": "3.0.1"
-    }
-  },
   "browserslist": {
     "production": [
       ">0.5%",
