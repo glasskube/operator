@@ -218,7 +218,7 @@ class GitlabDeployment(private val configService: ConfigService) :
             envVar("REGISTRY_OBJECTSTORE_ENABLED", true.toString())
             envVar("REGISTRY_OBJECTSTORE_S3_BUCKET", s3.bucket)
             envVar("REGISTRY_OBJECTSTORE_S3_REGION", s3.region)
-            envVar("REGISTRY_OBJECTSTORE_S3_HOST", s3.hostname)
+            s3.endpoint?.let { envVar("REGISTRY_OBJECTSTORE_S3_ENDPOINT", it) }
             envVar("REGISTRY_OBJECTSTORE_S3_USEPATH_STYLE", s3.usePathStyle.toString())
             envVar("REGISTRY_OBJECTSTORE_S3_KEY") {
                 secretKeyRef(s3.accessKeySecret.name, s3.accessKeySecret.key)

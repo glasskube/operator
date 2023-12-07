@@ -83,7 +83,7 @@ if (ENV['REGISTRY_ENABLED'] == 'true')
         'accesskey' => ENV['REGISTRY_OBJECTSTORE_S3_KEY'],
         'secretkey' => ENV['REGISTRY_OBJECTSTORE_S3_SECRET'],
         'region' => ENV['REGISTRY_OBJECTSTORE_S3_REGION'],
-        'regionendpoint' => ENV['REGISTRY_OBJECTSTORE_S3_HOST'],
+        'regionendpoint' => ENV['REGISTRY_OBJECTSTORE_S3_ENDPOINT'],
         'pathstyle' => ENV['REGISTRY_OBJECTSTORE_S3_USEPATH_STYLE']
       }
     }
