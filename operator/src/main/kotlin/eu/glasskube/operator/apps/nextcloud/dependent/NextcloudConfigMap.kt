@@ -66,7 +66,7 @@ class NextcloudConfigMap : CRUDKubernetesDependentResource<ConfigMap, Nextcloud>
                         arrayOf(
                             "oidc_login_provider_url" to it.issuerUrl,
                             "oidc_login_logout_url" to primary.spec.host,
-                            "oidc_login_button_text" to "Login with " + it.name,
+                            "oidc_login_button_text" to "Log in with " + it.name,
                             "oidc_login_disable_registration" to false,
                             "oidc_login_scope" to "openid profile email",
                             "oidc_login_attributes" to mapOf(
