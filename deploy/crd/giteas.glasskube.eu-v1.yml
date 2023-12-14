@@ -193,6 +193,24 @@ spec:
                 required:
                 - s3
                 type: object
+              actions:
+                properties:
+                  enabled:
+                    type: boolean
+                  runners:
+                    items:
+                      properties:
+                        token:
+                          type: string
+                        labels:
+                          items:
+                            type: string
+                          type: array
+                      required:
+                      - token
+                      type: object
+                    type: array
+                type: object
             required:
             - host
             type: object

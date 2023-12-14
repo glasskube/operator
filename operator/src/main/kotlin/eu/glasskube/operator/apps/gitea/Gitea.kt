@@ -49,6 +49,13 @@ class Gitea :
         override fun getDatabaseName(primary: Gitea) = "gitea"
     }
 
+    object Runner {
+        internal const val APP_NAME = "act-runner"
+        internal const val APP_VERSION = "0.2.6"
+        internal const val APP_IMAGE = "${Gitea.APP_NAME}/act_runner:$APP_VERSION"
+        internal const val DOCKER_IMAGE = "docker:23.0.6-dind"
+    }
+
     @delegate:JsonIgnore
     override val velero by lazy {
         object : VeleroNameMapper(this) {
@@ -58,6 +65,8 @@ class Gitea :
         }
     }
 }
+
+internal const val GITEA_RUNNER_LABEL = "glasskube.eu/gitea-runner"
 
 val Gitea.resourceLabels
     get() = Labels.resourceLabels(Gitea.APP_NAME, metadata.name, Gitea.APP_NAME, spec.version)
@@ -71,3 +80,6 @@ val Gitea.iniConfigMapName get() = "$genericResourceName-ini"
 val Gitea.httpServiceName get() = "$genericResourceName-http"
 val Gitea.sshServiceName get() = "$genericResourceName-ssh"
 val Gitea.ingressTlsCertName get() = "$genericResourceName-cert"
+fun Gitea.getRunnerName(runner: GiteaActionRunnerSpecTemplate) = "$genericResourceName-runner-${runner.tokenHash}"
+val GiteaActionRunnerSpecTemplate.resourceLabels
+    get() = mapOf(Labels.COMPONENT to Gitea.Runner.APP_NAME, GITEA_RUNNER_LABEL to tokenHash)

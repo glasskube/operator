@@ -33,6 +33,7 @@ import eu.glasskube.operator.apps.gitea.resourceLabelSelector
 import eu.glasskube.operator.apps.gitea.resourceLabels
 import eu.glasskube.operator.apps.gitea.secretName
 import eu.glasskube.operator.config.ConfigService
+import eu.glasskube.operator.generic.condition.DeploymentReadyCondition
 import eu.glasskube.utils.addTo
 import io.fabric8.kubernetes.api.model.HTTPGetAction
 import io.fabric8.kubernetes.api.model.Probe
@@ -52,6 +53,7 @@ class GiteaDeployment(private val configService: ConfigService) :
     CRUDKubernetesDependentResource<Deployment, Gitea>(Deployment::class.java) {
     internal class Discriminator :
         ResourceIDMatcherDiscriminator<Deployment, Gitea>({ ResourceID(it.deploymentName, it.namespace) })
+    internal class ReadyCondition : DeploymentReadyCondition<Gitea>()
 
     override fun desired(primary: Gitea, context: Context<Gitea>) = deployment {
         metadata {
