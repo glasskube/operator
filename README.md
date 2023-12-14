@@ -57,7 +57,7 @@ Turn on autopilot and deploy and manage Open Source Tools fully automated on Kub
 
 
 ## 🚀 Quick Start
-The Glasskube operator is simply deployed via Helm. To install the Open Source Tool simply apply the Custom Resoure. You can find more information and guidance in our [Docs](https://glasskube.eu/docs/). 
+The Glasskube operator is simply deployed via Helm. To install the Open Source Tool simply apply the Custom Resource. You can find more information and guidance in our [Docs](https://glasskube.eu/docs/). 
 
 First, add our helm repository and refresh your repository list: 
 
