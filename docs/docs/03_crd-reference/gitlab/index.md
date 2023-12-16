@@ -74,6 +74,7 @@ spec:
 | accessKeySecret | SecretKeySelector | (required) |                                                
 | secretKeySecret | SecretKeySelector | (required) |                                                
 | region          | String            | (required) |                                                
-| hostname        | String            | (required) |                                                
-| usePathStyle    | Boolean           | (required) |                                                
-
+| hostname        | String            | `null`     |                                                
+| usePathStyle    | Boolean           | false      |
+| port            | Integer           | `null`     |
+| useSsl          | Boolean           | `null`     |
