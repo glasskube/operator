@@ -6,7 +6,7 @@ import io.fabric8.kubernetes.api.model.ObjectMetaBuilder
 
 @KubernetesDslMarker
 class MetadataDsl private constructor() {
-    private val builder = ObjectMetaBuilder(true)
+    private val builder = ObjectMetaBuilder()
 
     fun name(name: String) {
         builder.withName(name)

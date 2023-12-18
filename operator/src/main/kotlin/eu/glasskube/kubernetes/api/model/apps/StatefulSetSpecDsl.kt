@@ -11,7 +11,7 @@ import io.fabric8.kubernetes.api.model.apps.StatefulSetUpdateStrategy
 
 @KubernetesDslMarker
 class StatefulSetSpecDsl private constructor() {
-    private val builder = StatefulSetSpecBuilder(true)
+    private val builder = StatefulSetSpecBuilder()
 
     fun selector(block: (@KubernetesDslMarker LabelSelector).() -> Unit) {
         builder.withSelector(LabelSelector().apply(block))

@@ -13,7 +13,7 @@ inline fun roleBinding(block: RoleBindingDsl.() -> Unit) = RoleBindingDsl().appl
 
 @KubernetesDslMarker
 class RoleBindingDsl {
-    private val builder = RoleBindingBuilder(true)
+    private val builder = RoleBindingBuilder()
 
     fun metadata(block: MetadataDsl.() -> Unit) {
         builder.withMetadata(block.build())
