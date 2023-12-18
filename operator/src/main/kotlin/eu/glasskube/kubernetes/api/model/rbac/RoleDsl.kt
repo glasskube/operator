@@ -10,7 +10,7 @@ inline fun role(block: RoleDsl.() -> Unit): Role = RoleDsl().apply(block).build(
 
 @KubernetesDslMarker
 class RoleDsl {
-    private val builder: RoleBuilder = RoleBuilder(true)
+    private val builder: RoleBuilder = RoleBuilder()
 
     fun metadata(block: MetadataDsl.() -> Unit) {
         builder.withMetadata(block.build())

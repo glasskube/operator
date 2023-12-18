@@ -12,7 +12,7 @@ inline fun Container.lifecycle(block: LifecycleDsl.() -> Unit) {
 
 @KubernetesDslMarker
 class LifecycleDsl {
-    private val builder = LifecycleBuilder(true)
+    private val builder = LifecycleBuilder()
 
     fun postStart(block: LifecycleHandlerDsl.() -> Unit) {
         builder.withPostStart(block.build())

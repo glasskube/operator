@@ -5,7 +5,7 @@ import io.fabric8.kubernetes.api.model.apps.RollingUpdateStatefulSetStrategy
 import io.fabric8.kubernetes.api.model.apps.RollingUpdateStatefulSetStrategyBuilder
 
 class RollingUpdateStatefulSetStrategyDsl private constructor() {
-    private val builder = RollingUpdateStatefulSetStrategyBuilder(true)
+    private val builder = RollingUpdateStatefulSetStrategyBuilder()
 
     fun partition(partition: Int) {
         builder.withPartition(partition)

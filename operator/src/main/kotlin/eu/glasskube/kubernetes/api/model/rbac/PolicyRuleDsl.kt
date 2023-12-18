@@ -6,7 +6,7 @@ import io.fabric8.kubernetes.api.model.rbac.PolicyRuleBuilder
 
 @KubernetesDslMarker
 class PolicyRuleDsl {
-    private val builder: PolicyRuleBuilder = PolicyRuleBuilder(true)
+    private val builder: PolicyRuleBuilder = PolicyRuleBuilder()
 
     fun apiGroups(vararg apiGroups: String) {
         builder.withApiGroups(apiGroups.asList())

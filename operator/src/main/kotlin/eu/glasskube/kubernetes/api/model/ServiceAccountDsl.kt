@@ -7,7 +7,7 @@ import io.fabric8.kubernetes.api.model.ServiceAccountBuilder
 inline fun serviceAccount(block: ServiceAccountDsl.() -> Unit) = ServiceAccountDsl().apply(block).build()
 
 class ServiceAccountDsl {
-    private val builder = ServiceAccountBuilder(true)
+    private val builder = ServiceAccountBuilder()
 
     fun metadata(block: MetadataDsl.() -> Unit) {
         builder.withMetadata(block.build())

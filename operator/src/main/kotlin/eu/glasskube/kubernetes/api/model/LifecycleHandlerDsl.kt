@@ -9,7 +9,7 @@ import io.fabric8.kubernetes.api.model.TCPSocketAction
 
 @KubernetesDslMarker
 class LifecycleHandlerDsl private constructor() {
-    private val builder = LifecycleHandlerBuilder(true)
+    private val builder = LifecycleHandlerBuilder()
 
     fun exec(block: ExecAction.() -> Unit) {
         builder.withExec(ExecAction().apply(block))

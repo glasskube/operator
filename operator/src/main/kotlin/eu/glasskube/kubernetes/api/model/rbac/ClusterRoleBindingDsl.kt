@@ -10,7 +10,7 @@ import io.fabric8.kubernetes.api.model.rbac.ClusterRoleBindingBuilder
 inline fun clusterRoleBinding(block: ClusterRoleBindingDsl.() -> Unit) = ClusterRoleBindingDsl().apply(block).build()
 
 class ClusterRoleBindingDsl {
-    private val builder = ClusterRoleBindingBuilder(true)
+    private val builder = ClusterRoleBindingBuilder()
 
     fun metadata(block: MetadataDsl.() -> Unit) {
         builder.withMetadata(block.build())
