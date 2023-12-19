@@ -1,5 +1,2 @@
-#logging:
-#  level:
-#    org.springframework: DEBUG
 velero:
   namespace: velero
