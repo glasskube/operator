@@ -62,9 +62,10 @@ abstract class DependentPostgresCluster<P>(
         spec = ClusterSpec(
             instances = primary.getSpec().database.instances,
             enableSuperuserAccess = false,
-            inheritedMetadata = EmbeddedObjectMetadata(
-                annotations = configService.getBackupAnnotations(primary, "pgdata")
-            ),
+            inheritedMetadata =
+            configService.getBackupAnnotations(primary, "pgdata")
+                .takeIf { it.isNotEmpty() }
+                ?.let { EmbeddedObjectMetadata(annotations = it) },
             bootstrap = BootstrapConfiguration(
                 initdb = BootstrapInitDB(
                     database = postgresNameMapper.getDatabaseName(primary),
