@@ -17,31 +17,31 @@ spec:
         properties:
           spec:
             properties:
-              userSecret:
-                nullable: true
-                properties:
-                  name:
-                    type: string
-                type: object
               bucketNameOverride:
                 nullable: true
                 type: string
               policyOverride:
                 nullable: true
                 type: string
+              userSecret:
+                nullable: true
+                properties:
+                  name:
+                    type: string
+                type: object
             type: object
           status:
             properties:
               bucketCreated:
                 type: boolean
-              username:
-                type: string
-              userCreated:
-                type: boolean
               policyCreated:
                 type: boolean
               policyLinked:
                 type: boolean
+              userCreated:
+                type: boolean
+              username:
+                type: string
             type: object
         type: object
     served: true

@@ -17,29 +17,69 @@ spec:
         properties:
           spec:
             properties:
-              host:
-                type: string
-              smtp:
-                nullable: true
+              backups:
                 properties:
-                  host:
-                    type: string
-                  port:
-                    type: integer
-                  fromAddress:
-                    type: string
-                  authSecret:
+                  s3:
                     properties:
-                      name:
+                      accessKeySecret:
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            type: string
+                          optional:
+                            type: boolean
+                        type: object
+                      bucket:
+                        type: string
+                      hostname:
+                        nullable: true
+                        type: string
+                      port:
+                        nullable: true
+                        type: integer
+                      region:
+                        nullable: true
+                        type: string
+                      secretKeySecret:
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            type: string
+                          optional:
+                            type: boolean
+                        type: object
+                      usePathStyle:
+                        type: boolean
+                      useSsl:
+                        type: boolean
+                    required:
+                    - bucket
+                    - accessKeySecret
+                    - secretKeySecret
+                    type: object
+                  schedule:
+                    type: string
+                  ttl:
+                    type: string
+                required:
+                - s3
+                type: object
+              database:
+                properties:
+                  backups:
+                    type: object
+                  storage:
+                    properties:
+                      size:
+                        type: string
+                      storageClass:
                         type: string
                     type: object
-                  tlsEnabled:
-                    type: boolean
-                required:
-                - host
-                - fromAddress
-                - authSecret
                 type: object
+              host:
+                type: string
               resources:
                 properties:
                   claims:
@@ -64,69 +104,29 @@ spec:
                       x-kubernetes-int-or-string: true
                     type: object
                 type: object
+              smtp:
+                nullable: true
+                properties:
+                  authSecret:
+                    properties:
+                      name:
+                        type: string
+                    type: object
+                  fromAddress:
+                    type: string
+                  host:
+                    type: string
+                  port:
+                    type: integer
+                  tlsEnabled:
+                    type: boolean
+                required:
+                - host
+                - fromAddress
+                - authSecret
+                type: object
               version:
                 type: string
-              database:
-                properties:
-                  storage:
-                    properties:
-                      size:
-                        type: string
-                      storageClass:
-                        type: string
-                    type: object
-                  backups:
-                    type: object
-                type: object
-              backups:
-                properties:
-                  schedule:
-                    type: string
-                  ttl:
-                    type: string
-                  s3:
-                    properties:
-                      hostname:
-                        nullable: true
-                        type: string
-                      port:
-                        nullable: true
-                        type: integer
-                      useSsl:
-                        type: boolean
-                      region:
-                        nullable: true
-                        type: string
-                      bucket:
-                        type: string
-                      accessKeySecret:
-                        properties:
-                          key:
-                            type: string
-                          name:
-                            type: string
-                          optional:
-                            type: boolean
-                        type: object
-                      secretKeySecret:
-                        properties:
-                          key:
-                            type: string
-                          name:
-                            type: string
-                          optional:
-                            type: boolean
-                        type: object
-                      usePathStyle:
-                        type: boolean
-                    required:
-                    - bucket
-                    - accessKeySecret
-                    - secretKeySecret
-                    type: object
-                required:
-                - s3
-                type: object
             type: object
           status:
             properties:
