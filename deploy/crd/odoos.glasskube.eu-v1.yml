@@ -17,10 +17,120 @@ spec:
         properties:
           spec:
             properties:
-              host:
-                type: string
+              backups:
+                properties:
+                  s3:
+                    properties:
+                      accessKeySecret:
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            type: string
+                          optional:
+                            type: boolean
+                        type: object
+                      bucket:
+                        type: string
+                      hostname:
+                        nullable: true
+                        type: string
+                      port:
+                        nullable: true
+                        type: integer
+                      region:
+                        nullable: true
+                        type: string
+                      secretKeySecret:
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            type: string
+                          optional:
+                            type: boolean
+                        type: object
+                      usePathStyle:
+                        type: boolean
+                      useSsl:
+                        type: boolean
+                    required:
+                    - bucket
+                    - accessKeySecret
+                    - secretKeySecret
+                    type: object
+                  schedule:
+                    type: string
+                  ttl:
+                    type: string
+                required:
+                - s3
+                type: object
+              database:
+                nullable: true
+                properties:
+                  backups:
+                    properties:
+                      retentionPolicy:
+                        type: string
+                      s3:
+                        properties:
+                          accessKeySecret:
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                type: string
+                              optional:
+                                type: boolean
+                            type: object
+                          bucket:
+                            type: string
+                          endpoint:
+                            type: string
+                          regionSecret:
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                type: string
+                              optional:
+                                type: boolean
+                            type: object
+                          secretKeySecret:
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                type: string
+                              optional:
+                                type: boolean
+                            type: object
+                        required:
+                        - bucket
+                        - accessKeySecret
+                        - secretKeySecret
+                        type: object
+                      schedule:
+                        type: string
+                    required:
+                    - s3
+                    type: object
+                  instances:
+                    minimum: 1.0
+                    type: integer
+                  storage:
+                    properties:
+                      size:
+                        type: string
+                      storageClass:
+                        type: string
+                    type: object
+                type: object
               demoEnabled:
                 type: boolean
+              host:
+                type: string
               resources:
                 properties:
                   claims:
@@ -48,122 +158,12 @@ spec:
               version:
                 pattern: \d+\.\d+\.\d+
                 type: string
-              database:
-                nullable: true
-                properties:
-                  instances:
-                    minimum: 1.0
-                    type: integer
-                  backups:
-                    properties:
-                      schedule:
-                        type: string
-                      retentionPolicy:
-                        type: string
-                      s3:
-                        properties:
-                          endpoint:
-                            type: string
-                          regionSecret:
-                            properties:
-                              key:
-                                type: string
-                              name:
-                                type: string
-                              optional:
-                                type: boolean
-                            type: object
-                          bucket:
-                            type: string
-                          accessKeySecret:
-                            properties:
-                              key:
-                                type: string
-                              name:
-                                type: string
-                              optional:
-                                type: boolean
-                            type: object
-                          secretKeySecret:
-                            properties:
-                              key:
-                                type: string
-                              name:
-                                type: string
-                              optional:
-                                type: boolean
-                            type: object
-                        required:
-                        - bucket
-                        - accessKeySecret
-                        - secretKeySecret
-                        type: object
-                    required:
-                    - s3
-                    type: object
-                  storage:
-                    properties:
-                      size:
-                        type: string
-                      storageClass:
-                        type: string
-                    type: object
-                type: object
-              backups:
-                properties:
-                  schedule:
-                    type: string
-                  ttl:
-                    type: string
-                  s3:
-                    properties:
-                      hostname:
-                        nullable: true
-                        type: string
-                      port:
-                        nullable: true
-                        type: integer
-                      useSsl:
-                        type: boolean
-                      region:
-                        nullable: true
-                        type: string
-                      bucket:
-                        type: string
-                      accessKeySecret:
-                        properties:
-                          key:
-                            type: string
-                          name:
-                            type: string
-                          optional:
-                            type: boolean
-                        type: object
-                      secretKeySecret:
-                        properties:
-                          key:
-                            type: string
-                          name:
-                            type: string
-                          optional:
-                            type: boolean
-                        type: object
-                      usePathStyle:
-                        type: boolean
-                    required:
-                    - bucket
-                    - accessKeySecret
-                    - secretKeySecret
-                    type: object
-                required:
-                - s3
-                type: object
             type: object
           status:
             properties:
-              ready:
-                type: boolean
               demoEnabledOnInstall:
+                type: boolean
+              ready:
                 type: boolean
             type: object
         type: object

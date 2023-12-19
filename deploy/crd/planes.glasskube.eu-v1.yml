@@ -17,10 +17,174 @@ spec:
         properties:
           spec:
             properties:
-              host:
-                type: string
-              registrationEnabled:
-                type: boolean
+              api:
+                properties:
+                  concurrency:
+                    type: integer
+                  resources:
+                    nullable: true
+                    properties:
+                      claims:
+                        items:
+                          properties:
+                            name:
+                              type: string
+                          type: object
+                        type: array
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          x-kubernetes-int-or-string: true
+                        type: object
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          x-kubernetes-int-or-string: true
+                        type: object
+                    type: object
+                type: object
+              backups:
+                properties:
+                  s3:
+                    properties:
+                      accessKeySecret:
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            type: string
+                          optional:
+                            type: boolean
+                        type: object
+                      bucket:
+                        type: string
+                      hostname:
+                        nullable: true
+                        type: string
+                      port:
+                        nullable: true
+                        type: integer
+                      region:
+                        nullable: true
+                        type: string
+                      secretKeySecret:
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            type: string
+                          optional:
+                            type: boolean
+                        type: object
+                      usePathStyle:
+                        type: boolean
+                      useSsl:
+                        type: boolean
+                    required:
+                    - bucket
+                    - accessKeySecret
+                    - secretKeySecret
+                    type: object
+                  schedule:
+                    type: string
+                  ttl:
+                    type: string
+                required:
+                - s3
+                type: object
+              beatWorker:
+                properties:
+                  resources:
+                    nullable: true
+                    properties:
+                      claims:
+                        items:
+                          properties:
+                            name:
+                              type: string
+                          type: object
+                        type: array
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          x-kubernetes-int-or-string: true
+                        type: object
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          x-kubernetes-int-or-string: true
+                        type: object
+                    type: object
+                type: object
+              database:
+                nullable: true
+                properties:
+                  backups:
+                    properties:
+                      retentionPolicy:
+                        type: string
+                      s3:
+                        properties:
+                          accessKeySecret:
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                type: string
+                              optional:
+                                type: boolean
+                            type: object
+                          bucket:
+                            type: string
+                          endpoint:
+                            type: string
+                          regionSecret:
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                type: string
+                              optional:
+                                type: boolean
+                            type: object
+                          secretKeySecret:
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                type: string
+                              optional:
+                                type: boolean
+                            type: object
+                        required:
+                        - bucket
+                        - accessKeySecret
+                        - secretKeySecret
+                        type: object
+                      schedule:
+                        type: string
+                    required:
+                    - s3
+                    type: object
+                  instances:
+                    minimum: 1.0
+                    type: integer
+                  storage:
+                    properties:
+                      size:
+                        type: string
+                      storageClass:
+                        type: string
+                    type: object
+                type: object
               defaultUser:
                 properties:
                   email:
@@ -59,148 +223,12 @@ spec:
                         type: object
                     type: object
                 type: object
-              space:
-                properties:
-                  resources:
-                    nullable: true
-                    properties:
-                      claims:
-                        items:
-                          properties:
-                            name:
-                              type: string
-                          type: object
-                        type: array
-                      limits:
-                        additionalProperties:
-                          anyOf:
-                          - type: integer
-                          - type: string
-                          x-kubernetes-int-or-string: true
-                        type: object
-                      requests:
-                        additionalProperties:
-                          anyOf:
-                          - type: integer
-                          - type: string
-                          x-kubernetes-int-or-string: true
-                        type: object
-                    type: object
-                type: object
-              api:
-                properties:
-                  concurrency:
-                    type: integer
-                  resources:
-                    nullable: true
-                    properties:
-                      claims:
-                        items:
-                          properties:
-                            name:
-                              type: string
-                          type: object
-                        type: array
-                      limits:
-                        additionalProperties:
-                          anyOf:
-                          - type: integer
-                          - type: string
-                          x-kubernetes-int-or-string: true
-                        type: object
-                      requests:
-                        additionalProperties:
-                          anyOf:
-                          - type: integer
-                          - type: string
-                          x-kubernetes-int-or-string: true
-                        type: object
-                    type: object
-                type: object
-              beatWorker:
-                properties:
-                  resources:
-                    nullable: true
-                    properties:
-                      claims:
-                        items:
-                          properties:
-                            name:
-                              type: string
-                          type: object
-                        type: array
-                      limits:
-                        additionalProperties:
-                          anyOf:
-                          - type: integer
-                          - type: string
-                          x-kubernetes-int-or-string: true
-                        type: object
-                      requests:
-                        additionalProperties:
-                          anyOf:
-                          - type: integer
-                          - type: string
-                          x-kubernetes-int-or-string: true
-                        type: object
-                    type: object
-                type: object
-              worker:
-                properties:
-                  concurrency:
-                    type: integer
-                  resources:
-                    nullable: true
-                    properties:
-                      claims:
-                        items:
-                          properties:
-                            name:
-                              type: string
-                          type: object
-                        type: array
-                      limits:
-                        additionalProperties:
-                          anyOf:
-                          - type: integer
-                          - type: string
-                          x-kubernetes-int-or-string: true
-                        type: object
-                      requests:
-                        additionalProperties:
-                          anyOf:
-                          - type: integer
-                          - type: string
-                          x-kubernetes-int-or-string: true
-                        type: object
-                    type: object
-                type: object
-              smtp:
-                properties:
-                  host:
-                    type: string
-                  port:
-                    type: integer
-                  fromAddress:
-                    type: string
-                  authSecret:
-                    properties:
-                      name:
-                        type: string
-                    type: object
-                  tlsEnabled:
-                    type: boolean
-                  sslEnabled:
-                    type: boolean
-                required:
-                - host
-                - fromAddress
-                - authSecret
-                type: object
+              host:
+                type: string
+              registrationEnabled:
+                type: boolean
               s3:
                 properties:
-                  bucket:
-                    type: string
                   accessKeySecret:
                     properties:
                       key:
@@ -210,6 +238,16 @@ spec:
                       optional:
                         type: boolean
                     type: object
+                  bucket:
+                    type: string
+                  hostname:
+                    nullable: true
+                    type: string
+                  port:
+                    nullable: true
+                    type: integer
+                  region:
+                    type: string
                   secretKeySecret:
                     properties:
                       key:
@@ -219,18 +257,10 @@ spec:
                       optional:
                         type: boolean
                     type: object
-                  region:
-                    type: string
-                  hostname:
-                    nullable: true
-                    type: string
-                  port:
-                    nullable: true
-                    type: integer
-                  useSsl:
-                    type: boolean
                   usePathStyle:
                     nullable: true
+                    type: boolean
+                  useSsl:
                     type: boolean
                 required:
                 - bucket
@@ -238,133 +268,93 @@ spec:
                 - secretKeySecret
                 - region
                 type: object
-              version:
-                type: string
-              database:
-                nullable: true
+              smtp:
                 properties:
-                  instances:
-                    minimum: 1.0
-                    type: integer
-                  backups:
+                  authSecret:
                     properties:
-                      schedule:
+                      name:
                         type: string
-                      retentionPolicy:
-                        type: string
-                      s3:
-                        properties:
-                          endpoint:
-                            type: string
-                          regionSecret:
-                            properties:
-                              key:
-                                type: string
-                              name:
-                                type: string
-                              optional:
-                                type: boolean
-                            type: object
-                          bucket:
-                            type: string
-                          accessKeySecret:
-                            properties:
-                              key:
-                                type: string
-                              name:
-                                type: string
-                              optional:
-                                type: boolean
-                            type: object
-                          secretKeySecret:
-                            properties:
-                              key:
-                                type: string
-                              name:
-                                type: string
-                              optional:
-                                type: boolean
-                            type: object
-                        required:
-                        - bucket
-                        - accessKeySecret
-                        - secretKeySecret
-                        type: object
-                    required:
-                    - s3
                     type: object
-                  storage:
+                  fromAddress:
+                    type: string
+                  host:
+                    type: string
+                  port:
+                    type: integer
+                  sslEnabled:
+                    type: boolean
+                  tlsEnabled:
+                    type: boolean
+                required:
+                - host
+                - fromAddress
+                - authSecret
+                type: object
+              space:
+                properties:
+                  resources:
+                    nullable: true
                     properties:
-                      size:
-                        type: string
-                      storageClass:
-                        type: string
+                      claims:
+                        items:
+                          properties:
+                            name:
+                              type: string
+                          type: object
+                        type: array
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          x-kubernetes-int-or-string: true
+                        type: object
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          x-kubernetes-int-or-string: true
+                        type: object
                     type: object
                 type: object
-              backups:
+              version:
+                type: string
+              worker:
                 properties:
-                  schedule:
-                    type: string
-                  ttl:
-                    type: string
-                  s3:
+                  concurrency:
+                    type: integer
+                  resources:
+                    nullable: true
                     properties:
-                      hostname:
-                        nullable: true
-                        type: string
-                      port:
-                        nullable: true
-                        type: integer
-                      useSsl:
-                        type: boolean
-                      region:
-                        nullable: true
-                        type: string
-                      bucket:
-                        type: string
-                      accessKeySecret:
-                        properties:
-                          key:
-                            type: string
-                          name:
-                            type: string
-                          optional:
-                            type: boolean
+                      claims:
+                        items:
+                          properties:
+                            name:
+                              type: string
+                          type: object
+                        type: array
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          x-kubernetes-int-or-string: true
                         type: object
-                      secretKeySecret:
-                        properties:
-                          key:
-                            type: string
-                          name:
-                            type: string
-                          optional:
-                            type: boolean
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          x-kubernetes-int-or-string: true
                         type: object
-                      usePathStyle:
-                        type: boolean
-                    required:
-                    - bucket
-                    - accessKeySecret
-                    - secretKeySecret
                     type: object
-                required:
-                - s3
                 type: object
             required:
             - host
             type: object
           status:
             properties:
-              frontend:
-                properties:
-                  ready:
-                    type: boolean
-                type: object
-              space:
-                properties:
-                  ready:
-                    type: boolean
-                type: object
               api:
                 properties:
                   ready:
@@ -375,17 +365,27 @@ spec:
                   ready:
                     type: boolean
                 type: object
-              worker:
-                properties:
-                  ready:
-                    type: boolean
-                type: object
               database:
                 properties:
                   ready:
                     type: boolean
                 type: object
+              frontend:
+                properties:
+                  ready:
+                    type: boolean
+                type: object
               redis:
+                properties:
+                  ready:
+                    type: boolean
+                type: object
+              space:
+                properties:
+                  ready:
+                    type: boolean
+                type: object
+              worker:
                 properties:
                   ready:
                     type: boolean

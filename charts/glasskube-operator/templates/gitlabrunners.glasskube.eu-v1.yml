@@ -17,15 +17,15 @@ spec:
         properties:
           spec:
             properties:
-              token:
-                type: string
+              concurrency:
+                type: integer
               gitlab:
                 properties:
                   name:
                     type: string
                 type: object
-              concurrency:
-                type: integer
+              token:
+                type: string
               version:
                 pattern: \d+\.\d+\.\d+
                 type: string
