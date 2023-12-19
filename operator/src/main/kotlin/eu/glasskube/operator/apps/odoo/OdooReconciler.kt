@@ -1,6 +1,5 @@
 package eu.glasskube.operator.apps.odoo
 
-import eu.glasskube.kubernetes.client.patchOrUpdateResourceAndStatus
 import eu.glasskube.kubernetes.client.patchOrUpdateStatus
 import eu.glasskube.operator.api.reconciler.informerEventSource
 import eu.glasskube.operator.apps.odoo.dependent.OdooConfigMap
@@ -90,12 +89,7 @@ class OdooReconciler(webhookService: WebhookService) :
         }
 
         return with(resource) {
-            if (FINALIZER in metadata.finalizers) {
-                metadata.finalizers.remove(FINALIZER)
-                patchOrUpdateResourceAndStatus(newStatus)
-            } else {
-                patchOrUpdateStatus(newStatus)
-            }
+            patchOrUpdateStatus(newStatus)
         }
     }
 
