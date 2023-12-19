@@ -17,7 +17,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernete
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 import io.javaoperatorsdk.operator.processing.event.ResourceID
 
-@KubernetesDependent(resourceDiscriminator = PlaneFrontendConfigMap.Discriminator::class)
+@KubernetesDependent(resourceDiscriminator = PlaneApiService.Discriminator::class)
 class PlaneApiService : CRUDKubernetesDependentResource<Service, Plane>(Service::class.java) {
 
     internal class Discriminator :
