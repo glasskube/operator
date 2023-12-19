@@ -16,6 +16,7 @@ import eu.glasskube.operator.apps.matomo.mariaDbLabels
 import eu.glasskube.operator.apps.matomo.resourceLabels
 import eu.glasskube.operator.config.ConfigKey
 import eu.glasskube.operator.config.ConfigService
+import eu.glasskube.operator.generic.condition.CustomResourceDefinitionExistsCondition
 import eu.glasskube.operator.generic.condition.MariaDBReadyCondition
 import eu.glasskube.operator.infra.mariadb.Exporter
 import eu.glasskube.operator.infra.mariadb.MariaDB
@@ -39,6 +40,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class MatomoMariaDB(private val configService: ConfigService) :
     CRUDKubernetesDependentResource<MariaDB, Matomo>(MariaDB::class.java) {
 
+    class ActivationCondition : CustomResourceDefinitionExistsCondition<MariaDB, Matomo>(MariaDB.CANONICAL_NAME)
     class ReadyPostCondition : MariaDBReadyCondition<Matomo>()
 
     private val defaultStorageSize = "10Gi"

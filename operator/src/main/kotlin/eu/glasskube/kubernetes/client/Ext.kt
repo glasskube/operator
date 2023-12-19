@@ -38,3 +38,5 @@ fun <S, T : CustomResource<*, S>> T.patchOrUpdateResourceAndStatus(desiredStatus
         desiredStatus -> UpdateControl.updateResource(this)
         else -> UpdateControl.updateResourceAndPatchStatus(apply { status = desiredStatus })
     }
+
+fun Resource<*>.exists() = get() != null

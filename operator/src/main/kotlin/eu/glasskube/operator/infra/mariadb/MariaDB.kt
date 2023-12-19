@@ -60,6 +60,10 @@ class MariaDB : CustomResource<MariaDBSpec, MariaDBStatus>(), Namespaced {
     override fun setSpec(spec: MariaDBSpec?) {
         super.setSpec(spec)
     }
+
+    companion object {
+        const val CANONICAL_NAME = "mariadbs.mariadb.mmontes.io"
+    }
 }
 
 inline fun mariaDB(block: (@MariaDBDslMarker MariaDB).() -> Unit) =
