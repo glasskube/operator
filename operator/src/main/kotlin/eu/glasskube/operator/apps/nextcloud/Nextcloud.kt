@@ -34,7 +34,7 @@ class Nextcloud :
     internal companion object {
         const val APP_NAME = "nextcloud"
         const val NGINX_NAME = "nginx"
-        const val NGINX_VERSION = "1.25.1"
+        const val NGINX_VERSION = "1.25.3"
         const val NGINX_IMAGE = "$NGINX_NAME:$NGINX_VERSION-alpine"
         const val OFFICE_NAME = "collabora"
     }
