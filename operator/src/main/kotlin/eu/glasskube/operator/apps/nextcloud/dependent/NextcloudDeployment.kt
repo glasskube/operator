@@ -231,7 +231,7 @@ class NextcloudDeployment(private val configService: ConfigService) :
                                 timeoutSeconds = 9
                                 httpGet {
                                     port = intOrString("http")
-                                    path = "/login"
+                                    path = "/status.php"
                                     httpHeaders = listOf(
                                         HTTPHeader("Host", primary.spec.host)
                                     )
@@ -244,7 +244,7 @@ class NextcloudDeployment(private val configService: ConfigService) :
                                 timeoutSeconds = 9
                                 httpGet {
                                     port = intOrString("http")
-                                    path = "/login"
+                                    path = "/status.php"
                                     httpHeaders = listOf(
                                         HTTPHeader("Host", primary.spec.host)
                                     )
