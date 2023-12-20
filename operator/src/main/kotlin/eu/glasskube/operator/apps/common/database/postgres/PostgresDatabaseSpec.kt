@@ -5,7 +5,7 @@ import io.fabric8.generator.annotation.Min
 
 data class PostgresDatabaseSpec(
     @field:Min(1.0)
-    val instances: Int = 1,
+    val instances: Int = 2,
     override val backups: PostgresBackupsSpec? = null,
     override val storage: PostgresStorageSpec? = null
 ) : DatabaseSpec
