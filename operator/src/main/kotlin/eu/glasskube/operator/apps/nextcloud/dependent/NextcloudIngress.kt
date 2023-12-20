@@ -30,7 +30,8 @@ class NextcloudIngress(configService: ConfigService) : DependentIngress<Nextclou
             labels(primary.resourceLabels)
             annotations(
                 getDefaultAnnotations(primary, context) +
-                    ("nginx.ingress.kubernetes.io/proxy-body-size" to "10g")
+                    ("nginx.ingress.kubernetes.io/proxy-body-size" to "10g") +
+                    ("nginx.ingress.kubernetes.io/proxy-buffering" to "off")
             )
         }
         spec {
