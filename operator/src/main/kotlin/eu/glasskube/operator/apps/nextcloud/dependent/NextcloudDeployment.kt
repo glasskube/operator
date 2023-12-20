@@ -228,6 +228,7 @@ class NextcloudDeployment(private val configService: ConfigService) :
                                 periodSeconds = 10
                                 successThreshold = 1
                                 failureThreshold = 3
+                                timeoutSeconds = 9
                                 httpGet {
                                     port = intOrString("http")
                                     path = "/login"
@@ -240,6 +241,7 @@ class NextcloudDeployment(private val configService: ConfigService) :
                                 periodSeconds = 10
                                 successThreshold = 1
                                 failureThreshold = 6
+                                timeoutSeconds = 9
                                 httpGet {
                                     port = intOrString("http")
                                     path = "/login"
