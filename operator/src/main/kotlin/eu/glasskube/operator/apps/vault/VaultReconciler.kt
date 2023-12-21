@@ -121,8 +121,8 @@ class VaultReconciler(webhookService: WebhookService) :
 
     override fun prepareEventSources(context: EventSourceContext<Vault>) = with(context) {
         mutableMapOf(
-            SERVICE_EVENT_SOURCE to informerEventSource<Service>(),
-            CLUSTER_ROLE_BINDING_EVENT_SOURCE to informerEventSource<ClusterRoleBinding> {
+            SERVICE_EVENT_SOURCE to informerEventSource<Service>(SELECTOR),
+            CLUSTER_ROLE_BINDING_EVENT_SOURCE to informerEventSource<ClusterRoleBinding>(SELECTOR) {
                 withSecondaryToPrimaryMapper(Mappers.fromDefaultAnnotations())
             }
         )

@@ -138,19 +138,15 @@ class NextcloudReconciler(webhookService: WebhookService) :
 
     override fun prepareEventSources(context: EventSourceContext<Nextcloud>) = with(context) {
         mutableMapOf(
-            DEPLOYMENT_EVENT_SOURCE to informerEventSource<Deployment>(),
-            SERVICE_EVENT_SOURCE to informerEventSource<Service>(),
-            CRON_JOB_EVENT_SOURCE to informerEventSource<CronJob>()
+            DEPLOYMENT_EVENT_SOURCE to informerEventSource<Deployment>(COMMON_SELECTOR),
+            SERVICE_EVENT_SOURCE to informerEventSource<Service>(COMMON_SELECTOR),
+            CRON_JOB_EVENT_SOURCE to informerEventSource<CronJob>(SELECTOR)
         )
     }
 
     companion object {
-        const val SELECTOR =
-            "${Labels.MANAGED_BY_GLASSKUBE},${Labels.PART_OF}=${Nextcloud.APP_NAME},${Labels.NAME}=${Nextcloud.APP_NAME}"
-        const val OFFICE_SELECTOR =
-            "${Labels.MANAGED_BY_GLASSKUBE},${Labels.PART_OF}=${Nextcloud.APP_NAME},${Labels.NAME}=${Nextcloud.OFFICE_NAME}"
-        const val REDIS_SELECTOR =
-            "${Labels.MANAGED_BY_GLASSKUBE},${Labels.PART_OF}=${Nextcloud.APP_NAME},${Labels.NAME}=${Nextcloud.Redis.NAME}"
+        private const val COMMON_SELECTOR = "${Labels.MANAGED_BY_GLASSKUBE},${Labels.PART_OF}=${Nextcloud.APP_NAME}"
+        const val SELECTOR = "$COMMON_SELECTOR,${Labels.NAME}=${Nextcloud.APP_NAME}"
 
         internal const val SERVICE_EVENT_SOURCE = "NextcloudServiceEventSource"
         internal const val DEPLOYMENT_EVENT_SOURCE = "NextcloudDeploymentEventSource"

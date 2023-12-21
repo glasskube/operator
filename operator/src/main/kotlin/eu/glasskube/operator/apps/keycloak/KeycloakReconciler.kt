@@ -90,7 +90,7 @@ class KeycloakReconciler(webhookService: WebhookService) :
     }
 
     override fun prepareEventSources(context: EventSourceContext<Keycloak>) = with(context) {
-        mutableMapOf(SERVICE_EVENT_SOURCE to informerEventSource<Service>())
+        mutableMapOf(SERVICE_EVENT_SOURCE to informerEventSource<Service>(SELECTOR))
     }
 
     companion object {

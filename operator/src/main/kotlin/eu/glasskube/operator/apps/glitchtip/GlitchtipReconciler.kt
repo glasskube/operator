@@ -26,7 +26,6 @@ import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.infra.postgres.isReady
 import eu.glasskube.operator.processing.CompositeSecondaryToPrimaryMapper
 import eu.glasskube.operator.webhook.WebhookService
-import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.Secret
 import io.fabric8.kubernetes.api.model.Service
@@ -143,10 +142,10 @@ class GlitchtipReconciler(webhookService: WebhookService) :
 
     override fun prepareEventSources(context: EventSourceContext<Glitchtip>) = with(context) {
         mutableMapOf(
-            DEPLOYMENT_EVENT_SOURCE to informerEventSource<Deployment>(),
-            SERVICE_EVENT_SOURCE to informerEventSource<Service>(),
-            CONFIGMAP_EVENT_SOURCE to informerEventSource<ConfigMap>(),
-            SECRET_EVENT_SOURCE to informerEventSource<Secret> {
+            DEPLOYMENT_EVENT_SOURCE to informerEventSource<Deployment>(COMMON_SELECTOR),
+            SERVICE_EVENT_SOURCE to informerEventSource<Service>(COMMON_SELECTOR),
+            CONFIGMAP_EVENT_SOURCE to informerEventSource<ConfigMap>(SELECTOR),
+            SECRET_EVENT_SOURCE to informerEventSource<Secret>(SELECTOR) {
                 withSecondaryToPrimaryMapper(
                     CompositeSecondaryToPrimaryMapper(
                         Mappers.fromOwnerReference(),
@@ -158,16 +157,13 @@ class GlitchtipReconciler(webhookService: WebhookService) :
     }
 
     companion object {
-        const val SELECTOR =
-            "${Labels.MANAGED_BY_GLASSKUBE},${Labels.PART_OF}=${Glitchtip.APP_NAME},${Labels.NAME}=${Glitchtip.APP_NAME}"
-        const val REDIS_SELECTOR =
-            "${Labels.MANAGED_BY_GLASSKUBE},${Labels.PART_OF}=${Glitchtip.APP_NAME},${Labels.NAME}=${Glitchtip.Redis.NAME}"
+        private const val COMMON_SELECTOR = "${Labels.MANAGED_BY_GLASSKUBE},${Labels.PART_OF}=${Glitchtip.APP_NAME}"
+        const val SELECTOR = "$COMMON_SELECTOR,${Labels.NAME}=${Glitchtip.APP_NAME}"
+        const val REDIS_SELECTOR = "$COMMON_SELECTOR,${Labels.NAME}=${Glitchtip.Redis.NAME}"
 
         internal const val DEPLOYMENT_EVENT_SOURCE = "GlitchtipDeploymentEventSource"
         internal const val SERVICE_EVENT_SOURCE = "GlitchtipServiceEventSource"
         internal const val CONFIGMAP_EVENT_SOURCE = "GlitchtipConfigMapEventSource"
         internal const val SECRET_EVENT_SOURCE = "GlitchtipSecretEventSource"
-
-        private val log = logger()
     }
 }

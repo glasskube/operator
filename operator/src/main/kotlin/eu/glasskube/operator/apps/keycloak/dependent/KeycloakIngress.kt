@@ -9,6 +9,7 @@ import eu.glasskube.kubernetes.api.model.extensions.spec
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.operator.apps.keycloak.Keycloak
+import eu.glasskube.operator.apps.keycloak.KeycloakReconciler
 import eu.glasskube.operator.apps.keycloak.genericResourceName
 import eu.glasskube.operator.apps.keycloak.ingressTlsCertName
 import eu.glasskube.operator.apps.keycloak.resourceLabels
@@ -16,7 +17,9 @@ import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.generic.dependent.DependentIngress
 import io.fabric8.kubernetes.api.model.networking.v1.IngressTLS
 import io.javaoperatorsdk.operator.api.reconciler.Context
+import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
+@KubernetesDependent(labelSelector = KeycloakReconciler.SELECTOR)
 class KeycloakIngress(configService: ConfigService) : DependentIngress<Keycloak>(configService) {
     override fun desired(primary: Keycloak, context: Context<Keycloak>) = ingress {
         metadata {

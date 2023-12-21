@@ -6,7 +6,6 @@ import eu.glasskube.kubernetes.api.model.service
 import eu.glasskube.kubernetes.api.model.servicePort
 import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.operator.apps.nextcloud.Nextcloud
-import eu.glasskube.operator.apps.nextcloud.NextcloudReconciler
 import eu.glasskube.operator.apps.nextcloud.officeName
 import eu.glasskube.operator.apps.nextcloud.officeResourceLabelSelector
 import eu.glasskube.operator.apps.nextcloud.officeResourceLabels
@@ -17,10 +16,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernete
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 import io.javaoperatorsdk.operator.processing.event.ResourceID
 
-@KubernetesDependent(
-    labelSelector = NextcloudReconciler.OFFICE_SELECTOR,
-    resourceDiscriminator = NextcloudOfficeService.Discriminator::class
-)
+@KubernetesDependent(resourceDiscriminator = NextcloudOfficeService.Discriminator::class)
 class NextcloudOfficeService : CRUDKubernetesDependentResource<Service, Nextcloud>(Service::class.java) {
 
     class ReconcilePrecondition : IsOfficeEnabledPrecondition<Service>()

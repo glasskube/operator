@@ -6,6 +6,7 @@ import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.apps.nextcloud.Nextcloud
 import eu.glasskube.operator.apps.nextcloud.NextcloudInstallConfig
+import eu.glasskube.operator.apps.nextcloud.NextcloudReconciler
 import eu.glasskube.operator.apps.nextcloud.NextcloudSpec
 import eu.glasskube.operator.apps.nextcloud.configName
 import eu.glasskube.operator.apps.nextcloud.resourceLabels
@@ -16,7 +17,7 @@ import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
-@KubernetesDependent
+@KubernetesDependent(labelSelector = NextcloudReconciler.SELECTOR)
 class NextcloudConfigMap : CRUDKubernetesDependentResource<ConfigMap, Nextcloud>(ConfigMap::class.java) {
     override fun desired(primary: Nextcloud, context: Context<Nextcloud>) = configMap {
         metadata {
