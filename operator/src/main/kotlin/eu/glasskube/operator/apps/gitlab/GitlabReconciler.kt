@@ -128,8 +128,8 @@ class GitlabReconciler(webhookService: WebhookService) :
 
     override fun prepareEventSources(context: EventSourceContext<Gitlab>) = with(context) {
         mutableMapOf(
-            SERVICE_EVENT_SOURCE to informerEventSource<Service>(),
-            INGRESS_EVENT_SOURCE to informerEventSource<Ingress>()
+            SERVICE_EVENT_SOURCE to informerEventSource<Service>(SELECTOR),
+            INGRESS_EVENT_SOURCE to informerEventSource<Ingress>(SELECTOR)
         )
     }
 

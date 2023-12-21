@@ -20,7 +20,6 @@ import eu.glasskube.operator.generic.BaseReconciler
 import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.processing.CompositeSecondaryToPrimaryMapper
 import eu.glasskube.operator.webhook.WebhookService
-import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.Secret
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
@@ -108,7 +107,7 @@ class MetabaseReconciler(webhookService: WebhookService) :
 
     override fun prepareEventSources(context: EventSourceContext<Metabase>) = with(context) {
         mutableMapOf(
-            SECRET_EVENT_SOURCE to informerEventSource<Secret> {
+            SECRET_EVENT_SOURCE to informerEventSource<Secret>(SELECTOR) {
                 withSecondaryToPrimaryMapper(
                     CompositeSecondaryToPrimaryMapper(
                         Mappers.fromOwnerReference(),
@@ -124,8 +123,5 @@ class MetabaseReconciler(webhookService: WebhookService) :
             "${Labels.MANAGED_BY_GLASSKUBE},${Labels.PART_OF}=${Metabase.APP_NAME},${Labels.NAME}=${Metabase.APP_NAME}"
 
         internal const val SECRET_EVENT_SOURCE = "MetabaseSecretEventSource"
-
-        @JvmStatic
-        private val log = logger()
     }
 }

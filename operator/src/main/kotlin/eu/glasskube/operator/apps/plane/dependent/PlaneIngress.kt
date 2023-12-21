@@ -9,6 +9,7 @@ import eu.glasskube.kubernetes.api.model.extensions.spec
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.operator.apps.plane.Plane
+import eu.glasskube.operator.apps.plane.PlaneReconciler
 import eu.glasskube.operator.apps.plane.apiResourceName
 import eu.glasskube.operator.apps.plane.frontendResourceName
 import eu.glasskube.operator.apps.plane.genericResourceLabels
@@ -21,7 +22,7 @@ import io.fabric8.kubernetes.api.model.networking.v1.IngressTLS
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
-@KubernetesDependent
+@KubernetesDependent(labelSelector = PlaneReconciler.SELECTOR)
 class PlaneIngress(configService: ConfigService) : DependentIngress<Plane>(configService) {
     override fun desired(primary: Plane, context: Context<Plane>) = ingress {
         metadata {

@@ -26,7 +26,7 @@ class Plane :
     ResourceWithCloudStorage,
     ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
     object Redis : RedisNameMapper<Plane>() {
-        private const val NAME = "redis"
+        internal const val NAME = "redis"
         private const val VERSION = "7.2.1"
 
         override fun getName(primary: Plane) = "${primary.genericResourceName}-$NAME"

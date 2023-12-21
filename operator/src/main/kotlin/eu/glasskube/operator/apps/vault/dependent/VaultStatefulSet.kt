@@ -23,6 +23,7 @@ import eu.glasskube.operator.apps.vault.Vault
 import eu.glasskube.operator.apps.vault.Vault.Postgres.postgresDatabaseName
 import eu.glasskube.operator.apps.vault.Vault.Postgres.postgresHostName
 import eu.glasskube.operator.apps.vault.Vault.Postgres.postgresSecretName
+import eu.glasskube.operator.apps.vault.VaultReconciler
 import eu.glasskube.operator.apps.vault.appImage
 import eu.glasskube.operator.apps.vault.genericResourceName
 import eu.glasskube.operator.apps.vault.headlessServiceName
@@ -36,7 +37,9 @@ import io.fabric8.kubernetes.api.model.VolumeMount
 import io.fabric8.kubernetes.api.model.apps.StatefulSet
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
+import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
+@KubernetesDependent(labelSelector = VaultReconciler.SELECTOR)
 class VaultStatefulSet(private val configService: ConfigService) :
     CRUDKubernetesDependentResource<StatefulSet, Vault>(StatefulSet::class.java) {
 

@@ -1,5 +1,6 @@
 package eu.glasskube.operator.apps.gitlab.runner
 
+import eu.glasskube.kubernetes.api.model.loggingId
 import eu.glasskube.kubernetes.client.patchOrUpdateStatus
 import eu.glasskube.operator.Labels
 import eu.glasskube.operator.api.reconciler.getSecondaryResource
@@ -24,7 +25,7 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
 )
 class GitlabRunnerReconciler : Reconciler<GitlabRunner> {
     override fun reconcile(resource: GitlabRunner, context: Context<GitlabRunner>): UpdateControl<GitlabRunner> {
-        log.info("Reconciling ${resource.metadata.name}@${resource.metadata.namespace}")
+        log.debug("Reconciling {}", resource.loggingId)
         val readyReplicas = context.getSecondaryResource<Deployment>()
             .map { it.status?.readyReplicas ?: 0 }
             .orElse(0)

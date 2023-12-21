@@ -2,6 +2,7 @@ package eu.glasskube.operator.apps.gitlab.dependent
 
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.operator.apps.gitlab.Gitlab
+import eu.glasskube.operator.apps.gitlab.GitlabReconciler
 import eu.glasskube.operator.apps.gitlab.GitlabRunnerSpecTemplate
 import eu.glasskube.operator.apps.gitlab.resourceLabels
 import eu.glasskube.operator.apps.gitlab.runner.GitlabRunner
@@ -13,7 +14,9 @@ import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.BulkDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.Matcher
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
+import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
+@KubernetesDependent(labelSelector = GitlabReconciler.SELECTOR)
 class GitlabRunners :
     CRUDKubernetesDependentResource<GitlabRunner, Gitlab>(GitlabRunner::class.java),
     BulkDependentResource<GitlabRunner, Gitlab> {

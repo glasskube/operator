@@ -3,6 +3,7 @@ package eu.glasskube.operator.apps.plane
 import eu.glasskube.kubernetes.api.model.loggingId
 import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.kubernetes.client.patchOrUpdateStatus
+import eu.glasskube.operator.Labels
 import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.api.reconciler.informerEventSource
 import eu.glasskube.operator.apps.plane.dependent.PlaneApiConfigMap
@@ -226,10 +227,10 @@ class PlaneReconciler(webhookService: WebhookService) :
 
     override fun prepareEventSources(context: EventSourceContext<Plane>) = with(context) {
         mutableMapOf<String, EventSource>(
-            SERVICE_EVENT_SOURCE to informerEventSource<Service>(),
-            DEPLOYMENT_EVENT_SOURCE to informerEventSource<Deployment>(),
-            CONFIGMAP_EVENT_SOURCE to informerEventSource<ConfigMap>(),
-            SECRET_EVENT_SOURCE to informerEventSource<Secret> {
+            SERVICE_EVENT_SOURCE to informerEventSource<Service>(SELECTOR),
+            DEPLOYMENT_EVENT_SOURCE to informerEventSource<Deployment>(SELECTOR),
+            CONFIGMAP_EVENT_SOURCE to informerEventSource<ConfigMap>(SELECTOR),
+            SECRET_EVENT_SOURCE to informerEventSource<Secret>(SELECTOR) {
                 withSecondaryToPrimaryMapper(
                     CompositeSecondaryToPrimaryMapper(
                         Mappers.fromOwnerReference(),
@@ -241,6 +242,7 @@ class PlaneReconciler(webhookService: WebhookService) :
     }
 
     companion object {
+        internal const val SELECTOR = "${Labels.MANAGED_BY_GLASSKUBE},${Labels.NAME}=${Plane.APP_NAME}"
         internal const val SERVICE_EVENT_SOURCE = "PlaneServiceEventSource"
         internal const val DEPLOYMENT_EVENT_SOURCE = "PlaneDeploymentEventSource"
         internal const val CONFIGMAP_EVENT_SOURCE = "PlaneConfigMapEventSource"

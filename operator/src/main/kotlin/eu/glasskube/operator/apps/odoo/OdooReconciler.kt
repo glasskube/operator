@@ -95,7 +95,7 @@ class OdooReconciler(webhookService: WebhookService) :
 
     override fun prepareEventSources(context: EventSourceContext<Odoo>) = with(context) {
         mutableMapOf(
-            SECRET_EVENT_SOURCE to informerEventSource<Secret> {
+            SECRET_EVENT_SOURCE to informerEventSource<Secret>(SELECTOR) {
                 withSecondaryToPrimaryMapper(
                     CompositeSecondaryToPrimaryMapper(
                         Mappers.fromOwnerReference(),

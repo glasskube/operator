@@ -5,6 +5,7 @@ import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.operator.apps.plane.Plane
 import eu.glasskube.operator.apps.plane.Plane.Postgres.postgresClusterLabels
 import eu.glasskube.operator.apps.plane.Plane.Postgres.postgresClusterName
+import eu.glasskube.operator.apps.plane.PlaneReconciler
 import eu.glasskube.operator.generic.dependent.postgres.PostgresWithoutBackupsSpecCondition
 import eu.glasskube.operator.infra.minio.MinioBucket
 import eu.glasskube.operator.infra.minio.MinioBucketSpec
@@ -13,7 +14,7 @@ import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
-@KubernetesDependent
+@KubernetesDependent(labelSelector = PlaneReconciler.SELECTOR)
 class PlanePostgresMinioBucket : CRUDKubernetesDependentResource<MinioBucket, Plane>(MinioBucket::class.java) {
     internal class ReconcilePrecondition : PostgresWithoutBackupsSpecCondition<MinioBucket, Plane>()
 

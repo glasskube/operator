@@ -106,7 +106,7 @@ class MatomoReconciler(private val kubernetesClient: KubernetesClient, webhookSe
 
     override fun prepareEventSources(context: EventSourceContext<Matomo>) = with(context) {
         mapOf(
-            SECRET_EVENT_SOURCE to informerEventSource<Secret> {
+            SECRET_EVENT_SOURCE to informerEventSource<Secret>(SELECTOR) {
                 withSecondaryToPrimaryMapper(
                     CompositeSecondaryToPrimaryMapper(
                         Mappers.fromOwnerReference(),

@@ -25,7 +25,6 @@ import eu.glasskube.operator.generic.BaseReconciler
 import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.processing.CompositeSecondaryToPrimaryMapper
 import eu.glasskube.operator.webhook.WebhookService
-import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.Secret
 import io.fabric8.kubernetes.api.model.Service
@@ -144,10 +143,10 @@ class GiteaReconciler(webhookService: WebhookService) :
 
     override fun prepareEventSources(context: EventSourceContext<Gitea>) = with(context) {
         mutableMapOf(
-            CONFIG_EVENT_SOURCE_NAME to informerEventSource<ConfigMap>(),
-            SERVICE_EVENT_SOURCE to informerEventSource<Service>(),
-            DEPLOYMENT_EVENT_SOURCE to informerEventSource<Deployment>(),
-            SECRET_EVENT_SOURCE to informerEventSource<Secret> {
+            CONFIG_EVENT_SOURCE_NAME to informerEventSource<ConfigMap>(SELECTOR),
+            SERVICE_EVENT_SOURCE to informerEventSource<Service>(COMMON_SELECTOR),
+            DEPLOYMENT_EVENT_SOURCE to informerEventSource<Deployment>(COMMON_SELECTOR),
+            SECRET_EVENT_SOURCE to informerEventSource<Secret>(SELECTOR) {
                 withSecondaryToPrimaryMapper(
                     CompositeSecondaryToPrimaryMapper(
                         Mappers.fromOwnerReference(),
@@ -159,16 +158,12 @@ class GiteaReconciler(webhookService: WebhookService) :
     }
 
     companion object {
-        const val SELECTOR =
-            "${Labels.MANAGED_BY_GLASSKUBE},${Labels.PART_OF}=${Gitea.APP_NAME},${Labels.NAME}=${Gitea.APP_NAME}"
-        const val REDIS_SELECTOR =
-            "${Labels.MANAGED_BY_GLASSKUBE},${Labels.PART_OF}=${Gitea.APP_NAME},${Labels.NAME}=${Gitea.Redis.NAME}"
+        private const val COMMON_SELECTOR = "${Labels.MANAGED_BY_GLASSKUBE},${Labels.PART_OF}=${Gitea.APP_NAME}"
+        const val SELECTOR = "$COMMON_SELECTOR,${Labels.NAME}=${Gitea.APP_NAME}"
 
         internal const val CONFIG_EVENT_SOURCE_NAME = "GiteaConfigMapEventSource"
         internal const val SERVICE_EVENT_SOURCE = "GiteaServiceEventSource"
         internal const val DEPLOYMENT_EVENT_SOURCE = "GiteaDeploymentEventSource"
         internal const val SECRET_EVENT_SOURCE = "GiteaSecretEventSource"
-
-        private val log = logger()
     }
 }
