@@ -16,9 +16,9 @@ data class GitlabRegistryStorageSpec(
         override val secretKeySecret: SecretKeySelector,
         @field:Required
         override val region: String,
-        override val hostname: String,
+        override val hostname: String?,
         override val port: Int?,
-        override val useSsl: Boolean,
+        override val useSsl: Boolean = true,
         override val usePathStyle: Boolean = false
     ) : CloudStorageSpec
 }
