@@ -55,6 +55,8 @@ class KeycloakDeployment : CRUDKubernetesDependentResource<Deployment, Keycloak>
                         container {
                             name = Keycloak.APP_NAME
                             image = primary.appImage
+                            ports = listOf(containerPort { containerPort = 8080; name = "http" })
+                            resources = primary.spec.resources
                             args = listOf("start")
                             env {
                                 envVars(
@@ -76,16 +78,11 @@ class KeycloakDeployment : CRUDKubernetesDependentResource<Deployment, Keycloak>
                                 envVar("KC_DB_USERNAME") { secretKeyRef(primary.postgresSecretName, "username") }
                                 envVar("KC_DB_PASSWORD") { secretKeyRef(primary.postgresSecretName, "password") }
                             }
-                            ports = listOf(
-                                containerPort {
-                                    containerPort = 8080
-                                    name = "http"
-                                }
-                            )
                             livenessProbe {
                                 periodSeconds = 10
                                 successThreshold = 1
                                 failureThreshold = 6
+                                timeoutSeconds = 9
                                 httpGet {
                                     port = intOrString("http")
                                     path = "/health/live"
@@ -95,6 +92,7 @@ class KeycloakDeployment : CRUDKubernetesDependentResource<Deployment, Keycloak>
                                 periodSeconds = 10
                                 successThreshold = 1
                                 failureThreshold = 3
+                                timeoutSeconds = 9
                                 httpGet {
                                     port = intOrString("http")
                                     path = "/health/ready"
