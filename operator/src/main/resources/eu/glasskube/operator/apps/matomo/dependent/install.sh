@@ -9,9 +9,6 @@ abort() {
 
 ./console core:update --yes || abort "upgrade failed"
 
-# Remove database from maintenance mode after upgrade
-sed -i '/^maintenance_mode = 1$/d; /^\[Tracker\]$/d; /^record_statistics = 0$/d' init.sh
-
 if ./console site:list; then
   echo "site:list exit code was 0. do not create a new site"
 else
@@ -28,3 +25,6 @@ fi
 
 ./console plugin:activate TagManager || abort "could not install tag manager"
 ./console plugin:deactivate ProfessionalServices Marketplace Feedback || echo "could not uninstall professional services, marketplace and feedback"
+
+# Remove database from maintenance mode after upgrade
+sed -i '/^maintenance_mode = 1$/d; /^\[Tracker\]$/d; /^record_statistics = 0$/d' init.sh
