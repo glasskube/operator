@@ -1,8 +1,6 @@
 package eu.glasskube.operator.apps.matomo
 
 import eu.glasskube.kubernetes.client.patchOrUpdateStatus
-import eu.glasskube.kubernetes.client.resources
-import eu.glasskube.operator.api.reconciler.HasRegistrationCondition
 import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.api.reconciler.informerEventSource
 import eu.glasskube.operator.apps.matomo.Matomo.Companion.APP_NAME
@@ -24,7 +22,6 @@ import eu.glasskube.operator.webhook.WebhookService
 import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaim
 import io.fabric8.kubernetes.api.model.Secret
-import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.fabric8.kubernetes.client.KubernetesClient
 import io.javaoperatorsdk.operator.api.reconciler.Context
@@ -57,7 +54,8 @@ import kotlin.jvm.optionals.getOrNull
         Dependent(
             type = MatomoMariaDB::class,
             name = "MatomoMariaDB",
-            readyPostcondition = MatomoMariaDB.ReadyPostCondition::class
+            readyPostcondition = MatomoMariaDB.ReadyPostCondition::class,
+            activationCondition = MatomoMariaDB.ActivationCondition::class
         ),
         Dependent(type = MatomoCronJob::class, name = "MatomoCronJob", dependsOn = ["MatomoDeployment"]),
         Dependent(
@@ -79,15 +77,7 @@ import kotlin.jvm.optionals.getOrNull
     ]
 )
 class MatomoReconciler(private val kubernetesClient: KubernetesClient, webhookService: WebhookService) :
-    BaseReconciler<Matomo>(webhookService), EventSourceInitializer<Matomo>, HasRegistrationCondition {
-
-    override val isRegistrationEnabled
-        get() = kubernetesClient.resources<CustomResourceDefinition>()
-            .withName("mariadbs.mariadb.mmontes.io")
-            .isReady
-
-    override val registrationConditionHint =
-        "CRDs provided by the MariaDB Operator must be present on the cluster."
+    BaseReconciler<Matomo>(webhookService), EventSourceInitializer<Matomo> {
 
     override fun processReconciliation(resource: Matomo, context: Context<Matomo>) = with(context) {
         getSecondaryResources(PersistentVolumeClaim::class.java)

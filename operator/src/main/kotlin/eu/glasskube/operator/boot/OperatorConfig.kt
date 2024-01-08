@@ -6,7 +6,6 @@ import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.jsonMapper
 import com.fasterxml.jackson.module.kotlin.kotlinModule
 import eu.glasskube.operator.Environment
-import eu.glasskube.operator.api.reconciler.HasRegistrationCondition
 import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.client.KubernetesClient
@@ -43,17 +42,7 @@ class OperatorConfig {
     fun operator(configurationService: ConfigurationService, reconcilers: List<Reconciler<*>>) =
         Operator(configurationService).apply {
             reconcilers.forEach {
-                if (it !is HasRegistrationCondition || it.isRegistrationEnabled) {
-                    registerForNamespaceOrCluster(it)
-                } else {
-                    log.warn(
-                        listOfNotNull(
-                            "Reconciler was not registered because it's registration condition is not met: ${it.javaClass.name}.",
-                            it.registrationConditionHint,
-                            "Resources managed by this controller will not be reconciled!"
-                        ).joinToString(" ")
-                    )
-                }
+                registerForNamespaceOrCluster(it)
             }
             start()
         }
