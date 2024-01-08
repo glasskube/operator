@@ -14,7 +14,7 @@ import io.fabric8.kubernetes.client.KubernetesClientBuilder
 import io.fabric8.kubernetes.client.utils.KubernetesSerialization
 import io.javaoperatorsdk.operator.Operator
 import io.javaoperatorsdk.operator.RegisteredController
-import io.javaoperatorsdk.operator.api.config.ConfigurationService
+import io.javaoperatorsdk.operator.api.config.ConfigurationServiceOverrider
 import io.javaoperatorsdk.operator.api.config.ControllerConfigurationOverrider
 import io.javaoperatorsdk.operator.api.reconciler.Constants
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler
@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import java.security.SecureRandom
 import java.util.Random
+import java.util.function.Consumer
 
 @Configuration
 class OperatorConfig {
@@ -39,24 +40,35 @@ class OperatorConfig {
             .withKubernetesSerialization(KubernetesSerialization(objectMapper, true))
             .build()
 
+    @Bean
+    fun configurationServiceOverrider(
+        kubernetesClient: KubernetesClient,
+        dependentResourceFactory: InjectionAwareDependentResourceFactory
+    ): Consumer<ConfigurationServiceOverrider> = Consumer {
+        it.withKubernetesClient(kubernetesClient)
+        it.withDependentResourceFactory(dependentResourceFactory)
+    }
+
     @Bean(destroyMethod = "stop")
-    fun operator(configurationService: ConfigurationService, reconcilers: List<Reconciler<*>>) =
-        Operator(configurationService).apply {
-            reconcilers.forEach {
-                if (it !is HasRegistrationCondition || it.isRegistrationEnabled) {
-                    registerForNamespaceOrCluster(it)
-                } else {
-                    log.warn(
-                        listOfNotNull(
-                            "Reconciler was not registered because it's registration condition is not met: ${it.javaClass.name}.",
-                            it.registrationConditionHint,
-                            "Resources managed by this controller will not be reconciled!"
-                        ).joinToString(" ")
-                    )
-                }
+    fun operator(
+        configurationServiceOverrider: Consumer<ConfigurationServiceOverrider>,
+        reconcilers: List<Reconciler<*>>
+    ) = Operator(configurationServiceOverrider).apply {
+        reconcilers.forEach {
+            if (it !is HasRegistrationCondition || it.isRegistrationEnabled) {
+                registerForNamespaceOrCluster(it)
+            } else {
+                log.warn(
+                    listOfNotNull(
+                        "Reconciler was not registered because it's registration condition is not met: ${it.javaClass.name}.",
+                        it.registrationConditionHint,
+                        "Resources managed by this controller will not be reconciled!"
+                    ).joinToString(" ")
+                )
             }
-            start()
         }
+        start()
+    }
 
     @Bean
     fun random(): Random =
