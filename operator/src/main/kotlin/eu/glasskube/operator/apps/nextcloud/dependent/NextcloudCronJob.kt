@@ -48,6 +48,7 @@ class NextcloudCronJob : CRUDKubernetesDependentResource<CronJob, Nextcloud>(Cro
             schedule = "*/5 * * * *"
             jobTemplate {
                 spec {
+                    backoffLimit = 1
                     template {
                         spec {
                             restartPolicy = "Never"
