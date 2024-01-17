@@ -61,6 +61,10 @@ class NextcloudConfigMap : CRUDKubernetesDependentResource<ConfigMap, Nextcloud>
                         "172.16.0.0/12",
                         "192.168.0.0/16"
                     ),
+                    "trusted_domains" to listOf(
+                        "localhost",
+                        primary.spec.host
+                    ),
                     "log_type" to "errorlog",
                     "log_level" to 2,
                     *primary.spec.apps.oidc?.let {
