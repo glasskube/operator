@@ -32,7 +32,6 @@ import io.fabric8.kubernetes.api.model.PodTemplateSpec
 import io.fabric8.kubernetes.api.model.Probe
 import io.fabric8.kubernetes.api.model.Quantity
 import io.fabric8.kubernetes.api.model.ResourceClaim
-import io.fabric8.kubernetes.api.model.ResourceRequirements
 import io.fabric8.kubernetes.api.model.ResourceRequirementsBuilder
 import io.fabric8.kubernetes.api.model.Secret
 import io.fabric8.kubernetes.api.model.SecretEnvSource
@@ -45,6 +44,7 @@ import io.fabric8.kubernetes.api.model.ServiceSpec
 import io.fabric8.kubernetes.api.model.TCPSocketAction
 import io.fabric8.kubernetes.api.model.Volume
 import io.fabric8.kubernetes.api.model.VolumeMount
+import io.fabric8.kubernetes.api.model.VolumeResourceRequirements
 
 fun HasMetadata.metadata(block: (@KubernetesDslMarker MetadataDsl).() -> Unit) {
     metadata = block.build()
@@ -217,8 +217,8 @@ inline fun PersistentVolumeClaim.spec(block: (@KubernetesDslMarker PersistentVol
     spec = PersistentVolumeClaimSpec().apply(block)
 }
 
-inline fun PersistentVolumeClaimSpec.resources(block: (@KubernetesDslMarker ResourceRequirements).() -> Unit) {
-    resources = ResourceRequirements().apply(block)
+inline fun PersistentVolumeClaimSpec.resources(block: (@KubernetesDslMarker VolumeResourceRequirements).() -> Unit) {
+    resources = VolumeResourceRequirements().apply(block)
 }
 
 inline fun Container.readinessProbe(block: (@KubernetesDslMarker Probe).() -> Unit) {
