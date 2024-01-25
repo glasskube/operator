@@ -33,5 +33,11 @@ data class GiteaSpec(
     val version: String = "1.20.4",
     @field:Nullable
     override val database: PostgresDatabaseSpec = PostgresDatabaseSpec(),
-    override val backups: BackupSpec?
-) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec>
+    override val backups: BackupSpec?,
+    val storage: StorageSpec?
+) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec> {
+    data class StorageSpec(
+        val size: Quantity?,
+        val storageClassName: String?
+    )
+}

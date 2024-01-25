@@ -190,6 +190,16 @@ spec:
                 type: boolean
               sshHost:
                 type: string
+              storage:
+                properties:
+                  size:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    x-kubernetes-int-or-string: true
+                  storageClassName:
+                    type: string
+                type: object
               version:
                 pattern: \d+\.\d+\.\d+
                 type: string
