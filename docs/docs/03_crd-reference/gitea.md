@@ -36,3 +36,13 @@ spec:
 | smtp                | [SmtpSpec](./../common/smtp/)?                                                                                          | `null`       |                                                                                                                                                                |
 | resources           | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)                  |              |                                                                                                                                                                |
 | database            | [PostgresDatabaseSpec](./../common/postgres)?                                                                           |              |                                                                                                                                                                |
+| storage | [StorageSpec](#storagespec)?                                                                                            |              |                                                                                                                                                                |
+ 
+
+### StorageSpec
+
+| Name             | Type      | Default |                                                                                                     |
+|------------------|-----------|---------|-----------------------------------------------------------------------------------------------------|
+| size             | Quantity? | `10Gi`  |                                                                                                     |
+| storageClassName | String?   | `null`   | An empty value will instruct the system to use the default storage class configured in the cluster. |
+
