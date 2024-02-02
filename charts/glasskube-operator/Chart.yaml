@@ -35,7 +35,7 @@ appVersion: "0.12.2"  # x-release-please-version
 dependencies:
   - name: cert-manager
     condition: cert-manager.enabled
-    version: v1.13.3
+    version: v1.14.1
     repository: https://charts.jetstack.io
   - name: kube-prometheus-stack
     condition: kube-prometheus-stack.enabled
