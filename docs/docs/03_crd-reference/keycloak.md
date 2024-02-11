@@ -16,9 +16,14 @@ kind: Keycloak
 metadata:
   name: keycloak
 spec:
+  version: "21.1.2"
   host: keycloak.mycompany.eu
   management:
     enabled: true
+  image: "quay.io/keycloak/keycloak:21.1.2"
+  imagePullSecrets:
+    - name: "secret-name"
+
 ```
 
 ## Spec
@@ -30,7 +35,8 @@ spec:
 | management | [ManagementSpec](#management)                                                                          |            | Configuration of the keycloak management UI                                    |
 | resources  | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |            |                                                                                |
 | database   | [PostgresDatabaseSpec](./../common/postgres)?                                                          |            |                                                                                |
-
+| image      | String                                                                                                 |            | The Docker image to be used for Keycloak deployment.                           |
+| imagePullSecrets| List of [LocalObjectReference](https://github.com/kubernetes-client/java/blob/master/kubernetes/docs/V1LocalObjectReference.md)| | Secrets to pull private Docker images.                       |
 ### ManagementSpec {#management}
 
 | Name    | Type    | Default |                                                          |
