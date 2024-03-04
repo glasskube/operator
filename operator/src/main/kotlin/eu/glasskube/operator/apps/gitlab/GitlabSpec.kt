@@ -34,8 +34,15 @@ data class GitlabSpec(
     @field:Pattern(SEMVER)
     val version: String = "16.2.5",
     @field:Nullable
+    val storage: StorageSpec?,
+    @field:Nullable
     override val database: PostgresDatabaseSpec = PostgresDatabaseSpec(),
     override val backups: BackupSpec?
 ) : HasBackupSpec, HasCloudStorageSpec, HasDatabaseSpec<PostgresDatabaseSpec> {
     override val cloudStorage get() = registry?.storage?.s3
 }
+
+data class StorageSpec(
+    val size: Quantity?,
+    val storageClassName: String?
+)
