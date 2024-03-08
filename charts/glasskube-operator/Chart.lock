@@ -1,7 +1,7 @@
 dependencies:
 - name: cert-manager
   repository: https://charts.jetstack.io
-  version: v1.14.2
+  version: v1.14.4
 - name: kube-prometheus-stack
   repository: https://prometheus-community.github.io/helm-charts
   version: 56.12.0
@@ -14,5 +14,5 @@ dependencies:
 - name: minio
   repository: https://charts.min.io/
   version: 5.0.15
-digest: sha256:09ad34a56b3c34191678d4c27e33ab970d0d5eb904f2ebfeb7de901ccfc270e4
-generated: "2024-02-26T21:57:07.319596602Z"
+digest: sha256:ba9dcaaa4cc9165aade799bb6d142af2fdaa02d7f40e47a40406b0e414b966ce
+generated: "2024-03-08T14:22:47.343449405Z"
