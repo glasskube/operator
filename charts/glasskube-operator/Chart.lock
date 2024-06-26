@@ -7,12 +7,12 @@ dependencies:
   version: 56.12.0
 - name: mariadb-operator
   repository: https://mariadb-operator.github.io/mariadb-operator
-  version: 0.20.0
+  version: 0.29.0
 - name: cloudnative-pg
   repository: https://cloudnative-pg.io/charts/
   version: 0.19.1
 - name: minio
   repository: https://charts.min.io/
   version: 5.0.15
-digest: sha256:09ad34a56b3c34191678d4c27e33ab970d0d5eb904f2ebfeb7de901ccfc270e4
-generated: "2024-02-26T21:57:07.319596602Z"
+digest: sha256:5beec5f2e5914268392a09f8e126f8246424776a2f4c12498a5e6353a30d9cbd
+generated: "2024-06-07T11:08:15.791886422Z"
