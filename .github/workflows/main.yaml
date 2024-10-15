@@ -19,7 +19,7 @@ jobs:
         with:
           java-version: 17
           distribution: zulu
-      - uses: gradle/gradle-build-action@29c0906b64b8fc82467890bfb7a0a7ef34bda89e # v3.1.0
+      - uses: gradle/actions/setup-gradle@d156388eb19639ec20ade50009f3d199ce1e2808 # v4.1.0
         with:
           dependency-graph: generate-and-submit
       - name: Java build
