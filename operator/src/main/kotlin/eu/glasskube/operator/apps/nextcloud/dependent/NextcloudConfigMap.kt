@@ -54,6 +54,7 @@ class NextcloudConfigMap : CRUDKubernetesDependentResource<ConfigMap, Nextcloud>
         context.client.kubernetesSerialization.asJson(
             NextcloudInstallConfig(
                 listOfNotNull(
+                    "maintenance_window_start" to 1,
                     primary.spec.defaultPhoneRegion?.let { "default_phone_region" to it },
                     "overwriteprotocol" to "https",
                     "trusted_proxies" to listOf(
