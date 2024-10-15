@@ -114,6 +114,7 @@ class NextcloudDeployment(private val configService: ConfigService) :
                             args = listOf(
                                 "-c",
                                 listOf(
+                                    "php $OCC_PATH app:disable logreader",
                                     "php $OCC_PATH app:install richdocuments",
                                     "php $OCC_PATH app:install contacts",
                                     "php $OCC_PATH app:install calendar",
