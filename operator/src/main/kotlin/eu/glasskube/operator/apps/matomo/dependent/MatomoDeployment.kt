@@ -138,7 +138,12 @@ class MatomoDeployment(private val configService: ConfigService) :
                         container {
                             name = Matomo.APP_NAME
                             image = primary.appImage
-                            ports = listOf(containerPort { containerPort = 80; name = "http" })
+                            ports = listOf(
+                                containerPort {
+                                    containerPort = 80
+                                    name = "http"
+                                }
+                            )
                             resources = primary.spec.resources
                             envFrom {
                                 secretRef(primary.databaseSecretName)

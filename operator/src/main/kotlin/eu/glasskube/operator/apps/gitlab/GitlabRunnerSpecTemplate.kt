@@ -6,7 +6,7 @@ import io.fabric8.generator.annotation.Pattern
 import io.fabric8.generator.annotation.Required
 
 data class GitlabRunnerSpecTemplate(
-    @field: Required
+    @field:Required
     val token: String,
     val concurrency: Int = 1,
     @field:Pattern(SEMVER)
