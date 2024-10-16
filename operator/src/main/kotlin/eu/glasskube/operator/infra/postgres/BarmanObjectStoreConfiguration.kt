@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import io.fabric8.kubernetes.api.model.SecretKeySelector
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-
 data class BarmanObjectStoreConfiguration(
     val destinationPath: String,
     val endpointURL: String? = null,

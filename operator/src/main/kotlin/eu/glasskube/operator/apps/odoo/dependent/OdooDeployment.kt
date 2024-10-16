@@ -68,7 +68,12 @@ class OdooDeployment(private val configService: ConfigService) :
                                 envVar("USER") { secretKeyRef(primary.postgresSecretName, "username") }
                                 envVar("PASSWORD") { secretKeyRef(primary.postgresSecretName, "password") }
                             }
-                            ports = listOf(containerPort { containerPort = 8069; name = "http" })
+                            ports = listOf(
+                                containerPort {
+                                    containerPort = 8069
+                                    name = "http"
+                                }
+                            )
                             volumeMounts {
                                 volumeMount {
                                     name = Odoo.volumeName

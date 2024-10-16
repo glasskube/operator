@@ -23,7 +23,12 @@ class OdooService : CRUDKubernetesDependentResource<Service, Odoo>(Service::clas
         }
         spec {
             selector = mapOf(OdooReconciler.LABEL to primary.metadata.name)
-            ports = listOf(servicePort { port = 8069; name = "http" })
+            ports = listOf(
+                servicePort {
+                    port = 8069
+                    name = "http"
+                }
+            )
         }
     }
 }

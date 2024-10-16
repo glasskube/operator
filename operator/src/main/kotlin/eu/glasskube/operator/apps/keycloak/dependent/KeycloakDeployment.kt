@@ -55,7 +55,12 @@ class KeycloakDeployment : CRUDKubernetesDependentResource<Deployment, Keycloak>
                         container {
                             name = Keycloak.APP_NAME
                             image = primary.appImage
-                            ports = listOf(containerPort { containerPort = 8080; name = "http" })
+                            ports = listOf(
+                                containerPort {
+                                    containerPort = 8080
+                                    name = "http"
+                                }
+                            )
                             resources = primary.spec.resources
                             args = listOf("start")
                             env {
