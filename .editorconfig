@@ -14,4 +14,9 @@ trim_trailing_whitespace = false
 
 [*.{kt,kts}]
 indent_size = 4
-ktlint_disabled_rules = enum-entry-name-case
+ktlint_code_style = intellij_idea
+ktlint_standard_trailing-comma-on-declaration-site = disabled
+ktlint_standard_trailing-comma-on-call-site = disabled
+ktlint_standard_if-else-wrapping = disabled
+ktlint_standard_enum-entry-name-case = disabled
+ktlint_standard_property-naming = disabled
