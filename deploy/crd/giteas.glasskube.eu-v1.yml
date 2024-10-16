@@ -63,8 +63,8 @@ spec:
                       useSsl:
                         type: boolean
                     required:
-                    - bucket
                     - accessKeySecret
+                    - bucket
                     - secretKeySecret
                     type: object
                   schedule:
@@ -115,8 +115,8 @@ spec:
                                 type: boolean
                             type: object
                         required:
-                        - bucket
                         - accessKeySecret
+                        - bucket
                         - secretKeySecret
                         type: object
                       schedule:
@@ -182,9 +182,9 @@ spec:
                   tlsEnabled:
                     type: boolean
                 required:
-                - host
-                - fromAddress
                 - authSecret
+                - fromAddress
+                - host
                 type: object
               sshEnabled:
                 type: boolean
