@@ -30,8 +30,8 @@ spec:
                 pattern: \d+\.\d+\.\d+
                 type: string
             required:
-            - token
             - gitlab
+            - token
             type: object
           status:
             properties:
