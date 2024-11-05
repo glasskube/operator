@@ -63,7 +63,15 @@ class MatomoConfigSecret(private val objectMapper: ObjectMapper) :
                         "type" to "LOGIN",
                         "username" to authSecret.data.getValue("username").decodeBase64(),
                         "password" to authSecret.data.getValue("password").decodeBase64(),
-                        "encryption" to if (smtp.tlsEnabled) "tls" else ""
+                        "encryption" to
+                            when (smtp.tlsEnabled) {
+                                true -> when (smtp.port) {
+                                    465, 2465 -> "ssl"
+                                    else -> "tls"
+                                }
+
+                                false -> ""
+                            }
                     )
                 }
             }
