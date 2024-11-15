@@ -25,9 +25,10 @@ class GitlabVolume : CRUDKubernetesDependentResource<PersistentVolumeClaim, Gitl
         spec {
             resources {
                 requests = mapOf(
-                    "storage" to Quantity("20", "Gi")
+                    "storage" to (primary.spec.storage?.size ?: Quantity("20", "Gi"))
                 )
             }
+            storageClassName = primary.spec.storage?.storageClassName
             accessModes = listOf("ReadWriteOnce")
         }
     }
