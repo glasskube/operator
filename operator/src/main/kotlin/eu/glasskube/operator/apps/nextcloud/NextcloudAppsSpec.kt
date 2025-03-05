@@ -3,6 +3,8 @@ package eu.glasskube.operator.apps.nextcloud
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Required
 import io.fabric8.kubernetes.api.model.LocalObjectReference
+import io.fabric8.kubernetes.api.model.Quantity
+import io.fabric8.kubernetes.api.model.ResourceRequirements
 
 data class NextcloudAppsSpec(
     @field:Nullable
@@ -12,8 +14,15 @@ data class NextcloudAppsSpec(
 ) {
     data class Office(
         val host: String,
-        val version: String = "23.05.2.2.1"
+        val version: String = "23.05.2.2.1",
+        @field:Nullable
+        val resources: ResourceRequirements = ResourceRequirements(
+            null,
+            mapOf("memory" to Quantity("500", "Mi")),
+            null
+        ),
     )
+
     data class Oidc(
         @field:Required
         val name: String,
