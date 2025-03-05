@@ -8,17 +8,14 @@ import eu.glasskube.kubernetes.api.model.container
 import eu.glasskube.kubernetes.api.model.containerPort
 import eu.glasskube.kubernetes.api.model.env
 import eu.glasskube.kubernetes.api.model.envVar
-import eu.glasskube.kubernetes.api.model.limits
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.namespace
-import eu.glasskube.kubernetes.api.model.resources
 import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.operator.apps.nextcloud.Nextcloud
 import eu.glasskube.operator.apps.nextcloud.image
 import eu.glasskube.operator.apps.nextcloud.officeName
 import eu.glasskube.operator.apps.nextcloud.officeResourceLabelSelector
 import eu.glasskube.operator.apps.nextcloud.officeResourceLabels
-import io.fabric8.kubernetes.api.model.Quantity
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
@@ -54,9 +51,7 @@ class NextcloudOfficeDeployment : CRUDKubernetesDependentResource<Deployment, Ne
                         container {
                             name = Nextcloud.OFFICE_NAME
                             image = primary.spec.apps.office!!.image
-                            resources {
-                                limits(memory = Quantity("500", "Mi"))
-                            }
+                            resources = primary.spec.apps.office!!.resources
                             env {
                                 envVar("extra_params", "--o:ssl.enable=false --o:ssl.termination=true")
                                 envVar("aliasgroup1", "https://${primary.spec.host}:443")
