@@ -18,8 +18,8 @@ data class NextcloudAppsSpec(
         @field:Nullable
         val resources: ResourceRequirements = ResourceRequirements(
             null,
-            mapOf("memory" to Quantity("500", "Mi")),
-            null
+            mapOf("memory" to Quantity("800", "Mi")),
+            mapOf("memory" to Quantity("600", "Mi")),
         ),
     )
 
