@@ -7,7 +7,7 @@ subprojects {
 }
 
 plugins {
-    id("net.researchgate.release") version "3.0.2"
+    id("net.researchgate.release") version "3.1.0"
 }
 
 configure<ReleaseExtension> {
