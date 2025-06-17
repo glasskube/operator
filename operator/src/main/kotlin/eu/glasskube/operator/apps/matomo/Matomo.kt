@@ -30,8 +30,15 @@ data class MatomoSpec(
     ),
     val version: String = "4.15.1.1",
     override val database: MariaDbDatabaseSpec = MariaDbDatabaseSpec(),
-    override val backups: BackupSpec?
-) : HasBackupSpec, HasDatabaseSpec<MariaDbDatabaseSpec>
+    override val backups: BackupSpec?,
+    val storage: StorageSpec?,
+) : HasBackupSpec, HasDatabaseSpec<MariaDbDatabaseSpec> {
+
+    data class StorageSpec(
+        val size: Quantity?,
+        val storageClassName: String?,
+    )
+}
 
 data class MatomoStatus(val readyReplicas: Int) : HasReadyStatus {
     override val isReady get() = readyReplicas > 0

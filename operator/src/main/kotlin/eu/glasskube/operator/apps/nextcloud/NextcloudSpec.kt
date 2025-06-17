@@ -45,6 +45,8 @@ data class NextcloudSpec(
     )
 
     data class StorageSpec(
+        val size: Quantity?,
+        val storageClassName: String?,
         val s3: S3?
     ) {
         data class S3(

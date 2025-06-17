@@ -63,6 +63,9 @@ class VaultStatefulSet(private val configService: ConfigService) :
                         spec {
                             resources { requests = mapOf("storage" to auditStorage.size) }
                             accessModes = listOf("ReadWriteOnce")
+                            auditStorage.storageClassName?.let {
+                                storageClassName = it
+                            }
                         }
                     }
                 }

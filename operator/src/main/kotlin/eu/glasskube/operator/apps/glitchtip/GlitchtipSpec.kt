@@ -28,5 +28,11 @@ data class GlitchtipSpec(
     val version: String = "3.4.0",
     @field:Nullable
     override val database: PostgresDatabaseSpec = PostgresDatabaseSpec(),
-    override val backups: BackupSpec?
-) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec>
+    override val backups: BackupSpec?,
+    val storage: StorageSpec?,
+) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec> {
+    data class StorageSpec(
+        val size: Quantity?,
+        val storageClassName: String?,
+    )
+}

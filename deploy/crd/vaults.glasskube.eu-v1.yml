@@ -27,6 +27,8 @@ spec:
                     - type: integer
                     - type: string
                     x-kubernetes-int-or-string: true
+                  storageClassName:
+                    type: string
                 required:
                 - enabled
                 type: object

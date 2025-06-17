@@ -59,7 +59,8 @@ data class VaultSpec(
     data class AuditStorageSpec(
         @field:Required
         val enabled: Boolean = false,
-        val size: Quantity = Quantity("1", "Gi")
+        val size: Quantity = Quantity("1", "Gi"),
+        val storageClassName: String? = null,
     )
 
     companion object {

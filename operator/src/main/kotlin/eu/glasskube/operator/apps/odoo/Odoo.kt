@@ -16,6 +16,7 @@ import eu.glasskube.utils.resourceLabels
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Pattern
 import io.fabric8.kubernetes.api.model.Namespaced
+import io.fabric8.kubernetes.api.model.Quantity
 import io.fabric8.kubernetes.api.model.ResourceRequirements
 import io.fabric8.kubernetes.client.CustomResource
 import io.fabric8.kubernetes.model.annotation.Group
@@ -30,8 +31,15 @@ data class OdooSpec(
     val version: String = "16.0.20230901",
     @field:Nullable
     override val database: PostgresDatabaseSpec = PostgresDatabaseSpec(),
-    override val backups: BackupSpec?
-) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec>
+    override val backups: BackupSpec?,
+    val storage: StorageSpec?,
+) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec> {
+
+    data class StorageSpec(
+        val size: Quantity?,
+        val storageClassName: String?,
+    )
+}
 
 data class OdooStatus(
     val ready: Boolean = false,
