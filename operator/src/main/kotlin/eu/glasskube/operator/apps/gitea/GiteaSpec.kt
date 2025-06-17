@@ -38,6 +38,7 @@ data class GiteaSpec(
 ) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec> {
     data class StorageSpec(
         val size: Quantity?,
-        val storageClassName: String?
+        val storageClassName: String?,
+        val accessMode: String?
     )
 }

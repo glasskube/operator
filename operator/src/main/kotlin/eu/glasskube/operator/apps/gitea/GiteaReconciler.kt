@@ -25,6 +25,7 @@ import eu.glasskube.operator.generic.BaseReconciler
 import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.processing.CompositeSecondaryToPrimaryMapper
 import eu.glasskube.operator.webhook.WebhookService
+import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.ConfigMap
 import io.fabric8.kubernetes.api.model.Secret
 import io.fabric8.kubernetes.api.model.Service
@@ -132,6 +133,13 @@ class GiteaReconciler(webhookService: WebhookService) :
         val redisDeployment: Deployment? by secondaryResource(GiteaRedisDeployment.Discriminator())
         val postgresCluster: PostgresCluster? by secondaryResource()
 
+        if (resource.spec.replicas > 1
+            && resource.spec.storage?.accessMode != null
+            && resource.spec.storage?.accessMode != "ReadWriteMany") {
+            log.warn ("multiple replicas is not compatible with storage access mode {}",
+                resource.spec.storage?.accessMode)
+        }
+
         resource.patchOrUpdateStatus(
             GiteaStatus(
                 readyReplicas = deployment?.status?.readyReplicas ?: 0,
@@ -158,6 +166,8 @@ class GiteaReconciler(webhookService: WebhookService) :
     }
 
     companion object {
+        private val log = logger()
+
         private const val COMMON_SELECTOR = "${Labels.MANAGED_BY_GLASSKUBE},${Labels.PART_OF}=${Gitea.APP_NAME}"
         const val SELECTOR = "$COMMON_SELECTOR,${Labels.NAME}=${Gitea.APP_NAME}"
 
