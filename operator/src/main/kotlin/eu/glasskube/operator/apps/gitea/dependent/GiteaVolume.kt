@@ -32,7 +32,7 @@ class GiteaVolume : CRUDKubernetesDependentResource<PersistentVolumeClaim, Gitea
                 )
             }
             storageClassName = primary.spec.storage?.storageClassName
-            accessModes = listOf("ReadWriteMany")
+            accessModes = listOf(primary.spec.storage?.accessMode ?: "ReadWriteMany")
         }
     }
 

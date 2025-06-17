@@ -192,6 +192,8 @@ spec:
                 type: string
               storage:
                 properties:
+                  accessMode:
+                    type: string
                   size:
                     anyOf:
                     - type: integer
