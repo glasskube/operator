@@ -133,11 +133,14 @@ class GiteaReconciler(webhookService: WebhookService) :
         val redisDeployment: Deployment? by secondaryResource(GiteaRedisDeployment.Discriminator())
         val postgresCluster: PostgresCluster? by secondaryResource()
 
-        if (resource.spec.replicas > 1
-            && resource.spec.storage?.accessMode != null
-            && resource.spec.storage?.accessMode != "ReadWriteMany") {
-            log.warn ("multiple replicas is not compatible with storage access mode {}",
-                resource.spec.storage?.accessMode)
+        if (resource.spec.replicas > 1 &&
+            resource.spec.storage?.accessMode != null &&
+            resource.spec.storage?.accessMode != "ReadWriteMany"
+        ) {
+            log.warn(
+                "multiple replicas is not compatible with storage access mode {}",
+                resource.spec.storage?.accessMode
+            )
         }
 
         resource.patchOrUpdateStatus(
