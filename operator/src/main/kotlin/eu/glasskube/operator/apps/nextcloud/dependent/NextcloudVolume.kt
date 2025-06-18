@@ -27,8 +27,11 @@ class NextcloudVolume :
         spec {
             resources {
                 requests = mapOf(
-                    "storage" to Quantity("20", "Gi")
+                    "storage" to (primary.spec.storage?.size ?: Quantity("20", "Gi"))
                 )
+            }
+            primary.spec.storage?.storageClassName?.let {
+                storageClassName = it
             }
             accessModes = listOf("ReadWriteOnce")
         }

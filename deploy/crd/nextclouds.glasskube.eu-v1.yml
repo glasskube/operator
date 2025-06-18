@@ -293,6 +293,13 @@ spec:
                     - bucket
                     - secretKeySecret
                     type: object
+                  size:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    x-kubernetes-int-or-string: true
+                  storageClassName:
+                    type: string
                 type: object
               version:
                 pattern: \d+\.\d+\.\d+

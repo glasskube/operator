@@ -27,8 +27,11 @@ class GlitchtipVolume :
         spec {
             resources {
                 requests = mapOf(
-                    "storage" to Quantity("10", "Gi")
+                    "storage" to (primary.spec.storage?.size ?: Quantity("10", "Gi"))
                 )
+            }
+            primary.spec.storage?.storageClassName?.let {
+                storageClassName = it
             }
             accessModes = listOf("ReadWriteMany")
         }

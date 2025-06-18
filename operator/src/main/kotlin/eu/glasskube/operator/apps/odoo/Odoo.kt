@@ -8,6 +8,7 @@ import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
 import eu.glasskube.operator.apps.common.database.HasReadyStatus
 import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
+import eu.glasskube.operator.apps.common.storage.GenericStorageSpec
 import eu.glasskube.operator.apps.odoo.Odoo.Postgres.postgresClusterLabelSelector
 import eu.glasskube.operator.generic.dependent.backups.VeleroNameMapper
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
@@ -30,7 +31,8 @@ data class OdooSpec(
     val version: String = "16.0.20230901",
     @field:Nullable
     override val database: PostgresDatabaseSpec = PostgresDatabaseSpec(),
-    override val backups: BackupSpec?
+    override val backups: BackupSpec?,
+    val storage: GenericStorageSpec?,
 ) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec>
 
 data class OdooStatus(

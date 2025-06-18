@@ -5,6 +5,7 @@ import eu.glasskube.operator.apps.common.backup.HasBackupSpec
 import eu.glasskube.operator.apps.common.cloudstorage.HasCloudStorageSpec
 import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
+import eu.glasskube.operator.apps.common.storage.GenericStorageSpec
 import eu.glasskube.operator.validation.Patterns.SEMVER
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Pattern
@@ -35,7 +36,8 @@ data class GitlabSpec(
     val version: String = "16.2.5",
     @field:Nullable
     override val database: PostgresDatabaseSpec = PostgresDatabaseSpec(),
-    override val backups: BackupSpec?
+    override val backups: BackupSpec?,
+    val storage: GenericStorageSpec?
 ) : HasBackupSpec, HasCloudStorageSpec, HasDatabaseSpec<PostgresDatabaseSpec> {
     override val cloudStorage get() = registry?.storage?.s3
 }

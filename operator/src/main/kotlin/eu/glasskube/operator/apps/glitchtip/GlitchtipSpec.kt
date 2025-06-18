@@ -4,6 +4,7 @@ import eu.glasskube.operator.apps.common.backup.BackupSpec
 import eu.glasskube.operator.apps.common.backup.HasBackupSpec
 import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
+import eu.glasskube.operator.apps.common.storage.GenericStorageSpec
 import eu.glasskube.operator.validation.Patterns.SEMVER
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Pattern
@@ -28,5 +29,6 @@ data class GlitchtipSpec(
     val version: String = "3.4.0",
     @field:Nullable
     override val database: PostgresDatabaseSpec = PostgresDatabaseSpec(),
-    override val backups: BackupSpec?
+    override val backups: BackupSpec?,
+    val storage: GenericStorageSpec?,
 ) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec>
