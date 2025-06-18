@@ -77,6 +77,7 @@ gitProperties {
         "git.commit.time"
     )
     dateFormat = "yyyy-MM-dd'T'HH:mmX"
+    dotGitDirectory = rootProject.layout.projectDirectory.dir(".git")
 }
 
 tasks.create("clearCrd", Delete::class) {
