@@ -5,7 +5,7 @@ import eu.glasskube.operator.apps.common.backup.BackupSpec
 import eu.glasskube.operator.apps.common.backup.HasBackupSpec
 import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
-import eu.glasskube.operator.apps.common.storage.GenericStorageSpec
+import eu.glasskube.operator.apps.common.storage.StorageSpec
 import eu.glasskube.operator.validation.Patterns.SEMVER
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Pattern
@@ -35,5 +35,11 @@ data class GiteaSpec(
     @field:Nullable
     override val database: PostgresDatabaseSpec = PostgresDatabaseSpec(),
     override val backups: BackupSpec?,
-    val storage: GenericStorageSpec?
-) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec>
+    val storage: GiteaStorageSpec?
+) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec> {
+    data class GiteaStorageSpec(
+        override val size: Quantity?,
+        override val storageClassName: String?,
+        val accessMode: String?
+    ) : StorageSpec
+}
