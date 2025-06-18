@@ -33,8 +33,7 @@ data class OdooSpec(
     override val database: PostgresDatabaseSpec = PostgresDatabaseSpec(),
     override val backups: BackupSpec?,
     val storage: GenericStorageSpec?,
-) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec> {
-}
+) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec>
 
 data class OdooStatus(
     val ready: Boolean = false,
