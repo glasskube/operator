@@ -6,6 +6,7 @@ import eu.glasskube.operator.apps.common.cloudstorage.CloudStorageSpec
 import eu.glasskube.operator.apps.common.cloudstorage.HasCloudStorageSpec
 import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
+import eu.glasskube.operator.apps.common.storage.StorageSpec
 import eu.glasskube.operator.validation.Patterns
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Pattern
@@ -20,7 +21,7 @@ data class NextcloudSpec(
     val apps: NextcloudAppsSpec = NextcloudAppsSpec(),
     @field:Nullable
     val smtp: NextcloudSmtpSpec?,
-    val storage: StorageSpec?,
+    val storage: NextcloudStorageSpec?,
     @field:Pattern(Patterns.SEMVER)
     val version: String = "27.0.1",
     val server: ServerSpec = ServerSpec(),
@@ -44,11 +45,11 @@ data class NextcloudSpec(
         val maxSpareServers: Int = maxChildren / 4
     )
 
-    data class StorageSpec(
-        val size: Quantity?,
-        val storageClassName: String?,
+    data class NextcloudStorageSpec(
+        override val size: Quantity?,
+        override val storageClassName: String?,
         val s3: S3?
-    ) {
+    ) : StorageSpec {
         data class S3(
             @field:Required
             override val bucket: String,

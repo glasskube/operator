@@ -8,6 +8,7 @@ import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
 import eu.glasskube.operator.apps.common.database.HasReadyStatus
 import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
+import eu.glasskube.operator.apps.common.storage.GenericStorageSpec
 import eu.glasskube.operator.apps.odoo.Odoo.Postgres.postgresClusterLabelSelector
 import eu.glasskube.operator.generic.dependent.backups.VeleroNameMapper
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
@@ -16,7 +17,6 @@ import eu.glasskube.utils.resourceLabels
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Pattern
 import io.fabric8.kubernetes.api.model.Namespaced
-import io.fabric8.kubernetes.api.model.Quantity
 import io.fabric8.kubernetes.api.model.ResourceRequirements
 import io.fabric8.kubernetes.client.CustomResource
 import io.fabric8.kubernetes.model.annotation.Group
@@ -32,13 +32,8 @@ data class OdooSpec(
     @field:Nullable
     override val database: PostgresDatabaseSpec = PostgresDatabaseSpec(),
     override val backups: BackupSpec?,
-    val storage: StorageSpec?,
+    val storage: GenericStorageSpec?,
 ) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec> {
-
-    data class StorageSpec(
-        val size: Quantity?,
-        val storageClassName: String?,
-    )
 }
 
 data class OdooStatus(

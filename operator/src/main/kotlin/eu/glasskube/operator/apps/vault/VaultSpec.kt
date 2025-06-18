@@ -5,6 +5,7 @@ import eu.glasskube.operator.apps.common.backup.BackupSpec
 import eu.glasskube.operator.apps.common.backup.HasBackupSpec
 import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
+import eu.glasskube.operator.apps.common.storage.StorageSpec
 import eu.glasskube.operator.validation.Patterns
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Pattern
@@ -59,9 +60,9 @@ data class VaultSpec(
     data class AuditStorageSpec(
         @field:Required
         val enabled: Boolean = false,
-        val size: Quantity = Quantity("1", "Gi"),
-        val storageClassName: String? = null,
-    )
+        override val size: Quantity = Quantity("1", "Gi"),
+        override val storageClassName: String? = null,
+    ) : StorageSpec
 
     companion object {
         private val defaultResourceRequirements

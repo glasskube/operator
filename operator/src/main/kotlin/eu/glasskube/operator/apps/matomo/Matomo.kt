@@ -8,6 +8,7 @@ import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
 import eu.glasskube.operator.apps.common.database.HasReadyStatus
 import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
 import eu.glasskube.operator.apps.common.database.mariadb.MariaDbDatabaseSpec
+import eu.glasskube.operator.apps.common.storage.GenericStorageSpec
 import eu.glasskube.operator.generic.dependent.backups.VeleroNameMapper
 import eu.glasskube.utils.resourceLabels
 import io.fabric8.generator.annotation.Nullable
@@ -31,14 +32,8 @@ data class MatomoSpec(
     val version: String = "4.15.1.1",
     override val database: MariaDbDatabaseSpec = MariaDbDatabaseSpec(),
     override val backups: BackupSpec?,
-    val storage: StorageSpec?,
-) : HasBackupSpec, HasDatabaseSpec<MariaDbDatabaseSpec> {
-
-    data class StorageSpec(
-        val size: Quantity?,
-        val storageClassName: String?,
-    )
-}
+    val storage: GenericStorageSpec?,
+) : HasBackupSpec, HasDatabaseSpec<MariaDbDatabaseSpec>
 
 data class MatomoStatus(val readyReplicas: Int) : HasReadyStatus {
     override val isReady get() = readyReplicas > 0
