@@ -66,6 +66,13 @@ spec:
                 required:
                 - s3
                 type: object
+              compatibility:
+                properties:
+                  hostnameV2Enabled:
+                    type: boolean
+                  managementPortEnabled:
+                    type: boolean
+                type: object
               database:
                 nullable: true
                 properties:
