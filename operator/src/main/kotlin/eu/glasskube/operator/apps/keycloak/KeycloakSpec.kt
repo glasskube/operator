@@ -23,9 +23,15 @@ data class KeycloakSpec(
     val version: String = "21.1.2",
     @field:Nullable
     override val database: PostgresDatabaseSpec = PostgresDatabaseSpec(),
-    override val backups: BackupSpec?
+    override val backups: BackupSpec?,
+    val compatibility: CompatibilitySpec? = null
 ) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec> {
     data class ManagementSpec(val enabled: Boolean = true)
+
+    data class CompatibilitySpec(
+        val hostnameV2Enabled: Boolean = false,
+        val managementPortEnabled: Boolean = false,
+    )
 
     companion object {
         private val defaultResourceRequirements

@@ -55,10 +55,17 @@ class KeycloakDeployment : CRUDKubernetesDependentResource<Deployment, Keycloak>
                         container {
                             name = Keycloak.APP_NAME
                             image = primary.appImage
-                            ports = listOf(
+                            imagePullPolicy = "IfNotPresent"
+                            ports = listOfNotNull(
                                 containerPort {
                                     containerPort = 8080
                                     name = "http"
+                                },
+                                primary.spec.compatibility?.managementPortEnabled.takeIf { it == true }?.let {
+                                    containerPort {
+                                        containerPort = 9000
+                                        name = "management"
+                                    }
                                 }
                             )
                             resources = primary.spec.resources
@@ -70,16 +77,25 @@ class KeycloakDeployment : CRUDKubernetesDependentResource<Deployment, Keycloak>
                                     "KC_DB" to "postgres",
                                     "KC_DB_URL_HOST" to primary.postgresHostName,
                                     "KC_HEALTH_ENABLED" to "true",
-                                    "KC_HOSTNAME" to primary.spec.host,
                                     "KC_HOSTNAME_STRICT" to "false",
-                                    "KC_HOSTNAME_STRICT_BACKCHANNEL" to "false",
                                     "KC_HTTP_ENABLED" to "true",
                                     "KC_HTTP_PORT" to "8080",
-                                    "KC_PROXY" to "edge",
                                     "KEYCLOAK_ADMIN" to "root",
                                     "KEYCLOAK_ADMIN_PASSWORD" to "glasskube-operator",
                                     "jgroups.dns.query" to primary.discoveryServiceName
                                 )
+                                if (primary.spec.compatibility?.hostnameV2Enabled == true) {
+                                    envVars(
+                                        "KC_HOSTNAME" to "https://" + primary.spec.host + "/",
+                                        "KC_HOSTNAME_BACKCHANNEL_DYNAMIC" to "true",
+                                    )
+                                } else {
+                                    envVars(
+                                        "KC_HOSTNAME" to primary.spec.host,
+                                        "KC_HOSTNAME_STRICT_BACKCHANNEL" to "false",
+                                        "KC_PROXY" to "edge",
+                                    )
+                                }
                                 envVar("KC_DB_USERNAME") { secretKeyRef(primary.postgresSecretName, "username") }
                                 envVar("KC_DB_PASSWORD") { secretKeyRef(primary.postgresSecretName, "password") }
                             }
@@ -89,7 +105,13 @@ class KeycloakDeployment : CRUDKubernetesDependentResource<Deployment, Keycloak>
                                 failureThreshold = 6
                                 timeoutSeconds = 9
                                 httpGet {
-                                    port = intOrString("http")
+                                    port = intOrString(
+                                        if (primary.spec.compatibility?.managementPortEnabled == true) {
+                                            "management"
+                                        } else {
+                                            "http"
+                                        }
+                                    )
                                     path = "/health/live"
                                 }
                             }
@@ -99,7 +121,13 @@ class KeycloakDeployment : CRUDKubernetesDependentResource<Deployment, Keycloak>
                                 failureThreshold = 3
                                 timeoutSeconds = 9
                                 httpGet {
-                                    port = intOrString("http")
+                                    port = intOrString(
+                                        if (primary.spec.compatibility?.managementPortEnabled == true) {
+                                            "management"
+                                        } else {
+                                            "http"
+                                        }
+                                    )
                                     path = "/health/ready"
                                 }
                             }
