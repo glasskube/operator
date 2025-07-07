@@ -106,8 +106,11 @@ class KeycloakDeployment : CRUDKubernetesDependentResource<Deployment, Keycloak>
                                 timeoutSeconds = 9
                                 httpGet {
                                     port = intOrString(
-                                        if (primary.spec.compatibility?.managementPortEnabled == true) "management"
-                                        else "http"
+                                        if (primary.spec.compatibility?.managementPortEnabled == true) {
+                                            "management"
+                                        } else {
+                                            "http"
+                                        }
                                     )
                                     path = "/health/live"
                                 }
@@ -119,8 +122,11 @@ class KeycloakDeployment : CRUDKubernetesDependentResource<Deployment, Keycloak>
                                 timeoutSeconds = 9
                                 httpGet {
                                     port = intOrString(
-                                        if (primary.spec.compatibility?.managementPortEnabled == true) "management"
-                                        else "http"
+                                        if (primary.spec.compatibility?.managementPortEnabled == true) {
+                                            "management"
+                                        } else {
+                                            "http"
+                                        }
                                     )
                                     path = "/health/ready"
                                 }
