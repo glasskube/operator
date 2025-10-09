@@ -47,8 +47,10 @@ class GitlabConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitlab>(Confi
         get() = mapOf(
             "GITLAB_HOST" to spec.host,
             "DB_HOST" to postgresHostName,
-            "GITLAB_OMNIBUS_CONFIG" to (spec.omnibusConfigOverride
-                ?: if (isMajorVersionAtLeast(17)) gitlab17OmnibusConfig else gitlabOmnibusConfig)
+            "GITLAB_OMNIBUS_CONFIG" to (
+                spec.omnibusConfigOverride
+                    ?: if (isMajorVersionAtLeast(17)) gitlab17OmnibusConfig else gitlabOmnibusConfig
+                )
         )
 
     private val Gitlab.sshData: Map<String, String>

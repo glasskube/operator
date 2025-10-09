@@ -68,5 +68,4 @@ val Gitlab.ingressTlsCertName get() = "$genericResourceName-cert"
 fun Gitlab.isMajorVersionAtLeast(major: Int) =
     Regex("\\d+").find(spec.version)?.value?.toIntOrNull()?.let { it >= major } ?: false
 
-
 fun KubernetesClient.gitlabs() = resources<Gitlab>()
