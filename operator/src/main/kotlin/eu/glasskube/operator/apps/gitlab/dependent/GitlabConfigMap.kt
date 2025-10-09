@@ -7,6 +7,7 @@ import eu.glasskube.operator.apps.gitlab.Gitlab
 import eu.glasskube.operator.apps.gitlab.Gitlab.Postgres.postgresHostName
 import eu.glasskube.operator.apps.gitlab.GitlabReconciler
 import eu.glasskube.operator.apps.gitlab.configMapName
+import eu.glasskube.operator.apps.gitlab.isMajorVersionAtLeast
 import eu.glasskube.operator.apps.gitlab.resourceLabels
 import eu.glasskube.utils.logger
 import eu.glasskube.utils.resourceAsString
@@ -21,6 +22,9 @@ class GitlabConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitlab>(Confi
 
     private val gitlabOmnibusConfig: String
         get() = resourceAsString("gitlab.rb")
+
+    private val gitlab17OmnibusConfig: String
+        get() = resourceAsString("gitlab-17.rb")
 
     override fun desired(primary: Gitlab, context: Context<Gitlab>) = configMap {
         metadata {
@@ -43,7 +47,8 @@ class GitlabConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitlab>(Confi
         get() = mapOf(
             "GITLAB_HOST" to spec.host,
             "DB_HOST" to postgresHostName,
-            "GITLAB_OMNIBUS_CONFIG" to (spec.omnibusConfigOverride ?: gitlabOmnibusConfig)
+            "GITLAB_OMNIBUS_CONFIG" to (spec.omnibusConfigOverride
+                ?: if (isMajorVersionAtLeast(17)) gitlab17OmnibusConfig else gitlabOmnibusConfig)
         )
 
     private val Gitlab.sshData: Map<String, String>
