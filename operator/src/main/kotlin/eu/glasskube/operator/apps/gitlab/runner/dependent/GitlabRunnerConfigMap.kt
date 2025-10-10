@@ -5,6 +5,7 @@ import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.apps.gitlab.Gitlab
 import eu.glasskube.operator.apps.gitlab.gitlabs
+import eu.glasskube.operator.apps.gitlab.isMajorVersionAtLeast
 import eu.glasskube.operator.apps.gitlab.runner.GitlabRunner
 import eu.glasskube.operator.apps.gitlab.runner.GitlabRunnerReconciler
 import eu.glasskube.operator.apps.gitlab.runner.configMapName
@@ -34,6 +35,7 @@ class GitlabRunnerConfigMap : CRUDKubernetesDependentResource<ConfigMap, GitlabR
                     clone_url = "http://$serviceName"
                     executor = "docker"
                     concurrent = ${primary.spec.concurrency}
+                    ${if (isMajorVersionAtLeast(18)) "request_concurrency = 2" else ""}
 
                     [runners.docker]
                     image = "ubuntu:23.10"
