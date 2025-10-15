@@ -4,12 +4,14 @@ import eu.glasskube.kubernetes.api.model.apps.deployment
 import eu.glasskube.kubernetes.api.model.apps.selector
 import eu.glasskube.kubernetes.api.model.apps.spec
 import eu.glasskube.kubernetes.api.model.apps.template
+import eu.glasskube.kubernetes.api.model.capabilities
 import eu.glasskube.kubernetes.api.model.container
 import eu.glasskube.kubernetes.api.model.containerPort
 import eu.glasskube.kubernetes.api.model.env
 import eu.glasskube.kubernetes.api.model.envVar
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.namespace
+import eu.glasskube.kubernetes.api.model.securityContext
 import eu.glasskube.kubernetes.api.model.spec
 import eu.glasskube.operator.apps.nextcloud.Nextcloud
 import eu.glasskube.operator.apps.nextcloud.image
@@ -62,6 +64,15 @@ class NextcloudOfficeDeployment : CRUDKubernetesDependentResource<Deployment, Ne
                                     name = "http"
                                 }
                             )
+                            securityContext {
+                                privileged = true
+                                runAsUser = 1001
+                                runAsGroup = 1001
+                                capabilities {
+                                    drop = listOf("ALL")
+                                    add = listOf("SYS_CHROOT", "SYS_ADMIN", "FOWNER", "CHOWN")
+                                }
+                            }
                         }
                     )
                 }
