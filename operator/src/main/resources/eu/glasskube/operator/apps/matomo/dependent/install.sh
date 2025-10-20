@@ -25,3 +25,6 @@ fi
 
 ./console plugin:activate TagManager || abort "could not install tag manager"
 ./console plugin:deactivate ProfessionalServices Marketplace Feedback || echo "could not uninstall professional services, marketplace and feedback"
+
+# Remove database from maintenance mode after upgrade
+sed -i '/^maintenance_mode = 1$/d; /^\[Tracker\]$/d; /^record_statistics = 0$/d' init.sh
