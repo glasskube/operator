@@ -47,7 +47,7 @@ dependencies:
     repository: https://mariadb-operator.github.io/mariadb-operator
   - name: cloudnative-pg
     condition: cloudnative-pg.enabled
-    version: 0.19.1
+    version: 0.26.1
     repository: https://cloudnative-pg.io/charts/
   - name: minio
     condition: minio.enabled
