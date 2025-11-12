@@ -3,4 +3,11 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="17" />
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Glasskube_Operator.operator" options="-parameters -proc:none" />
+      <module name="Glasskube_Operator.operator.main" options="-parameters -proc:none" />
+      <module name="Glasskube_Operator.operator.test" options="-parameters -proc:none" />
+    </option>
+  </component>
 </project>
