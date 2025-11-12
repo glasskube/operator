@@ -87,6 +87,7 @@ class KeycloakDeployment : CRUDKubernetesDependentResource<Deployment, Keycloak>
                                 if (primary.spec.compatibility?.hostnameV2Enabled == true) {
                                     envVars(
                                         "KC_HOSTNAME" to "https://" + primary.spec.host + "/",
+                                        "KC_PROXY_HEADERS" to "xforwarded",
                                         "KC_HOSTNAME_BACKCHANNEL_DYNAMIC" to "true",
                                     )
                                 } else {
