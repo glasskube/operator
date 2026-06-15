@@ -2,4 +2,3 @@
 /**/build/
 /.idea/
 /e2e/kubeconfig
-/charts/*/charts/
