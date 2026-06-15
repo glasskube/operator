@@ -14,7 +14,6 @@ import eu.glasskube.operator.generic.dependent.postgres.backup.bucketinfo.Second
 import eu.glasskube.operator.infra.postgres.BootstrapConfiguration
 import eu.glasskube.operator.infra.postgres.BootstrapInitDB
 import eu.glasskube.operator.infra.postgres.ClusterSpec
-import eu.glasskube.operator.infra.postgres.EmbeddedObjectMetadata
 import eu.glasskube.operator.infra.postgres.MonitoringConfiguration
 import eu.glasskube.operator.infra.postgres.PostgresCluster
 import eu.glasskube.operator.infra.postgres.StorageConfiguration
@@ -62,10 +61,6 @@ abstract class DependentPostgresCluster<P>(
         spec = ClusterSpec(
             instances = primary.getSpec().database.instances,
             enableSuperuserAccess = false,
-            inheritedMetadata =
-            configService.getBackupAnnotations(primary, "pgdata")
-                .takeIf { it.isNotEmpty() }
-                ?.let { EmbeddedObjectMetadata(annotations = it) },
             bootstrap = BootstrapConfiguration(
                 initdb = BootstrapInitDB(
                     database = postgresNameMapper.getDatabaseName(primary),
