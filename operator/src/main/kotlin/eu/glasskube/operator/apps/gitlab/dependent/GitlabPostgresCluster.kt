@@ -5,6 +5,7 @@ import eu.glasskube.operator.apps.gitlab.GitlabReconciler
 import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.generic.condition.PostgresReadyCondition
 import eu.glasskube.operator.generic.dependent.postgres.DependentPostgresCluster
+import io.fabric8.kubernetes.api.model.Quantity
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = GitlabReconciler.SELECTOR)
@@ -14,4 +15,5 @@ class GitlabPostgresCluster(configService: ConfigService) :
 
     override val Gitlab.databaseOwnerName get() = "gitlab"
     override val Gitlab.defaultStorageSize get() = "20Gi"
+    override val Gitlab.databaseMemory get() = Quantity("384", "Mi")
 }

@@ -5,6 +5,7 @@ import eu.glasskube.operator.apps.metabase.MetabaseReconciler
 import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.generic.condition.PostgresReadyCondition
 import eu.glasskube.operator.generic.dependent.postgres.DependentPostgresCluster
+import io.fabric8.kubernetes.api.model.Quantity
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = MetabaseReconciler.SELECTOR)
@@ -13,4 +14,5 @@ class MetabasePostgresCluster(configService: ConfigService) :
     class ReadyPostCondition : PostgresReadyCondition<Metabase>()
 
     override val Metabase.defaultStorageSize get() = "5Gi"
+    override val Metabase.databaseMemory get() = Quantity("256", "Mi")
 }
