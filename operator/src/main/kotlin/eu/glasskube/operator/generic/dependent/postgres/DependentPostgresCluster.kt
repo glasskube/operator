@@ -37,8 +37,8 @@ abstract class DependentPostgresCluster<P>(
     protected open val P.databaseResources: ResourceRequirements
         get() = ResourceRequirements(
             null,
-            mapOf("memory" to Quantity("512", "Mi")),
-            mapOf("memory" to Quantity("256", "Mi"))
+            mapOf("memory" to Quantity("196", "Mi")),
+            mapOf("memory" to Quantity("196", "Mi"))
         )
     protected open val backupBucketInfoProvider: MinioBucketInfoProvider<P> =
         SecondaryResourceMinioBucketInfoProvider.Default()
