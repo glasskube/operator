@@ -15,5 +15,5 @@ class GitlabPostgresCluster(configService: ConfigService) :
 
     override val Gitlab.databaseOwnerName get() = "gitlab"
     override val Gitlab.defaultStorageSize get() = "20Gi"
-    override val Gitlab.databaseMemory get() = Quantity("450", "Mi")
+    override val Gitlab.databaseMemory get() = Quantity("512", "Mi")
 }
