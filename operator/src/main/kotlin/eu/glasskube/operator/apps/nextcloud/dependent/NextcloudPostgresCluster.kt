@@ -5,10 +5,12 @@ import eu.glasskube.operator.apps.nextcloud.NextcloudReconciler
 import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.generic.condition.PostgresReadyCondition
 import eu.glasskube.operator.generic.dependent.postgres.DependentPostgresCluster
+import io.fabric8.kubernetes.api.model.Quantity
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = NextcloudReconciler.SELECTOR)
 class NextcloudPostgresCluster(configService: ConfigService) : DependentPostgresCluster<Nextcloud>(Nextcloud.Postgres, configService) {
     class ReadyPostCondition : PostgresReadyCondition<Nextcloud>()
     override val Nextcloud.defaultStorageSize get() = "10Gi"
+    override val Nextcloud.databaseMemory get() = Quantity("192", "Mi")
 }
