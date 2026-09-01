@@ -12,5 +12,5 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 class NextcloudPostgresCluster(configService: ConfigService) : DependentPostgresCluster<Nextcloud>(Nextcloud.Postgres, configService) {
     class ReadyPostCondition : PostgresReadyCondition<Nextcloud>()
     override val Nextcloud.defaultStorageSize get() = "10Gi"
-    override val Nextcloud.databaseMemory get() = Quantity("192", "Mi")
+    override val Nextcloud.databaseMemory get() = Quantity("256", "Mi")
 }
