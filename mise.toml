@@ -1,2 +1,6 @@
 [tools]
 java = "17"
+
+[env]
+MINIO_HOST_NAME="localhost"
+MINIO_SECRET_NAME="glasskube-minio"
