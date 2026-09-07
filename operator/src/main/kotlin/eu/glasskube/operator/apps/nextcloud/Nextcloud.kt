@@ -9,6 +9,7 @@ import eu.glasskube.operator.apps.common.backup.ResourceWithBackups
 import eu.glasskube.operator.apps.common.cloudstorage.ResourceWithCloudStorage
 import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
+import eu.glasskube.operator.apps.common.ingress.ResourceWithIngress
 import eu.glasskube.operator.apps.nextcloud.Nextcloud.Postgres.postgresClusterLabelSelector
 import eu.glasskube.operator.apps.nextcloud.Nextcloud.Postgres.postgresClusterName
 import eu.glasskube.operator.apps.nextcloud.Nextcloud.Postgres.postgresDatabaseName
@@ -30,7 +31,8 @@ class Nextcloud :
     Namespaced,
     ResourceWithBackups,
     ResourceWithCloudStorage,
-    ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
+    ResourceWithDatabaseSpec<PostgresDatabaseSpec>,
+    ResourceWithIngress {
     internal companion object {
         const val APP_NAME = "nextcloud"
         const val NGINX_NAME = "nginx"

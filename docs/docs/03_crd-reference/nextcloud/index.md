@@ -31,6 +31,7 @@ spec:
 |--------------------|---------------------------------------------|------------|-------------------------------------------------------------------------------|
 | version            | String                                      | `"27.0.1"` | Check for [releases](https://github.com/nextcloud/server/releases) on GitHub. |
 | host               | String                                      | (required) |                                                                               |
+| ingress            | Boolean                                     | `true`     | Set to `false` to prevent the operator from creating an Ingress.              |
 | defaultPhoneRegion | String?                                     | `null`     |                                                                               |
 | apps               | [AppsSpec](#apps)                           |            |                                                                               |
 | server             | [ServerSpec](#serverspec)                   |            |                                                                               |

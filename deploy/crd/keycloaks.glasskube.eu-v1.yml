@@ -145,6 +145,9 @@ spec:
                       type: string
                   type: object
                 type: array
+              ingress:
+                default: true
+                type: boolean
               management:
                 properties:
                   enabled:

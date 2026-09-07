@@ -21,6 +21,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 
 @KubernetesDependent(labelSelector = MatomoReconciler.SELECTOR)
 class MatomoIngress(configService: ConfigService) : DependentIngress<Matomo>(configService) {
+    internal class ReconcilePrecondition : DependentIngress.ReconcilePrecondition<Matomo>()
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = ingress {
         metadata {

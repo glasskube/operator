@@ -27,6 +27,7 @@ spec:
 |-----------|--------------------------------------------------------------------------------------------------------|--------------|-------------------------------------------------------------------------------|
 | version   | String                                                                                                 | `"4.15.1.1"` | Check for [releases](https://github.com/glasskube/images/releases) on GitHub. |
 | host      | String                                                                                                 | (required)   |                                                                               |
+| ingress   | Boolean                                                                                                | `true`       | Set to `false` to prevent the operator from creating an Ingress.              |
 | smtp      | [SmtpSpec](./../common/smtp/)?                                                                         | `null`       |                                                                               |
 | resources | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |              |                                                                               |
 | database  | [MariaDBSpec](#mariadbspec)?                                                                           |              |                                                                               | 

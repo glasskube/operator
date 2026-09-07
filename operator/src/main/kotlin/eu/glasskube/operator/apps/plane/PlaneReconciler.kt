@@ -57,7 +57,11 @@ import kotlin.jvm.optionals.getOrDefault
 
 @ControllerConfiguration(
     dependents = [
-        Dependent(type = PlaneIngress::class, name = "PlaneIngress"),
+        Dependent(
+            type = PlaneIngress::class,
+            name = "PlaneIngress",
+            reconcilePrecondition = PlaneIngress.ReconcilePrecondition::class
+        ),
         Dependent(
             type = PlaneBackendSecret::class,
             name = "PlaneBackendSecret",

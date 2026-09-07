@@ -6,6 +6,7 @@ import eu.glasskube.operator.apps.common.backup.ResourceWithBackups
 import eu.glasskube.operator.apps.common.cloudstorage.ResourceWithCloudStorage
 import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
+import eu.glasskube.operator.apps.common.ingress.ResourceWithIngress
 import eu.glasskube.operator.apps.plane.Plane.Postgres.postgresClusterLabelSelector
 import eu.glasskube.operator.generic.dependent.backups.VeleroNameMapper
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
@@ -24,7 +25,8 @@ class Plane :
     Namespaced,
     ResourceWithBackups,
     ResourceWithCloudStorage,
-    ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
+    ResourceWithDatabaseSpec<PostgresDatabaseSpec>,
+    ResourceWithIngress {
     object Redis : RedisNameMapper<Plane>() {
         internal const val NAME = "redis"
         private const val VERSION = "7.2.1"

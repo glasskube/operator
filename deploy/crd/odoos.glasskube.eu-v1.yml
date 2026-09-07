@@ -131,6 +131,9 @@ spec:
                 type: boolean
               host:
                 type: string
+              ingress:
+                default: true
+                type: boolean
               resources:
                 properties:
                   claims:

@@ -23,6 +23,8 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 
 @KubernetesDependent(labelSelector = NextcloudReconciler.SELECTOR)
 class NextcloudIngress(configService: ConfigService) : DependentIngress<Nextcloud>(configService) {
+    internal class ReconcilePrecondition : DependentIngress.ReconcilePrecondition<Nextcloud>()
+
     override fun desired(primary: Nextcloud, context: Context<Nextcloud>) = ingress {
         metadata {
             name(primary.genericResourceName)

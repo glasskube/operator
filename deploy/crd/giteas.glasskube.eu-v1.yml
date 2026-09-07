@@ -137,6 +137,9 @@ spec:
                 type: object
               host:
                 type: string
+              ingress:
+                default: true
+                type: boolean
               registrationEnabled:
                 type: boolean
               replicas:

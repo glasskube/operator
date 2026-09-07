@@ -21,6 +21,8 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 
 @KubernetesDependent(labelSelector = GlitchtipReconciler.SELECTOR)
 class GlitchtipIngress(configService: ConfigService) : DependentIngress<Glitchtip>(configService) {
+    internal class ReconcilePrecondition : DependentIngress.ReconcilePrecondition<Glitchtip>()
+
     override fun desired(primary: Glitchtip, context: Context<Glitchtip>) = ingress {
         metadata {
             name(primary.ingressName)

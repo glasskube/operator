@@ -6,7 +6,7 @@ import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.dependent.DependentResource
 import io.javaoperatorsdk.operator.processing.dependent.workflow.Condition
 
-abstract class GitlabRegistryEnabledPrecondition<T : HasMetadata> : Condition<T, Gitlab> {
+open class GitlabRegistryEnabledPrecondition<T : HasMetadata> : Condition<T, Gitlab> {
     override fun isMet(
         dependentResource: DependentResource<T, Gitlab>,
         primary: Gitlab,

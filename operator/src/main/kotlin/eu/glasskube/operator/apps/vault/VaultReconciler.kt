@@ -44,7 +44,11 @@ import kotlin.jvm.optionals.getOrDefault
             name = "VaultMinioBucket",
             reconcilePrecondition = VaultMinioBucket.ReconcilePrecondition::class
         ),
-        Dependent(type = VaultIngress::class, name = "VaultIngress"),
+        Dependent(
+            type = VaultIngress::class,
+            name = "VaultIngress",
+            reconcilePrecondition = VaultIngress.ReconcilePrecondition::class
+        ),
         Dependent(
             type = VaultPostgresCluster::class,
             name = "VaultPostgresCluster",

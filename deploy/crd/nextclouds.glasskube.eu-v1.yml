@@ -184,6 +184,9 @@ spec:
                 type: string
               host:
                 type: string
+              ingress:
+                default: true
+                type: boolean
               server:
                 properties:
                   maxChildren:

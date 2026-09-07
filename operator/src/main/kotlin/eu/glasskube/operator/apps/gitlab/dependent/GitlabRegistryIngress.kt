@@ -15,6 +15,7 @@ import eu.glasskube.operator.apps.gitlab.resourceLabels
 import eu.glasskube.operator.apps.gitlab.serviceName
 import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.generic.dependent.DependentIngress
+import eu.glasskube.operator.processing.CompositeAndCondition
 import io.fabric8.kubernetes.api.model.networking.v1.Ingress
 import io.fabric8.kubernetes.api.model.networking.v1.IngressTLS
 import io.javaoperatorsdk.operator.api.reconciler.Context
@@ -28,7 +29,10 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
 )
 class GitlabRegistryIngress(configService: ConfigService) : DependentIngress<Gitlab>(configService) {
 
-    class ReconcilePrecondition : GitlabRegistryEnabledPrecondition<Ingress>()
+    class ReconcilePrecondition : CompositeAndCondition<Ingress, Gitlab>(
+        GitlabRegistryEnabledPrecondition(),
+        DependentIngress.ReconcilePrecondition()
+    )
 
     internal class Discriminator :
         ResourceIDMatcherDiscriminator<Ingress, Gitlab>({ ResourceID(it.genericRegistryResourceName, it.namespace) })

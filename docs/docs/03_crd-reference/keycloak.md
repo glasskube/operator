@@ -32,6 +32,7 @@ spec:
 |------------|--------------------------------------------------------------------------------------------------------|------------|--------------------------------------------------------------------------------|
 | version    | String                                                                                                 | `"21.1.2"` | Check for [releases](https://github.com/keycloak/keycloak/releases) on GitHub. |
 | host       | String                                                                                                 | (required) |                                                                                |
+| ingress    | Boolean                                                                                                | `true`     | Set to `false` to prevent the operator from creating an Ingress.               |
 | management | [ManagementSpec](#management)                                                                          |            | Configuration of the keycloak management UI                                    |
 | resources  | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |            |                                                                                |
 | database   | [PostgresDatabaseSpec](./../common/postgres)?                                                          |            |                                                                                |

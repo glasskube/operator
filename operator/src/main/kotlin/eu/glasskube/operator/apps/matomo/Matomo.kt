@@ -8,9 +8,12 @@ import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
 import eu.glasskube.operator.apps.common.database.HasReadyStatus
 import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
 import eu.glasskube.operator.apps.common.database.mariadb.MariaDbDatabaseSpec
+import eu.glasskube.operator.apps.common.ingress.HasIngressSpec
+import eu.glasskube.operator.apps.common.ingress.ResourceWithIngress
 import eu.glasskube.operator.apps.common.storage.GenericStorageSpec
 import eu.glasskube.operator.generic.dependent.backups.VeleroNameMapper
 import eu.glasskube.utils.resourceLabels
+import io.fabric8.generator.annotation.Default
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.kubernetes.api.model.Namespaced
 import io.fabric8.kubernetes.api.model.Quantity
@@ -22,6 +25,8 @@ import io.fabric8.kubernetes.model.annotation.Version
 
 data class MatomoSpec(
     val host: String? = null,
+    @field:Default("true")
+    override val ingress: Boolean = true,
     @field:Nullable
     val smtp: MatomoSmtp? = null,
     val resources: ResourceRequirements = ResourceRequirements(
@@ -33,7 +38,7 @@ data class MatomoSpec(
     override val database: MariaDbDatabaseSpec = MariaDbDatabaseSpec(),
     override val backups: BackupSpec?,
     val storage: GenericStorageSpec?,
-) : HasBackupSpec, HasDatabaseSpec<MariaDbDatabaseSpec>
+) : HasBackupSpec, HasDatabaseSpec<MariaDbDatabaseSpec>, HasIngressSpec
 
 data class MatomoStatus(val readyReplicas: Int) : HasReadyStatus {
     override val isReady get() = readyReplicas > 0
@@ -46,7 +51,8 @@ class Matomo :
     CustomResource<MatomoSpec, MatomoStatus>(),
     Namespaced,
     ResourceWithBackups,
-    ResourceWithDatabaseSpec<MariaDbDatabaseSpec> {
+    ResourceWithDatabaseSpec<MariaDbDatabaseSpec>,
+    ResourceWithIngress {
     companion object {
         const val APP_NAME = "matomo"
     }

@@ -129,6 +129,9 @@ spec:
                 type: object
               host:
                 type: string
+              ingress:
+                default: true
+                type: boolean
               initialRootPasswordSecret:
                 properties:
                   key:

@@ -21,6 +21,8 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 
 @KubernetesDependent(labelSelector = OdooReconciler.SELECTOR)
 class OdooIngress(configService: ConfigService) : DependentIngress<Odoo>(configService) {
+    internal class ReconcilePrecondition : DependentIngress.ReconcilePrecondition<Odoo>()
+
     override fun desired(primary: Odoo, context: Context<Odoo>) = ingress {
         metadata {
             name(primary.ingressName)
