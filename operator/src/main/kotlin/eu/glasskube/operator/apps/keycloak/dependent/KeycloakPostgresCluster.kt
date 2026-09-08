@@ -13,4 +13,5 @@ class KeycloakPostgresCluster(configService: ConfigService) :
     class ReadyCondition : PostgresReadyCondition<Keycloak>()
 
     override val Keycloak.defaultStorageSize get() = "10Gi"
+    override val Keycloak.databaseMemory get() = Quantity("192", "Mi")
 }
