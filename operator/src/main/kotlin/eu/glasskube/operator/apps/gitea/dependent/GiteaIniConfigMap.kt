@@ -55,9 +55,24 @@ class GiteaIniConfigMap : CRUDKubernetesDependentResource<ConfigMap, Gitea>(Conf
             "GITEA__cache__HOST" to "redis://$redisName:6379/0?pool_size=100&idle_timeout=180s",
             "GITEA__queue__TYPE" to "redis",
             "GITEA__queue__CONN_STR" to "redis://$redisName:6379/0?pool_size=100&idle_timeout=180s",
-            "GITEA__metrics__ENABLED" to "true",
-            "GITEA__webhook__ALLOWED_HOST_LIST" to "*"
-        )
+            "GITEA__metrics__ENABLED" to "true"
+        ) + allowedHostListConfig
+
+    // Gitea 1.27 deprecated "[webhook] ALLOWED_HOST_LIST" in favour of "[security] ALLOWED_HOST_LIST",
+    // which does not exist in earlier versions. Webhook delivery falls back to the security option
+    // when the webhook one is unset, so both variants allow webhooks to call any host.
+    private val Gitea.allowedHostListConfig
+        get() = when {
+            isVersionAtLeast(1, 27) -> mapOf("GITEA__security__ALLOWED_HOST_LIST" to "*")
+            else -> mapOf("GITEA__webhook__ALLOWED_HOST_LIST" to "*")
+        }
+
+    private fun Gitea.isVersionAtLeast(major: Int, minor: Int): Boolean {
+        val parts = spec.version.split('.')
+        val actualMajor = parts.getOrNull(0)?.toIntOrNull() ?: return false
+        val actualMinor = parts.getOrNull(1)?.toIntOrNull() ?: return false
+        return actualMajor > major || (actualMajor == major && actualMinor >= minor)
+    }
 
     private fun getSmtpConfig(primary: Gitea, context: Context<Gitea>): Map<String, String> =
         when (val smtp = primary.spec.smtp) {

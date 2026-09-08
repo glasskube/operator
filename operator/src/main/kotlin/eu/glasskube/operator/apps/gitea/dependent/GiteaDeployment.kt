@@ -125,7 +125,10 @@ class GiteaDeployment(private val configService: ConfigService) :
                             name = "environment-to-ini"
                             image = primary.image
                             command = listOf("/bin/sh")
-                            args = listOf("-c", "mkdir -p /data/gitea/conf && rm -f /data/gitea/conf/app.ini && environment-to-ini")
+                            args = listOf(
+                                "-c",
+                                "mkdir -p $CONF_DIR && rm -f $APP_INI && environment-to-ini --config $APP_INI"
+                            )
                             volumeMounts {
                                 volumeMount {
                                     name = VOLUME_NAME
@@ -222,5 +225,10 @@ class GiteaDeployment(private val configService: ConfigService) :
     companion object {
         private const val VOLUME_NAME = "data"
         internal const val WORK_DIR = "/data"
+
+        // Since Gitea 1.26 "environment-to-ini" wraps "gitea config edit-ini",
+        // which requires an explicit --config instead of guessing the path.
+        private const val CONF_DIR = "$WORK_DIR/gitea/conf"
+        private const val APP_INI = "$CONF_DIR/app.ini"
     }
 }
