@@ -68,8 +68,8 @@ data class VaultSpec(
         private val defaultResourceRequirements
             get() = ResourceRequirements(
                 null,
-                mapOf("memory" to Quantity("100", "Mi")),
-                mapOf("memory" to Quantity("30", "Mi"))
+                mapOf("memory" to Quantity("192", "Mi")),
+                mapOf("memory" to Quantity("96", "Mi"))
             )
     }
 }
