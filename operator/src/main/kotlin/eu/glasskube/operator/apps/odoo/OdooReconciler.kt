@@ -41,7 +41,10 @@ import io.javaoperatorsdk.operator.processing.event.source.informer.Mappers
             type = OdooPersistentVolumeClaim::class
         ),
         Dependent(type = OdooService::class),
-        Dependent(type = OdooIngress::class),
+        Dependent(
+            type = OdooIngress::class,
+            reconcilePrecondition = OdooIngress.ReconcilePrecondition::class
+        ),
         Dependent(
             type = OdooPostgresScheduledBackup::class,
             dependsOn = ["OdooPostgresCluster"]

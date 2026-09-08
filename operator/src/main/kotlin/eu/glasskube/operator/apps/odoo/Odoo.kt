@@ -8,12 +8,15 @@ import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
 import eu.glasskube.operator.apps.common.database.HasReadyStatus
 import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
+import eu.glasskube.operator.apps.common.ingress.HasIngressSpec
+import eu.glasskube.operator.apps.common.ingress.ResourceWithIngress
 import eu.glasskube.operator.apps.common.storage.GenericStorageSpec
 import eu.glasskube.operator.apps.odoo.Odoo.Postgres.postgresClusterLabelSelector
 import eu.glasskube.operator.generic.dependent.backups.VeleroNameMapper
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
 import eu.glasskube.operator.validation.Patterns
 import eu.glasskube.utils.resourceLabels
+import io.fabric8.generator.annotation.Default
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Pattern
 import io.fabric8.kubernetes.api.model.Namespaced
@@ -25,6 +28,8 @@ import io.fabric8.kubernetes.model.annotation.Version
 
 data class OdooSpec(
     val host: String,
+    @field:Default("true")
+    override val ingress: Boolean = true,
     val demoEnabled: Boolean = true,
     val resources: ResourceRequirements = ResourceRequirements(),
     @field:Pattern(Patterns.SEMVER)
@@ -33,7 +38,7 @@ data class OdooSpec(
     override val database: PostgresDatabaseSpec = PostgresDatabaseSpec(),
     override val backups: BackupSpec?,
     val storage: GenericStorageSpec?,
-) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec>
+) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec>, HasIngressSpec
 
 data class OdooStatus(
     val ready: Boolean = false,
@@ -49,7 +54,8 @@ class Odoo :
     CustomResource<OdooSpec, OdooStatus>(),
     Namespaced,
     ResourceWithBackups,
-    ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
+    ResourceWithDatabaseSpec<PostgresDatabaseSpec>,
+    ResourceWithIngress {
     internal companion object {
         const val APP_NAME = "odoo"
 

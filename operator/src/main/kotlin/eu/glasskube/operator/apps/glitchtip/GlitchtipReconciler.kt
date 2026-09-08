@@ -102,7 +102,8 @@ import kotlin.jvm.optionals.getOrDefault
         ),
         Dependent(
             type = GlitchtipIngress::class,
-            name = "GlitchtipIngress"
+            name = "GlitchtipIngress",
+            reconcilePrecondition = GlitchtipIngress.ReconcilePrecondition::class
         ),
         Dependent(
             type = GlitchtipVeleroSecret::class,

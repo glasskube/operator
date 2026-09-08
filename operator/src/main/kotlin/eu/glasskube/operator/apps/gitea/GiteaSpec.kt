@@ -5,8 +5,10 @@ import eu.glasskube.operator.apps.common.backup.BackupSpec
 import eu.glasskube.operator.apps.common.backup.HasBackupSpec
 import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
+import eu.glasskube.operator.apps.common.ingress.HasIngressSpec
 import eu.glasskube.operator.apps.common.storage.StorageSpec
 import eu.glasskube.operator.validation.Patterns.SEMVER
+import io.fabric8.generator.annotation.Default
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Pattern
 import io.fabric8.generator.annotation.Required
@@ -17,6 +19,8 @@ import io.fabric8.kubernetes.api.model.ResourceRequirements
 data class GiteaSpec(
     @field:Required
     val host: String,
+    @field:Default("true")
+    override val ingress: Boolean = true,
     val sshEnabled: Boolean = true,
     val sshHost: String = host,
     @field:JsonPropertyDescription(value = "Secret containing data of the admin user to create on pod initialization. Expected keys are GITEA_ADMIN_USER, GITEA_ADMIN_EMAIL and GITEA_ADMIN_PASSWORD")
@@ -36,7 +40,7 @@ data class GiteaSpec(
     override val database: PostgresDatabaseSpec = PostgresDatabaseSpec(),
     override val backups: BackupSpec?,
     val storage: GiteaStorageSpec?
-) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec> {
+) : HasBackupSpec, HasDatabaseSpec<PostgresDatabaseSpec>, HasIngressSpec {
     data class GiteaStorageSpec(
         override val size: Quantity?,
         override val storageClassName: String?,

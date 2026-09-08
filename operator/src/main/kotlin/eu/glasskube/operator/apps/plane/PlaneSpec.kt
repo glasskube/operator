@@ -6,6 +6,8 @@ import eu.glasskube.operator.apps.common.cloudstorage.CloudStorageSpec
 import eu.glasskube.operator.apps.common.cloudstorage.HasCloudStorageSpec
 import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
+import eu.glasskube.operator.apps.common.ingress.HasIngressSpec
+import io.fabric8.generator.annotation.Default
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Required
 import io.fabric8.kubernetes.api.model.LocalObjectReference
@@ -16,6 +18,8 @@ import io.fabric8.kubernetes.api.model.SecretKeySelector
 data class PlaneSpec(
     @field:Required
     val host: String,
+    @field:Default("true")
+    override val ingress: Boolean = true,
     val registrationEnabled: Boolean = true,
     val defaultUser: DefaultUserSpec = DefaultUserSpec("root@example.com", "glasskube-operator"),
     val frontend: FrontendSpec = FrontendSpec(),
@@ -29,7 +33,7 @@ data class PlaneSpec(
     @field:Nullable
     override val database: PostgresDatabaseSpec = PostgresDatabaseSpec(),
     override val backups: BackupSpec?
-) : HasBackupSpec, HasCloudStorageSpec, HasDatabaseSpec<PostgresDatabaseSpec> {
+) : HasBackupSpec, HasCloudStorageSpec, HasDatabaseSpec<PostgresDatabaseSpec>, HasIngressSpec {
 
     override val cloudStorage get() = s3
 

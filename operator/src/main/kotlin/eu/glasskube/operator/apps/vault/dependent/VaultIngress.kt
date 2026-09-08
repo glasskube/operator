@@ -22,6 +22,8 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 
 @KubernetesDependent(labelSelector = VaultReconciler.SELECTOR)
 class VaultIngress(configService: ConfigService) : DependentIngress<Vault>(configService) {
+    internal class ReconcilePrecondition : DependentIngress.ReconcilePrecondition<Vault>()
+
     override fun desired(primary: Vault, context: Context<Vault>) = ingress {
         metadata {
             name(primary.genericResourceName)

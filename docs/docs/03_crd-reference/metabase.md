@@ -25,6 +25,7 @@ spec:
 |-----------|--------------------------------------------------------------------------------------------------------|------------|--------------------------------------------------------------------------------|
 | version   | String                                                                                                 | `"0.47.1"` | Check for [releases](https://github.com/metabase/metabase/releases) on GitHub. |
 | host      | String                                                                                                 | (required) |                                                                                |
+| ingress   | Boolean                                                                                                | `true`     | Set to `false` to prevent the operator from creating an Ingress.               |
 | replicas  | Int                                                                                                    | 1          |                                                                                |
 | smtp      | [SmtpSpec](./../common/smtp/)?                                                                         | `null`     |                                                                                |
 | resources | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |            |                                                                                |

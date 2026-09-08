@@ -24,6 +24,8 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 
 @KubernetesDependent(labelSelector = PlaneReconciler.SELECTOR)
 class PlaneIngress(configService: ConfigService) : DependentIngress<Plane>(configService) {
+    internal class ReconcilePrecondition : DependentIngress.ReconcilePrecondition<Plane>()
+
     override fun desired(primary: Plane, context: Context<Plane>) = ingress {
         metadata {
             name(primary.genericResourceName)

@@ -27,6 +27,7 @@ spec:
 |-------------|--------------------------------------------------------------------------------------------------------|-------------------|-------------------------------------------------------------------------------|
 | version     | String                                                                                                 | `"16.0.20230901"` | Check for [releases](https://github.com/glasskube/images/releases) on GitHub. |
 | host        | String                                                                                                 | (required)        |                                                                               |
+| ingress     | Boolean                                                                                                | `true`            | Set to `false` to prevent the operator from creating an Ingress.              |
 | demoEnabled | Boolean                                                                                                | `true`            |                                                                               |
 | resources   | [ResourceRequirements](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) |                   |                                                                               |
 | database    | [PostgresDatabaseSpec](./../common/postgres)?                                                          |                   |                                                                               |

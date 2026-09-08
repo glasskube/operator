@@ -68,6 +68,7 @@ import io.javaoperatorsdk.operator.processing.event.source.informer.Mappers
         Dependent(
             type = MetabaseIngress::class,
             name = "MetabaseIngress",
+            reconcilePrecondition = MetabaseIngress.ReconcilePrecondition::class,
             dependsOn = ["MetabaseHttpService"]
         ),
         Dependent(

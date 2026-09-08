@@ -59,7 +59,11 @@ import kotlin.jvm.optionals.getOrDefault
             name = "KeycloakDiscoveryService",
             useEventSourceWithName = KeycloakReconciler.SERVICE_EVENT_SOURCE
         ),
-        Dependent(type = KeycloakIngress::class, name = "KeycloakIngress"),
+        Dependent(
+            type = KeycloakIngress::class,
+            name = "KeycloakIngress",
+            reconcilePrecondition = KeycloakIngress.ReconcilePrecondition::class
+        ),
         Dependent(
             type = KeycloakVeleroSecret::class,
             name = "KeycloakVeleroSecret",

@@ -21,6 +21,8 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 
 @KubernetesDependent(labelSelector = MetabaseReconciler.SELECTOR)
 class MetabaseIngress(configService: ConfigService) : DependentIngress<Metabase>(configService) {
+    internal class ReconcilePrecondition : DependentIngress.ReconcilePrecondition<Metabase>()
+
     override fun desired(primary: Metabase, context: Context<Metabase>) = ingress {
         metadata {
             name(primary.ingressName)

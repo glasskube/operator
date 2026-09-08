@@ -21,6 +21,8 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 
 @KubernetesDependent(labelSelector = GiteaReconciler.SELECTOR)
 class GiteaIngress(configService: ConfigService) : DependentIngress<Gitea>(configService) {
+    internal class ReconcilePrecondition : DependentIngress.ReconcilePrecondition<Gitea>()
+
     override fun desired(primary: Gitea, context: Context<Gitea>) = ingress {
         metadata {
             name(primary.genericResourceName)

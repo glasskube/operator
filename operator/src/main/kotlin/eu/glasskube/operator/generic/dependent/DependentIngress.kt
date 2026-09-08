@@ -1,5 +1,6 @@
 package eu.glasskube.operator.generic.dependent
 
+import eu.glasskube.operator.apps.common.ingress.ResourceWithIngress
 import eu.glasskube.operator.config.CloudProvider
 import eu.glasskube.operator.config.ConfigService
 import io.fabric8.kubernetes.api.model.GenericKubernetesResource
@@ -7,10 +8,18 @@ import io.fabric8.kubernetes.api.model.HasMetadata
 import io.fabric8.kubernetes.api.model.networking.v1.Ingress
 import io.fabric8.kubernetes.client.dsl.base.ResourceDefinitionContext
 import io.javaoperatorsdk.operator.api.reconciler.Context
+import io.javaoperatorsdk.operator.api.reconciler.dependent.DependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
+import io.javaoperatorsdk.operator.processing.dependent.workflow.Condition
 
-abstract class DependentIngress<P : HasMetadata>(private val configService: ConfigService) :
-    CRUDKubernetesDependentResource<Ingress, P>(Ingress::class.java) {
+abstract class DependentIngress<P>(private val configService: ConfigService) :
+    CRUDKubernetesDependentResource<Ingress, P>(Ingress::class.java)
+    where P : HasMetadata, P : ResourceWithIngress {
+
+    open class ReconcilePrecondition<P> : Condition<Ingress, P> where P : HasMetadata, P : ResourceWithIngress {
+        override fun isMet(dependentResource: DependentResource<Ingress, P>, primary: P, context: Context<P>) =
+            primary.getSpec().ingress
+    }
 
     protected val defaultIngressClassName: String?
         get() = when (configService.cloudProvider) {

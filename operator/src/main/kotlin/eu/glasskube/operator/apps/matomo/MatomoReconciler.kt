@@ -53,7 +53,10 @@ import kotlin.jvm.optionals.getOrNull
         ),
         Dependent(type = MatomoConfigMap::class),
         Dependent(type = MatomoService::class),
-        Dependent(type = MatomoIngress::class),
+        Dependent(
+            type = MatomoIngress::class,
+            reconcilePrecondition = MatomoIngress.ReconcilePrecondition::class
+        ),
         Dependent(
             type = MatomoMariaDB::class,
             name = "MatomoMariaDB",

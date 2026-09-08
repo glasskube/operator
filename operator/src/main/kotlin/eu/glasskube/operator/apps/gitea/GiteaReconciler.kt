@@ -100,7 +100,8 @@ import io.javaoperatorsdk.operator.processing.event.source.informer.Mappers
         ),
         Dependent(
             type = GiteaIngress::class,
-            name = "GiteaIngress"
+            name = "GiteaIngress",
+            reconcilePrecondition = GiteaIngress.ReconcilePrecondition::class
         ),
         Dependent(
             type = GiteaServiceMonitor::class,

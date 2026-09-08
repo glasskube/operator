@@ -21,6 +21,8 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 
 @KubernetesDependent(labelSelector = KeycloakReconciler.SELECTOR)
 class KeycloakIngress(configService: ConfigService) : DependentIngress<Keycloak>(configService) {
+    internal class ReconcilePrecondition : DependentIngress.ReconcilePrecondition<Keycloak>()
+
     override fun desired(primary: Keycloak, context: Context<Keycloak>) = ingress {
         metadata {
             name(primary.genericResourceName)

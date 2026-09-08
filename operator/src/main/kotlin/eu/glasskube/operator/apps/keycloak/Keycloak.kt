@@ -5,6 +5,7 @@ import eu.glasskube.operator.Labels
 import eu.glasskube.operator.apps.common.backup.ResourceWithBackups
 import eu.glasskube.operator.apps.common.database.ResourceWithDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
+import eu.glasskube.operator.apps.common.ingress.ResourceWithIngress
 import eu.glasskube.operator.apps.keycloak.Keycloak.Postgres.postgresClusterLabelSelector
 import eu.glasskube.operator.generic.dependent.backups.VeleroNameMapper
 import eu.glasskube.operator.generic.dependent.postgres.PostgresNameMapper
@@ -19,7 +20,8 @@ class Keycloak :
     CustomResource<KeycloakSpec, KeycloakStatus>(),
     Namespaced,
     ResourceWithBackups,
-    ResourceWithDatabaseSpec<PostgresDatabaseSpec> {
+    ResourceWithDatabaseSpec<PostgresDatabaseSpec>,
+    ResourceWithIngress {
     companion object {
         internal const val APP_NAME = "keycloak"
     }

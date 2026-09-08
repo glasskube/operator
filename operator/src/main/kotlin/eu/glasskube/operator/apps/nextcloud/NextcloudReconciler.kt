@@ -40,7 +40,11 @@ import kotlin.jvm.optionals.getOrDefault
     dependents = [
         Dependent(type = NextcloudConfigMap::class, name = "NextcloudConfigMap"),
         Dependent(type = NextcloudVolume::class, name = "NextcloudVolume"),
-        Dependent(type = NextcloudIngress::class, name = "NextcloudIngress"),
+        Dependent(
+            type = NextcloudIngress::class,
+            name = "NextcloudIngress",
+            reconcilePrecondition = NextcloudIngress.ReconcilePrecondition::class
+        ),
         Dependent(
             type = NextcloudMinioBucket::class,
             name = "NextcloudMinioBucket",

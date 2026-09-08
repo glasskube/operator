@@ -29,6 +29,8 @@ import io.javaoperatorsdk.operator.processing.event.ResourceID
 )
 class GitlabIngress(configService: ConfigService) : DependentIngress<Gitlab>(configService) {
 
+    internal class ReconcilePrecondition : DependentIngress.ReconcilePrecondition<Gitlab>()
+
     internal class Discriminator :
         ResourceIDMatcherDiscriminator<Ingress, Gitlab>({ ResourceID(it.ingressName, it.namespace) })
 

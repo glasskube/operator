@@ -6,8 +6,10 @@ import eu.glasskube.operator.apps.common.cloudstorage.CloudStorageSpec
 import eu.glasskube.operator.apps.common.cloudstorage.HasCloudStorageSpec
 import eu.glasskube.operator.apps.common.database.HasDatabaseSpec
 import eu.glasskube.operator.apps.common.database.postgres.PostgresDatabaseSpec
+import eu.glasskube.operator.apps.common.ingress.HasIngressSpec
 import eu.glasskube.operator.apps.common.storage.StorageSpec
 import eu.glasskube.operator.validation.Patterns
+import io.fabric8.generator.annotation.Default
 import io.fabric8.generator.annotation.Nullable
 import io.fabric8.generator.annotation.Pattern
 import io.fabric8.generator.annotation.Required
@@ -17,6 +19,8 @@ import io.fabric8.kubernetes.api.model.SecretKeySelector
 
 data class NextcloudSpec(
     val host: String,
+    @field:Default("true")
+    override val ingress: Boolean = true,
     val defaultPhoneRegion: String?,
     val apps: NextcloudAppsSpec = NextcloudAppsSpec(),
     @field:Nullable
@@ -28,7 +32,7 @@ data class NextcloudSpec(
     @field:Nullable
     override val database: PostgresDatabaseSpec = PostgresDatabaseSpec(),
     override val backups: BackupSpec?
-) : HasBackupSpec, HasCloudStorageSpec, HasDatabaseSpec<PostgresDatabaseSpec> {
+) : HasBackupSpec, HasCloudStorageSpec, HasDatabaseSpec<PostgresDatabaseSpec>, HasIngressSpec {
 
     override val cloudStorage get() = storage?.s3
 

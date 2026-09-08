@@ -77,6 +77,7 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent
         Dependent(
             type = GitlabIngress::class,
             name = "GitlabIngress",
+            reconcilePrecondition = GitlabIngress.ReconcilePrecondition::class,
             useEventSourceWithName = GitlabReconciler.INGRESS_EVENT_SOURCE,
             dependsOn = ["GitlabService"]
         ),
