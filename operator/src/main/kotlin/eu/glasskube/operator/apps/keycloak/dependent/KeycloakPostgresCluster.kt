@@ -5,6 +5,7 @@ import eu.glasskube.operator.apps.keycloak.KeycloakReconciler
 import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.generic.condition.PostgresReadyCondition
 import eu.glasskube.operator.generic.dependent.postgres.DependentPostgresCluster
+import io.fabric8.kubernetes.api.model.Quantity
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = KeycloakReconciler.SELECTOR)
@@ -13,4 +14,5 @@ class KeycloakPostgresCluster(configService: ConfigService) :
     class ReadyCondition : PostgresReadyCondition<Keycloak>()
 
     override val Keycloak.defaultStorageSize get() = "10Gi"
+    override val Keycloak.databaseMemory get() = Quantity("192", "Mi")
 }
