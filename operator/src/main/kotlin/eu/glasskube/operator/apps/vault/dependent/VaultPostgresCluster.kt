@@ -6,6 +6,7 @@ import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.generic.condition.PostgresReadyCondition
 import eu.glasskube.operator.generic.dependent.postgres.DependentPostgresCluster
 import eu.glasskube.utils.resourceProperty
+import io.fabric8.kubernetes.api.model.Quantity
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = VaultReconciler.SELECTOR)
@@ -16,4 +17,5 @@ class VaultPostgresCluster(configService: ConfigService) :
     private val initSql by resourceProperty()
     override val Vault.initSql get() = this@VaultPostgresCluster.initSql
     override val Vault.defaultStorageSize get() = "10Gi"
+    override val Vault.databaseMemory: Quantity get() = Quantity("192", "Mi")
 }
