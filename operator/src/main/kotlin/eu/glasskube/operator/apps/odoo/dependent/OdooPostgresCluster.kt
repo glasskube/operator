@@ -9,6 +9,7 @@ import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.generic.dependent.postgres.DependentPostgresCluster
 import eu.glasskube.operator.generic.dependent.postgres.backup.bucketinfo.MinioBucketInfo
 import eu.glasskube.operator.generic.dependent.postgres.backup.bucketinfo.MinioBucketInfoProvider
+import io.fabric8.kubernetes.api.model.Quantity
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
 
 @KubernetesDependent(labelSelector = OdooReconciler.SELECTOR)
@@ -20,4 +21,5 @@ class OdooPostgresCluster(private val configService: ConfigService) :
     override val backupBucketInfoProvider = MinioBucketInfoProvider<Odoo> { primary, _ ->
         MinioBucketInfo(primary.bucketName, primary.dbBackupSecretName)
     }
+    override val Odoo.databaseMemory get() = Quantity("192", "Mi")
 }
