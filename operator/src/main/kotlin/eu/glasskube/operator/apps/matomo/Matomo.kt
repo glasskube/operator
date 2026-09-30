@@ -32,7 +32,7 @@ data class MatomoSpec(
     val resources: ResourceRequirements = ResourceRequirements(
         null,
         mapOf("memory" to Quantity("600", "Mi")),
-        mapOf("memory" to Quantity("300", "Mi"))
+        mapOf("memory" to Quantity("375", "Mi"))
     ),
     val version: String = "4.15.1.1",
     override val database: MariaDbDatabaseSpec = MariaDbDatabaseSpec(),
