@@ -13,12 +13,12 @@ import eu.glasskube.kubernetes.api.model.emptyDir
 import eu.glasskube.kubernetes.api.model.envVar
 import eu.glasskube.kubernetes.api.model.httpGet
 import eu.glasskube.kubernetes.api.model.intOrString
-import eu.glasskube.kubernetes.api.model.limits
 import eu.glasskube.kubernetes.api.model.livenessProbe
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.kubernetes.api.model.persistentVolumeClaim
 import eu.glasskube.kubernetes.api.model.readinessProbe
+import eu.glasskube.kubernetes.api.model.requests
 import eu.glasskube.kubernetes.api.model.resources
 import eu.glasskube.kubernetes.api.model.secretKeyRef
 import eu.glasskube.kubernetes.api.model.securityContext
@@ -206,7 +206,7 @@ class NextcloudDeployment(private val configService: ConfigService) :
                             name = Nextcloud.NGINX_NAME
                             image = Nextcloud.NGINX_IMAGE
                             resources {
-                                limits(cpu = Quantity("1", ""), memory = Quantity("200", "Mi"))
+                                requests(cpu = Quantity("10", "m"), memory = Quantity("64", "Mi"))
                             }
                             ports = listOf(
                                 containerPort {

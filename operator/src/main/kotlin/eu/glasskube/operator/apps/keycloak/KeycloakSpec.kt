@@ -42,7 +42,7 @@ data class KeycloakSpec(
             get() = ResourceRequirements(
                 null,
                 mapOf("memory" to Quantity("2", "Gi")),
-                mapOf("cpu" to Quantity("200", "m"), "memory" to Quantity("400", "Mi"))
+                mapOf("cpu" to Quantity("100", "m"), "memory" to Quantity("400", "Mi"))
             )
     }
 }
