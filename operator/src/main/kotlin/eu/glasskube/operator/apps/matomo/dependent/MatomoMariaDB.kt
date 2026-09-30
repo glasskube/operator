@@ -71,7 +71,7 @@ class MatomoMariaDB(private val configService: ConfigService) :
             resources = ResourceRequirements(
                 null,
                 mapOf("memory" to Quantity("512", "Mi")),
-                mapOf("memory" to Quantity("256", "Mi"))
+                mapOf("memory" to Quantity("320", "Mi"))
             ),
             metrics = Metrics(
                 exporter = Exporter(
