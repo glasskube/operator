@@ -109,11 +109,11 @@ abstract class DependentCloudStorageBackupCronJob<P> :
         command = listOf("rclone")
         args = mutableListOf("config", "create", remoteName, "s3").also { argList ->
             argList += when (val endpoint = spec.endpoint) {
-                null -> listOf("provider", "AWS")
-                else -> listOf("provider", "Other", "endpoint", endpoint)
+                null -> listOf("provider=AWS")
+                else -> listOf("provider=Other", "endpoint=$endpoint")
             }
-            spec.region?.let { argList += listOf("region", it) }
-            argList += listOf("access_key_id", "$(ACCESS_KEY)", "secret_access_key", "$(SECRET_KEY)")
+            spec.region?.let { argList += "region=$it" }
+            argList += listOf("access_key_id=$(ACCESS_KEY)", "secret_access_key=$(SECRET_KEY)")
         }
     }
 
