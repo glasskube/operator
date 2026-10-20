@@ -11,12 +11,6 @@ import io.fabric8.kubernetes.client.CustomResource
 import io.fabric8.kubernetes.model.annotation.Group
 import io.fabric8.kubernetes.model.annotation.Version
 
-data class MariaDBImage(
-    var repository: String,
-    var tag: String,
-    var pullPolicy: String? = null
-)
-
 data class MariaDBResourcesRequest(
     val storage: String? = null,
     val cpu: String? = null,
@@ -36,7 +30,8 @@ data class MariaDBVolumeClaimTemplate(
 
 data class MariaDBSpec(
     var rootPasswordSecretKeyRef: SecretKeySelector,
-    var image: MariaDBImage,
+    var image: String,
+    var imagePullPolicy: String = "IfNotPresent",
     var database: String?,
     var username: String?,
     var passwordSecretKeyRef: SecretKeySelector?,
