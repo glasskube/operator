@@ -61,9 +61,9 @@ function install_helm_charts {
     NS_MINIO="$NS_OVERRIDE"
   fi
 
-  helm upgrade --install cert-manager jetstack/cert-manager \
+  helm upgrade --install cert-manager oci://quay.io/jetstack/charts/cert-manager \
     --namespace "$NS_CERT_MANAGER" --create-namespace \
-    --set installCRDs=true
+    --set crds.enabled=true
 
   local PROMETHEUS_ARGS=(
     "--set" "prometheus.prometheusSpec.retention=180d"
@@ -89,7 +89,7 @@ function install_helm_charts {
   if [ -n "$PROMETHEUS_SIZE" ]; then
     local PROMETHEUS_ARGS+=("--set" "prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.resources.requests.storage=$PROMETHEUS_SIZE")
   fi
-  helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
+  helm upgrade --install kube-prometheus-stack oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack \
     --namespace "$NS_PROMETHEUS" --create-namespace \
     "${PROMETHEUS_ARGS[@]}"
   kubectl apply \
@@ -105,21 +105,23 @@ function install_helm_charts {
 
   helm upgrade --install mariadb-operator mariadb-operator/mariadb-operator \
     --namespace "$NS_MARIADB" --create-namespace \
-    --version 0.15.1 \
+    --version 0.19.0 \
     "${MARIADB_ARGS[@]}"
 
-  helm upgrade --install cnpg cnpg/cloudnative-pg \
+  helm upgrade --install cnpg oci://ghcr.io/cloudnative-pg/charts/cloudnative-pg \
     --namespace "$NS_CNPG" --create-namespace
 
   local MINIO_ARGS=(
     "--set" "replicas=1" "--set" "persistence.size=20Gi"
     "--set" "mode=standalone" "--set" "DeploymentUpdate.type=Recreate"
     "--set" "resources.requests.memory=256Mi"
+    "--set" "image.repository=ghcr.io/coollabsio/minio" "--set" "image.tag=RELEASE.2025-10-15T17-29-55Z"
+    "--set" "mcImage.repository=ghcr.io/glasskube/minio/mc" "--set" "mcImage.tag=RELEASE.2024-11-21T17-21-54Z"
   )
   if [ -n "$CLUSTER_DNS_NAME" ]; then
     local MINIO_ARGS+=("--set" "clusterDomain=$CLUSTER_DNS_NAME")
   fi
-  helm upgrade --install glasskube-minio minio/minio \
+  helm upgrade --install glasskube-minio oci://ghcr.io/glasskube/charts/minio:5.4.0 \
     --namespace "$NS_MINIO" --create-namespace \
     "${MINIO_ARGS[@]}"
 }
@@ -181,11 +183,7 @@ if [ -z "$VERSION" ]; then
   fi
 fi
 
-helm repo add jetstack https://charts.jetstack.io
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo add mariadb-operator https://mariadb-operator.github.io/mariadb-operator --force-update
-helm repo add cnpg https://cloudnative-pg.github.io/charts
-helm repo add minio https://charts.min.io/
 helm repo update
 
 kubectl apply -f "$GIT_ROOT/deploy/crd"
