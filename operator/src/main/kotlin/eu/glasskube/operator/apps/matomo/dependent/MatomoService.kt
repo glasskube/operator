@@ -22,7 +22,7 @@ class MatomoService : CRUDKubernetesDependentResource<Service, Matomo>(Service::
             labels(primary.resourceLabels)
         }
         spec {
-            selector = mapOf(MatomoReconciler.LABEL to primary.metadata.name)
+            selector = primary.resourceLabels
             ports = listOf(
                 servicePort {
                     port = 80
