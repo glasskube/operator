@@ -15,20 +15,22 @@ plugins {
 group = "eu.glasskube.operator"
 
 val javaOperatorVersion: String by project
-val crdGeneratorVersion: String by project
+val fabric8Version: String by project
 val bouncyCastleVersion: String by project
 val minioVersion: String by project
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
 
+    // Overrides the fabric8 version of the operator framework, Jackson 2.19+ requires fabric8 6.14.0 or newer
+    implementation(platform("io.fabric8:kubernetes-client-bom:$fabric8Version"))
     implementation("io.javaoperatorsdk", "operator-framework", javaOperatorVersion)
     implementation("com.fasterxml.jackson.module", "jackson-module-kotlin")
     implementation("org.bouncycastle", "bcpkix-jdk15to18", bouncyCastleVersion)
     implementation("io.minio", "minio", minioVersion)
     implementation("io.minio", "minio-admin", minioVersion)
-    implementation("io.fabric8", "generator-annotations", crdGeneratorVersion)
-    kapt("io.fabric8", "crd-generator-apt", crdGeneratorVersion)
+    implementation("io.fabric8", "generator-annotations", fabric8Version)
+    kapt("io.fabric8", "crd-generator-apt", fabric8Version)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
