@@ -39,8 +39,14 @@ class MatomoCronJob : CRUDKubernetesDependentResource<CronJob, Matomo>(CronJob::
         }
         spec {
             schedule = "5 * * * *"
+            concurrencyPolicy = "Forbid"
+            startingDeadlineSeconds = STARTING_DEADLINE_SECONDS
+            successfulJobsHistoryLimit = 1
+            failedJobsHistoryLimit = 1
             jobTemplate {
                 spec {
+                    backoffLimit = 1
+                    activeDeadlineSeconds = ACTIVE_DEADLINE_SECONDS
                     template {
                         spec {
                             restartPolicy = "Never"
@@ -80,5 +86,7 @@ class MatomoCronJob : CRUDKubernetesDependentResource<CronJob, Matomo>(CronJob::
 
     companion object {
         private const val DATA_VOLUME = "data"
+        private const val STARTING_DEADLINE_SECONDS = 10L * 60
+        private const val ACTIVE_DEADLINE_SECONDS = 2L * 60 * 60
     }
 }

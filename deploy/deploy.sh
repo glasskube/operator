@@ -189,14 +189,14 @@ helm repo update
 kubectl apply -f "$GIT_ROOT/deploy/crd"
 
 if [ -z "$NAMESPACE" ]; then
-  echo "Performing cluster-wide deployment of version $VERSION…"
+  echo "Performing cluster-wide deployment of version ${VERSION}…"
   install_helm_charts ""
   if [ -n "$VERSION" ]; then
     mk_temp_kustomization "cluster"
     kubectl apply -k "$TEMP_DIR"
   fi
 else
-  echo "Performing single-namespace deployment of version $VERSION in $NAMESPACE…"
+  echo "Performing single-namespace deployment of version $VERSION in ${NAMESPACE}…"
   install_helm_charts "$NAMESPACE"
   if [ -n "$VERSION" ]; then
     mk_temp_kustomization "namespace"
