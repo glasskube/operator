@@ -22,7 +22,7 @@ val minioVersion: String by project
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
 
-    // fabric8 6.13.x, which the operator framework depends on, fails to serialize resources with Jackson 2.19+
+    // Overrides the fabric8 version of the operator framework, Jackson 2.19+ requires fabric8 6.14.0 or newer
     implementation(platform("io.fabric8:kubernetes-client-bom:$fabric8Version"))
     implementation("io.javaoperatorsdk", "operator-framework", javaOperatorVersion)
     implementation("com.fasterxml.jackson.module", "jackson-module-kotlin")
