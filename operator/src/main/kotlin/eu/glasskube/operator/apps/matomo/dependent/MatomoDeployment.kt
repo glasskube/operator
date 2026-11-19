@@ -73,7 +73,7 @@ class MatomoDeployment(private val configService: ConfigService) :
             super.handleUpdate(actual, desired, primary, context)
         }
 
-    // The selector of a Deployment is immutable. The old pods must be gone before the new Deployment is created,
+    // The old pods must be gone before the new Deployment is created,
     // because two Matomo pods must not run their init containers on the same volume at the same time.
     private fun recreate(actual: Deployment, desired: Deployment, primary: Matomo, context: Context<Matomo>): Deployment {
         val resource = context.client.apps().deployments().resource(actual)
