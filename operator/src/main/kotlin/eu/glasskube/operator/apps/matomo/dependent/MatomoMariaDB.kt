@@ -19,7 +19,6 @@ import eu.glasskube.operator.config.ConfigService
 import eu.glasskube.operator.generic.condition.MariaDBReadyCondition
 import eu.glasskube.operator.infra.mariadb.Exporter
 import eu.glasskube.operator.infra.mariadb.MariaDB
-import eu.glasskube.operator.infra.mariadb.MariaDBImage
 import eu.glasskube.operator.infra.mariadb.MariaDBResources
 import eu.glasskube.operator.infra.mariadb.MariaDBResourcesRequest
 import eu.glasskube.operator.infra.mariadb.MariaDBSpec
@@ -60,7 +59,7 @@ class MatomoMariaDB(private val configService: ConfigService) :
         }
         spec = MariaDBSpec(
             rootPasswordSecretKeyRef = secretKeySelector(primary.databaseSecretName, ROOT_DATABASE_PASSWORD),
-            image = MariaDBImage("mariadb", "10.7.4", "IfNotPresent"),
+            image = "mariadb:10.7.4",
             database = primary.databaseName,
             username = primary.databaseUser,
             passwordSecretKeyRef = secretKeySelector(primary.databaseSecretName, MATOMO_DATABASE_PASSWORD),
@@ -75,7 +74,7 @@ class MatomoMariaDB(private val configService: ConfigService) :
             ),
             metrics = Metrics(
                 exporter = Exporter(
-                    image = MariaDBImage("prom/mysqld-exporter", "v0.14.0", "IfNotPresent")
+                    image = "prom/mysqld-exporter:v0.14.0"
                 ),
                 serviceMonitor = ServiceMonitor(
                     prometheusRelease = "kube-prometheus-stack"
