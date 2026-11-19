@@ -2,28 +2,40 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:base",
-    "helpers:pinGitHubActionDigests",
+    "helpers:pinGitHubActionDigestsToSemver",
     ":gitSignOff",
     "group:recommended",
     "group:monorepos"
   ],
-  "baseBranches": [
-    "main"
+  "platformAutomerge": false,
+  "rebaseWhen": "behind-base-branch",
+  "minimumReleaseAge": "1 day",
+  "osvVulnerabilityAlerts": true,
+  "gitIgnoredAuthors": [
+    "133648757+glasskube-bot@users.noreply.github.com"
   ],
-  "addLabels": ["dependencies"],
   "packageRules": [
     {
-      "matchManagers": ["gradle"],
-      "addLabels": ["gradle"]
+      "matchManagers": [
+        "github-actions"
+      ],
+      "semanticCommitType": "ci"
     },
     {
-      "matchManagers": ["github-actions"],
-      "addLabels": ["github_actions"]
+      "description": "Automerge minor and patch releases of GitHub Actions",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "automerge": true
     },
     {
       "groupName": "Kotlin",
-      "matchPackagePrefixes": [
-        "org.jetbrains.kotlin"
+      "matchPackageNames": [
+        "org.jetbrains.kotlin{/,}**"
       ]
     }
   ]
