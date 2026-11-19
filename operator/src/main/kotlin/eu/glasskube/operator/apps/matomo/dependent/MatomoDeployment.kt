@@ -15,6 +15,7 @@ import eu.glasskube.kubernetes.api.model.intOrString
 import eu.glasskube.kubernetes.api.model.item
 import eu.glasskube.kubernetes.api.model.items
 import eu.glasskube.kubernetes.api.model.livenessProbe
+import eu.glasskube.kubernetes.api.model.loggingId
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.persistentVolumeClaim
 import eu.glasskube.kubernetes.api.model.readinessProbe
@@ -31,14 +32,16 @@ import eu.glasskube.operator.apps.matomo.configMapName
 import eu.glasskube.operator.apps.matomo.configSecretName
 import eu.glasskube.operator.apps.matomo.databaseSecretName
 import eu.glasskube.operator.apps.matomo.deploymentName
-import eu.glasskube.operator.apps.matomo.identifyingLabel
 import eu.glasskube.operator.apps.matomo.resourceLabels
 import eu.glasskube.operator.apps.matomo.volumeName
 import eu.glasskube.operator.config.ConfigService
+import eu.glasskube.utils.logger
+import io.fabric8.kubernetes.api.model.DeletionPropagation
 import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent
+import java.util.concurrent.TimeUnit
 
 @KubernetesDependent(labelSelector = MatomoReconciler.SELECTOR)
 class MatomoDeployment(private val configService: ConfigService) :
@@ -58,6 +61,26 @@ class MatomoDeployment(private val configService: ConfigService) :
         const val installJson = "install.json"
         const val installJsonPath = "$configDir/$installJson"
         private const val PROBE_PATH = "/matomo.php"
+        private const val DELETION_TIMEOUT_MINUTES = 5L
+        private val log = logger()
+    }
+
+    override fun handleUpdate(actual: Deployment, desired: Deployment, primary: Matomo, context: Context<Matomo>) =
+        if (actual.spec.selector != desired.spec.selector) {
+            log.info("Deployment selector of {} changed. will be recreated", primary.loggingId)
+            recreate(actual, desired, primary, context)
+        } else {
+            super.handleUpdate(actual, desired, primary, context)
+        }
+
+    // The old pods must be gone before the new Deployment is created,
+    // because two Matomo pods must not run their init containers on the same volume at the same time.
+    private fun recreate(actual: Deployment, desired: Deployment, primary: Matomo, context: Context<Matomo>): Deployment {
+        val resource = context.client.apps().deployments().resource(actual)
+        resource.withPropagationPolicy(DeletionPropagation.FOREGROUND).delete()
+        resource.waitUntilCondition({ it == null }, DELETION_TIMEOUT_MINUTES, TimeUnit.MINUTES)
+        return handleCreate(desired, primary, context)
+            .also { log.info("Deployment for {} recreated", primary.loggingId) }
     }
 
     override fun desired(primary: Matomo, context: Context<Matomo>) = deployment {
@@ -68,7 +91,7 @@ class MatomoDeployment(private val configService: ConfigService) :
         }
         spec {
             selector {
-                matchLabels = mapOf(primary.identifyingLabel)
+                matchLabels = primary.resourceLabels
             }
             strategyRecreate()
             template {
