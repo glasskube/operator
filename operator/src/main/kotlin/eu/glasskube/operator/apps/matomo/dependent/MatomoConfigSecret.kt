@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import eu.glasskube.kubernetes.api.model.metadata
 import eu.glasskube.kubernetes.api.model.namespace
 import eu.glasskube.kubernetes.api.model.secret
+import eu.glasskube.operator.api.reconciler.getSecondaryResource
 import eu.glasskube.operator.apps.matomo.Matomo
 import eu.glasskube.operator.apps.matomo.MatomoInstallConfig
 import eu.glasskube.operator.apps.matomo.MatomoReconciler
@@ -12,7 +13,9 @@ import eu.glasskube.operator.apps.matomo.configSecretName
 import eu.glasskube.operator.apps.matomo.resourceLabels
 import eu.glasskube.utils.decodeBase64
 import eu.glasskube.utils.encodeBase64
+import eu.glasskube.utils.logger
 import io.fabric8.kubernetes.api.model.Secret
+import io.fabric8.kubernetes.api.model.apps.Deployment
 import io.javaoperatorsdk.operator.api.reconciler.Context
 import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource
@@ -37,6 +40,14 @@ class MatomoConfigSecret(private val objectMapper: ObjectMapper) :
         }
         type = "Opaque"
         data = mapOf(MatomoDeployment.installJson to getInstallJson(primary, context).encodeBase64())
+    }
+
+    override fun onUpdated(primary: Matomo, updated: Secret, actual: Secret, context: Context<Matomo>) {
+        super.onUpdated(primary, updated, actual, context)
+        context.getSecondaryResource<Deployment>().ifPresent {
+            log.info("restarting deployment after config secret changed")
+            context.client.apps().deployments().resource(it).rolling().restart()
+        }
     }
 
     private fun getInstallJson(primary: Matomo, context: Context<Matomo>) = with(objectMapper) {
@@ -76,5 +87,10 @@ class MatomoConfigSecret(private val objectMapper: ObjectMapper) :
                 }
             }
             .let { writeValueAsString(it) }
+    }
+
+    companion object {
+        @JvmStatic
+        private val log = logger()
     }
 }
